@@ -23,7 +23,65 @@
 - <a href="https://www.linkedin.com/in/username/">Nome</a>
 
 # Sumário
-Incluir Sumário
+
+1. [Introdução](#1-introdução)
+   - 1.1 [Termos e Abreviações](#11-termos-e-abreviações)
+   - 1.2 [Contexto e Motivação](#12-contexto-e-motivação)
+   - 1.3 [Objetivo](#13-objetivo)
+
+2. [Descrição do Sistema Atual](#2-descrição-do-sistema-atual)
+   - 2.1 [Visão Geral e Contexto de Negócio](#21-visão-geral-e-contexto-de-negócio)
+     - 2.1.1 [Setor de Aplicação e Domínio](#211-setor-de-aplicação-e-domínio)
+     - 2.1.2 [Adição de Valor e Propósito](#212-adição-de-valor-e-propósito)
+     - 2.1.3 [Processos de Negócio e Fluxos Críticos](#213-processos-de-negócio-e-fluxos-críticos)
+     - 2.1.4 [Volumes Operacionais e Capacidade](#214-volumes-operacionais-e-capacidade)
+     - 2.1.5 [Estratégias de Crescimento e Evolução](#215-estratégias-de-crescimento-e-evolução)
+   - 2.2 [Riscos e Oportunidades](#22-riscos-e-oportunidades)
+     - 2.2.1 [Matriz de Riscos](#221-matriz-de-riscos)
+     - 2.2.2 [Riscos ligados ao sistema](#222-riscos-ligados-ao-sistema)
+     - 2.2.3 [Oportunidades de melhoria dos SLAs](#223-oportunidades-de-melhoria-dos-slas)
+
+3. [Visão de Modelo Comportamental (Simulação do Sistema Atual)](#3-visão-de-modelo-comportamental-simulação-do-sistema-atual)
+   - 3.1 [RNFs do Sistema Atual](#31-rnfs-do-sistema-atual)
+   - 3.2 [Estrutura Estática do Modelo](#32-estrutura-estática-do-modelo)
+   - 3.3 [Modelagem Comportamental e Simulação dos RNFs](#33-modelagem-comportamental-e-simulação-dos-rnfs)
+     - 3.3.1 [Modelagem Comportamental](#331-modelagem-comportamental)
+     - 3.3.2 [Cenários Simulados](#332-cenários-simulados)
+   - 3.4 [Consolidação dos Resultados da Simulação](#34-consolidação-dos-resultados-da-simulação)
+
+4. [Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
+   - 4.1 [Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
+   - 4.2 [Justificativas para RNFs](#42-justificativas-para-rnfs)
+   - 4.3 [Melhorias Esperadas com Implementação de RNFs](#43-melhorias-esperadas-com-implementação-de-rnfs)
+   - 4.4 [Consolidação dos Requisitos e Diretrizes para a Nova Arquitetura](#44-consolidação-dos-requisitos-e-diretrizes-para-a-nova-arquitetura)
+
+5. [Avaliação dos Mecanismos Utilizados no Sistema Atual (Diagnóstico ATAM)](#5-avaliação-dos-mecanismos-utilizados-no-sistema-atual-diagnóstico-atam)
+   - 5.1 [Revisão do Mapa de RNFs e Vulnerabilidades](#51-revisão-do-mapa-de-rnfs-e-vulnerabilidades)
+   - 5.2 [Táticas Arquiteturais e Componentes Adotados](#52-táticas-arquiteturais-e-componentes-adotados)
+   - 5.3 [Análise de Causas e Impactos](#53-análise-de-causas-e-impactos)
+
+6. [Especificação da Solução Técnica do Sistema Novo](#6-especificação-da-solução-técnica-do-sistema-novo)
+   - 6.1 [Revisão do Mapa de RNFs do Sistema Novo](#61-revisão-do-mapa-de-rnfs-do-sistema-novo)
+   - 6.2 [Táticas Arquiteturais e Componentes Adotados](#62-táticas-arquiteturais-e-componentes-adotados)
+   - 6.3 [Justificativas Arquiteturais e Racional das Decisões](#63-justificativas-arquiteturais-e-racional-das-decisões)
+   - 6.4 [Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
+
+7. [Simulação do Sistema Novo](#7-simulação-do-sistema-novo)
+
+8. [Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
+   - 8.1 [Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
+
+9. [Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
+
+10. [Ajustes na Implementação](#10-ajustes-na-implementação)
+
+11. [Evidências de Testes Não Funcionais](#11-evidências-de-testes-não-funcionais)
+
+12. [Medição e Avaliação do Sistema Novo](#12-medição-e-avaliação-do-sistema-novo)
+
+13. [Tradeoffs Arquiteturais](#13-tradeoffs-arquiteturais)
+
+14. [A construir](#14-a-construir)
 
 # Projeto · Módulo 08 – Arquitetura Digital Segura e Tolerante a Falhas
 
@@ -47,28 +105,35 @@ _(Apresente o objetivo geral e os objetivos específicos do projeto.)_
 ## 2.1 Visão Geral e Contexto de Negócio
 _(Descreva o sistema atual sob a ótica arquitetural e de negócio, destacando seus pontos fortes e oportunidades de melhoria.)_
 
-### Business Drivers e Finalidade Baseada em Dados
+### 2.1.1 Setor de Aplicação e Domínio
 - **Setor de aplicação:** _(Informe o(s) setor(es) ou domínio(s) de atuação do sistema.)_
+
+### 2.1.2 Adição de Valor e Propósito
 - **Adição de valor:** _(Explique como o sistema agrega valor ao negócio ou aos usuários.)_
+
+### 2.1.3 Processos de Negócio e Fluxos Críticos
 - **Processos de negócio e fluxos críticos suportados:**  
   _(Descreva os fluxos de negócio suportados e o papel do sistema nesses fluxos. Inclua diagramas, fluxogramas ou tabelas se necessário.)_
+
+### 2.1.4 Volumes Operacionais e Capacidade
 - **Volumes operacionais:**  
   _(Informe dados quantitativos como número de usuários, transações, registros, incidentes ou falhas relevantes.)_
+
+### 2.1.5 Estratégias de Crescimento e Evolução
 - **Estratégias de crescimento:**  
   _(Explique planos ou estratégias de evolução do sistema frente aos desafios identificados.)_
 
----
 
 ## 2.2 Riscos e Oportunidades
 _(Identifique riscos e oportunidades associados ao sistema atual, considerando aspectos técnicos, de negócio e legais.)_
 
-### Matriz de Riscos
+### 2.2.1 Matriz de Riscos
 _(Insira aqui uma tabela com probabilidade × impacto dos riscos identificados.)_
 
-### Riscos ligados ao sistema
+### 2.2.2 Riscos ligados ao sistema
 _(Liste vulnerabilidades técnicas, de negócio ou de conformidade legal observadas no sistema.)_
 
-### Oportunidades de melhoria dos SLAs
+### 2.2.3 Oportunidades de melhoria dos SLAs
 _(Descreva possibilidades de aprimorar níveis de serviço, incluindo segurança, disponibilidade, desempenho e tolerância a falhas.)_
 
 ---
@@ -79,7 +144,13 @@ Esta seção deve apresentar a **modelagem comportamental** do sistema atual e o
 
 ---
 
-## 3.1 Estrutura Estática do Modelo
+## 3.1 RNFs do Sistema Atual
+
+Descrever RFNs que representam o funcionamento do sistema atual de gestão de projeto do metrô
+
+---
+
+## 3.2 Estrutura Estática do Modelo
 _(Apresente os elementos e parâmetros da simulação, evidenciando como o modelo representa o comportamento do sistema atual.)_
 
 - **Elementos do sistema envolvidos nos RNFs selecionados:**  
@@ -90,15 +161,21 @@ _(Apresente os elementos e parâmetros da simulação, evidenciando como o model
 
 ---
 
-## 3.2 Modelagem Comportamental e Simulação dos RNFs
-_(Descreva os cenários de simulação definidos, os dados utilizados, as execuções realizadas e os resultados obtidos.)_
+## 3.3 Modelagem Comportamental e Simulação dos RNFs
+_(Seção para inserir dados sobre testagem)_
+
+### 3.3.1 Modelagem Comportamental
+_(A. Cenários de simulação, focando as melhorias dos RNFs - Lista de cenários de simulação - caracterizando as condições de simulações planejadas;)_
+
+### 3.3.2 Cenários Simulados
+_(Dados de simulação, evidenciando as melhorias - Sessões de simulações detalhadas pelos cenários, massa de dados utilizados, processamentos e resultados obtidos, com apresentação dos registros e também visualização de gráficos.)_
 
 - **Cenários de simulação:** _(Liste os cenários e parâmetros simulados.)_  
 - **Dados e evidências:** _(Apresente os registros de simulação e as métricas observadas.)_
 
 ---
 
-## 3.3 Consolidação dos Resultados da Simulação
+## 3.4 Consolidação dos Resultados da Simulação
 _(Apresente uma análise integrada dos resultados obtidos nas simulações, destacando os principais achados e implicações para a arquitetura do sistema.)_
 
 ---
@@ -118,16 +195,21 @@ _(Mapeie os requisitos não funcionais priorizados para orientar o desenvolvimen
 
 ---
 
-## 4.2 Justificativas e Melhorias Esperadas
+## 4.2 Justificativas para RNFs
 _(Apresente a argumentação técnica e de negócio para os RNFs selecionados, evidenciando os ganhos projetados para o novo sistema.)_
 
 - **Controle de riscos e mitigação:** _(Explique como o novo sistema corrige os problemas identificados no atual.)_  
+
+---
+
+## 4.3 Melhorias Esperadas com Implementação de RNFs
+
 - **Melhorias em usabilidade e experiência:** _(Descreva ganhos esperados de eficiência e confiabilidade.)_  
 - **Indicadores e evidências de melhoria:** _(Liste métricas que poderão comprovar os resultados esperados.)_
 
 ---
 
-## 4.3 Consolidação dos Requisitos e Diretrizes para a Nova Arquitetura
+## 4.4 Consolidação dos Requisitos e Diretrizes para a Nova Arquitetura
 _(Sintetize os requisitos funcionais e não funcionais que nortearão o projeto da nova arquitetura.)_
 
 ---
