@@ -1,0 +1,190 @@
+# Arquivos do sistema operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Arquivos temporários
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+*.pack.gz
+
+# Logs
+*.log
+logs/
+log/
+
+# Arquivos de cache
+.cache/
+*.cache
+
+# Arquivos de configuração local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.local.js
+config.local.json
+
+# Dependências e módulos
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Arquivos de IDE e editores
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.atom/
+.brackets.json
+
+# Arquivos Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Arquivos de cache do Next.js
+.next/cache/
+.next/cache/webpack/
+.next/cache/webpack/client-development/
+.next/cache/webpack/server-development/
+.next/cache/webpack/client-production/
+.next/cache/webpack/server-production/
+*.pack.gz
+*.old
+
+# Arquivos de build e produção
+.next/static/
+.next/server/
+.next/trace
+
+# Arquivos de desenvolvimento do Next.js
+.next/typescript/
+.next/swc/
+
+# Arquivos de análise do Next.js
+.next/analyze/
+
+# Arquivos de telemetria do Next.js
+.next/telemetry/
+
+# Arquivos de cache do Vercel
+.vercel/
+
+# Arquivos de cache do Turbopack
+.turbo/
+
+# Arquivos de cache do SWC
+.swc/
+
+# Arquivos de cache do Babel
+.babel-cache/
+
+# Arquivos de cache do TypeScript
+*.tsbuildinfo
+
+# Arquivos de cache do ESLint
+.eslintcache
+
+# Arquivos de cache do Prettier
+.prettierignore
+
+# Arquivos de cache do PostCSS
+.postcss-cache/
+
+# Arquivos de cache do Tailwind CSS
+.tailwindcss-cache/
+
+# Arquivos de cache do webpack
+webpack-cache/
+
+# Arquivos de cache do Metro (React Native)
+.metro-cache/
+
+# Arquivos de cache do Jest
+.jest/
+
+# Arquivos de cache do Storybook
+.storybook-static/
+
+# Arquivos de cache do Cypress
+cypress/videos/
+cypress/screenshots/
+
+# Arquivos de cache do Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Arquivos de cache do Vite
+.vite/
+
+# Arquivos de cache do Rollup
+.rollup.cache/
+
+# Arquivos de cache do Parcel
+.parcel-cache/
+
+# Arquivos de cache do Webpack
+.webpack/
+
+# Arquivos de cache do Browserslist
+.browserslistrc
+
+# Arquivos de cache do Autoprefixer
+.autoprefixerrc
+
+# Arquivos de cache do PostCSS
+postcss.config.js.local
+
+# Arquivos de cache do Tailwind
+tailwind.config.js.local
+
+# Arquivos de cache do TypeScript
+tsconfig.tsbuildinfo
+
+# Arquivos de cache do Next.js específicos
+.next/cache/webpack/client-development/0.pack.gz
+.next/cache/webpack/client-development/1.pack.gz
+.next/cache/webpack/server-development/0.pack.gz
+.next/cache/webpack/server-development/1.pack.gz
+.next/cache/webpack/client-production/0.pack.gz
+.next/cache/webpack/client-production/1.pack.gz
+.next/cache/webpack/server-production/0.pack.gz
+.next/cache/webpack/server-production/1.pack.gz
