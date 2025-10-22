@@ -136,8 +136,6 @@ _(Liste vulnerabilidades técnicas, de negócio ou de conformidade legal observa
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 _(Descreva possibilidades de aprimorar níveis de serviço, incluindo segurança, disponibilidade, desempenho e tolerância a falhas.)_
 
- Contexto do projeto; O projeto a ser desenvolvido é do metrô de são paulo e atualmente ele tem um sistema de gerenciamento dos projetos por meio de aplicações como miro (eles realizam um brainstorming de cada projeto), e a partir disso eles validam as informações e sobem elas para o sharepoint. Nossa solução tem como foco realizar uma arquitetura escalável para integrar agentes de IA no sistema de gestão de projetos do Metrô, para facilitação do gerenciamento. Garantindo disponibilidade, rastreabilidade de cada ação realizada e segurança dos dados dos projetos.
-
 # 3. Visão de Modelo Comportamental (Simulação do Sistema Atual)
 
 Esta seção apresenta a **modelagem comportamental** do sistema atual de gestão de projetos do Metrô de São Paulo e os **experimentos de simulação** realizados para observar seu comportamento frente a cenários críticos, especialmente aqueles relacionados a **Requisitos Não Funcionais (RNFs)**, como desempenho, segurança, privacidade e tolerância a falhas.
@@ -148,7 +146,7 @@ A análise comportamental do sistema atual baseia-se na arquitetura existente qu
 
 ## 3.1 RNFs do Sistema Atual
 
-A análise do sistema atual de gestão de projetos do Metrô de São Paulo revela uma **ausência crítica de requisitos não funcionais adequados**. O sistema atual baseado em Miro e SharePoint **não possui implementação adequada** dos RNFs essenciais para uma gestão de projetos robusta e escalável.
+A análise do sistema atual de gestão de projetos do Metrô de São Paulo revela uma **ausência crítica de requisitos não funcionais adequados**. O sistema atual baseado em Miro e SharePoint **não possui implementação adequada** dos RNFs essenciais para uma gestão de projetos escalável.
 
 A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**:
 
