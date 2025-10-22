@@ -136,38 +136,31 @@ _(Descreva o sistema atual sob a ótica arquitetural e de negócio, destacando s
 &emsp;As ações estratégicas estão estruturadas em quatro eixos principais, diretamente relacionados aos RNFs:
 
   1. Escalabilidade e Desempenho
+  - Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições. 
+  - Implementação de balanceamento de carga e monitoramento dinâmico de desempenho, garantindo tempo médio de resposta abaixo de 1 segundo mesmo em picos de 5.000 requisições.
+  - Adoção de técnicas de cache e indexação inteligente para acelerar consultas e minimizar sobrecarga nos módulos de IA.
 
-    - Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições.
-
-    - Implementação de balanceamento de carga e monitoramento dinâmico de desempenho, garantindo tempo médio de resposta abaixo de 1 segundo mesmo em picos de 5.000 requisições.
-
-    - Adoção de técnicas de cache e indexação inteligente para acelerar consultas e minimizar sobrecarga nos módulos de IA.
 
   2. Disponibilidade e Recuperação de Falhas
+  - Criação de um modelo de arquitetura distribuída e tolerante a falhas, com failover automático entre instâncias críticas (ex.: banco de dados e camada de aplicação).
+  - Implementação de políticas de backup contínuo e replicação ativa, reduzindo o tempo médio de recuperação (MTTR) para menos de 5 segundos em casos de falha.
+  - Monitoramento em tempo real e alertas automáticos para incidentes, garantindo disponibilidade mínima de 99,5%.
 
-    - Criação de um modelo de arquitetura distribuída e tolerante a falhas, com failover automático entre instâncias críticas (ex.: banco de dados e camada de aplicação).
-
-    - Implementação de políticas de backup contínuo e replicação ativa, reduzindo o tempo médio de recuperação (MTTR) para menos de 5 segundos em casos de falha.
-
-    - Monitoramento em tempo real e alertas automáticos para incidentes, garantindo disponibilidade mínima de 99,5%.
 
   3. Segurança e Governança de Dados
+  - Implementação de camadas de defesa contra injeções de comandos e acessos indevidos, com detecção e bloqueio automático de tentativas maliciosas.
+  - Garantia de rastreabilidade completa das tentativas de acesso, integrando logs e auditorias a sistemas de alerta e análise de segurança.
 
-    - Implementação de camadas de defesa contra injeções de comandos e acessos indevidos, com detecção e bloqueio automático de tentativas maliciosas.
-
-    - Garantia de rastreabilidade completa das tentativas de acesso, integrando logs e auditorias a sistemas de alerta e análise de segurança.
 
   4. Rastreabilidade e Auditoria de Interações
+  - Criação de um sistema centralizado de logs que registre 100% das ações executadas por usuários e agentes de IA, garantindo integridade e não repúdio.
+  - Utilização de verificação por hash e consultas otimizadas para recuperação de registros em menos de 2 segundos.
 
-    - Criação de um sistema centralizado de logs que registre 100% das ações executadas por usuários e agentes de IA, garantindo integridade e não repúdio.
-
-    - Utilização de verificação por hash e consultas otimizadas para recuperação de registros em menos de 2 segundos.
 
   5. Evolução e Integração Inteligente
+  - Preparar a arquitetura para futuras integrações com IA generativa, automação cognitiva e relatórios preditivos, priorizando sempre o controle e a auditabilidade das informações processadas.
+  - Expandir gradualmente o ecossistema tecnológico do Metrô, mantendo compatibilidade com o Microsoft Power Platform, SharePoint e Copilot, promovendo uma evolução segura e sustentável.
 
-    - Preparar a arquitetura para futuras integrações com IA generativa, automação cognitiva e relatórios preditivos, priorizando sempre o controle e a auditabilidade das informações processadas.
-
-    - Expandir gradualmente o ecossistema tecnológico do Metrô, mantendo compatibilidade com o Microsoft Power Platform, SharePoint e Copilot, promovendo uma evolução segura e sustentável.
 
 &emsp;Essas estratégias consolidam uma base técnica e ética para o uso de Inteligência Artificial no Metrô-SP, garantindo que o sistema evolua com eficiência, rastreabilidade e conformidade, sem comprometer a segurança ou a privacidade institucional.
 
