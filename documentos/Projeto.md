@@ -125,6 +125,19 @@ _(Descreva o sistema atual sob a ótica arquitetural e de negócio, destacando s
 
 &emsp;Os principais pontos de vulnerabilidade observados estão relacionados à dependência de processos manuais, falhas ocasionais de sincronização entre SharePoint e Power BI, e limitações de rastreabilidade de ações entre usuários. Tais fatores impactam a confiabilidade dos dados e reforçam a necessidade de uma arquitetura com mecanismos de tolerância a falhas, registro de auditoria e monitoramento proativo de desempenho.
 
+**Tabela 1 - Resumo dos Volumes Operacionais**
+
+| **Métrica** | **Valor** | **Observações** |
+|-------------|-----------|-----------------|
+| **Usuários Cadastrados** | 150 usuários | Analistas, gerentes e membros das equipes |
+| **Usuários Simultâneos (Normal)** | 30-50 usuários | Períodos de operação padrão |
+| **Usuários Simultâneos (Pico)** | 75 usuários | Consolidação de relatórios e fechamentos |
+| **Capacidade Recomendada** | 100 usuários | Margem de segurança e escalabilidade |
+| **Documentos por Projeto** | 10.000 documentos | Relatórios, cronogramas, registros de risco e atas |
+| **Transações Mensais** | 500-1.000 | Operações de leitura, atualização e automação |
+| **Taxa de Requisições (Normal)** | 1-2 RPS | Períodos normais de operação |
+| **Taxa de Requisições (Pico)** | 2,5 RPS | Cenários de alta demanda |
+
 ### 2.1.5 Estratégias de Crescimento e Evolução
 
 &emsp;A proposta de evolução do sistema de gestão de portfólio do Metrô de São Paulo tem como foco estabelecer uma **arquitetura escalável e segura**, capaz de **integrar agentes de Inteligência Artificial** para apoiar a automação e o gerenciamento inteligente dos projetos corporativos.
