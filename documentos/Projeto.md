@@ -136,17 +136,47 @@ _(Liste vulnerabilidades técnicas, de negócio ou de conformidade legal observa
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 _(Descreva possibilidades de aprimorar níveis de serviço, incluindo segurança, disponibilidade, desempenho e tolerância a falhas.)_
 
----
+ Contexto do projeto; O projeto a ser desenvolvido é do metrô de são paulo e atualmente ele tem um sistema de gerenciamento dos projetos por meio de aplicações como miro (eles realizam um brainstorming de cada projeto), e a partir disso eles validam as informações e sobem elas para o sharepoint. Nossa solução tem como foco realizar uma arquitetura escalável para integrar agentes de IA no sistema de gestão de projetos do Metrô, para facilitação do gerenciamento. Garantindo disponibilidade, rastreabilidade de cada ação realizada e segurança dos dados dos projetos.
 
 # 3. Visão de Modelo Comportamental (Simulação do Sistema Atual)
 
-Esta seção deve apresentar a **modelagem comportamental** do sistema atual e os **experimentos de simulação** realizados para observar seu comportamento frente a cenários críticos, especialmente aqueles relacionados a **Requisitos Não Funcionais (RNFs)**, como desempenho, segurança, privacidade e tolerância a falhas.
+Esta seção apresenta a **modelagem comportamental** do sistema atual de gestão de projetos do Metrô de São Paulo e os **experimentos de simulação** realizados para observar seu comportamento frente a cenários críticos, especialmente aqueles relacionados a **Requisitos Não Funcionais (RNFs)**, como desempenho, segurança, privacidade e tolerância a falhas.
+
+A análise comportamental do sistema atual baseia-se na arquitetura existente que utiliza aplicações como Miro para brainstorming de projetos e SharePoint para armazenamento e validação de informações. O foco está em identificar limitações e vulnerabilidades que justifiquem a implementação de uma nova arquitetura escalável com integração de agentes de IA.
 
 ---
 
 ## 3.1 RNFs do Sistema Atual
 
-Descrever RFNs que representam o funcionamento do sistema atual de gestão de projeto do metrô
+A análise do sistema atual de gestão de projetos do Metrô de São Paulo revela uma **ausência crítica de requisitos não funcionais adequados**. O sistema atual baseado em Miro e SharePoint **não possui implementação adequada** dos RNFs essenciais para uma gestão de projetos robusta e escalável.
+
+A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**:
+
+| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)** | **Arquitetura Reformada (Desejada)** |
+|------------------------------|----------------------------------------|--------------------------------------|
+| **Escalabilidade** | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos |
+| **Disponibilidade** | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s |
+| **Segurança** | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD |
+| **Rastreabilidade** | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos |
+| **Performance** | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA |
+| **Tolerância a Falhas** | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente |
+
+### **Principais Lacunas Identificadas no Sistema Atual:**
+
+1. **Ausência de Controle Arquitetural:** O Metrô não possui controle sobre a infraestrutura das ferramentas externas
+2. **Dependência Crítica:** Falha em qualquer ferramenta externa impacta todo o processo
+3. **Segurança Comprometida:** Dados sensíveis dos projetos expostos a políticas de terceiros
+4. **Escalabilidade Limitada:** Impossibilidade de crescer conforme demanda
+5. **Auditoria Inadequada:** Dificuldade de compliance e rastreamento de ações
+
+### **Justificativa para Nova Arquitetura:**
+
+A **ausência desses RNFs no sistema atual** justifica completamente a necessidade de uma arquitetura reformada que implemente adequadamente todos esses requisitos, garantindo:
+- **Controle total** sobre a infraestrutura
+- **Segurança robusta** para dados sensíveis
+- **Escalabilidade** para crescimento futuro
+- **Disponibilidade** garantida para operações críticas
+- **Rastreabilidade** completa para compliance
 
 ---
 
