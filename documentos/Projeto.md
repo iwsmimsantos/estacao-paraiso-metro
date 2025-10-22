@@ -103,13 +103,36 @@ _(Apresente o objetivo geral e os objetivos específicos do projeto.)_
 # 2. Descrição do Sistema Atual
 
 ## 2.1 Visão Geral e Contexto de Negócio
-_(Descreva o sistema atual sob a ótica arquitetural e de negócio, destacando seus pontos fortes e oportunidades de melhoria.)_
+
+&emsp; O principal objetivo é transformar a gestão de projetos do Metrô, que atualmente depende de ferramentas semi-estruturadas (Miro para brainstorming) e repositórios passivos (SharePoint para validação/armazenamento), em um ecossistema inteligente e proativo. A evidência primária da necessidade reside na dispersão de informações e na dependência de esforço manual para consolidar insights de planejamento em documentos de projeto rastreáveis e acionáveis. A introdução de Agentes de IA visa preencher essa lacuna, automatizando a transição de ideias brutas (Miro) para dados estruturados e validados (SharePoint), garantindo a rastreabilidade e a acuracidade desde o conceito inicial até a execução.
+
+- **Pontos Fortes:** O Miro oferece flexibilidade e agilidade visual na fase inicial, enquanto o SharePoint garante a centralização e governança documental dos artefatos finais (ex: Termos de Abertura, Escopo, EAPs).
+- **Oportunidades de Melhoria:** A maior ineficiência reside na transição manual dos dados. A informação visual e não-estruturada do Miro precisa ser transcrita e estruturada em documentos formais para o SharePoint. Isso gera perda de rastreabilidade, consome tempo significativo da equipe (overhead), e aumenta o risco de inconsistências de dados entre o planejamento inicial e o registro final.
 
 ### 2.1.1 Setor de Aplicação e Domínio
-- **Setor de aplicação:** _(Informe o(s) setor(es) ou domínio(s) de atuação do sistema.)_
+&emsp;O sistema de gestão de projetos com agentes de IA atende/suporta principalmente os seguintes setores industriais:
+
+- Infraestrutura e Transporte (Foco Principal): Otimizando a gestão de projetos de manutenção, expansão e modernização de linhas, estações e sistemas metroviários.
+- Gestão de Projetos (Vertical): Fornecendo suporte a Project Management Offices (PMOs) e equipes de projeto que utilizam metodologias ágeis ou tradicionais no ambiente de infraestrutura.
+- Tecnologia da Informação e Serviços Digitais: Suportando o desenvolvimento e a integração de novas tecnologias (IoT, sistemas de sinalização, segurança) no contexto metroviário.
 
 ### 2.1.2 Adição de Valor e Propósito
-- **Adição de valor:** _(Explique como o sistema agrega valor ao negócio ou aos usuários.)_
+
+&emsp; A plataforma digital, com sua arquitetura escalável e agentes de IA integrados, adiciona valor ao negócio do Metrô de São Paulo das seguintes formas:
+
+- **Aumento da Eficiência Operacional:**
+
+  - Automação da Estruturação: Os Agentes de IA transformam automaticamente os brainstormings visuais do Miro em artefatos de projeto estruturados, como cronogramas e requisitos, prontos para o SharePoint, reduzindo o tempo de consolidação manual em até 70%.
+  - Tomada de Decisão Acelerada: A IA analisa os dados históricos e em tempo real para prever riscos e sugerir alocações de recursos, permitindo intervenções mais rápidas e informadas.
+
+- **Melhoria da Qualidade e Compliance:**
+
+  - Rastreabilidade Total: Cada ação e mudança sugerida pelo agente de IA (e aprovada pelo gestor) é registrada de forma imutável, atendendo aos rigorosos requisitos de segurança e auditoria exigidos em projetos de infraestrutura pública.
+  - Garantia de Disponibilidade: A arquitetura escalável assegura que a ferramenta de gestão esteja sempre disponível, um requisito crítico para projetos de infraestrutura que operam 24/7.
+
+- **Otimização de Custos:**
+
+  - Prevenção de Desvios: A capacidade preditiva da IA ajuda a identificar potenciais desvios de escopo ou estouros orçamentários mais cedo, permitindo ações corretivas que minimizam o retrabalho e o custo final dos projetos.
 
 ### 2.1.3 Processos de Negócio e Fluxos Críticos
 - **Processos de negócio e fluxos críticos suportados:**  
