@@ -116,8 +116,14 @@ _(Descreva o sistema atual sob a ótica arquitetural e de negócio, destacando s
   _(Descreva os fluxos de negócio suportados e o papel do sistema nesses fluxos. Inclua diagramas, fluxogramas ou tabelas se necessário.)_
 
 ### 2.1.4 Volumes Operacionais e Capacidade
-- **Volumes operacionais:**  
-  _(Informe dados quantitativos como número de usuários, transações, registros, incidentes ou falhas relevantes.)_
+
+&emsp;O sistema de gestão de portfólio do Metrô de São Paulo é utilizado por **aproximadamente 150 usuários cadastrados**, entre analistas, gerentes e membros das equipes de projeto. Desses, estima-se que **entre 30 e 50 usuários possam operar simultaneamente em períodos de pico**, chegando a até 75 usuários simultâneos em momentos de alta demanda, como etapas de consolidação de relatórios ou fechamento de ciclos mensais.
+
+&emsp;Cada projeto em andamento gera cerca de **10.000 documentos**, incluindo relatórios, cronogramas, registros de risco e atas, resultando em um volume expressivo de dados processados e armazenados. A plataforma, composta por ferramentas como SharePoint, Power Automate, Power BI e Miro, **realiza em média de 500 a 1.000 transações mensais**, considerando operações de leitura, atualização, automação de fluxos e geração de relatórios.
+
+&emsp;As estimativas de desempenho indicam uma **taxa de 1 a 2 requisições por segundo (RPS) em períodos normais de operação**, podendo atingir até 2,5 RPS em cenários de pico. Para garantir estabilidade e disponibilidade, recomenda-se o dimensionamento da arquitetura para **100 usuários simultâneos**, permitindo margens de segurança e escalabilidade futura.
+
+&emsp;Os principais pontos de vulnerabilidade observados estão relacionados à dependência de processos manuais, falhas ocasionais de sincronização entre SharePoint e Power BI, e limitações de rastreabilidade de ações entre usuários. Tais fatores impactam a confiabilidade dos dados e reforçam a necessidade de uma arquitetura com mecanismos de tolerância a falhas, registro de auditoria e monitoramento proativo de desempenho.
 
 ### 2.1.5 Estratégias de Crescimento e Evolução
 - **Estratégias de crescimento:**  
