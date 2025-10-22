@@ -165,7 +165,96 @@ _(Apresente os elementos e parâmetros da simulação, evidenciando como o model
 _(Seção para inserir dados sobre testagem)_
 
 ### 3.3.1 Modelagem Comportamental
-_(A. Cenários de simulação, focando as melhorias dos RNFs - Lista de cenários de simulação - caracterizando as condições de simulações planejadas;)_
+
+&nbsp; Esta seção descreve os cenários de simulação planejados, com foco nas melhorias dos Requisitos Não Funcionais (RNFs) da arquitetura proposta para integrar agentes de IA ao sistema de gestão de projetos do Metrô.  
+
+&nbsp; Os cenários foram definidos de forma a avaliar o comportamento da solução em condições críticas e demonstrar melhorias de escalabilidade, disponibilidade, segurança e rastreabilidade, conforme as necessidades identificadas no projeto.  
+
+
+#### **Cenário 1 – Escalabilidade e Acessos Simultâneos**  
+**RNF relacionado:** Escalabilidade.  
+**Objetivo:** Avaliar a capacidade do sistema de suportar múltiplos acessos simultâneos de agentes de IA e usuários humanos sem degradação do desempenho.  
+
+**Condições de Simulação Planejadas:**  
+- Execução de testes de carga com 500, 1.000 e 5.000 requisições simultâneas aos módulos de gestão de projetos.  
+- Cada requisição envolve consultas de dados, geração de relatórios e interações com os agentes de IA.  
+
+**Métricas Avaliadas:**  
+- Tempo médio de resposta (ms).  
+- Taxa de sucesso de requisições (%).  
+- Uso de CPU e memória do servidor.  
+- Número de instâncias escaladas automaticamente pela arquitetura.  
+
+**Indicadores de Melhoria Esperados:**  
+- Escalonamento automático proporcional à carga.  
+- Manutenção do tempo médio de resposta abaixo de 1 segundo.  
+
+
+#### **Cenário 2 – Disponibilidade e Recuperação de Falhas**  
+**RNF relacionado:** Disponibilidade.  
+**Objetivo:** Validar a continuidade de operação do sistema diante de falhas e interrupções de rede.  
+
+**Condições de Simulação Planejadas:**  
+- Desligamento forçado de um nó de processamento durante operações ativas.  
+- Indisponibilidade temporária do banco de dados principal, acionando o failover para a réplica.  
+
+**Métricas Avaliadas:**  
+- Tempo médio de recuperação (MTTR).  
+- Percentual de indisponibilidade (%).  
+- Número de transações perdidas.  
+
+**Indicadores de Melhoria Esperados:**  
+- Recuperação automática do serviço em até 5 segundos.  
+- Zero perda de dados durante a falha.  
+
+
+#### **Cenário 3 – Segurança e Controle de Acessos**  
+**RNF relacionado:** Segurança.  
+**Objetivo:** Avaliar a resistência do sistema frente a tentativas de acesso indevido e injeções de comandos maliciosos via agentes de IA.  
+
+**Condições de Simulação Planejadas:**  
+- Execução de 1.000 requisições autenticadas e 200 tentativas de acesso não autorizado.  
+- Envio de comandos maliciosos e consultas diretas simuladas ao banco de dados.  
+
+**Métricas Avaliadas:**  
+- Taxa de acessos bem-sucedidos (%).  
+- Taxa de acessos bloqueados (%).  
+- Tempo médio de resposta a alertas de segurança.  
+
+**Indicadores de Melhoria Esperados:**  
+- 100% de bloqueio de acessos indevidos.  
+- Registro e rastreabilidade completa das tentativas de ataque.  
+
+
+#### **Cenário 4 – Rastreabilidade e Auditoria de Interações**  
+**RNF relacionado:** Rastreabilidade.  
+**Objetivo:** Garantir que todas as ações dos agentes de IA e usuários sejam registradas e consultáveis de forma íntegra e auditável.  
+
+**Condições de Simulação Planejadas:**  
+- Execução de 500 tarefas automatizadas (ex.: geração de relatórios, atualização de cronogramas).  
+- Consultas de verificação às trilhas de auditoria e logs do sistema.  
+
+**Métricas Avaliadas:**  
+- Percentual de ações registradas corretamente (%).  
+- Tempo médio de recuperação de registros (ms).  
+- Verificação de integridade por hash.  
+
+**Indicadores de Melhoria Esperados:**  
+- 100% das ações registradas e auditáveis.  
+- Recuperação de logs em menos de 2 segundos.  
+
+
+#### **Consolidação dos Cenários e Foco nas Melhorias de RNFs**
+
+&nbsp; Cada cenário proposto visa evidenciar a evolução dos RNFs em relação à arquitetura anterior, por meio de medições quantitativas e análises qualitativas.  
+
+&nbsp; Os resultados das simulações serão apresentados em tabelas e gráficos contendo:  
+- Registros totais de requisições processadas.  
+- Registros de falhas e execuções corretas.  
+- Tempos de resposta médios e máximos.  
+- Taxas de segurança e rastreabilidade.  
+
+&nbsp; Essas simulações permitirão demonstrar, de forma mensurável, as melhorias de desempenho, confiabilidade e segurança obtidas com a nova arquitetura escalável implementada no contexto do Metrô.
 
 ### 3.3.2 Cenários Simulados
 _(Dados de simulação, evidenciando as melhorias - Sessões de simulações detalhadas pelos cenários, massa de dados utilizados, processamentos e resultados obtidos, com apresentação dos registros e também visualização de gráficos.)_
