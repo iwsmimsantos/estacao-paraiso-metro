@@ -90,7 +90,21 @@
 # 1. Introdução
 
 ## 1.1 Termos e Abreviações
-_(Liste e defina siglas, termos técnicos e nomenclaturas utilizadas no projeto.)_
+
+| Sigla / Termo       | Definição                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Metrô-SP**        | Companhia do Metropolitano de São Paulo – empresa pública responsável pela operação e expansão da rede metroviária da cidade de São Paulo. |
+| **PMO**             | *Project Management Office* – Escritório de Projetos responsável pela governança e gestão do portfólio estratégico do Metrô-SP.            |
+| **IA**              | Inteligência Artificial – conjunto de tecnologias que permitem a automação inteligente de processos, análise de dados e suporte à decisão. |
+| **RNF**             | Requisitos Não Funcionais – características que definem o desempenho, segurança, rastreabilidade e disponibilidade da solução.             |
+| **SharePoint**      | Plataforma da Microsoft utilizada para armazenamento, gestão e colaboração em documentos corporativos.                                     |
+| **Power Automate**  | Ferramenta da Microsoft utilizada para automação de fluxos de trabalho e integração entre sistemas.                                        |
+| **Power BI**        | Plataforma de análise e visualização de dados da Microsoft, utilizada para geração de relatórios e indicadores.                            |
+| **Miro**            | Ferramenta de colaboração visual usada para brainstorming e mapeamento de projetos.                                                        |
+| **Failover**        | Mecanismo que permite a continuidade dos serviços em caso de falha de um componente do sistema.                                            |
+| **MTTR**            | *Mean Time to Recovery* – tempo médio necessário para restaurar o funcionamento do sistema após uma falha.                                 |
+| **Guardiões de IA** | Módulos de controle responsáveis por monitorar, restringir e validar as ações dos agentes de IA, garantindo segurança e conformidade.      |
+
 
 ## 1.2 Contexto e Motivação
 
