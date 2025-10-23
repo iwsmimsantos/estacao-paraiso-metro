@@ -33,6 +33,8 @@
   - [1.1 Termos e Abreviações](#11-termos-e-abreviações)
   - [1.2 Contexto e Motivação](#12-contexto-e-motivação)
   - [1.3 Objetivo](#13-objetivo)
+    - [Objetivo Geral](#objetivo-geral)
+    - [Objetivos Específicos](#objetivos-específicos)
 - [2. Descrição do Sistema Atual](#2-descrição-do-sistema-atual)
   - [2.1 Visão Geral e Contexto de Negócio](#21-visão-geral-e-contexto-de-negócio)
     - [2.1.1 Setor de Aplicação e Domínio](#211-setor-de-aplicação-e-domínio)
@@ -50,17 +52,43 @@
       - [2.1.3.3 Requisitos Arquiteturais Chave](#2133-requisitos-arquiteturais-chave)
     - [2.1.4 Volumes Operacionais e Capacidade](#214-volumes-operacionais-e-capacidade)
     - [2.1.5 Estratégias de Crescimento e Evolução](#215-estratégias-de-crescimento-e-evolução)
+      - [Principais diretrizes e metas:](#principais-diretrizes-e-metas)
   - [2.2 Riscos e Oportunidades](#22-riscos-e-oportunidades)
     - [2.2.1 Matriz de Riscos](#221-matriz-de-riscos)
     - [2.2.2 Riscos ligados ao sistema](#222-riscos-ligados-ao-sistema)
     - [2.2.3 Oportunidades de melhoria dos SLAs](#223-oportunidades-de-melhoria-dos-slas)
 - [3. Visão de Modelo Comportamental (Simulação do Sistema Atual)](#3-visão-de-modelo-comportamental-simulação-do-sistema-atual)
   - [3.1 RNFs do Sistema Atual](#31-rnfs-do-sistema-atual)
+    - [**Principais Lacunas Identificadas no Sistema Atual:**](#principais-lacunas-identificadas-no-sistema-atual)
+    - [**Justificativa para Nova Arquitetura:**](#justificativa-para-nova-arquitetura)
   - [3.2 Estrutura Estática do Modelo](#32-estrutura-estática-do-modelo)
+    - [A. Elementos do Sistema Envolvidos nos RNFs Selecionados](#a-elementos-do-sistema-envolvidos-nos-rnfs-selecionados)
+    - [B. Estrutura e Conexão entre os Elementos (Modelo de Simulação)](#b-estrutura-e-conexão-entre-os-elementos-modelo-de-simulação)
+      - [Detalhamento do Modelo de Simulação de Cada RNF](#detalhamento-do-modelo-de-simulação-de-cada-rnf)
   - [3.3 Modelagem Comportamental e Simulação dos RNFs](#33-modelagem-comportamental-e-simulação-dos-rnfs)
     - [3.3.1 Modelagem Comportamental](#331-modelagem-comportamental)
+      - [**Cenário 1 – Escalabilidade e Acessos Simultâneos**](#cenário-1--escalabilidade-e-acessos-simultâneos)
+      - [**Cenário 2 – Disponibilidade e Recuperação de Falhas**](#cenário-2--disponibilidade-e-recuperação-de-falhas)
+      - [**Cenário 3 – Segurança e Controle de Acessos**](#cenário-3--segurança-e-controle-de-acessos)
+      - [**Cenário 4 – Rastreabilidade e Auditoria de Interações**](#cenário-4--rastreabilidade-e-auditoria-de-interações)
+      - [**Consolidação dos Cenários e Foco nas Melhorias de RNFs**](#consolidação-dos-cenários-e-foco-nas-melhorias-de-rnfs)
     - [3.3.2 Cenários Simulados](#332-cenários-simulados)
+      - [**Cenário 1 – Escalabilidade e Acessos Simultâneos (Hipotético)**](#cenário-1--escalabilidade-e-acessos-simultâneos-hipotético)
+      - [**Cenário 2 – Disponibilidade e Recuperação de Falhas (Hipotético)**](#cenário-2--disponibilidade-e-recuperação-de-falhas-hipotético)
+      - [**Cenário 3 – Segurança e Controle de Acessos (Hipotético)**](#cenário-3--segurança-e-controle-de-acessos-hipotético)
+      - [**Cenário 4 – Rastreabilidade e Auditoria (Hipotético)**](#cenário-4--rastreabilidade-e-auditoria-hipotético)
   - [3.4 Consolidação dos Resultados da Simulação](#34-consolidação-dos-resultados-da-simulação)
+    - [**Tabela de Resultados Esperados**](#tabela-de-resultados-esperados)
+    - [**Principais Falhas Esperadas**](#principais-falhas-esperadas)
+      - [**1. Degradação Crítica de Performance**](#1-degradação-crítica-de-performance)
+      - [**2. Vulnerabilidades de Segurança Críticas**](#2-vulnerabilidades-de-segurança-críticas)
+      - [**3. Indisponibilidade Operacional**](#3-indisponibilidade-operacional)
+      - [**4. Falhas de Compliance e Auditoria**](#4-falhas-de-compliance-e-auditoria)
+    - [**Recomendações Arquiteturais**](#recomendações-arquiteturais)
+      - [**1. Implementação de Nova Arquitetura**](#1-implementação-de-nova-arquitetura)
+      - [**2. Mecanismos de Tolerância a Falhas**](#2-mecanismos-de-tolerância-a-falhas)
+      - [**3. Segurança e Compliance**](#3-segurança-e-compliance)
+      - [**4. Escalabilidade e Performance**](#4-escalabilidade-e-performance)
 - [4. Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
   - [4.1 Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
   - [4.2 Justificativas para RNFs](#42-justificativas-para-rnfs)
@@ -99,7 +127,7 @@
 | Sigla / Termo       | Definição                                                                                                                                  |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Metrô-SP**        | Companhia do Metropolitano de São Paulo – empresa pública responsável pela operação e expansão da rede metroviária da cidade de São Paulo. |
-| **PMO**             | *Project Management Office* – Escritório de Projetos responsável pela governança e gestão do portfólio estratégico do Metrô-SP.            |
+| **PMO**             | _Project Management Office_ – Escritório de Projetos responsável pela governança e gestão do portfólio estratégico do Metrô-SP.            |
 | **IA**              | Inteligência Artificial – conjunto de tecnologias que permitem a automação inteligente de processos, análise de dados e suporte à decisão. |
 | **RNF**             | Requisitos Não Funcionais – características que definem o desempenho, segurança, rastreabilidade e disponibilidade da solução.             |
 | **SharePoint**      | Plataforma da Microsoft utilizada para armazenamento, gestão e colaboração em documentos corporativos.                                     |
@@ -107,9 +135,8 @@
 | **Power BI**        | Plataforma de análise e visualização de dados da Microsoft, utilizada para geração de relatórios e indicadores.                            |
 | **Miro**            | Ferramenta de colaboração visual usada para brainstorming e mapeamento de projetos.                                                        |
 | **Failover**        | Mecanismo que permite a continuidade dos serviços em caso de falha de um componente do sistema.                                            |
-| **MTTR**            | *Mean Time to Recovery* – tempo médio necessário para restaurar o funcionamento do sistema após uma falha.                                 |
+| **MTTR**            | _Mean Time to Recovery_ – tempo médio necessário para restaurar o funcionamento do sistema após uma falha.                                 |
 | **Guardiões de IA** | Módulos de controle responsáveis por monitorar, restringir e validar as ações dos agentes de IA, garantindo segurança e conformidade.      |
-
 
 ## 1.2 Contexto e Motivação
 
@@ -159,6 +186,7 @@
 - **Oportunidades de Melhoria:** A maior ineficiência reside na transição manual dos dados. A informação visual e não-estruturada do Miro precisa ser transcrita e estruturada em documentos formais para o SharePoint. Isso gera perda de rastreabilidade, consome tempo significativo da equipe (overhead), e aumenta o risco de inconsistências de dados entre o planejamento inicial e o registro final.
 
 ### 2.1.1 Setor de Aplicação e Domínio
+
 &emsp;O sistema de gestão de projetos com agentes de IA atende/suporta principalmente os seguintes setores industriais:
 
 - Infraestrutura e Transporte (Foco Principal): Otimizando a gestão de projetos de manutenção, expansão e modernização de linhas, estações e sistemas metroviários.
@@ -319,16 +347,16 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 
 **Tabela 1 - Resumo dos Volumes Operacionais**
 
-| **Métrica** | **Valor** | **Observações** |
-|-------------|-----------|-----------------|
-| **Usuários Cadastrados** | 150 usuários | Analistas, gerentes e membros das equipes |
-| **Usuários Simultâneos (Normal)** | 30-50 usuários | Períodos de operação padrão |
-| **Usuários Simultâneos (Pico)** | 75 usuários | Consolidação de relatórios e fechamentos |
-| **Capacidade Recomendada** | 100 usuários | Margem de segurança e escalabilidade |
-| **Documentos por Projeto** | 10.000 documentos | Relatórios, cronogramas, registros de risco e atas |
-| **Transações Mensais** | 500-1.000 | Operações de leitura, atualização e automação |
-| **Taxa de Requisições (Normal)** | 1-2 RPS | Períodos normais de operação |
-| **Taxa de Requisições (Pico)** | 2,5 RPS | Cenários de alta demanda |
+| **Métrica**                       | **Valor**         | **Observações**                                    |
+| --------------------------------- | ----------------- | -------------------------------------------------- |
+| **Usuários Cadastrados**          | 150 usuários      | Analistas, gerentes e membros das equipes          |
+| **Usuários Simultâneos (Normal)** | 30-50 usuários    | Períodos de operação padrão                        |
+| **Usuários Simultâneos (Pico)**   | 75 usuários       | Consolidação de relatórios e fechamentos           |
+| **Capacidade Recomendada**        | 100 usuários      | Margem de segurança e escalabilidade               |
+| **Documentos por Projeto**        | 10.000 documentos | Relatórios, cronogramas, registros de risco e atas |
+| **Transações Mensais**            | 500-1.000         | Operações de leitura, atualização e automação      |
+| **Taxa de Requisições (Normal)**  | 1-2 RPS           | Períodos normais de operação                       |
+| **Taxa de Requisições (Pico)**    | 2,5 RPS           | Cenários de alta demanda                           |
 
 ### 2.1.5 Estratégias de Crescimento e Evolução
 
@@ -340,32 +368,32 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 
 &emsp;As ações estratégicas estão estruturadas em cinco eixos principais, diretamente relacionados aos RNFs:
 
-  1. Escalabilidade e Desempenho
-  - Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições. 
-  - Implementação de balanceamento de carga e monitoramento dinâmico de desempenho, garantindo tempo médio de resposta abaixo de 1 segundo mesmo em picos de 5.000 requisições.
-  - Adoção de técnicas de cache e indexação inteligente para acelerar consultas e minimizar sobrecarga nos módulos de IA.
+1. Escalabilidade e Desempenho
 
+- Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições.
+- Implementação de balanceamento de carga e monitoramento dinâmico de desempenho, garantindo tempo médio de resposta abaixo de 1 segundo mesmo em picos de 5.000 requisições.
+- Adoção de técnicas de cache e indexação inteligente para acelerar consultas e minimizar sobrecarga nos módulos de IA.
 
-  2. Disponibilidade e Recuperação de Falhas
-  - Criação de um modelo de arquitetura distribuída e tolerante a falhas, com failover automático entre instâncias críticas (ex.: banco de dados e camada de aplicação).
-  - Implementação de políticas de backup contínuo e replicação ativa, reduzindo o tempo médio de recuperação (MTTR) para menos de 5 segundos em casos de falha.
-  - Monitoramento em tempo real e alertas automáticos para incidentes, garantindo disponibilidade mínima de 99,5%.
+2. Disponibilidade e Recuperação de Falhas
 
+- Criação de um modelo de arquitetura distribuída e tolerante a falhas, com failover automático entre instâncias críticas (ex.: banco de dados e camada de aplicação).
+- Implementação de políticas de backup contínuo e replicação ativa, reduzindo o tempo médio de recuperação (MTTR) para menos de 5 segundos em casos de falha.
+- Monitoramento em tempo real e alertas automáticos para incidentes, garantindo disponibilidade mínima de 99,5%.
 
-  3. Segurança e Governança de Dados
-  - Implementação de camadas de defesa contra injeções de comandos e acessos indevidos, com detecção e bloqueio automático de tentativas maliciosas.
-  - Garantia de rastreabilidade completa das tentativas de acesso, integrando logs e auditorias a sistemas de alerta e análise de segurança.
+3. Segurança e Governança de Dados
 
+- Implementação de camadas de defesa contra injeções de comandos e acessos indevidos, com detecção e bloqueio automático de tentativas maliciosas.
+- Garantia de rastreabilidade completa das tentativas de acesso, integrando logs e auditorias a sistemas de alerta e análise de segurança.
 
-  4. Rastreabilidade e Auditoria de Interações
-  - Criação de um sistema centralizado de logs que registre 100% das ações executadas por usuários e agentes de IA, garantindo integridade e não repúdio.
-  - Utilização de verificação por hash e consultas otimizadas para recuperação de registros em menos de 2 segundos.
+4. Rastreabilidade e Auditoria de Interações
 
+- Criação de um sistema centralizado de logs que registre 100% das ações executadas por usuários e agentes de IA, garantindo integridade e não repúdio.
+- Utilização de verificação por hash e consultas otimizadas para recuperação de registros em menos de 2 segundos.
 
-  5. Evolução e Integração Inteligente
-  - Preparar a arquitetura para futuras integrações com IA generativa, automação cognitiva e relatórios preditivos, priorizando sempre o controle e a auditabilidade das informações processadas.
-  - Expandir gradualmente o ecossistema tecnológico do Metrô, mantendo compatibilidade com o Microsoft Power Platform, SharePoint e Copilot, promovendo uma evolução segura e sustentável.
+5. Evolução e Integração Inteligente
 
+- Preparar a arquitetura para futuras integrações com IA generativa, automação cognitiva e relatórios preditivos, priorizando sempre o controle e a auditabilidade das informações processadas.
+- Expandir gradualmente o ecossistema tecnológico do Metrô, mantendo compatibilidade com o Microsoft Power Platform, SharePoint e Copilot, promovendo uma evolução segura e sustentável.
 
 &emsp;Essas estratégias consolidam uma base técnica e ética para o uso de Inteligência Artificial no Metrô-SP, garantindo que o sistema evolua com eficiência, rastreabilidade e conformidade, sem comprometer a segurança ou a privacidade institucional.
 
@@ -399,14 +427,14 @@ A análise do sistema atual de gestão de projetos do Metrô de São Paulo revel
 
 A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**:
 
-| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)** | **Arquitetura Reformada (Desejada)** |
-|------------------------------|----------------------------------------|--------------------------------------|
-| **Escalabilidade** | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos |
-| **Disponibilidade** | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s |
-| **Segurança** | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD |
-| **Rastreabilidade** | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos |
-| **Performance** | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA |
-| **Tolerância a Falhas** | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente |
+| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos |
+| **Disponibilidade**         | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s                                         |
+| **Segurança**               | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                              | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD                                    |
+| **Rastreabilidade**         | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático                                             | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos              |
+| **Performance**             | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA                                                           |
+| **Tolerância a Falhas**     | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                      | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente                                                 |
 
 ### **Principais Lacunas Identificadas no Sistema Atual:**
 
@@ -419,6 +447,7 @@ A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos q
 ### **Justificativa para Nova Arquitetura:**
 
 A **ausência desses RNFs no sistema atual** justifica completamente a necessidade de uma arquitetura reformada que implemente adequadamente todos esses requisitos, garantindo:
+
 - **Controle total** sobre a infraestrutura
 - **Segurança robusta** para dados sensíveis
 - **Escalabilidade** para crescimento futuro
@@ -429,15 +458,31 @@ A **ausência desses RNFs no sistema atual** justifica completamente a necessida
 
 ## 3.2 Estrutura Estática do Modelo
 
-_(Apresente os elementos e parâmetros da simulação, evidenciando como o modelo representa o comportamento do sistema atual.)_
+### A. Elementos do Sistema Envolvidos nos RNFs Selecionados
 
-- **Elementos do sistema envolvidos nos RNFs selecionados:**  
-  _(Liste os componentes, módulos, serviços ou processos do sistema que serão considerados na simulação, e associe-os aos RNFs analisados.)_
+&emsp;A simulação foca nos quatro RNFs críticos identificados no sistema atual, que é baseado em ferramentas de terceiros (Miro e SharePoint). Os elementos do sistema envolvidos na simulação são modelados em dois níveis: o **Nível de Aplicação** (as ferramentas de front-end e colaboração) e o **Nível de Infraestrutura** (os componentes que suportam o processamento e o armazenamento).
 
-- **Estrutura e conexões entre os elementos:**  
-  _(Descreva as relações entre os componentes simulados e justifique a escolha dos parâmetros de simulação. Pode incluir diagramas, fluxos de dados, filas, threads e elementos paralelos de processamento.)_
+| RNF Selecionado     | Elementos do Sistema (Nível de Aplicação)                              | Elementos do Sistema (Nível de Infraestrutura)                                                                                                    | Foco da Simulação                                                |
+| :------------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------- |
+| **Escalabilidade**  | Agentes de IA (requisições simultâneas), Usuários (acessos)            | **Serviço de Processamento Sequencial** (simulando a dependência de um único ponto de processamento), **Fila de Requisições** (limitada).         | Capacidade de suportar carga e processamento paralelo.           |
+| **Disponibilidade** | SharePoint (Base de Dados Principal)                                   | **Serviço de Armazenamento Único** (simulando a ausência de redundância), **Monitoramento Manual** (simulando a falta de monitoramento proativo). | Tempo de recuperação (MTTR) e perda de dados em falha.           |
+| **Segurança**       | Usuários (tentativas de acesso), Agentes de IA (envio de comandos)     | **Módulo de Controle de Acesso Básico** (simulando políticas externas limitadas), **Base de Dados Exposta**.                                      | Resistência a acessos indevidos e exposição de dados sensíveis.  |
+| **Rastreabilidade** | Usuários (ações de modificação), Agentes de IA (tarefas automatizadas) | **Módulo de Logs Limitados** (simulando a ausência de trilha integrada), **Módulo de Correlação Manual**.                                         | Percentual de ações registradas e tempo de recuperação dos logs. |
 
----
+### B. Estrutura e Conexão entre os Elementos (Modelo de Simulação)
+
+&emsp;O modelo de simulação é estruturado para demonstrar as limitações do sistema atual (AS-IS) ao tentar atender aos requisitos da arquitetura reformada (TO-BE), como a necessidade de suportar milhares de usuários e processamento paralelo com IA.
+
+#### Detalhamento do Modelo de Simulação de Cada RNF
+
+| RNF                 | Estrutura e Conexão                                                                                                                                                                                                                                                                                                                   | Parametrização para Simulação                                                                                                                                                                                                                                                                                                                      |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Escalabilidade**  | **Estrutura:** O modelo é composto por um **Gerador de Requisições** (simulando usuários e Agentes de IA) que direciona o tráfego para uma **Fila de Requisições** de tamanho limitado. A fila alimenta um único **Serviço de Processamento Sequencial** (simulando a dependência de um único servidor ou a limitação do SharePoint). | **Entrada:** Taxa de chegada de requisições (λ) variando de 500 a 5.000 requisições/minuto. **Processamento:** Tempo de execução da transação (μ) fixo e alto. **Saída:** Taxa de rejeição de requisições (devido à fila cheia), Tempo de espera na fila e Taxa de Sucesso.                                                                        |
+| **Disponibilidade** | **Estrutura:** O modelo simula o **Serviço de Armazenamento Único** (SharePoint) sem réplicas. Um evento de **Falha Crítica** é injetado no sistema. A recuperação é tratada por um **Processo de Recuperação Manual** (simulando a intervenção humana).                                                                              | **Entrada:** Injeção de falha no tempo T. **Processamento:** Tempo de Recuperação Manual (alto, 30-60 minutos). **Saída:** Tempo Médio de Recuperação (MTTR) e Quantidade de Transações Perdidas (modelada como alta, devido à ausência de _failover_).                                                                                            |
+| **Segurança**       | **Estrutura:** O modelo simula o fluxo de consultas a projetos. O **Módulo de Controle de Acesso Básico** permite que um percentual de **Consultas Indevidas** (simulando ataques) atinja a **Base de Dados Exposta**.                                                                                                                | **Entrada:** Taxa de Consultas Seguras vs. Taxa de Consultas Sob Ataque (simuladas). **Processamento:** O Módulo de Controle de Acesso Básico falha em bloquear 5% das consultas sob ataque. **Saída:** Taxa de Consultas Seguras, Taxa de Consultas Sob Ataque, e o registro do **Acesso Indevido** à Base de Dados.                              |
+| **Rastreabilidade** | **Estrutura:** O modelo simula as ações dos usuários e Agentes de IA que são registradas pelo **Módulo de Logs Limitados**. O **Módulo de Correlação Manual** é acionado para tentar correlacionar eventos em caso de falha.                                                                                                          | **Entrada:** Número de Ações de Modificação e Automatizadas. **Processamento:** O Módulo de Logs Limitados registra apenas 30-40% das ações (simulando a perda de logs). O tempo de correlação é alto (simulando a dificuldade de auditoria). **Saída:** Percentual de Ações Registradas Corretamente e Tempo Médio de Recuperação de Logs (alto). |
+
+&emsp;A simulação desses cenários no modelo estático visa quantificar as vulnerabilidades do sistema AS-IS, fornecendo a base técnica para justificar a implementação da nova arquitetura, que deverá substituir esses elementos limitados por componentes escaláveis, redundantes e seguros.
 
 ## 3.3 Modelagem Comportamental e Simulação dos RNFs
 
@@ -445,93 +490,105 @@ _(Apresente os elementos e parâmetros da simulação, evidenciando como o model
 
 ### 3.3.1 Modelagem Comportamental
 
-&nbsp; Esta seção descreve os cenários de simulação planejados, com foco nas melhorias dos Requisitos Não Funcionais (RNFs) da arquitetura proposta para integrar agentes de IA ao sistema de gestão de projetos do Metrô.  
+&nbsp; Esta seção descreve os cenários de simulação planejados, com foco nas melhorias dos Requisitos Não Funcionais (RNFs) da arquitetura proposta para integrar agentes de IA ao sistema de gestão de projetos do Metrô.
 
-&nbsp; Os cenários foram definidos de forma a avaliar o comportamento da solução em condições críticas e demonstrar melhorias de escalabilidade, disponibilidade, segurança e rastreabilidade, conforme as necessidades identificadas no projeto.  
+&nbsp; Os cenários foram definidos de forma a avaliar o comportamento da solução em condições críticas e demonstrar melhorias de escalabilidade, disponibilidade, segurança e rastreabilidade, conforme as necessidades identificadas no projeto.
 
+#### **Cenário 1 – Escalabilidade e Acessos Simultâneos**
 
-#### **Cenário 1 – Escalabilidade e Acessos Simultâneos**  
 **RNF relacionado:** Escalabilidade.  
-**Objetivo:** Avaliar a capacidade do sistema de suportar múltiplos acessos simultâneos de agentes de IA e usuários humanos sem degradação do desempenho.  
+**Objetivo:** Avaliar a capacidade do sistema de suportar múltiplos acessos simultâneos de agentes de IA e usuários humanos sem degradação do desempenho.
 
-**Condições de Simulação Planejadas:**  
-- Execução de testes de carga com 500, 1.000 e 5.000 requisições simultâneas aos módulos de gestão de projetos.  
-- Cada requisição envolve consultas de dados, geração de relatórios e interações com os agentes de IA.  
+**Condições de Simulação Planejadas:**
 
-**Métricas Avaliadas:**  
-- Tempo médio de resposta (ms).  
-- Taxa de sucesso de requisições (%).  
-- Uso de CPU e memória do servidor.  
-- Número de instâncias escaladas automaticamente pela arquitetura.  
+- Execução de testes de carga com 500, 1.000 e 5.000 requisições simultâneas aos módulos de gestão de projetos.
+- Cada requisição envolve consultas de dados, geração de relatórios e interações com os agentes de IA.
 
-**Indicadores de Melhoria Esperados:**  
-- Escalonamento automático proporcional à carga.  
-- Manutenção do tempo médio de resposta abaixo de 1 segundo.  
+**Métricas Avaliadas:**
 
+- Tempo médio de resposta (ms).
+- Taxa de sucesso de requisições (%).
+- Uso de CPU e memória do servidor.
+- Número de instâncias escaladas automaticamente pela arquitetura.
 
-#### **Cenário 2 – Disponibilidade e Recuperação de Falhas**  
+**Indicadores de Melhoria Esperados:**
+
+- Escalonamento automático proporcional à carga.
+- Manutenção do tempo médio de resposta abaixo de 1 segundo.
+
+#### **Cenário 2 – Disponibilidade e Recuperação de Falhas**
+
 **RNF relacionado:** Disponibilidade.  
-**Objetivo:** Validar a continuidade de operação do sistema diante de falhas e interrupções de rede.  
+**Objetivo:** Validar a continuidade de operação do sistema diante de falhas e interrupções de rede.
 
-**Condições de Simulação Planejadas:**  
-- Desligamento forçado de um nó de processamento durante operações ativas.  
-- Indisponibilidade temporária do banco de dados principal, acionando o failover para a réplica.  
+**Condições de Simulação Planejadas:**
 
-**Métricas Avaliadas:**  
-- Tempo médio de recuperação (MTTR).  
-- Percentual de indisponibilidade (%).  
-- Número de transações perdidas.  
+- Desligamento forçado de um nó de processamento durante operações ativas.
+- Indisponibilidade temporária do banco de dados principal, acionando o failover para a réplica.
 
-**Indicadores de Melhoria Esperados:**  
-- Recuperação automática do serviço em até 5 segundos.  
-- Zero perda de dados durante a falha.  
+**Métricas Avaliadas:**
 
+- Tempo médio de recuperação (MTTR).
+- Percentual de indisponibilidade (%).
+- Número de transações perdidas.
 
-#### **Cenário 3 – Segurança e Controle de Acessos**  
+**Indicadores de Melhoria Esperados:**
+
+- Recuperação automática do serviço em até 5 segundos.
+- Zero perda de dados durante a falha.
+
+#### **Cenário 3 – Segurança e Controle de Acessos**
+
 **RNF relacionado:** Segurança.  
-**Objetivo:** Avaliar a resistência do sistema frente a tentativas de acesso indevido e injeções de comandos maliciosos via agentes de IA.  
+**Objetivo:** Avaliar a resistência do sistema frente a tentativas de acesso indevido e injeções de comandos maliciosos via agentes de IA.
 
-**Condições de Simulação Planejadas:**  
-- Execução de 1.000 requisições autenticadas e 200 tentativas de acesso não autorizado.  
-- Envio de comandos maliciosos e consultas diretas simuladas ao banco de dados.  
+**Condições de Simulação Planejadas:**
 
-**Métricas Avaliadas:**  
-- Taxa de acessos bem-sucedidos (%).  
-- Taxa de acessos bloqueados (%).  
-- Tempo médio de resposta a alertas de segurança.  
+- Execução de 1.000 requisições autenticadas e 200 tentativas de acesso não autorizado.
+- Envio de comandos maliciosos e consultas diretas simuladas ao banco de dados.
 
-**Indicadores de Melhoria Esperados:**  
-- 100% de bloqueio de acessos indevidos.  
-- Registro e rastreabilidade completa das tentativas de ataque.  
+**Métricas Avaliadas:**
 
+- Taxa de acessos bem-sucedidos (%).
+- Taxa de acessos bloqueados (%).
+- Tempo médio de resposta a alertas de segurança.
 
-#### **Cenário 4 – Rastreabilidade e Auditoria de Interações**  
+**Indicadores de Melhoria Esperados:**
+
+- 100% de bloqueio de acessos indevidos.
+- Registro e rastreabilidade completa das tentativas de ataque.
+
+#### **Cenário 4 – Rastreabilidade e Auditoria de Interações**
+
 **RNF relacionado:** Rastreabilidade.  
-**Objetivo:** Garantir que todas as ações dos agentes de IA e usuários sejam registradas e consultáveis de forma íntegra e auditável.  
+**Objetivo:** Garantir que todas as ações dos agentes de IA e usuários sejam registradas e consultáveis de forma íntegra e auditável.
 
-**Condições de Simulação Planejadas:**  
-- Execução de 500 tarefas automatizadas (ex.: geração de relatórios, atualização de cronogramas).  
-- Consultas de verificação às trilhas de auditoria e logs do sistema.  
+**Condições de Simulação Planejadas:**
 
-**Métricas Avaliadas:**  
-- Percentual de ações registradas corretamente (%).  
-- Tempo médio de recuperação de registros (ms).  
-- Verificação de integridade por hash.  
+- Execução de 500 tarefas automatizadas (ex.: geração de relatórios, atualização de cronogramas).
+- Consultas de verificação às trilhas de auditoria e logs do sistema.
 
-**Indicadores de Melhoria Esperados:**  
-- 100% das ações registradas e auditáveis.  
-- Recuperação de logs em menos de 2 segundos.  
+**Métricas Avaliadas:**
 
+- Percentual de ações registradas corretamente (%).
+- Tempo médio de recuperação de registros (ms).
+- Verificação de integridade por hash.
+
+**Indicadores de Melhoria Esperados:**
+
+- 100% das ações registradas e auditáveis.
+- Recuperação de logs em menos de 2 segundos.
 
 #### **Consolidação dos Cenários e Foco nas Melhorias de RNFs**
 
-&nbsp; Cada cenário proposto visa evidenciar a evolução dos RNFs em relação à arquitetura anterior, por meio de medições quantitativas e análises qualitativas.  
+&nbsp; Cada cenário proposto visa evidenciar a evolução dos RNFs em relação à arquitetura anterior, por meio de medições quantitativas e análises qualitativas.
 
-&nbsp; Os resultados das simulações serão apresentados em tabelas e gráficos contendo:  
-- Registros totais de requisições processadas.  
-- Registros de falhas e execuções corretas.  
-- Tempos de resposta médios e máximos.  
-- Taxas de segurança e rastreabilidade.  
+&nbsp; Os resultados das simulações serão apresentados em tabelas e gráficos contendo:
+
+- Registros totais de requisições processadas.
+- Registros de falhas e execuções corretas.
+- Tempos de resposta médios e máximos.
+- Taxas de segurança e rastreabilidade.
 
 &nbsp; Essas simulações permitirão demonstrar, de forma mensurável, as melhorias de desempenho, confiabilidade e segurança obtidas com a nova arquitetura escalável implementada no contexto do Metrô.
 
@@ -545,14 +602,15 @@ Considerando que o sistema atual do Metrô de São Paulo **não possui implement
 
 **Situação Atual vs. Cenário com RNFs Implementados:**
 
-| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
-|-------------|------------------------------|-----------------------------------|------------------------|
-| **Usuários Simultâneos** | 30-50 usuários (limitado) | 100+ usuários | ❌ **Degradação Severa** |
-| **Tempo de Resposta** | 2-5 segundos (imprevisível) | <1 segundo | ❌ **Falhas Frequentes** |
-| **Taxa de Sucesso** | 70-80% (dependência externa) | 95%+ | ❌ **Sobrecarga do Sistema** |
-| **Escalabilidade** | Manual e limitada | Automática | ❌ **Colapso do Sistema** |
+| **Métrica**              | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado**       |
+| ------------------------ | ---------------------------- | --------------------------------- | ---------------------------- |
+| **Usuários Simultâneos** | 30-50 usuários (limitado)    | 100+ usuários                     | ❌ **Degradação Severa**     |
+| **Tempo de Resposta**    | 2-5 segundos (imprevisível)  | <1 segundo                        | ❌ **Falhas Frequentes**     |
+| **Taxa de Sucesso**      | 70-80% (dependência externa) | 95%+                              | ❌ **Sobrecarga do Sistema** |
+| **Escalabilidade**       | Manual e limitada            | Automática                        | ❌ **Colapso do Sistema**    |
 
 **Resultados Hipotéticos Esperados:**
+
 - **Degradação Severa do Desempenho:** Com 100+ usuários simultâneos, o sistema atual entraria em colapso
 - **Falhas de Conectividade:** Dependência de ferramentas externas (Miro/SharePoint) causaria timeouts
 - **Perda de Dados:** Ausência de mecanismos de recuperação resultaria em perda de informações
@@ -562,14 +620,15 @@ Considerando que o sistema atual do Metrô de São Paulo **não possui implement
 
 **Situação Atual vs. Cenário com RNFs Implementados:**
 
-| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
-|-------------|------------------------------|-----------------------------------|------------------------|
-| **MTTR** | 30-60 minutos (manual) | <5 segundos | ❌ **Recuperação Impossível** |
-| **Disponibilidade** | 85-90% (dependência externa) | 99.9% | ❌ **Downtime Prolongado** |
-| **Perda de Dados** | Alta (sem backup) | Zero | ❌ **Perda Total de Dados** |
-| **Failover** | Não existe | Automático | ❌ **Sistema Indisponível** |
+| **Métrica**         | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado**        |
+| ------------------- | ---------------------------- | --------------------------------- | ----------------------------- |
+| **MTTR**            | 30-60 minutos (manual)       | <5 segundos                       | ❌ **Recuperação Impossível** |
+| **Disponibilidade** | 85-90% (dependência externa) | 99.9%                             | ❌ **Downtime Prolongado**    |
+| **Perda de Dados**  | Alta (sem backup)            | Zero                              | ❌ **Perda Total de Dados**   |
+| **Failover**        | Não existe                   | Automático                        | ❌ **Sistema Indisponível**   |
 
 **Resultados Hipotéticos Esperados:**
+
 - **Falha Total do Sistema:** Ausência de redundância causaria indisponibilidade completa
 - **Perda Massiva de Dados:** Sem mecanismos de backup, todos os dados seriam perdidos
 - **Recuperação Manual Prolongada:** Dependência de intervenção humana para restabelecer serviços
@@ -579,14 +638,15 @@ Considerando que o sistema atual do Metrô de São Paulo **não possui implement
 
 **Situação Atual vs. Cenário com RNFs Implementados:**
 
-| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
-|-------------|------------------------------|-----------------------------------|------------------------|
-| **Controle de Acesso** | Limitado (políticas externas) | Granular | ❌ **Vulnerabilidades Críticas** |
-| **Auditoria** | Parcial (logs limitados) | Completa | ❌ **Acessos Não Autorizados** |
-| **Criptografia** | Básica (ferramentas externas) | End-to-end | ❌ **Exposição de Dados Sensíveis** |
-| **Detecção de Ataques** | Não existe | Automática | ❌ **Invasões Não Detectadas** |
+| **Métrica**             | **Sistema Atual (Sem RNFs)**  | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado**              |
+| ----------------------- | ----------------------------- | --------------------------------- | ----------------------------------- |
+| **Controle de Acesso**  | Limitado (políticas externas) | Granular                          | ❌ **Vulnerabilidades Críticas**    |
+| **Auditoria**           | Parcial (logs limitados)      | Completa                          | ❌ **Acessos Não Autorizados**      |
+| **Criptografia**        | Básica (ferramentas externas) | End-to-end                        | ❌ **Exposição de Dados Sensíveis** |
+| **Detecção de Ataques** | Não existe                    | Automática                        | ❌ **Invasões Não Detectadas**      |
 
 **Resultados Hipotéticos Esperados:**
+
 - **Vulnerabilidades Críticas:** Dados sensíveis dos projetos expostos a acessos não autorizados
 - **Falta de Rastreabilidade:** Impossibilidade de identificar quem acessou ou modificou informações
 - **Compliance Violado:** Violação de regulamentações de segurança e privacidade
@@ -596,14 +656,15 @@ Considerando que o sistema atual do Metrô de São Paulo **não possui implement
 
 **Situação Atual vs. Cenário com RNFs Implementados:**
 
-| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
-|-------------|------------------------------|-----------------------------------|------------------------|
-| **Registro de Ações** | 30-40% (logs limitados) | 100% | ❌ **Perda de Rastreabilidade** |
-| **Tempo de Recuperação** | 5-10 minutos | <2 segundos | ❌ **Logs Inacessíveis** |
-| **Integridade** | Não verificada | Hash verification | ❌ **Dados Corrompidos** |
-| **Compliance** | Manual e incompleto | Automático | ❌ **Violação de Regulamentações** |
+| **Métrica**              | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado**             |
+| ------------------------ | ---------------------------- | --------------------------------- | ---------------------------------- |
+| **Registro de Ações**    | 30-40% (logs limitados)      | 100%                              | ❌ **Perda de Rastreabilidade**    |
+| **Tempo de Recuperação** | 5-10 minutos                 | <2 segundos                       | ❌ **Logs Inacessíveis**           |
+| **Integridade**          | Não verificada               | Hash verification                 | ❌ **Dados Corrompidos**           |
+| **Compliance**           | Manual e incompleto          | Automático                        | ❌ **Violação de Regulamentações** |
 
 **Resultados Hipotéticos Esperados:**
+
 - **Perda Total de Rastreabilidade:** Impossibilidade de auditar ações e mudanças
 - **Logs Inacessíveis:** Sistema de logs não funcional ou corrompido
 - **Violação de Compliance:** Não atendimento a regulamentações de auditoria
@@ -619,34 +680,38 @@ Esta seção consolida os resultados esperados pela análise hipotética realiza
 
 #### **Tabela de Resultados Esperados**
 
-| **RNF Analisado** | **Cenário Atual** | **Resultado Hipotético** | **Impacto Crítico** | **Justificativa** |
-|-------------------|-------------------|---------------------------|---------------------|-------------------|
-| **Escalabilidade** | 30-50 usuários | Colapso total com 100+ usuários | ❌ **Sistema Inoperante** | Ausência de balanceamento de carga |
-| **Disponibilidade** | 85-90% | Downtime prolongado | ❌ **Perda Total de Dados** | Sem redundância ou failover |
-| **Segurança** | Controle limitado | Vulnerabilidades críticas | ❌ **Exposição de Dados** | Dependência de políticas externas |
-| **Rastreabilidade** | 30-40% de logs | Perda total de auditoria | ❌ **Violação de Compliance** | Sistema de logs inadequado |
+| **RNF Analisado**   | **Cenário Atual** | **Resultado Hipotético**        | **Impacto Crítico**           | **Justificativa**                  |
+| ------------------- | ----------------- | ------------------------------- | ----------------------------- | ---------------------------------- |
+| **Escalabilidade**  | 30-50 usuários    | Colapso total com 100+ usuários | ❌ **Sistema Inoperante**     | Ausência de balanceamento de carga |
+| **Disponibilidade** | 85-90%            | Downtime prolongado             | ❌ **Perda Total de Dados**   | Sem redundância ou failover        |
+| **Segurança**       | Controle limitado | Vulnerabilidades críticas       | ❌ **Exposição de Dados**     | Dependência de políticas externas  |
+| **Rastreabilidade** | 30-40% de logs    | Perda total de auditoria        | ❌ **Violação de Compliance** | Sistema de logs inadequado         |
 
 ### **Principais Falhas Esperadas**
 
 #### **1. Degradação Crítica de Performance**
+
 - **Taxa de Falhas:** 80-90% em cenários de alta demanda
 - **Tempo de Resposta:** Aumento de 300-500% em situações de pico
 - **Capacidade:** Limitação crítica a 50 usuários simultâneos
 - **Consequência:** Sistema inoperante durante períodos de alta demanda
 
 #### **2. Vulnerabilidades de Segurança Críticas**
+
 - **Exposição de Dados:** 100% dos dados sensíveis vulneráveis
 - **Controle de Acesso:** Ausência de mecanismos de autenticação robustos
 - **Auditoria:** Impossibilidade de rastrear acessos e modificações
 - **Consequência:** Violação de regulamentações e riscos legais
 
 #### **3. Indisponibilidade Operacional**
+
 - **Downtime:** 15-20% de indisponibilidade em situações normais
 - **Recuperação:** 30-60 minutos para restabelecer serviços
 - **Perda de Dados:** Ausência de mecanismos de backup
 - **Consequência:** Paralisação de projetos críticos
 
 #### **4. Falhas de Compliance e Auditoria**
+
 - **Rastreabilidade:** 60-70% das ações não auditáveis
 - **Logs:** Sistema de registro inadequado e corrompido
 - **Integridade:** Ausência de verificação de integridade
@@ -655,24 +720,28 @@ Esta seção consolida os resultados esperados pela análise hipotética realiza
 ### **Recomendações Arquiteturais**
 
 #### **1. Implementação de Nova Arquitetura**
+
 - **Reestruturação completa** do sistema atual
 - **Migração controlada** dos dados existentes
 - **Implementação gradual** dos RNFs
 - **Validação rigorosa** antes da produção
 
 #### **2. Mecanismos de Tolerância a Falhas**
+
 - **Redundância** em múltiplas camadas
 - **Failover automático** entre instâncias
 - **Backup contínuo** e recuperação automática
 - **Monitoramento 24/7** com alertas proativos
 
 #### **3. Segurança e Compliance**
+
 - **Controle de acesso granular** e autenticação robusta
 - **Criptografia end-to-end** para dados sensíveis
 - **Auditoria completa** de todas as ações
 - **Conformidade** com regulamentações (LGPD, etc.)
 
 #### **4. Escalabilidade e Performance**
+
 - **Arquitetura elástica** com auto-scaling
 - **Balanceamento de carga** automático
 - **Cache inteligente** para otimização
@@ -831,4 +900,3 @@ _(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 for
 [2] INTELI; COMPANHIA DO METROPOLITANO DE SÃO PAULO – METRÔ. TAPI – Módulo 8: Arquitetura de Software Flexível e Sustentável – Projeto: Arquitetura para Agente de IA Portfólio de Projetos do Metrô. São Paulo: Inteli, 2025.
 
 [3] SÃO PAULO (Município). Lei Municipal nº 6.988, de 26 de dezembro de 1966: Cria a Companhia do Metropolitano de São Paulo – Metrô. Disponível em: https://transparencia.metrosp.com.br/dataset/lei-municipal-6988. Acesso em: 22 out. 2025.
-
