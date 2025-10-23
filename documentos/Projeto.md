@@ -101,7 +101,32 @@ _(Liste e defina siglas, termos técnicos e nomenclaturas utilizadas no projeto.
 &emsp;Diante desse cenário, surge a necessidade de modernizar a arquitetura tecnológica do ambiente de gestão de portfólio, tornando-a **mais inteligente, segura e escalável**. A **adoção de agentes de IA** representa uma oportunidade concreta para automatizar atividades repetitivas, oferecer suporte inteligente às equipes e fortalecer a governança digital do Metrô-SP, assegurando **disponibilidade, rastreabilidade e segurança dos dados**.
 
 ## 1.3 Objetivo
-_(Apresente o objetivo geral e os objetivos específicos do projeto.)_
+
+### Objetivo Geral
+
+&emsp;Desenvolver uma arquitetura de software escalável, resiliente e segura para o sistema de gestão de portfólio de projetos do Metrô de São Paulo, que possibilite a integração controlada de agentes de Inteligência Artificial, promovendo a automação de processos e a padronização das informações, garantindo a disponibilidade contínua dos serviços, a rastreabilidade completa das ações realizadas e a segurança integral dos dados corporativos, em conformidade com as políticas de governança e compliance da companhia.
+
+### Objetivos Específicos
+
+1. **Diagnosticar o ambiente tecnológico atual** de gestão de portfólio do Metrô-SP — baseado em ferramentas como Miro, SharePoint, Power Automate e Power BI — identificando vulnerabilidades, gargalos e limitações de integração entre plataformas.
+
+2. **Modelar uma arquitetura modular e flexível**, capaz de evoluir de forma sustentável, garantindo interoperabilidade com os sistemas existentes e suporte à futura incorporação de agentes de IA.
+
+3. **Assegurar a disponibilidade dos serviços críticos** de gestão de portfólio, projetando mecanismos de tolerância a falhas, recuperação automática e balanceamento de carga que mantenham o sistema operacional e estável, mesmo sob alta demanda.
+
+4. **Garantir a rastreabilidade de todas as ações** realizadas no ambiente de portfólio, implementando logs detalhados, trilhas de auditoria e mecanismos de versionamento que permitam reconstruir o histórico de alterações e assegurar o não repúdio das operações.
+
+5. **Reforçar a segurança da informação**, especificando políticas e camadas de controle de acesso baseadas em perfis de usuário (PMO, diretoria, equipe técnica), criptografia de dados sensíveis e mecanismos de prevenção contra vazamentos e acessos indevidos.
+
+6. **Definir mecanismos de integração de agentes de IA**, permitindo automação de tarefas repetitivas, validação inteligente de dados e geração proativa de relatórios e insights para apoio à tomada de decisão.
+
+7. **Propor um modelo de consolidação de dados**, permitindo a extração automática de informações do Miro e sua integração estruturada com o SharePoint, reduzindo o retrabalho manual e aumentando a consistência dos registros.
+
+8. **Projetar componentes de controle e governança de IA** ("guardiões de IA"), responsáveis por supervisionar o comportamento dos agentes automatizados e garantir que operem dentro dos limites éticos, técnicos e de compliance definidos pelo Metrô.
+
+9. **Desenvolver cenários de simulação e testes**, avaliando a escalabilidade, desempenho e confiabilidade da arquitetura, com foco em Requisitos Não Funcionais (RNFs) relacionados à disponibilidade, rastreabilidade e segurança.
+
+10. **Evidenciar os ganhos de eficiência e governança digital**, por meio de métricas quantitativas que demonstrem a melhoria na qualidade dos dados, na automação dos processos e na transparência das operações do PMO.
 
 ---
 
