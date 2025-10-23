@@ -89,6 +89,8 @@
 
 # 1. Introdução
 
+&emsp;Esta seção apresenta o **contexto do projeto** desenvolvido em parceria com o Metrô de São Paulo, descrevendo os **principais conceitos, motivações e objetivos** que orientam a proposta de uma nova arquitetura para o sistema de gestão de portfólio. O foco está em estabelecer uma base técnica sólida para a integração de agentes de Inteligência Artificial, garantindo disponibilidade, rastreabilidade e segurança nas operações e dados corporativos.
+
 ## 1.1 Termos e Abreviações
 
 | Sigla / Termo       | Definição                                                                                                                                  |
