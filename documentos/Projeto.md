@@ -375,7 +375,13 @@ _(Identifique riscos e oportunidades associados ao sistema atual, considerando a
 
 ### 2.2.1 Matriz de Riscos
 
-_(Insira aqui uma tabela com probabilidade × impacto dos riscos identificados.)_
+&emsp;A matriz de risco apresentada tem como objetivo identificar e classificar os principais riscos associados à integração de agentes de Inteligência Artificial (IA) ao sistema de gestão de projetos do Metrô de São Paulo. Foram considerados riscos técnicos, de negócio e de compliance, avaliados conforme sua probabilidade de ocorrência e impacto nos níveis de serviço (SLA), abrangendo aspectos de disponibilidade, segurança, desempenho, rastreabilidade** e tolerância a falhas.
+
+<div align="center">
+  <sub>Figura X - Matriz de Risco</sub>
+  <img src="../documentos/img/section2/risk_matrix.png">
+  <sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
 
 ### 2.2.2 Riscos ligados ao sistema
 
