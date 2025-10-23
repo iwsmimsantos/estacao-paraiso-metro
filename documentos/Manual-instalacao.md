@@ -9,7 +9,7 @@
 
 # Nome do Projeto: <nome do projeto>
 
-## Nome do Grupo: <nome do grupo>
+## Nome do Grupo: Estação Paraíso
 
 
 

@@ -13,26 +13,25 @@
 
 ## Integrantes:
 
-- <a href="https://www.linkedin.com/in/aluno1/">Aluno 1</a>
-- <a href="https://www.linkedin.com/in/aluno2/">Aluno 2</a>
-- <a href="https://www.linkedin.com/in/aluno3/">Aluno 3</a>
-- <a href="https://www.linkedin.com/in/aluno4">Aluno 4</a>
-- <a href="https://www.linkedin.com/in/aluno5">Aluno 5</a>
-- <a href="https://www.linkedin.com/in/aluno6">Aluno 6</a>
-- <a href="https://www.linkedin.com/in/aluno7">Aluno 7</a>
-- <a href="https://www.linkedin.com/in/aluno7">Aluno 8</a>
+- <a href="https://www.linkedin.com/in/gabriel-nascimento3/">Gabriel Santos do Nascimento</a>
+- <a href="https://www.linkedin.com/in/iasmim-/">Iasmim Santos Silva de Jesus</a>
+- <a href="https://www.linkedin.com/in/milena-castro-vieira/">Milena Aparecida Vieira Castro</a>
+- <a href="https://www.linkedin.com/in/nicolasramons/">Nicolas Ramon da Silva</a>
+- <a href="https://www.linkedin.com/in/pauloheribeiro/">Paulo Henrique Ribeiro</a>
+- <a href="https://www.linkedin.com/in/thalyta-viana/">Thalyta da Silva Viana</a>
+- <a href="https://www.linkedin.com/in/viniciussavian/">Vinicius dos Reis Savian</a>
 
 
 ## Professores:
 ### Orientador(a) 
-- <a href="https://www.linkedin.com/in/vanunes/">Vanessa Nunes</a>
+- <a href="https://www.linkedin.com/in/vanunes/">Vanessa Tavares Nunes</a>
 ### Instrutores
-- <a href="https://www.linkedin.com/in/professor1/">Computação - Reginaldo</a>
-- <a href="https://www.linkedin.com/in/professor1/">Computação - Ovídio</a>
-- <a href="https://www.linkedin.com/in/professor1/">Matemática e Física - Cristina</a>
-- <a href="https://www.linkedin.com/in/professor1/">Negócios - Pedro</a>
-- <a href="https://www.linkedin.com/in/professor1/">Design - Francisco</a> 
-- <a href="https://www.linkedin.com/in/professor1/">Liderança - Filipe Gonçalves</a>
+- <a href="https://www.linkedin.com/in/reginaldo-arakaki-9574222b/">Computação - Reginaldo Arakaki</a>
+- <a href="https://www.linkedin.com/in/ovidio-netto/">Computação - Ovídio Netto</a>
+- <a href="https://www.linkedin.com/in/cristinagramani//">Matemática e Física - Cristina Gramani</a>
+- <a href="https://www.linkedin.com/in/pedroteberga/">Negócios - Pedro Teberga</a>
+- <a href="https://www.linkedin.com/in/francisco-escobar/">Design - Francisco Escobar</a> 
+- <a href="https://www.linkedin.com/in/filipe-gon%C3%A7alves-08a55015b/">Liderança - Filipe Gonçalves</a>
 
 ## 📝 Descrição
 

@@ -9,18 +9,17 @@
 
 # Nome do Projeto: <nome do projeto>
 
-## Nome do Grupo: <nome do grupo>
+## Nome do Grupo: Estação Paraíso
 
 ## Integrantes:
 
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
-- <a href="https://www.linkedin.com/in/username/">Nome</a>
+- <a href="https://www.linkedin.com/in/gabriel-nascimento3/">Gabriel Santos do Nascimento</a>
+- <a href="https://www.linkedin.com/in/iasmim-/">Iasmim Santos Silva de Jesus</a>
+- <a href="https://www.linkedin.com/in/milena-castro-vieira/">Milena Aparecida Vieira Castro</a>
+- <a href="https://www.linkedin.com/in/nicolasramons/">Nicolas Ramon da Silva</a>
+- <a href="https://www.linkedin.com/in/pauloheribeiro/">Paulo Henrique Ribeiro</a>
+- <a href="https://www.linkedin.com/in/thalyta-viana/">Thalyta da Silva Viana</a>
+- <a href="https://www.linkedin.com/in/viniciussavian/">Vinicius dos Reis Savian</a>
 
 # Sumário
 
