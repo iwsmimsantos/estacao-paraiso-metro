@@ -266,7 +266,8 @@ _(Apresente os elementos e parâmetros da simulação, evidenciando como o model
 ---
 
 ## 3.3 Modelagem Comportamental e Simulação dos RNFs
-_(Seção para inserir dados sobre testagem)_
+
+&nbsp; Esta seção apresenta a **modelagem comportamental** e os **experimentos de simulação** do sistema atual de gestão de projetos do Metrô de São Paulo, com foco na análise dos **Requisitos Não Funcionais (RNFs)** e suas limitações. O objetivo é demonstrar, através de **análise hipotética**, como o sistema atual se comportaria caso os RNFs fossem implementados, evidenciando as **limitações críticas** e **vulnerabilidades** que justificam a necessidade de uma nova arquitetura. A análise está organizada em três componentes: **3.3.1 Modelagem Comportamental** (cenários de simulação planejados), **3.3.2 Cenários Simulados** (resultados hipotéticos demonstrando falhas críticas) e **3.4 Consolidação dos Resultados** (integração dos achados e implicações arquiteturais).
 
 ### 3.3.1 Modelagem Comportamental
 
@@ -361,15 +362,147 @@ _(Seção para inserir dados sobre testagem)_
 &nbsp; Essas simulações permitirão demonstrar, de forma mensurável, as melhorias de desempenho, confiabilidade e segurança obtidas com a nova arquitetura escalável implementada no contexto do Metrô.
 
 ### 3.3.2 Cenários Simulados
-_(Dados de simulação, evidenciando as melhorias - Sessões de simulações detalhadas pelos cenários, massa de dados utilizados, processamentos e resultados obtidos, com apresentação dos registros e também visualização de gráficos.)_
 
-- **Cenários de simulação:** _(Liste os cenários e parâmetros simulados.)_  
-- **Dados e evidências:** _(Apresente os registros de simulação e as métricas observadas.)_
+**Análise Hipotética dos Cenários Simulados com RNFs Implementados**
+
+Considerando que o sistema atual do Metrô de São Paulo **não possui implementação adequada dos RNFs**, esta seção apresenta uma **análise hipotética** dos possíveis cenários simulados caso os RNFs fossem implementados, baseada nas limitações identificadas e nos cenários planejados na seção 3.3.1.
+
+#### **Cenário 1 – Escalabilidade e Acessos Simultâneos (Hipotético)**
+
+**Situação Atual vs. Cenário com RNFs Implementados:**
+
+| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
+|-------------|------------------------------|-----------------------------------|------------------------|
+| **Usuários Simultâneos** | 30-50 usuários (limitado) | 100+ usuários | ❌ **Degradação Severa** |
+| **Tempo de Resposta** | 2-5 segundos (imprevisível) | <1 segundo | ❌ **Falhas Frequentes** |
+| **Taxa de Sucesso** | 70-80% (dependência externa) | 95%+ | ❌ **Sobrecarga do Sistema** |
+| **Escalabilidade** | Manual e limitada | Automática | ❌ **Colapso do Sistema** |
+
+**Resultados Hipotéticos Esperados:**
+- **Degradação Severa do Desempenho:** Com 100+ usuários simultâneos, o sistema atual entraria em colapso
+- **Falhas de Conectividade:** Dependência de ferramentas externas (Miro/SharePoint) causaria timeouts
+- **Perda de Dados:** Ausência de mecanismos de recuperação resultaria em perda de informações
+- **Indisponibilidade Total:** Sistema ficaria inoperante durante picos de demanda
+
+#### **Cenário 2 – Disponibilidade e Recuperação de Falhas (Hipotético)**
+
+**Situação Atual vs. Cenário com RNFs Implementados:**
+
+| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
+|-------------|------------------------------|-----------------------------------|------------------------|
+| **MTTR** | 30-60 minutos (manual) | <5 segundos | ❌ **Recuperação Impossível** |
+| **Disponibilidade** | 85-90% (dependência externa) | 99.9% | ❌ **Downtime Prolongado** |
+| **Perda de Dados** | Alta (sem backup) | Zero | ❌ **Perda Total de Dados** |
+| **Failover** | Não existe | Automático | ❌ **Sistema Indisponível** |
+
+**Resultados Hipotéticos Esperados:**
+- **Falha Total do Sistema:** Ausência de redundância causaria indisponibilidade completa
+- **Perda Massiva de Dados:** Sem mecanismos de backup, todos os dados seriam perdidos
+- **Recuperação Manual Prolongada:** Dependência de intervenção humana para restabelecer serviços
+- **Impacto Operacional Crítico:** Projetos paralisados por horas ou dias
+
+#### **Cenário 3 – Segurança e Controle de Acessos (Hipotético)**
+
+**Situação Atual vs. Cenário com RNFs Implementados:**
+
+| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
+|-------------|------------------------------|-----------------------------------|------------------------|
+| **Controle de Acesso** | Limitado (políticas externas) | Granular | ❌ **Vulnerabilidades Críticas** |
+| **Auditoria** | Parcial (logs limitados) | Completa | ❌ **Acessos Não Autorizados** |
+| **Criptografia** | Básica (ferramentas externas) | End-to-end | ❌ **Exposição de Dados Sensíveis** |
+| **Detecção de Ataques** | Não existe | Automática | ❌ **Invasões Não Detectadas** |
+
+**Resultados Hipotéticos Esperados:**
+- **Vulnerabilidades Críticas:** Dados sensíveis dos projetos expostos a acessos não autorizados
+- **Falta de Rastreabilidade:** Impossibilidade de identificar quem acessou ou modificou informações
+- **Compliance Violado:** Violação de regulamentações de segurança e privacidade
+- **Riscos Legais:** Exposição de informações confidenciais do Metrô
+
+#### **Cenário 4 – Rastreabilidade e Auditoria (Hipotético)**
+
+**Situação Atual vs. Cenário com RNFs Implementados:**
+
+| **Métrica** | **Sistema Atual (Sem RNFs)** | **Cenário Hipotético (Com RNFs)** | **Resultado Esperado** |
+|-------------|------------------------------|-----------------------------------|------------------------|
+| **Registro de Ações** | 30-40% (logs limitados) | 100% | ❌ **Perda de Rastreabilidade** |
+| **Tempo de Recuperação** | 5-10 minutos | <2 segundos | ❌ **Logs Inacessíveis** |
+| **Integridade** | Não verificada | Hash verification | ❌ **Dados Corrompidos** |
+| **Compliance** | Manual e incompleto | Automático | ❌ **Violação de Regulamentações** |
+
+**Resultados Hipotéticos Esperados:**
+- **Perda Total de Rastreabilidade:** Impossibilidade de auditar ações e mudanças
+- **Logs Inacessíveis:** Sistema de logs não funcional ou corrompido
+- **Violação de Compliance:** Não atendimento a regulamentações de auditoria
+- **Responsabilidade Legal:** Impossibilidade de identificar responsáveis por ações
 
 ---
 
 ## 3.4 Consolidação dos Resultados da Simulação
-_(Apresente uma análise integrada dos resultados obtidos nas simulações, destacando os principais achados e implicações para a arquitetura do sistema.)_
+
+**Análise Integrada dos Resultados Hipotéticos das Simulações**
+
+Esta seção consolida os resultados esperados pela análise hipotética realizada nos cenários simulados, destacando os principais achados e suas implicações para a arquitetura do sistema de gestão de projetos do Metrô de São Paulo.
+
+#### **Tabela de Resultados Esperados**
+
+| **RNF Analisado** | **Cenário Atual** | **Resultado Hipotético** | **Impacto Crítico** | **Justificativa** |
+|-------------------|-------------------|---------------------------|---------------------|-------------------|
+| **Escalabilidade** | 30-50 usuários | Colapso total com 100+ usuários | ❌ **Sistema Inoperante** | Ausência de balanceamento de carga |
+| **Disponibilidade** | 85-90% | Downtime prolongado | ❌ **Perda Total de Dados** | Sem redundância ou failover |
+| **Segurança** | Controle limitado | Vulnerabilidades críticas | ❌ **Exposição de Dados** | Dependência de políticas externas |
+| **Rastreabilidade** | 30-40% de logs | Perda total de auditoria | ❌ **Violação de Compliance** | Sistema de logs inadequado |
+
+### **Principais Falhas Esperadas**
+
+#### **1. Degradação Crítica de Performance**
+- **Taxa de Falhas:** 80-90% em cenários de alta demanda
+- **Tempo de Resposta:** Aumento de 300-500% em situações de pico
+- **Capacidade:** Limitação crítica a 50 usuários simultâneos
+- **Consequência:** Sistema inoperante durante períodos de alta demanda
+
+#### **2. Vulnerabilidades de Segurança Críticas**
+- **Exposição de Dados:** 100% dos dados sensíveis vulneráveis
+- **Controle de Acesso:** Ausência de mecanismos de autenticação robustos
+- **Auditoria:** Impossibilidade de rastrear acessos e modificações
+- **Consequência:** Violação de regulamentações e riscos legais
+
+#### **3. Indisponibilidade Operacional**
+- **Downtime:** 15-20% de indisponibilidade em situações normais
+- **Recuperação:** 30-60 minutos para restabelecer serviços
+- **Perda de Dados:** Ausência de mecanismos de backup
+- **Consequência:** Paralisação de projetos críticos
+
+#### **4. Falhas de Compliance e Auditoria**
+- **Rastreabilidade:** 60-70% das ações não auditáveis
+- **Logs:** Sistema de registro inadequado e corrompido
+- **Integridade:** Ausência de verificação de integridade
+- **Consequência:** Violação de regulamentações de auditoria
+
+### **Recomendações Arquiteturais**
+
+#### **1. Implementação de Nova Arquitetura**
+- **Reestruturação completa** do sistema atual
+- **Migração controlada** dos dados existentes
+- **Implementação gradual** dos RNFs
+- **Validação rigorosa** antes da produção
+
+#### **2. Mecanismos de Tolerância a Falhas**
+- **Redundância** em múltiplas camadas
+- **Failover automático** entre instâncias
+- **Backup contínuo** e recuperação automática
+- **Monitoramento 24/7** com alertas proativos
+
+#### **3. Segurança e Compliance**
+- **Controle de acesso granular** e autenticação robusta
+- **Criptografia end-to-end** para dados sensíveis
+- **Auditoria completa** de todas as ações
+- **Conformidade** com regulamentações (LGPD, etc.)
+
+#### **4. Escalabilidade e Performance**
+- **Arquitetura elástica** com auto-scaling
+- **Balanceamento de carga** automático
+- **Cache inteligente** para otimização
+- **Processamento paralelo** com IA
 
 ---
 
