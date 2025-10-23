@@ -93,7 +93,12 @@
 _(Liste e defina siglas, termos técnicos e nomenclaturas utilizadas no projeto.)_
 
 ## 1.2 Contexto e Motivação
-_(Descreva o contexto do parceiro, o problema identificado e a motivação para o desenvolvimento da solução.)_
+
+&emsp;O **Metrô de São Paulo** é uma das principais empresas públicas de transporte urbano do país, responsável pela operação e expansão da rede metroviária que transporta milhões de passageiros diariamente [[1]](#referências) [[3]](#referências). Dentro da companhia, o **PMO Corporativo** desempenha papel estratégico na gestão do portfólio de projetos, garantindo que as iniciativas estejam alinhadas às metas organizacionais e aos planos de governo [[2]](#referências).
+
+&emsp;Atualmente, o processo de gerenciamento de projetos é apoiado por diversas ferramentas do ecossistema Microsoft — como Miro, SharePoint, Power Automate e Power BI — utilizadas para o registro, acompanhamento e validação das informações dos projetos [[2]](#referências). Apesar de funcional, **o sistema apresenta alta dependência de tarefas manuais, falhas ocasionais de sincronização e baixa rastreabilidade das ações realizadas**, dificultando a escalabilidade e a eficiência operacional do processo [[2]](#referências).
+
+&emsp;Diante desse cenário, surge a necessidade de modernizar a arquitetura tecnológica do ambiente de gestão de portfólio, tornando-a **mais inteligente, segura e escalável**. A **adoção de agentes de IA** representa uma oportunidade concreta para automatizar atividades repetitivas, oferecer suporte inteligente às equipes e fortalecer a governança digital do Metrô-SP, assegurando **disponibilidade, rastreabilidade e segurança dos dados**.
 
 ## 1.3 Objetivo
 _(Apresente o objetivo geral e os objetivos específicos do projeto.)_
@@ -169,7 +174,7 @@ _(Apresente o objetivo geral e os objetivos específicos do projeto.)_
 
 #### Principais diretrizes e metas:
 
-&emsp;As ações estratégicas estão estruturadas em quatro eixos principais, diretamente relacionados aos RNFs:
+&emsp;As ações estratégicas estão estruturadas em cinco eixos principais, diretamente relacionados aos RNFs:
 
   1. Escalabilidade e Desempenho
   - Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições. 
@@ -499,5 +504,10 @@ _(Analise os ganhos e perdas resultantes das decisões arquiteturais e o impacto
 _(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 forem definidos.)_
 
 # Referências
-_conteúdo_
+
+[1] COMPANHIA DO METROPOLITANO DE SÃO PAULO – METRÔ. Sobre o Metrô de São Paulo. Disponível em: https://www.metro.sp.gov.br. Acesso em: 22 out. 2025.
+
+[2] INTELI; COMPANHIA DO METROPOLITANO DE SÃO PAULO – METRÔ. TAPI – Módulo 8: Arquitetura de Software Flexível e Sustentável – Projeto: Arquitetura para Agente de IA Portfólio de Projetos do Metrô. São Paulo: Inteli, 2025.
+
+[3] SÃO PAULO (Município). Lei Municipal nº 6.988, de 26 de dezembro de 1966: Cria a Companhia do Metropolitano de São Paulo – Metrô. Disponível em: https://transparencia.metrosp.com.br/dataset/lei-municipal-6988. Acesso em: 22 out. 2025.
 
