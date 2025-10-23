@@ -375,7 +375,7 @@ _(Identifique riscos e oportunidades associados ao sistema atual, considerando a
 
 ### 2.2.1 Matriz de Riscos
 
-&emsp;A matriz de risco apresentada tem como objetivo identificar e classificar os principais riscos associados à integração de agentes de Inteligência Artificial (IA) ao sistema de gestão de projetos do Metrô de São Paulo. Foram considerados riscos técnicos, de negócio e de compliance, avaliados conforme sua probabilidade de ocorrência e impacto nos níveis de serviço (SLA), abrangendo aspectos de disponibilidade, segurança, desempenho, rastreabilidade** e tolerância a falhas.
+&emsp;A matriz de risco apresentada tem como objetivo identificar e classificar os principais riscos associados à integração de agentes de Inteligência Artificial (IA) ao sistema de gestão de projetos do Metrô de São Paulo. Foram considerados riscos técnicos, de negócio e de compliance, avaliados conforme sua probabilidade de ocorrência e impacto nos níveis de serviço (SLA), abrangendo aspectos de disponibilidade, segurança, desempenho, rastreabilidade e tolerância a falhas.
 
 <div align="center">
   <sub>Figura X - Matriz de Risco</sub>
@@ -385,11 +385,36 @@ _(Identifique riscos e oportunidades associados ao sistema atual, considerando a
 
 ### 2.2.2 Riscos ligados ao sistema
 
-_(Liste vulnerabilidades técnicas, de negócio ou de conformidade legal observadas no sistema.)_
+| Código | Nome do Risco | Tipo | Descrição | Aspectos Afetados | Probabilidade | Impacto | Nível de Risco |
+|:--:|:--|:--|:--|:--|:--:|:--:|:--:|
+| **R1** | **Vazamento de Dados** | Técnico / Compliance | Exposição de informações sensíveis de projetos devido a falhas de autenticação, permissões ou configuração inadequada dos agentes de IA. | **Segurança**, **Confiabilidade** | 90% | Muito Alto | Crítico |
+| **R2** | **Não Conformidade (LGPD)** | Compliance / Negócio | Tratamento indevido de dados pessoais em interações com IA, contrariando normas de privacidade e compliance. | **Segurança**, **Legalidade**, **Governança** | 70% | Alto | Alto |
+| **R3** | **Falha de Integração** | Técnico | Indisponibilidade ou erro na comunicação entre as plataformas Miro, SharePoint e os agentes de IA. | **Disponibilidade**, **Desempenho**, **Tolerância a Falhas** | 70% | Alto | Alto |
+| **R4** | **Erro Operacional dos Agentes** | Técnico / Negócio | Execução incorreta de ações automatizadas pelos agentes (como mover ou excluir arquivos indevidamente). | **Rastreabilidade**, **Confiabilidade**, **Disponibilidade** | 50% | Alto | Alto |
+| **R5** | **Perda de Rastreabilidade** | Técnico | Falhas no registro de logs ou na trilha de auditoria das ações realizadas pelos agentes de IA. | **Rastreabilidade**, **Auditoria**, **Transparência** | 50% | Moderado | Médio |
 
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 
-_(Descreva possibilidades de aprimorar níveis de serviço, incluindo segurança, disponibilidade, desempenho e tolerância a falhas.)_
+A integração de agentes de IA e a especificação de uma arquitetura mais flexível e escalável representam oportunidades relevantes para o aprimoramento dos níveis de serviço (SLA) do sistema de gestão de portfólio do Metrô. Essas melhorias visam fortalecer os pilares de **segurança, disponibilidade, desempenho, rastreabilidade e tolerância a falhas**, garantindo maior confiabilidade e eficiência operacional.
+
+| Código | Oportunidade | Descrição | SLA Impactado | Benefício Esperado |
+|:--:|:--|:--|:--|:--|
+| **O1** | **Monitoramento Inteligente de Disponibilidade** | Utilização de agentes de IA para monitorar continuamente a saúde dos serviços (SharePoint, Power BI, Miro), antecipando falhas e notificando a equipe de TI. | **Disponibilidade**, **Tolerância a Falhas** | Redução do tempo médio de inatividade e melhoria do tempo de resposta a incidentes. |
+| **O2** | **Auditoria Automatizada de Logs** | Implementação de um sistema de rastreamento inteligente que valide e consolide automaticamente as ações realizadas pelos agentes e usuários. | **Rastreabilidade**, **Segurança** | Fortalecimento da rastreabilidade, mitigando riscos de perda de logs e apoiando auditorias internas. |
+| **O3** | **Otimização de Desempenho dos Processos** | Adoção de pipelines automatizados para tratamento de dados e geração de relatórios, reduzindo o tempo de processamento. | **Desempenho**, **Disponibilidade** | Aumento da eficiência e da velocidade na entrega de relatórios gerenciais e indicadores de portfólio. |
+| **O4** | **Gestão Preditiva de Erros e Falhas** | Uso de IA para prever e sugerir correções em anomalias no fluxo de dados e integrações. | **Tolerância a Falhas**, **Desempenho** | Redução de falhas operacionais e maior estabilidade das integrações. |
+| **O5** | **Reforço de Políticas de Segurança e Compliance** | Aplicação de mecanismos automáticos de verificação de conformidade com a LGPD e políticas internas de governança de dados. | **Segurança**, **Compliance** | Diminuição do risco de não conformidade e vazamento de informações sensíveis. |
+| **O6** | **Indicadores Dinâmicos de SLA** | Implementação de painéis de controle (dashboards) inteligentes que consolidem métricas de disponibilidade, incidentes e falhas. | **Transparência**, **Governança** | Acompanhamento em tempo real dos níveis de serviço, facilitando a tomada de decisão. |
+
+#### Síntese das Oportunidades
+
+As oportunidades listadas promovem avanços significativos na gestão do sistema:
+- **Automatização de processos críticos**, reduzindo falhas humanas.  
+- **Melhoria da resiliência operacional**, com mecanismos preditivos e de redundância.  
+- **Aprimoramento da conformidade e segurança**, garantindo aderência à LGPD.  
+- **Aumento da transparência e rastreabilidade**, assegurando governança dos dados e auditoria confiável.
+
+Essas melhorias consolidam um ambiente mais estável e seguro para futuras integrações de IA e suportam a evolução contínua do ecossistema tecnológico do Metrô de São Paulo.
 
 # 3. Visão de Modelo Comportamental (Simulação do Sistema Atual)
 
