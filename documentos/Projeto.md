@@ -89,14 +89,60 @@
 
 # 1. Introdução
 
+&emsp;Esta seção apresenta o **contexto do projeto** desenvolvido em parceria com o Metrô de São Paulo, descrevendo os **principais conceitos, motivações e objetivos** que orientam a proposta de uma nova arquitetura para o sistema de gestão de portfólio. O foco está em estabelecer uma base técnica sólida para a integração de agentes de Inteligência Artificial, garantindo disponibilidade, rastreabilidade e segurança nas operações e dados corporativos.
+
 ## 1.1 Termos e Abreviações
-_(Liste e defina siglas, termos técnicos e nomenclaturas utilizadas no projeto.)_
+
+| Sigla / Termo       | Definição                                                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Metrô-SP**        | Companhia do Metropolitano de São Paulo – empresa pública responsável pela operação e expansão da rede metroviária da cidade de São Paulo. |
+| **PMO**             | *Project Management Office* – Escritório de Projetos responsável pela governança e gestão do portfólio estratégico do Metrô-SP.            |
+| **IA**              | Inteligência Artificial – conjunto de tecnologias que permitem a automação inteligente de processos, análise de dados e suporte à decisão. |
+| **RNF**             | Requisitos Não Funcionais – características que definem o desempenho, segurança, rastreabilidade e disponibilidade da solução.             |
+| **SharePoint**      | Plataforma da Microsoft utilizada para armazenamento, gestão e colaboração em documentos corporativos.                                     |
+| **Power Automate**  | Ferramenta da Microsoft utilizada para automação de fluxos de trabalho e integração entre sistemas.                                        |
+| **Power BI**        | Plataforma de análise e visualização de dados da Microsoft, utilizada para geração de relatórios e indicadores.                            |
+| **Miro**            | Ferramenta de colaboração visual usada para brainstorming e mapeamento de projetos.                                                        |
+| **Failover**        | Mecanismo que permite a continuidade dos serviços em caso de falha de um componente do sistema.                                            |
+| **MTTR**            | *Mean Time to Recovery* – tempo médio necessário para restaurar o funcionamento do sistema após uma falha.                                 |
+| **Guardiões de IA** | Módulos de controle responsáveis por monitorar, restringir e validar as ações dos agentes de IA, garantindo segurança e conformidade.      |
+
 
 ## 1.2 Contexto e Motivação
-_(Descreva o contexto do parceiro, o problema identificado e a motivação para o desenvolvimento da solução.)_
+
+&emsp;O **Metrô de São Paulo** é uma das principais empresas públicas de transporte urbano do país, responsável pela operação e expansão da rede metroviária que transporta milhões de passageiros diariamente [[1]](#referências) [[3]](#referências). Dentro da companhia, o **PMO Corporativo** desempenha papel estratégico na gestão do portfólio de projetos, garantindo que as iniciativas estejam alinhadas às metas organizacionais e aos planos de governo [[2]](#referências).
+
+&emsp;Atualmente, o processo de gerenciamento de projetos é apoiado por diversas ferramentas do ecossistema Microsoft — como Miro, SharePoint, Power Automate e Power BI — utilizadas para o registro, acompanhamento e validação das informações dos projetos [[2]](#referências). Apesar de funcional, **o sistema apresenta alta dependência de tarefas manuais, falhas ocasionais de sincronização e baixa rastreabilidade das ações realizadas**, dificultando a escalabilidade e a eficiência operacional do processo [[2]](#referências).
+
+&emsp;Diante desse cenário, surge a necessidade de modernizar a arquitetura tecnológica do ambiente de gestão de portfólio, tornando-a **mais inteligente, segura e escalável**. A **adoção de agentes de IA** representa uma oportunidade concreta para automatizar atividades repetitivas, oferecer suporte inteligente às equipes e fortalecer a governança digital do Metrô-SP, assegurando **disponibilidade, rastreabilidade e segurança dos dados**.
 
 ## 1.3 Objetivo
-_(Apresente o objetivo geral e os objetivos específicos do projeto.)_
+
+### Objetivo Geral
+
+&emsp;Desenvolver uma arquitetura de software escalável, resiliente e segura para o sistema de gestão de portfólio de projetos do Metrô de São Paulo, que possibilite a integração controlada de agentes de Inteligência Artificial, promovendo a automação de processos e a padronização das informações, garantindo a disponibilidade contínua dos serviços, a rastreabilidade completa das ações realizadas e a segurança integral dos dados corporativos, em conformidade com as políticas de governança e compliance da companhia.
+
+### Objetivos Específicos
+
+1. **Diagnosticar o ambiente tecnológico atual** de gestão de portfólio do Metrô-SP — baseado em ferramentas como Miro, SharePoint, Power Automate e Power BI — identificando vulnerabilidades, gargalos e limitações de integração entre plataformas.
+
+2. **Modelar uma arquitetura modular e flexível**, capaz de evoluir de forma sustentável, garantindo interoperabilidade com os sistemas existentes e suporte à futura incorporação de agentes de IA.
+
+3. **Assegurar a disponibilidade dos serviços críticos** de gestão de portfólio, projetando mecanismos de tolerância a falhas, recuperação automática e balanceamento de carga que mantenham o sistema operacional e estável, mesmo sob alta demanda.
+
+4. **Garantir a rastreabilidade de todas as ações** realizadas no ambiente de portfólio, implementando logs detalhados, trilhas de auditoria e mecanismos de versionamento que permitam reconstruir o histórico de alterações e assegurar o não repúdio das operações.
+
+5. **Reforçar a segurança da informação**, especificando políticas e camadas de controle de acesso baseadas em perfis de usuário (PMO, diretoria, equipe técnica), criptografia de dados sensíveis e mecanismos de prevenção contra vazamentos e acessos indevidos.
+
+6. **Definir mecanismos de integração de agentes de IA**, permitindo automação de tarefas repetitivas, validação inteligente de dados e geração proativa de relatórios e insights para apoio à tomada de decisão.
+
+7. **Propor um modelo de consolidação de dados**, permitindo a extração automática de informações do Miro e sua integração estruturada com o SharePoint, reduzindo o retrabalho manual e aumentando a consistência dos registros.
+
+8. **Projetar componentes de controle e governança de IA** ("guardiões de IA"), responsáveis por supervisionar o comportamento dos agentes automatizados e garantir que operem dentro dos limites éticos, técnicos e de compliance definidos pelo Metrô.
+
+9. **Desenvolver cenários de simulação e testes**, avaliando a escalabilidade, desempenho e confiabilidade da arquitetura, com foco em Requisitos Não Funcionais (RNFs) relacionados à disponibilidade, rastreabilidade e segurança.
+
+10. **Evidenciar os ganhos de eficiência e governança digital**, por meio de métricas quantitativas que demonstrem a melhoria na qualidade dos dados, na automação dos processos e na transparência das operações do PMO.
 
 ---
 
@@ -169,7 +215,7 @@ _(Apresente o objetivo geral e os objetivos específicos do projeto.)_
 
 #### Principais diretrizes e metas:
 
-&emsp;As ações estratégicas estão estruturadas em quatro eixos principais, diretamente relacionados aos RNFs:
+&emsp;As ações estratégicas estão estruturadas em cinco eixos principais, diretamente relacionados aos RNFs:
 
   1. Escalabilidade e Desempenho
   - Reestruturação da arquitetura para suportar até 100 usuários simultâneos e 300 projetos ativos, com capacidade elástica para escalar horizontalmente de acordo com a carga de requisições. 
@@ -632,5 +678,10 @@ _(Analise os ganhos e perdas resultantes das decisões arquiteturais e o impacto
 _(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 forem definidos.)_
 
 # Referências
-_conteúdo_
+
+[1] COMPANHIA DO METROPOLITANO DE SÃO PAULO – METRÔ. Sobre o Metrô de São Paulo. Disponível em: https://www.metro.sp.gov.br. Acesso em: 22 out. 2025.
+
+[2] INTELI; COMPANHIA DO METROPOLITANO DE SÃO PAULO – METRÔ. TAPI – Módulo 8: Arquitetura de Software Flexível e Sustentável – Projeto: Arquitetura para Agente de IA Portfólio de Projetos do Metrô. São Paulo: Inteli, 2025.
+
+[3] SÃO PAULO (Município). Lei Municipal nº 6.988, de 26 de dezembro de 1966: Cria a Companhia do Metropolitano de São Paulo – Metrô. Disponível em: https://transparencia.metrosp.com.br/dataset/lei-municipal-6988. Acesso em: 22 out. 2025.
 
