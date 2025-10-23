@@ -129,8 +129,8 @@ O fluxo atual de gestão e monitoramento do portfólio de projetos é predominan
 &emsp; A seguir, a descrição do fluxo de negócio atual (AS-IS) para o monitoramento e gestão do portfólio de projetos no Metrô-SP.
 
 <div align="center">
-<sub>Figura 2.1 - Diagrama do Fluxo de Negócio AS-IS (Representação Conceitual)</sub><br>
-<img src="img/fluxos/bpmn-AS-IS-Metro.jpg" width="50%"><br>
+<sub>Figura 2.1.3.1.1 - Diagrama do Fluxo de Negócio AS-IS (Representação Conceitual)</sub><br>
+<img src="img/section2/as-is.png" width="250%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -177,8 +177,8 @@ O fluxo futuro (TO-BE) incorpora um **Agente de IA** e uma **Camada de Arquitetu
 &emsp; A seguir, a descrição do fluxo de negócio **TO-BE** utilizando a nova arquitetura proposta, com o objetivo de reduzir a dependência de processos manuais e maximizar a qualidade e a precisão dos dados.
 
 <div align="center">
-<sub>Figura 3.1 - Diagrama do Fluxo de Negócio TO-BE (Representação Conceitual)</sub><br>
-<img src="img/fluxos/bpmn-TO-BE-Metro.jpg" width="50%"><br>
+<sub>Figura 2.1.3.1.1 - Diagrama do Fluxo de Negócio TO-BE (Representação Conceitual)</sub><br>
+<img src="img/section2/to-be.png" width="150%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
