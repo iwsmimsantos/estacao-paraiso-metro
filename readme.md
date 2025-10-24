@@ -75,28 +75,38 @@ Dentre os arquivos presentes na raiz do projeto, definem-se:
 Para configurar o desenvolvimento da aplicação, [instale o git](https://git-scm.com/downloads) e clone esse repositório em seu computador através do comando:
 
 ```
-git clone https://github.com/<endereco>
+git clone https://github.com/Inteli-College/2025-2B-T13-ES08-G01
 ```
 Em seguida siga as instruções presentes em nosso <a href="/documentos/manual-instalacao.md">manual de instalação</a>.
 
 ## 🗃 Histórico de lançamentos
 
-* 0.1.0 - DD/MM/2024
-    * Artefato
-    * Artefato
-* 0.2.0 - DD/MM/2024
-    * Artefato
-    * Artefato
-* 0.3.0 - DD/MM/2024
-    * Artefato
-    * Artefato
-* 0.4.0 - DD/MM/2024
-    * Artefato
-    * Artefato
-* 0.5.0 - DD/MM/2024
-    * Artefato
-    * Artefato
+* 0.1.0 - 24/10/2025
+    * Arquitetura do Sistema Atual - Visão Negócio (versão 1) (Visão Arquitetural - ISO 10746)
+    * Arquitetura do Sistema Novo - Especificação de Requisitos
+    * Visão Modelo Comportamental (Simulação do Atual)
+    * Gestão de Projeto e Configuração
+* 0.2.0 - 07/11/2025
+    * Avaliação dos mecanismos utilizados no sistema atual (ATAM)
+    * Especificação da solução técnica do sistema novo
+    * Simulação do sistema novo
+    * Gestão de Projetos Evolutiva
+* 0.3.0 - 19/11/2025
+    * Implementação dos Mecanismos Arquiteturais
+    * Testes automatizados não funcionais
+    * Revisão do Modelo de Simulação do Sistema Novo
+    * Gestão de Projetos Evolutiva
+* 0.4.0 - 05/12/2025
+    * Ajustes de implementação
+    * Evidências de testes não funcionais para ajustes
+    * Medir o sistema novo
+    * Identificar os tradeoffs arquiteturais
+    * Gestão de Projetos Evolutiva e Análise de Viabilidade Financeira
+* 0.5.0 - 19/12/2025
+    * Arquitetura do Sistema Novo (Storytelling de dados)
+    * Finalização do Projeto no Respositório
+    * Gestão de Projetos Evolutiva e Apresentação Final
 
 ## 📋 Licença/License
 
-<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/ENDEREÇOGRUPO>"><nome do projeto></a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/ENDEREÇOGRUPO">INTELI, <aluno1>, <aluno2>, <aluno3>, <aluno4>, <aluno5>, <aluno6></a> is licensed under <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"></a></p>
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/ENDEREÇOGRUPO>"><nome do projeto></a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/ENDEREÇOGRUPO">INTELI, Gabriel Santos do Nascimento, Iasmim Santos Silva de Jesus, Milena Aparecida Vieira Castro, Nicolas Ramon da Silva, Paulo Henrique Ribeiro, Thalyta da Silva Viana, Vinicius dos Reis Savian</a> is licensed under <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"></a></p>
