@@ -456,12 +456,6 @@ A análise do sistema atual de gestão de projetos do Metrô de São Paulo revel
 
 A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**, incluindo o **status de implementação** para tracking do progresso:
 
-> **📊 Sistema de Tracking de Implementação:**
-> - ☐ **Pendente**: Tarefa não iniciada
-> - 🔄 **Em Progresso**: Tarefa em desenvolvimento
-> - ✅ **Concluído**: Tarefa implementada e testada
-> - ❌ **Bloqueado**: Tarefa com impedimentos
-
 | **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               | **Checklist de Implementação** |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
 | **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos | **☐ Implementar auto-scaling horizontal**<br>**☐ Configurar load balancer (HAProxy/Nginx)**<br>**☐ Implementar processamento paralelo com IA**<br>**☐ Otimizar para milhares de usuários simultâneos**<br>**☐ Configurar métricas de escalabilidade** |
