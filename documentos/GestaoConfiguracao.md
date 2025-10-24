@@ -7,7 +7,7 @@
   </tr>
 </table>
 
-# Nome do Projeto: <nome do projeto>
+# Nome do Projeto: Estação Portuguesa Tietê Acesso ao Terminal Rodoviário
 
 ## Nome do Grupo: Estação Paraíso
 

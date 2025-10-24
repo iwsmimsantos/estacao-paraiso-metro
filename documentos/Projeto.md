@@ -7,7 +7,7 @@
   </tr>
 </table>
 
-# Nome do Projeto: <nome do projeto>
+# Nome do Projeto: Estação Portuguesa Tietê Acesso ao Terminal Rodoviário
 
 ## Nome do Grupo: Estação Paraíso
 
@@ -454,16 +454,16 @@ A análise comportamental do sistema atual baseia-se na arquitetura existente qu
 
 A análise do sistema atual de gestão de projetos do Metrô de São Paulo revela uma **ausência crítica de requisitos não funcionais adequados**. O sistema atual baseado em Miro e SharePoint **não possui implementação adequada** dos RNFs essenciais para uma gestão de projetos escalável.
 
-A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**:
+A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**, incluindo o **status de implementação** para tracking do progresso:
 
-| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos |
-| **Disponibilidade**         | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s                                         |
-| **Segurança**               | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                              | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD                                    |
-| **Rastreabilidade**         | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático                                             | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos              |
-| **Performance**             | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA                                                           |
-| **Tolerância a Falhas**     | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                      | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente                                                 |
+| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               | **Checklist de Implementação** |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos | **☐ Implementar auto-scaling horizontal**<br>**☐ Configurar load balancer (HAProxy/Nginx)**<br>**☐ Implementar processamento paralelo com IA**<br>**☐ Otimizar para milhares de usuários simultâneos**<br>**☐ Configurar métricas de escalabilidade** |
+| **Disponibilidade**         | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s                                         | Não Trabalharemos|
+| **Segurança**               | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                              | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD                                    | **☐ Implementar controle de acesso granular (RBAC)**<br>**☐ Configurar auditoria completa de ações**<br>**☐ Implementar criptografia end-to-end**<br>**☐ Garantir conformidade com LGPD**<br>**☐ Implementar autenticação multi-fator** |
+| **Rastreabilidade**         | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático                                             | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos              | **☐ Implementar logs detalhados de todas as ações**<br>**☐ Configurar trilha de auditoria integrada**<br>**☐ Implementar correlação automática de eventos**<br>**☐ Configurar compliance e relatórios automáticos**<br>**☐ Implementar sistema de alertas** |
+| **Performance**             | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA                                                           | Não Trabalharemos |
+| **Tolerância a Falhas**     | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                      | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente                                                 | Não Trabalharemos |
 
 ### **Principais Lacunas Identificadas no Sistema Atual:**
 
@@ -800,25 +800,9 @@ Com base na análise da Seção 3.1, o sistema atual apresenta **ausência crít
 
 **Seleção dos RNFs Críticos (Priorizados)**
 
-Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **4 RNFs críticos**:
+Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **3 RNFs críticos**:
 
-#### **RNF-01: Disponibilidade** ⭐ **PRIORIDADE MÁXIMA**
-
-**Justificativa:**
-- **Business Driver:** "Disponibilidade dos serviços críticos de gestão de portfólio"
-- **Risco:** Paralisação de projetos de R$ 1,5 bi/ano + 6.000 colaboradores impactados
-- **Contexto:** Metrô opera 7 dias por semana durante aproximadamente 19 horas por dia, com 3 milhões de passageiros/dia
-
-**Métricas:**
-
-| **Métrica** | **Atual** | **Meta** | **Ganho** |
-|------------|----------|---------|-----------|
-| **Controle SLA** | Dependência externa | 99.9% garantido | Autonomia total |
-| **MTTR** | 60-120 min | <5s | 99,9% redução |
-| **Redundância** | Ausente | Múltiplas camadas | Falha isolada |
-| **Perda dados** | Alta | Zero | Proteção total |
-
-#### **RNF-02: Rastreabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-01: Rastreabilidade** ⭐ **PRIORIDADE ALTA**
 
 **Justificativa:**
 - **Business Driver:** "Rastreabilidade completa das tentativas de acesso"
@@ -834,7 +818,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Integridade** | 0% | 100% (hash) | Não repúdio |
 | **Compliance** | Violado | Atendido | Requisito legal |
 
-#### **RNF-03: Segurança** ⭐ **PRIORIDADE ALTA**
+#### **RNF-02: Segurança** ⭐ **PRIORIDADE ALTA**
 
 **Justificativa:**
 - **Business Driver:** "Segurança com controle de acesso baseado em perfis"
@@ -850,7 +834,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Criptografia** | Básica | End-to-end | Proteção integral |
 | **LGPD** | Não atendida | Atendida | Conformidade |
 
-#### **RNF-04: Escalabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-03: Escalabilidade** ⭐ **PRIORIDADE ALTA**
 
 **Justificativa:**
 - **Business Driver:** "Preparar sistema para crescimento futuro e integração de agentes de IA"
@@ -874,17 +858,11 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 | **RNF** | **Risco** | **Impacto** | **Mitigação** |
 |---------|-----------|-------------|---------------|
-| **Disponibilidade** | Dependência de SLA externo com downtime não controlado | Paralisação R$ 1,5 bi/ano + 6.000 impactados | Infraestrutura própria + failover <5s + replicação ativa |
 | **Rastreabilidade** | Logs limitados impedem auditoria | Violação compliance TCE + multas | Logs 100% + trilha integrada + hash SHA-256 |
 | **Segurança** | Dados expostos a políticas externas | Vazamento estratégico + LGPD | RBAC + detecção 100% + AES-256 |
 | **Escalabilidade** | Gargalos impedem crescimento | Operações paralisadas + expansão inviável | Auto-scaling + balanceamento + IA |
 
 ### 4.2.2 Argumentação por RNF
-
-#### **Disponibilidade**
-- **Problema:** Reparos dependem de equipe externa; downtime 60-120 min
-- **Solução:** Controle total + MTTR <5s + zero perda de dados
-- **Ganho:** Continuidade operacional para projetos de R$ 10 bi
 
 #### **Rastreabilidade**
 - **Problema:** Ações não auditáveis violam compliance público
@@ -909,7 +887,6 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 | **RNF** | **Atual** | **Novo** | **Ganhos** |
 |---------|----------|---------|------------|
-| **Disponibilidade** | Dependência externa<br>MTTR 60-120 min<br>Perda dados | SLA 99.9%<br>MTTR <5s<br>Zero perda | Autonomia<br>99,9% redução downtime<br>Proteção total |
 | **Rastreabilidade** | Logs limitados<br>Sem trilha<br>Compliance violado | 100% logs<br>Trilha integrada<br>Compliance total | Auditabilidade<br>Recuperação <2s<br>Conformidade TCE |
 | **Segurança** | Controle limitado<br>0% detecção<br>LGPD não atendida | RBAC<br>100% detecção<br>LGPD atendida | Segmentação<br>Proteção proativa<br>Conformidade legal |
 | **Escalabilidade** | Usuários limitados<br>Sem balanceamento<br>Sequencial | 100+ usuários<br>Auto-scaling<br>Paralelo IA | Suporte crescimento<br>Distribuição carga<br>Automação |
@@ -919,7 +896,6 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Indicador** | **Atual** | **Meta** | **Impacto** |
 |--------------|----------|---------|-------------|
 | **Autonomia operacional** | Dependência externa | Controle total | Decisões ágeis |
-| **MTTR** | 60-120 min | <5s | 99,9% redução |
 | **Auditabilidade** | Limitada | 100% | Compliance TCE |
 | **Detecção ameaças** | 0% | 100% | Proteção integral |
 | **Usuários simultâneos** | Limitado | 100+ | Expansão viável |
@@ -940,10 +916,9 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 | **ID** | **RNF** | **Critérios** | **Prioridade** |
 |--------|---------|---------------|----------------|
-| **RNF-01** | **Disponibilidade** | SLA 99.9% + MTTR <5s + zero perda | MÁXIMA |
-| **RNF-02** | **Rastreabilidade** | 100% logs + recuperação <2s + hash |ALTA |
-| **RNF-03** | **Segurança** | RBAC + 100% detecção + AES-256 |ALTA |
-| **RNF-04** | **Escalabilidade** | 100+ usuários + auto-scaling + IA |ALTA |
+| **RNF-01** | **Rastreabilidade** | 100% logs + recuperação <2s + hash |ALTA |
+| **RNF-02** | **Segurança** | RBAC + 100% detecção + AES-256 |ALTA |
+| **RNF-03** | **Escalabilidade** | 100+ usuários + auto-scaling + IA |ALTA |
 
 ### 4.4.2 Requisitos Funcionais (Suporte)
 
@@ -970,10 +945,9 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 | **Business Driver** | **RNF** | **RF** | **Benefício** |
 |---------------------|---------|--------|---------------|
-| "Disponibilidade crítica" | RNF-01 | RF-03, RF-04 | Autonomia + MTTR <5s |
-| "Rastreabilidade total" | RNF-02 | RF-01, RF-05 | 100% auditável |
-| "Segurança com controle" | RNF-03 | RF-02, RF-06 | RBAC + proteção |
-| "Escalabilidade futura" | RNF-04 | RF-07, RF-08 | Crescimento + IA |
+| "Rastreabilidade total" | RNF-01 | RF-01, RF-05 | 100% auditável |
+| "Segurança com controle" | RNF-02 | RF-02, RF-06 | RBAC + proteção |
+| "Escalabilidade futura" | RNF-03 | RF-07, RF-08 | Crescimento + IA |
 
 ---
 
