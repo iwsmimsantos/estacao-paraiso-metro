@@ -35,7 +35,9 @@
 
 ## 📝 Descrição
 
-<Descrição do Desafio>.
+&emsp;O Metrô de São Paulo possui um sistema de gestão de portfólio apoiado por ferramentas como Miro, SharePoint, Power Automate e Power BI. Apesar de funcional, o processo ainda depende fortemente de tarefas manuais, o que gera retrabalho, perda de rastreabilidade e falhas na integração entre plataformas. Esse cenário limita a eficiência operacional e dificulta a evolução tecnológica necessária para incorporar soluções de Inteligência Artificial de forma segura e escalável.
+
+&emsp;Nosso projeto propõe o desenvolvimento de uma arquitetura de software escalável, segura e rastreável, que servirá como base para a futura integração de agentes de IA no sistema de gestão de projetos do Metrô-SP. Essa arquitetura visa garantir disponibilidade contínua, governança digital e integridade dos dados, preparando o ambiente tecnológico da companhia para uma evolução sustentável e inteligente da sua gestão de portfólio.
 
 ## 📝 LINKS
 
@@ -46,10 +48,14 @@
 ## 📁 Estrutura de pastas
 
 |--> documentos<br>
-  &emsp;| --> outros <br>
-  &emsp;| documento<br>
-  &emsp;| documento<br>
-|--> imagens<br>
+  &emsp;| --> img <br>
+  &emsp;| arquitetura_final.md<br>
+  &emsp;| GestaoConfiguracao.md<br>
+  &emsp;| GestaoProjeto.md<br>
+  &emsp;| GuiaPadroesDesenvolvimento.md<br>
+  &emsp;| Index.md<br>
+  &emsp;| Manual-instalacao.md<br>
+  &emsp;| Projeto.md<br>
 |--> src<br>
   &emsp;|--> dir<br>
   &emsp;|--> dir<br>
@@ -65,8 +71,6 @@ Dentre os arquivos presentes na raiz do projeto, definem-se:
 - <b>readme.md</b>: arquivo que serve como guia e explicação geral sobre o projeto (o mesmo que você está lendo agora).
 
 - <b>documentos</b>: aqui estarão todos os documentos do projeto. Há também uma pasta denominada <b>outros</b> onde podem estar presentes documentos complementares à documentação principal.
-
-- <b>imagens</b>: imagens relacionadas ao projeto como um todo (por exemplo imagens do sistema, do grupo, logotipos e afins).
 
 - <b>src</b>: nesta pasta encontra-se todo o código fonte do sistema (circuito e eventuais sistemas complementares).
 
