@@ -787,31 +787,193 @@ O objetivo é evidenciar as melhorias esperadas no sistema novo, considerando **
 
 ## 4.1 Requisitos Não Funcionais do Sistema Novo
 
-_(Mapeie os requisitos não funcionais priorizados para orientar o desenvolvimento do novo sistema.)_
+Com base na análise da Seção 3.1, o sistema atual apresenta **ausência crítica de RNFs adequados**. A tabela abaixo consolida os RNFs vulneráveis identificados:
 
-- **Requisitos vulneráveis no sistema atual:** _(Liste e descreva sucintamente os RNFs com fragilidades observadas.)_
-- **Seleção dos RNFs críticos (2 a 4):** _(Justifique a escolha dos RNFs que terão foco no projeto, relacionando-os às estratégias do negócio e aos riscos identificados.)_
+| **RNF** | **Estado Atual (Deficiente)** | **Vulnerabilidades Críticas** | **Impacto no Negócio** |
+|---------|------------------------------|-------------------------------|------------------------|
+| **Escalabilidade** | • Dependência de ferramentas externas sem controle<br>• Ausência de balanceamento de carga, sem previsibilidade e controle de demanda<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Sistema colapsa com muitos usuários simultâneos<br>• Impossibilidade de crescimento proporcional à demanda<br>• Gargalos de processamento | • Operações paralisadas em picos de demanda<br>• Limitação de uso<br>• Inviabilidade de expansão futura |
+| **Disponibilidade** | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado | • Risco de indisponibilidade em software de terceiros<br>• Qualquer reparo nas ferramentas depende de uma equipe externa<br>• Perda de dados em falhas | • Paralisação de projetos de R$ 1,5 bi/ano<br>• +6.000 colaboradores impactados<br>• Perda de informações para decisões estratégicas |
+| **Segurança** | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros | • Dados sensíveis expostos a políticas externas<br>• 0% de tentativas de ataque detectadas<br>• Criptografia básica | • Risco de vazamento de informações estratégicas<br>• Violação de LGPD<br>• Danos à imagem institucional |
+| **Rastreabilidade** | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático | • Ações não auditáveis<br>• Falta de recuperação de logs<br>• Sem verificação de integridade | • Violação de compliance para empresa pública<br>• Impossibilidade de investigação de incidentes<br>• Riscos legais de multas |
+| **Performance** | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis | • Tempo de resposta muito lento<br>• Degradação severa em picos<br>• Baixa eficiência operacional | • Perda de produtividade de equipes<br>• Frustração de usuários<br>• Retrabalho por timeouts |
+| **Tolerância a Falhas** | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual | • Sistema colapsado em qualquer falha<br>• Recuperação manual prolongada<br>• Alta perda de dados | • Downtime prolongado (60-120 min)<br>• Perda de informações críticas<br>• Impacto operacional severo |
+
+**Seleção dos RNFs Críticos (Priorizados)**
+
+Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **4 RNFs críticos**:
+
+#### **RNF-01: Disponibilidade** ⭐ **PRIORIDADE MÁXIMA**
+
+**Justificativa:**
+- **Business Driver:** "Disponibilidade dos serviços críticos de gestão de portfólio"
+- **Risco:** Paralisação de projetos de R$ 1,5 bi/ano + 6.000 colaboradores impactados
+- **Contexto:** Metrô opera 7 dias por semana durante aproximadamente 19 horas por dia, com 3 milhões de passageiros/dia
+
+**Métricas:**
+
+| **Métrica** | **Atual** | **Meta** | **Ganho** |
+|------------|----------|---------|-----------|
+| **Controle SLA** | Dependência externa | 99.9% garantido | Autonomia total |
+| **MTTR** | 60-120 min | <5s | 99,9% redução |
+| **Redundância** | Ausente | Múltiplas camadas | Falha isolada |
+| **Perda dados** | Alta | Zero | Proteção total |
+
+#### **RNF-02: Rastreabilidade** ⭐ **PRIORIDADE ALTA**
+
+**Justificativa:**
+- **Business Driver:** "Rastreabilidade completa das tentativas de acesso"
+- **Compliance:** Empresa pública sob fiscalização do TCE
+- **Risco:** Multas e violação de governança
+
+**Métricas:**
+
+| **Métrica** | **Atual** | **Meta** | **Ganho** |
+|------------|----------|---------|-----------|
+| **Cobertura logs** | Limitada | 100% | Auditabilidade total |
+| **Recuperação** | Demorada | <2s | Investigação ágil |
+| **Integridade** | 0% | 100% (hash) | Não repúdio |
+| **Compliance** | Violado | Atendido | Requisito legal |
+
+#### **RNF-03: Segurança** ⭐ **PRIORIDADE ALTA**
+
+**Justificativa:**
+- **Business Driver:** "Segurança com controle de acesso baseado em perfis"
+- **LGPD:** Proteção de dados de R$ 10 bilhões em projetos
+- **Risco:** Vazamento de informações estratégicas
+
+**Métricas:**
+
+| **Métrica** | **Atual** | **Meta** | **Ganho** |
+|------------|----------|---------|-----------|
+| **Controle acesso** | Limitado | Granular (RBAC) | Segmentação |
+| **Detecção ataques** | 0% | 100% | Proteção proativa |
+| **Criptografia** | Básica | End-to-end | Proteção integral |
+| **LGPD** | Não atendida | Atendida | Conformidade |
+
+#### **RNF-04: Escalabilidade** ⭐ **PRIORIDADE ALTA**
+
+**Justificativa:**
+- **Business Driver:** "Preparar sistema para crescimento futuro e integração de agentes de IA"
+- **Contexto:** Expansão da rede metroviária + aumento de projetos + automação com IA
+- **Risco:** Limitação atual impede expansão operacional
+
+**Métricas:**
+
+| **Métrica** | **Atual** | **Meta** | **Ganho** |
+|------------|----------|---------|-----------|
+| **Usuários simultâneos** | Limitado | 100+ | Suporte crescimento |
+| **Balanceamento** | Ausente | Automático | Distribuição carga |
+| **Processamento** | Sequencial | Paralelo com IA | Automação |
+| **Previsibilidade** | Zero | Total | Planejamento |
 
 ---
 
 ## 4.2 Justificativas para RNFs
 
-_(Apresente a argumentação técnica e de negócio para os RNFs selecionados, evidenciando os ganhos projetados para o novo sistema.)_
+### 4.2.1 Controle de Riscos e Mitigação
 
-- **Controle de riscos e mitigação:** _(Explique como o novo sistema corrige os problemas identificados no atual.)_
+| **RNF** | **Risco** | **Impacto** | **Mitigação** |
+|---------|-----------|-------------|---------------|
+| **Disponibilidade** | Dependência de SLA externo com downtime não controlado | Paralisação R$ 1,5 bi/ano + 6.000 impactados | Infraestrutura própria + failover <5s + replicação ativa |
+| **Rastreabilidade** | Logs limitados impedem auditoria | Violação compliance TCE + multas | Logs 100% + trilha integrada + hash SHA-256 |
+| **Segurança** | Dados expostos a políticas externas | Vazamento estratégico + LGPD | RBAC + detecção 100% + AES-256 |
+| **Escalabilidade** | Gargalos impedem crescimento | Operações paralisadas + expansão inviável | Auto-scaling + balanceamento + IA |
+
+### 4.2.2 Argumentação por RNF
+
+#### **Disponibilidade**
+- **Problema:** Reparos dependem de equipe externa; downtime 60-120 min
+- **Solução:** Controle total + MTTR <5s + zero perda de dados
+- **Ganho:** Continuidade operacional para projetos de R$ 10 bi
+
+#### **Rastreabilidade**
+- **Problema:** Ações não auditáveis violam compliance público
+- **Solução:** 100% registrado + recuperação <2s + hash verification
+- **Ganho:** Conformidade TCE + investigação ágil
+
+#### **Segurança**
+- **Problema:** 0% ataques detectados + criptografia básica
+- **Solução:** RBAC + WAF/IDS/IPS + criptografia end-to-end
+- **Ganho:** Proteção R$ 10 bi + LGPD atendida
+
+#### **Escalabilidade**
+- **Problema:** Sistema colapsa com muitos usuários + sem previsibilidade
+- **Solução:** Auto-scaling + balanceamento automático + processamento paralelo
+- **Ganho:** Suporte expansão + preparação para IA
 
 ---
 
 ## 4.3 Melhorias Esperadas com Implementação de RNFs
 
-- **Melhorias em usabilidade e experiência:** _(Descreva ganhos esperados de eficiência e confiabilidade.)_
-- **Indicadores e evidências de melhoria:** _(Liste métricas que poderão comprovar os resultados esperados.)_
+### 4.3.1 Melhorias por RNF
+
+| **RNF** | **Atual** | **Novo** | **Ganhos** |
+|---------|----------|---------|------------|
+| **Disponibilidade** | Dependência externa<br>MTTR 60-120 min<br>Perda dados | SLA 99.9%<br>MTTR <5s<br>Zero perda | Autonomia<br>99,9% redução downtime<br>Proteção total |
+| **Rastreabilidade** | Logs limitados<br>Sem trilha<br>Compliance violado | 100% logs<br>Trilha integrada<br>Compliance total | Auditabilidade<br>Recuperação <2s<br>Conformidade TCE |
+| **Segurança** | Controle limitado<br>0% detecção<br>LGPD não atendida | RBAC<br>100% detecção<br>LGPD atendida | Segmentação<br>Proteção proativa<br>Conformidade legal |
+| **Escalabilidade** | Usuários limitados<br>Sem balanceamento<br>Sequencial | 100+ usuários<br>Auto-scaling<br>Paralelo IA | Suporte crescimento<br>Distribuição carga<br>Automação |
+
+### 4.3.2 Indicadores Consolidados
+
+| **Indicador** | **Atual** | **Meta** | **Impacto** |
+|--------------|----------|---------|-------------|
+| **Autonomia operacional** | Dependência externa | Controle total | Decisões ágeis |
+| **MTTR** | 60-120 min | <5s | 99,9% redução |
+| **Auditabilidade** | Limitada | 100% | Compliance TCE |
+| **Detecção ameaças** | 0% | 100% | Proteção integral |
+| **Usuários simultâneos** | Limitado | 100+ | Expansão viável |
+| **Conformidade legal** | Violada | Atendida | LGPD + TCE |
+
+### 4.3.3 Benefícios Transversais
+
+- **Autonomia:** Fim da dependência de SLA externo
+- **Governança:** Auditabilidade total para TCE
+- **Proteção:** R$ 10 bi em projetos seguros
+- **Crescimento:** Preparação para expansão + IA
 
 ---
 
 ## 4.4 Consolidação dos Requisitos e Diretrizes para a Nova Arquitetura
 
-_(Sintetize os requisitos funcionais e não funcionais que nortearão o projeto da nova arquitetura.)_
+### 4.4.1 Requisitos Não Funcionais (Priorizados)
+
+| **ID** | **RNF** | **Critérios** | **Prioridade** |
+|--------|---------|---------------|----------------|
+| **RNF-01** | **Disponibilidade** | SLA 99.9% + MTTR <5s + zero perda | MÁXIMA |
+| **RNF-02** | **Rastreabilidade** | 100% logs + recuperação <2s + hash |ALTA |
+| **RNF-03** | **Segurança** | RBAC + 100% detecção + AES-256 |ALTA |
+| **RNF-04** | **Escalabilidade** | 100+ usuários + auto-scaling + IA |ALTA |
+
+### 4.4.2 Requisitos Funcionais (Suporte)
+
+| **RF** | **Descrição** | **RNFs** |
+|--------|---------------|----------|
+| **RF-01** | Logs centralizado (100% + hash SHA-256) | RNF-02, RNF-03 |
+| **RF-02** | Autenticação RBAC + MFA | RNF-03 |
+| **RF-03** | Failover automático <5s | RNF-01 |
+| **RF-04** | Backup contínuo + replicação | RNF-01 |
+| **RF-05** | Painel auditoria <2s | RNF-02 |
+| **RF-06** | Detecção ameaças (WAF + IDS/IPS) | RNF-03 |
+| **RF-07** | Balanceador carga automático | RNF-04 |
+| **RF-08** | Auto-scaling elástico | RNF-04 |
+
+### 4.4.3 Diretrizes Arquiteturais
+
+1. **Infraestrutura Própria:** Controle total eliminando dependência externa
+2. **Redundância Automática:** Failover <5s + replicação ativa
+3. **Segurança em Camadas:** RBAC + WAF + IDS/IPS + AES-256
+4. **Auditabilidade Total:** Event sourcing + logs 100% + hash
+5. **Escalabilidade Elástica:** Auto-scaling + balanceamento automático
+
+### 4.4.4 Mapa de Rastreabilidade
+
+| **Business Driver** | **RNF** | **RF** | **Benefício** |
+|---------------------|---------|--------|---------------|
+| "Disponibilidade crítica" | RNF-01 | RF-03, RF-04 | Autonomia + MTTR <5s |
+| "Rastreabilidade total" | RNF-02 | RF-01, RF-05 | 100% auditável |
+| "Segurança com controle" | RNF-03 | RF-02, RF-06 | RBAC + proteção |
+| "Escalabilidade futura" | RNF-04 | RF-07, RF-08 | Crescimento + IA |
 
 ---
 
