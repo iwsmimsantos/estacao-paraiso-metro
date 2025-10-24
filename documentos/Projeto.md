@@ -399,19 +399,49 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 
 ## 2.2 Riscos e Oportunidades
 
-_(Identifique riscos e oportunidades associados ao sistema atual, considerando aspectos técnicos, de negócio e legais.)_
-
 ### 2.2.1 Matriz de Riscos
 
-_(Insira aqui uma tabela com probabilidade × impacto dos riscos identificados.)_
+&emsp;O sistema atual de gestão de portfólio do Metrô de São Paulo utiliza majoritariamente ferramentas do ecossistema Microsoft (_SharePoint_, _Power Automate_, _Power BI_) e o _Miro_ como apoio colaborativo. Apesar de atender às demandas básicas, essa estrutura apresenta riscos operacionais e técnicos relacionados à integração, à dependência de processos manuais e à governança dos dados.
+
+
+<div align="center">
+  <sub>Figura X - Matriz de Risco</sub>
+  <img src="../documentos/img/section2/risk_matrix.png">
+  <sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
 
 ### 2.2.2 Riscos ligados ao sistema
 
-_(Liste vulnerabilidades técnicas, de negócio ou de conformidade legal observadas no sistema.)_
+| Código | Nome do Risco | Tipo | Descrição | Aspectos Afetados | Probabilidade | Impacto |
+|:--:|:--|:--|:--|:--|:--:|:--:|
+| **R1** | **Inconsistência de Dados** | Técnico / Negócio | O preenchimento manual de informações em diferentes plataformas (Miro, SharePoint, Excel) pode gerar divergências e falta de padronização. | **Precisão**, **Integridade de Dados** | 70% | Alto |
+| **R2** | **Dependência de Processos Manuais** | Técnico / Operacional | A ausência de automação completa para entrada, validação e atualização de dados aumenta a chance de erros humanos. | **Desempenho**, **Disponibilidade**, **Confiabilidade** | 80% | Moderado | 
+| **R3** | **Falha de Integração entre Ferramentas** | Técnico | Problemas de sincronização entre _Power Automate_, _Power BI_ e _SharePoint_ podem comprometer relatórios e atualizações de status. | **Disponibilidade**, **Tolerância a Falhas**, **Desempenho** | 60% | Alto | 
+| **R4** | **Acesso Indevido a Informações** | Compliance / Segurança | Falhas nas permissões de acesso no _SharePoint_ ou _Power BI_ podem permitir a visualização de dados sensíveis por usuários não autorizados. | **Segurança**, **Governança**, **Confidencialidade** | 40% | Muito Alto | 
+| **R5** | **Baixa Rastreabilidade das Ações** | Técnico / Governança | As plataformas atuais não possuem logs integrados e centralizados de auditoria das ações dos usuários e fluxos do _Power Automate_. | **Rastreabilidade**, **Auditoria**, **Transparência** | 50% | Moderado | 
+| **R6** | **Dependência de Conectividade e Licenciamento Microsoft** | Negócio / Técnico | A indisponibilidade de serviços Microsoft ou falhas de licenciamento podem interromper o funcionamento das automações e relatórios. | **Disponibilidade**, **Continuidade Operacional** | 30% | Alto | 
+
 
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 
-_(Descreva possibilidades de aprimorar níveis de serviço, incluindo segurança, disponibilidade, desempenho e tolerância a falhas.)_
+&emsp;Apesar de funcional, o ecossistema apresenta oportunidades de melhoria voltadas à disponibilidade, desempenho, segurança, rastreabilidade e governança dos dados, com foco em elevar os níveis de serviço (SLA) e reduzir riscos operacionais.
+
+| Código | Oportunidade | Descrição | SLA Impactado | Benefício Esperado |
+|:--:|:--|:--|:--|:--|
+| **O1** | **Automatização de Monitoramento de Serviços** | Criação de fluxos no Power Automate para monitorar a disponibilidade das integrações entre SharePoint, Power BI e Miro, com alertas automáticos em caso de falhas. | **Disponibilidade**, **Tolerância a Falhas** | Redução do tempo de detecção e resposta a incidentes, garantindo continuidade dos serviços. |
+| **O2** | **Padronização de Logs e Auditorias** | Implementação de uma política de versionamento e armazenamento centralizado de logs das ações realizadas nas plataformas. | **Rastreabilidade**, **Segurança** | Melhoria na rastreabilidade e suporte a auditorias internas e externas. |
+| **O3** | **Otimização de Processos no Power Automate** | Revisão e otimização dos fluxos de automação existentes para eliminar redundâncias e gargalos de execução. | **Desempenho**, **Disponibilidade** | Redução do tempo de processamento e aumento da eficiência operacional. |
+| **O4** | **Melhoria na Integração entre Ferramentas** | Criação de conectores otimizados entre SharePoint, Power BI e Miro, minimizando falhas de sincronização e perda de dados. | **Disponibilidade**, **Rastreabilidade** | Garantia de consistência dos dados e maior confiabilidade nas informações compartilhadas. |
+| **O5** | **Fortalecimento das Políticas de Segurança e Compliance** | Revisão dos controles de acesso, autenticação e permissões no SharePoint e Miro, alinhando-se às diretrizes da LGPD. | **Segurança**, **Compliance** | Diminuição do risco de acesso indevido e exposição de informações sensíveis. |
+| **O6** | **Criação de Painéis de Acompanhamento de SLA** | Desenvolvimento de dashboards no Power BI para consolidar métricas de disponibilidade, desempenho e incidentes. | **Governança**, **Transparência** | Visibilidade contínua sobre o cumprimento dos SLAs e suporte à tomada de decisão gerencial. |
+
+As oportunidades identificadas visam fortalecer o sistema de gestão de projetos atual por meio de:
+- **Automatização e otimização de fluxos**, reduzindo falhas e atrasos operacionais.  
+- **Aprimoramento da rastreabilidade e governança**, com maior controle sobre logs e dados.  
+- **Reforço da segurança e conformidade**, garantindo aderência à LGPD e políticas internas.  
+- **Melhoria da integração entre ferramentas**, assegurando consistência e confiabilidade das informações.  
+
+Essas iniciativas contribuem para a consolidação de um **ecossistema mais estável, seguro e eficiente**, promovendo a evolução contínua da gestão de portfólio do Metrô de São Paulo.
 
 # 3. Visão de Modelo Comportamental (Simulação do Sistema Atual)
 
