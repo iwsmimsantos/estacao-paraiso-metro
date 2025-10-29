@@ -957,22 +957,116 @@ Esta seção detalha os **mecanismos e componentes arquiteturais** do sistema at
 O objetivo é compreender **as causas dos defeitos** e construir a base para propor **táticas e soluções evolutivas**.
 
 ---
+## 5.1 Mapa de RNFs
 
-## 5.1 Revisão do Mapa de RNFs e Vulnerabilidades
+_(Definir o mapa da de RNFs e definir se será realmente o decidido na última sprint)_
 
-_(Apresente a consolidação dos RNFs analisados no sistema atual, destacando vulnerabilidades e controles existentes.)_
+## 5.2 Revisão do Mapa de RNFs e Vulnerabilidades
+
+_(Esta seção deve consolidar os 3 RNFs selecionados e suas vulnerabilidades. Para cada RNF, detalhe entradas, saídas e como o controle é feito.)_
+
+### 5.2.1 RNF-01 — <Escalabilidade>
+
+#### A. Entrada
+_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+
+#### B. Saída
+_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
 
 ---
 
-## 5.2 Táticas Arquiteturais e Componentes Adotados
+### 5.2.2 RNF-02 — <Segurança>
 
-_(Descreva os componentes e táticas arquiteturais implementadas para monitorar, atender e recuperar os RNFs.)_
+#### A. Entrada
+_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+
+#### B. Saída
+_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
 
 ---
 
-## 5.3 Análise de Causas e Impactos
+### 5.2.3 RNF-03 — <Rastreabilidade>
 
-_(Apresente uma análise integrada das causas das vulnerabilidades encontradas e seus impactos sobre o negócio e o desempenho do sistema.)_
+#### A. Entrada
+_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+
+#### B. Saída
+_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
+
+---
+
+## 5.3 Táticas Arquiteturais e Componentes Adotados
+
+_(Esta seção deve descrever as táticas/componentes que suportam a execução e o controle dos 3 RNFs do sistema atual.)_
+
+### 5.3.1 RNF-01 — <Escalabilidade>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+---
+
+### 5.3.2 RNF-02 — <Segurança>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+---
+
+### 5.3.3 RNF-03 — <Rastreabilidade>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+---
+
+## 5.4 Análise de Causas e Impactos
+
+### 5.4.1 RNF-01 — <Escalabilidade>
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+---
+
+### 5.4.2 RNF-02 — <Segurança>
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+---
+
+### 5.4.3 RNF-03 — <Rastreabilidade>
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
 
 ---
 
@@ -984,19 +1078,98 @@ _(Descreva como a nova arquitetura elimina as vulnerabilidades e implementa melh
 
 ## 6.1 Revisão do Mapa de RNFs do Sistema Novo
 
-_(Consolide os RNFs aprimorados, detalhando entradas, saídas e controles planejados.)_
+_(Definir e destacar os 3 RNFs priorizados para o sistema novo, alinhados aos defeitos do atual. Evidenciar, de forma objetiva, as melhorias esperadas em relação ao estado atual.)_
 
 ---
 
-## 6.2 Táticas Arquiteturais e Componentes Adotados
+## 6.2 Revisão do Mapa de RNFs do Sistema Novo e Vulnerabilidades Eliminadas
 
-_(Apresente as táticas e os componentes técnicos que garantem o atendimento dos RNFs.)_
+_(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e controles, evidenciando como suplantam as vulnerabilidades do sistema atual.)_
+
+### 6.2.1 RNF-01 — <Escalabilidade>
+
+#### A. Entrada
+_Esta seção deve descrever os dados e transações de entrada esperados para o sistema novo (volumetria, tipos, frequência, origem), incluindo o patamar aceitável em cenários de pico._
+
+#### B. Saída
+_Esta seção deve listar os registros de transações realizadas corretamente e as inadequadas (ex.: rejeitadas por limite), destacando como esses registros evidenciam a melhoria frente ao sistema atual._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como as transações corretas e inadequadas são controladas no novo sistema (sistemicamente e/ou manualmente), relacionando as táticas e componentes que eliminam as vulnerabilidades anteriores._
 
 ---
 
-## 6.3 Justificativas Arquiteturais e Racional das Decisões
+### 6.2.2 RNF-02 — <Segurança>
 
-_(Relacione decisões arquiteturais às vulnerabilidades anteriores e às metas de negócio.)_
+#### A. Entrada
+_Esta seção deve descrever os dados e transações de entrada sob a ótica de segurança/privacidade (ex.: tentativas de login, chamadas autenticadas, volume de queries), com limites aceitáveis para o sistema novo._
+
+#### B. Saída
+_Esta seção deve listar os registros de transações corretas e fraudulentas/bloqueadas, mostrando como a nova arquitetura evidencia a melhoria de bloqueio, detecção e rastreabilidade em relação ao atual._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como o requisito é controlado no novo sistema (políticas, mecanismos sistêmicos e procedimentos), considerando as táticas e componentes que suplantam as vulnerabilidades._
+
+---
+
+### 6.2.3 RNF-03 — <Rastreabilidade>
+
+#### A. Entrada
+_Esta seção deve descrever as entradas que geram eventos auditáveis (ações de usuários e agentes), com a cobertura mínima aceitável para o sistema novo._
+
+#### B. Saída
+_Esta seção deve listar os registros de auditoria esperados (ações corretas e tentativas indevidas), destacando como a saída evidencia a melhoria de rastreabilidade e consulta em relação ao atual._
+
+#### C. Controle do RNF
+_Esta seção deve indicar como o requisito é controlado (event sourcing, políticas de retenção, integridade por hash), relacionando componentes que eliminam as falhas do sistema atual._
+
+---
+
+## 6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)
+
+_(Descrever táticas e componentes que viabilizam a execução e o controle dos RNFs do sistema novo, demonstrando a eliminação das vulnerabilidades.)_
+
+### 6.3.1 RNF-01 — <Escalabilidade>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como o nível de atendimento deste RNF será monitorado (componentes, métricas, SLIs/SLOs), justificando como a monitoração aprimorada suplantará limitações do atual._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar os componentes e táticas preventivas (ex.: auto-scaling, rate limiting, cache) e reativas (ex.: circuit breaker, shedding) que eliminam as limitações._
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever os componentes e procedimentos para recuperar níveis de serviço (ex.: fila de prioridade, reprocessamento, rollback), com justificativas e passos._
+
+---
+
+### 6.3.2 RNF-02 — <Segurança>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como o requisito será monitorado (ex.: SIEM, alertas de IAM, WAF), e como essa monitoração elimina as vulnerabilidades do atual._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar componentes preventivos (ex.: login/senha, MFA, RBAC/ABAC, criptografia de dados em trânsito e em repouso) e reativos (ex.: detecção de anomalias, contenção, revogação de sessões)._ 
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever procedimentos para recuperação pós-incidente (ex.: identificação de transações fraudulentas, recomposição de dados, comunicação e evidências)._ 
+
+_Exemplo de táticas para requisito de privacidade:_
+- _Resistência à invasão: autenticação forte (MFA), RBAC/ABAC, criptografia end-to-end._
+- _Detecção da invasão: rastreabilidade de transações, monitoramento de acessos, análise de padrões/sazonalidade._
+- _Recuperação da invasão: identificação e reversão de transações fraudulentas, recomposição de impactos._
+
+---
+
+### 6.3.3 RNF-03 — <Rastreabilidade>
+
+#### A. Como monitorar o RNF
+_Esta seção deve indicar como a cobertura de auditoria será verificada (ex.: amostragem contínua, SLIs de cobertura, tempo de consulta), mostrando a superação do atual._
+
+#### B. Como resolver o RNF (Preventivo e Reativo)
+_Esta seção deve listar táticas preventivas (ex.: event sourcing, correlação automática, políticas de retenção) e reativas (ex.: reconstrução de trilhas, enriquecimento de logs)._ 
+
+#### C. Como recuperar/subsidiar o tratamento de impactos
+_Esta seção deve descrever como subsidiar investigações (ex.: integridade por hash, cadeia de custódia, export de evidências) e procedimentos de recuperação._
 
 ---
 
