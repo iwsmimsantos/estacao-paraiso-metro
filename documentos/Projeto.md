@@ -1080,16 +1080,44 @@ _Esta seção deve indicar como as transações corretas e inadequadas são cont
 
 _(Esta seção deve descrever as táticas/componentes que suportam a execução e o controle dos 3 RNFs do sistema atual.)_
 
-### 5.3.1 RNF-01 — <Escalabilidade>
+### 5.3.1 RNF-01 — Escalabilidade
+
+&emsp;A análise do RNF de Escalabilidade no sistema atual (AS-IS) deve focar na descrição das **táticas arquiteturais e componentes** que, mesmo de forma limitada, ajudam na execução e controle deste requisito. Conforme a seção 5.2.1, o sistema atual é baseado em um ecossistema de ferramentas Microsoft (SharePoint, Power Automate, Power BI) e Miro, o que implica que a maioria das táticas de escalabilidade são **inerentes e gerenciadas pelo provedor (Microsoft)**, e não pela equipe de TI do Metrô.
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+&emsp;O monitoramento do RNF de Escalabilidade é **predominantemente sistêmico, mas com visibilidade e controle limitados** por parte do Metrô.
+
+| Aspecto | Descrição no Sistema Atual (AS-IS) | Limitações/Vulnerabilidades |
+| :--- | :--- | :--- |
+| **Componentes de Monitoramento** | **SharePoint Online e Power Automate Logs:** O monitoramento é realizado pelas ferramentas nativas do Microsoft 365. O SharePoint registra o uso de recursos e o Power Automate fornece logs de execução de fluxos (sucesso/falha). | A equipe de TI do Metrô não tem acesso a métricas de infraestrutura (CPU, memória, latência de rede) e o monitoramento é limitado a logs de aplicação e *throttling* (limitação de requisições) imposto pela Microsoft. |
+| **Métricas/SLIs/SLOs** | **SLI Implícito:** Taxa de sucesso na execução de fluxos do Power Automate e tempo de carregamento de páginas/listas no SharePoint. | Não existem **SLOs (Service Level Objectives)** formalmente definidos e controlados pelo Metrô. O **SLI** de performance é monitorado de forma reativa, através de reclamações de usuários sobre lentidão. |
+| **Monitoramento Manual/Sistêmico** | **Sistêmico:** Logs e alertas de *throttling* do SharePoint. **Manual:** Acompanhamento visual dos *dashboards* de uso do Power BI e verificação manual dos logs de falha no Power Automate. | A falta de uma ferramenta de **Observabilidade** centralizada impede a correlação de eventos e a detecção proativa de gargalos. O monitoramento manual é ineficiente e propenso a falhas. |
+
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
-_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+&emsp;As táticas de resolução para a Escalabilidade no sistema atual são limitadas, dependendo majoritariamente de políticas de uso e das limitações impostas pelo fornecedor.
+
+| Tática | Componente/Mecanismo | Natureza | Vulnerabilidade |
+| :--- | :--- | :--- | :--- |
+| **Preventiva** | **Políticas de Uso:** Orientação manual aos usuários para evitar picos de uso e dividir grandes tarefas em partes menores. | Manual/Processual | Dependência do **comportamento do usuário**; não é uma tática arquitetural. Não há *Rate Limiting* ou *Load Balancing* sob controle do Metrô. |
+| **Preventiva** | **Limites do SharePoint Online:** O provedor impõe limites de requisições (*throttling*) por usuário e por aplicação. | Sistêmica (Provedor) | Os limites são **rígidos e não configuráveis**, levando a interrupções de serviço quando atingidos. A prevenção é feita pelo provedor, não pela arquitetura. |
+| **Reativa** | **Alertas de Falha no Power Automate:** Notificações automáticas quando um fluxo falha. | Sistêmica (Provedor) | O alerta é apenas um **sintoma** da quebra de escalabilidade (*throttling*). A correção exige intervenção manual (reexecução do fluxo). |
+| **Reativa** | **Contenção Manual:** A equipe de TI pode solicitar a reexecução manual de fluxos falhos ou aguardar a liberação do *throttling* pelo SharePoint. | Manual/Processual | Alto **MTTR** (Mean Time to Recovery) e risco de inconsistência de dados devido à falta de mecanismos de *Retry* automático. |
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+&emsp;A recuperação de impactos no sistema atual é **extremamente frágil e dependente de intervenção humana**, sem mecanismos arquiteturais robustos para *Failover* ou reprocessamento automático.
+
+| Componente/Procedimento | Descrição | Justificativa/Impacto |
+| :--- | :--- | :--- |
+| **Registro de Falhas** | **Logs do Power Automate:** Registra o *status* de falha e a causa (ex: erro de *throttling*). | **Subsidia a Justificativa:** O log é a única evidência técnica para justificar a quebra do nível de serviço. O detalhamento é superficial, indicando a falha, mas não o impacto total no negócio. |
+| **Procedimento de Recuperação** | **Reexecução Manual:** A equipe de suporte ou o usuário deve reexecutar manualmente o fluxo falho no Power Automate. | **Alto Custo Operacional:** O procedimento é lento e não garante a ordem de processamento, podendo levar a **inconsistências de dados** (se os dados de origem tiverem sido alterados após a falha). |
+| **Componente de Recuperação** | **Nenhum:** O sistema atual **não possui** componentes de recuperação arquiteturalmente definidos, como *Message Queues* (filas de mensagens) ou *Dead Letter Queues* (DLQ) para reprocessamento seguro. | **Risco Crítico:** A falta de mecanismos de *Retry* e DLQ significa que transações perdidas exigem **reentrada manual de dados**, o que é a maior vulnerabilidade para a integridade e disponibilidade do sistema. |
+
+&emsp;A ausência de táticas arquiteturais de recuperação e a dependência de mecanismos de *throttling* de terceiros demonstram que o RNF de Escalabilidade é **mal atendido** no sistema AS-IS, justificando a necessidade de uma nova arquitetura com controle de tráfego, filas de mensagens e *failover* explícitos.
+
 
 ---
 
