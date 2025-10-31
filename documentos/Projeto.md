@@ -963,18 +963,90 @@ _(Definir o mapa da de RNFs e definir se será realmente o decidido na última s
 
 ## 5.2 Revisão do Mapa de RNFs e Vulnerabilidades
 
-_(Esta seção deve consolidar os 3 RNFs selecionados e suas vulnerabilidades. Para cada RNF, detalhe entradas, saídas e como o controle é feito.)_
+&emsp;Esta seção apresenta a consolidação dos Requisitos Não Funcionais (RNFs) priorizados para a análise do sistema atual (AS-IS), focando nas vulnerabilidades críticas que justificam a necessidade de uma nova arquitetura. Os RNFs analisados são Escalabilidade, Segurança e Rastreabilidade.
 
-### 5.2.1 RNF-01 — <Escalabilidade>
+&emsp;A análise detalhada a seguir utiliza como referência as 5 etapas do fluxo de trabalho do Portfólio de Projetos, conforme mapeado pelo grupo.
 
-#### A. Entrada
-_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+### **Fluxo de Trabalho do Sistema Atual (AS-IS)**
 
-#### B. Saída
-_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+O sistema atual é composto por um fluxo de trabalho sequencial e manual, dividido nas seguintes etapas:
 
-#### C. Controle do RNF
-_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
+| Etapa | Descrição | Ferramentas Envolvidas |
+| :--- | :--- | :--- |
+| **1ª Etapa** | **Elaborar Cronograma** | Miro, MS Office |
+| **2ª Etapa** | **Documentação do Miro para o TAP** | SharePoint, Miro |
+| **3ª Etapa** | **Reporte Mensal de Status** | SharePoint, Power BI |
+| **4ª Etapa** | **Armazenamento de Dados** | SharePoint, Power Automate |
+| **5ª Etapa** | **Geração de Relatórios** | Power BI, SharePoint |
+
+### **Consolidação dos RNFs e Vulnerabilidades Mapeadas**
+
+A tabela a seguir resume as principais vulnerabilidades identificadas no sistema atual, correlacionando-as com as etapas do processo e os RNFs afetados, com a linguagem técnica concisa:
+
+| RNF | Etapa do Processo | Vulnerabilidade Mapeada (Descrição Técnica Concisa) |
+| :--- | :--- | :--- |
+| **Segurança** | 1ª Etapa: Elaborar Cronograma | **Controle de Acesso Insuficiente:** Dependência exclusiva do controle nativo do SharePoint. |
+| **Segurança** | 2ª Etapa: Documentação do Miro para o TAP | **Autorização Ampla e Manual:** Permissões excessivas (todos os projetos) devido à gestão manual. |
+| **Rastreabilidade** | 2ª Etapa: Documentação do Miro para o TAP | **Auditoria Descentralizada:** Falta de log unificado e imutável para ações em ferramentas externas (Miro). |
+| **Escalabilidade** | 3ª Etapa: Reporte Mensal de Status | **Falta de Padronização:** Ausência de formato de dados e processo de *reporting* padronizado. |
+| **Segurança** | 4ª Etapa: Armazenamento de Dados | **Gestão de Permissões Manual:** Processo de concessão/revogação não auditável (risco de acesso indevido). |
+| **Rastreabilidade** | 4ª Etapa: Armazenamento de Dados | **Integridade de Dados Comprometida:** Falha na captura consistente de metadados de auditoria (*quem, o quê, quando*). |
+| **Escalabilidade** | 4ª Etapa: Armazenamento de Dados | **Arquitetura de Dados Inadequada:** Uso de repositórios de arquivos (SharePoint) como banco de dados transacional. |
+| **Segurança** | 5ª Etapa: Geração de Relatórios | **Risco de Exposição de Dados:** Gestão de permissões baseada na ferramenta de *reporting* (Power BI), sem camada de acesso segura. |
+| **Rastreabilidade** | 5ª Etapa: Geração de Relatórios | **Falta de Rastreabilidade de Consulta:** Ausência de auditoria sobre as consultas e dados acessados durante a geração de relatórios. |
+| **Escalabilidade** | 5ª Etapa: Geração de Relatórios | **Performance de Consulta Crítica:** Dependência de repositórios de arquivos, causando lentidão e falhas em relatórios de grande volume. |
+
+--- 
+
+### 5.2.1 RNF-01 — Escalabilidade
+
+&emsp;A Escalabilidade é um requisito não funcional crítico para o sistema de gestão de portfólio do Metrô de São Paulo, uma vez que a instituição lida com dezenas de projetos ativos simultaneamente e depende da atualização constante de informações estratégicas. A capacidade de o sistema suportar o aumento de usuários, dados e transações sem perda de desempenho é determinante para garantir a eficiência operacional e a confiabilidade dos processos de governança.
+
+&emsp;Atualmente, o sistema é composto por um ecossistema de ferramentas como Miro e do ambiente Microsoft 365, como SharePoint, Power Automate e Power BI. Apesar de atenderem parcialmente à demanda atual, essas plataformas apresentam limitações estruturais e dependência de integrações manuais, o que restringe a expansão das operações e impede o controle direto de capacidade por parte da equipe de TI do Metrô.
+
+&emsp;A seguir, são detalhados os elementos de entrada, saída e controle que evidenciam as vulnerabilidades relacionadas à escalabilidade do ambiente atual (AS-IS).
+
+#### A. Entrada - Dados e Transações de Entrada
+
+&emsp;A entrada de dados no sistema atual ocorre de forma descentralizada e não estruturada, o que impacta diretamente a escalabilidade.
+
+- **Volume de Acessos:** O sistema suporta a entrada e atualização de dados por aproximadamente 40 a 60 usuários ativos (líderes de projeto e equipe) em ciclos mensais. As transações envolvem a edição de listas no SharePoint, a atualização de quadros no Miro e a execução de fluxos no Power Automate.
+
+- **Transações Críticas:** As operações de maior impacto na escalabilidade são o Reporte Mensal de Status (etapa 3), a transferência manual de dados para o SharePoint (etapa 4) e a geração de relatórios no Power BI (etapa 5). Todas essas atividades exigem processamento intenso e síncrono, ocasionando sobrecarga dos serviços e aumento do tempo de resposta.
+
+- **Vulnerabilidade:** A principal vulnerabilidade está na ausência de uma API centralizada, o que impede o controle técnico do tráfego de dados. Todas as integrações dependem de interfaces de usuário e conectores de terceiros (como Power Automate), impossibilitando a implementação de mecanismos de Rate Limiting, Load Balancing ou Parallel Processing, necessários para absorver picos de uso sem degradação.
+
+&emsp;Essas restrições estruturais tornam o sistema sensível a variações no volume de dados, comprometendo a capacidade de expansão e a estabilidade das operações críticas.
+
+#### B. Saída – Registros de Transações Corretas e Inadequadas
+
+&emsp;A análise da saída de dados evidencia como o sistema responde ao processamento das informações e às operações realizadas pelos usuários. A seguir, aborda-se o comportamento das transações corretas e inadequadas, destacando gargalos de desempenho e falhas que afetam a confiabilidade e a estabilidade do ambiente.
+
+- **Transações Corretas:** Em condições normais, as operações são concluídas com sucesso, resultando em listas e relatórios atualizados no SharePoint e Power BI. O sistema consegue atender às demandas de uso cotidiano, desde que o volume de requisições simultâneas se mantenha baixo.
+
+- **Transações Inadequadas:** Durante períodos de alta utilização, o sistema apresenta erros de Throttling (limitação de requisições) impostos pelo SharePoint Online, impactando diretamente fluxos críticos. Os principais sintomas observados são:
+
+  - Lentidão perceptível na execução de consultas e carregamento de dados;
+  - Perda de dados em fluxos interrompidos no Power Automate, que não completam suas execuções;
+  - Indisponibilidade temporária, devido ao bloqueio de serviços após o limite de requisições simultâneas ser atingido.
+
+&emsp;Essas falhas geram impactos diretos na governança do portfólio, uma vez que relatórios mensais e indicadores estratégicos podem conter informações incompletas ou desatualizadas, comprometendo a tomada de decisão da diretoria.
+
+- **Vulnerabilidade:** O sistema não possui mecanismos de Retry (reexecução automática) nem Message Queues (filas de mensagens). Assim, quando uma transação falha, ela não é reprocessada nem registrada adequadamente, exigindo intervenção manual e aumentando a probabilidade de inconsistências.
+
+&emsp;Em um contexto de portfólio corporativo com grande volume de projetos, essa limitação representa uma ameaça à continuidade operacional e à precisão das informações compartilhadas entre as equipes.
+
+#### C. Controle do RNF – Indicação de Controle
+
+&emsp;A análise do controle do requisito de escalabilidade permite compreender como o sistema é monitorado e administrado diante de variações de carga e limitações de desempenho. A seguir, são descritos os controles sistêmicos e manuais existentes, suas restrições operacionais e as melhorias recomendadas para garantir maior autonomia e estabilidade ao ambiente.
+
+- **Controle Sistêmico:** A infraestrutura de escalabilidade é totalmente gerida pela Microsoft (SharePoint Online), o que significa que o Metrô não possui autonomia para ajustar ou otimizar parâmetros de capacidade, balanceamento de carga ou recursos de hardware.
+
+- **Controle Manual:** O único controle existente é de natureza operacional, consistindo em orientações manuais para os usuários — como evitar horários de pico ou dividir tarefas grandes em partes menores. Esse tipo de mitigação não resolve o problema de forma arquitetural e depende do comportamento dos usuários, o que reduz a confiabilidade do sistema.
+
+- **Vulnerabilidade:** Essa dependência de um único fornecedor representa um risco crítico de disponibilidade e dificulta a gestão de performance. A falta de observabilidade (monitoramento contínuo de métricas de uso e falhas) impede que a equipe de TI detecte problemas antes que afetem o usuário final.
+
+- **Melhoria Recomendada:** A arquitetura proposta deve prever a implementação de ferramentas de monitoramento centralizado, integrando métricas de uso, logs de eventos e alertas automáticos. Isso permitiria uma reação preventiva e não apenas corretiva a incidentes, além de subsidiar futuras estratégias de escalabilidade, como o uso de serviços modulares, balanceamento dinâmico e processamento assíncrono.
 
 ---
 
