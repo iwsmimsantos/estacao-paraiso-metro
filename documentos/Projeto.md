@@ -1118,7 +1118,6 @@ _(Esta seção deve descrever as táticas/componentes que suportam a execução 
 
 &emsp;A ausência de táticas arquiteturais de recuperação e a dependência de mecanismos de *throttling* de terceiros demonstram que o RNF de Escalabilidade é **mal atendido** no sistema AS-IS, justificando a necessidade de uma nova arquitetura com controle de tráfego, filas de mensagens e *failover* explícitos.
 
-
 ---
 
 ### 5.3.2 RNF-02 — <Segurança>
@@ -1149,10 +1148,40 @@ _Esta seção deve descrever os componentes e procedimentos usados para subsidia
 
 ## 5.4 Análise de Causas e Impactos
 
-### 5.4.1 RNF-01 — <Escalabilidade>
+### 5.4.1 RNF-01 — Escalabilidade
 
-#### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+Esta seção aprofunda a análise do RNF de Escalabilidade no sistema atual (AS-IS), focando na correlação entre as vulnerabilidades identificadas, suas causas raiz e os impactos diretos no negócio do Metrô-SP.
+
+#### Causas e Impactos da Quebra de Escalabilidade
+
+A principal causa da quebra de escalabilidade reside na **Arquitetura de Dados Inadequada** (uso de repositórios de arquivos como banco de dados transacional) e na **Dependência de um Único Fornecedor** (Microsoft SharePoint Online), conforme detalhado na seção 5.2.1.
+
+| Causa Raiz (Vulnerabilidade) | Cenário de Falha (Gatilho) | Impacto no Negócio (Consequência) |
+| :--- | :--- | :--- |
+| **Arquitetura de Dados Inadequada** (SharePoint como DB) | Geração de relatórios de grande volume (Etapa 5) ou consultas complexas. | **Degradação Crítica de Performance:** Lentidão no acesso a dados e falhas na geração de relatórios estratégicos. **Impacto:** Atraso na tomada de decisão da diretoria e perda de credibilidade nos dados do PMO. |
+| **Dependência de um Único Fornecedor** (Throttling) | Picos de acesso simultâneo durante o ciclo de reporte mensal (Etapa 3 e 4). | **Indisponibilidade Operacional:** Bloqueio temporário de requisições (*throttling*). **Impacto:** Interrupção dos fluxos de trabalho do Power Automate, perda de dados e necessidade de intervenção manual para reprocessamento. |
+| **Ausência de API Centralizada** | Tentativa de processamento assíncrono ou *load balancing* de requisições. | **Incapacidade de Controle Técnico:** Impossibilidade de implementar táticas arquiteturais preventivas (*Rate Limiting*, *Load Balancing*) sob controle do Metrô. **Impacto:** Risco não mitigável de sobrecarga, dependendo exclusivamente das políticas do fornecedor. |
+
+#### Detalhamento da Quebra de Nível de Serviço
+
+A quebra do nível de serviço (SLA) de escalabilidade se manifesta principalmente pela não-conclusão de transações críticas dentro do tempo esperado (latência excessiva) ou pela interrupção total do serviço (indisponibilidade).
+
+*   **Quebra por Latência:** O tempo de resposta para a geração de relatórios (Etapa 5) excede o limite aceitável, resultando em relatórios desatualizados ou incompletos.
+*   **Quebra por Indisponibilidade:** O sistema atinge o limite de *throttling* do SharePoint, impedindo que os fluxos do Power Automate (Etapa 4) concluam a transferência de dados.
+
+O impacto direto é a **inconsistência de dados** entre as fontes (Miro, SharePoint, Power BI), comprometendo a **integridade** e a **confiabilidade** das informações estratégicas do portfólio.
+
+#### Como recuperar/subsidiar o tratamento de impactos
+
+Esta seção detalha os procedimentos e componentes (ou a falta deles) usados para subsidiar o tratamento de falhas causadas pela quebra de escalabilidade, focando na **justificativa** para a necessidade de mudança.
+
+| Componente/Procedimento | Descrição Detalhada | Justificativa da Inadequação (Racional para a Nova Arquitetura) |
+| :--- | :--- | :--- |
+| **Registro de Falhas (Subsídio)** | **Logs do Power Automate:** O log registra a falha (ex: `429 Too Many Requests` do SharePoint) e o momento da ocorrência. | O log **apenas registra o sintoma**, mas não oferece o contexto completo da transação (ex: quais dados foram perdidos, qual o impacto exato no projeto X). O subsídio é insuficiente para uma **análise de causa raiz (RCA)** eficiente, pois não há correlação com métricas de infraestrutura. |
+| **Procedimento de Recuperação** | **Intervenção Manual e Reexecução:** A equipe de suporte deve identificar o fluxo falho, analisar o log e reexecutá-lo manualmente, muitas vezes após um período de espera para que o *throttling* do SharePoint seja liberado. | **Alto MTTR e Risco de Inconsistência:** O procedimento é lento e oneroso (alto custo operacional). A reexecução manual não garante a **ordem de processamento** e pode resultar em **dados duplicados** ou **desatualizados** se a fonte original tiver sido modificada. |
+| **Componentes de Recuperação** | **Nenhum Mecanismo Arquitetural:** Não existem componentes como *Message Queues* (Filas de Mensagens) ou *Dead Letter Queues* (DLQ) para reprocessamento automático e seguro. | **Vulnerabilidade Crítica de Integridade:** A ausência de um mecanismo de *Retry* automático e seguro significa que a **perda de transações** é um risco constante. A nova arquitetura deve introduzir **processamento assíncrono** com filas para garantir a entrega e o reprocessamento de mensagens em caso de falha. |
+
+A atual dependência de processos manuais para recuperação e a falta de um subsídio técnico adequado para a análise de falhas reforçam a conclusão de que o sistema AS-IS não é tolerante a falhas de escalabilidade, sendo imperativo o redesenho arquitetural.
 
 ---
 
