@@ -1877,7 +1877,24 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 ### 6.2.1 RNF-01 — <Escalabilidade>
 
 #### A. Entrada
-_Esta seção deve descrever os dados e transações de entrada esperados para o sistema novo (volumetria, tipos, frequência, origem), incluindo o patamar aceitável em cenários de pico._
+
+**Tipos de entrada**: 
+  - Ações de usuário vindas de UI (SharePoint forms, Miro hooks): criação/atualização de itens, anexos, solicitações de workflow.
+  - Jobs/integrações programadas (sincronizações Power BI, exportações, ingestões de planilhas).
+  - Webhooks/automations vindos de Miro ou de ferramentas externas.
+
+**Origens**:
+  - Sharepoint 
+  - PowerBI (refresh requests / queries read-only)
+  - Miro (webhooks)
+  - Integradores externos
+
+**Frequência/Volumetria**: 
+  - Usuários ativos: 40–60 em ciclos mensais.
+  - Padrão operacional: até 5–10 _requests_ por usuário/hora durante pico de atividade colaborativa.
+  - Pico aceitável: 200–300 reqs/min (~3–5 req/s) para garantir margem; dimensionamento automático lidará com variações. 
+  - Picos curtos de até 60s a 5 min com ampliação automática (_auto-scale_) para o dobro da taxa média esperada.
+  - Se necessário, modo _burst_: filas absorvem _bursts_ maiores sem perda de dados.
 
 #### B. Saída
 _Esta seção deve listar os registros de transações realizadas corretamente e as inadequadas (ex.: rejeitadas por limite), destacando como esses registros evidenciam a melhoria frente ao sistema atual._
