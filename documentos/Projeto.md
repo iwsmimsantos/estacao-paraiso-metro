@@ -1878,7 +1878,7 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 #### A. Entrada
 
-**Tipos de entrada**: 
+**Tipos de entrada**:
   - Ações de usuário vindas de UI (SharePoint forms, Miro hooks): criação/atualização de itens, anexos, solicitações de workflow.
   - Jobs/integrações programadas (sincronizações Power BI, exportações, ingestões de planilhas).
   - Webhooks/automations vindos de Miro ou de ferramentas externas.
@@ -1897,10 +1897,50 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
   - Se necessário, modo _burst_: filas absorvem _bursts_ maiores sem perda de dados.
 
 #### B. Saída
-_Esta seção deve listar os registros de transações realizadas corretamente e as inadequadas (ex.: rejeitadas por limite), destacando como esses registros evidenciam a melhoria frente ao sistema atual._
+
+**Registros (persistidos em DB de auditoria)**:
+  
+- **Transação bem-sucedida (SUCCESS)**: `tx_id`, `origem`, `endpoint`, `payload_ref`, `status=SUCCESS`, `timestamp_in`, `timestamp_out`, `latency_ms`, `worker_id`, `retries`, `output_ref`.
+- **Transação reprocessada com sucesso (RETRIED_SUCCESS)**: Mesmos campos + `retry_count`, `first_failure_timestamp`, `recovery_path (auto/manual)`.
+- **Transação pendente/na fila (PENDING)**: `tx_id`, `origin`, `queue_name`, `enqueue_time`, `priority`.
+- **Transação rejeitada (REJECTED)**: `tx_id`, `origin`, `reason_code (RATE_LIMIT, AUTH, SIZE_EXCEEDED, INVALID_PAYLOAD)`, `rejection_time`, `policy_id`.
+- **Transação movida para Dead Letter Queue (DLQ/POISON)**: `tx_id`, `origin`, `failure_reason`, `attempts`, `dlq_timestamp`, `sample_payload_ref`.
+
+**Melhorias propostas**:
+  - **Rastreabilidade completa**: cada transação fica identificável (`tx_id`) e com histórico de tentativas. Hoje, fluxos falhos “desaparecem” ou ficam sem rastreio; no novo sistema tudo fica auditado.
+  - **Detecção de padrão de falhas**: logs estruturados permitem agrupar por reason_code (ex.: SharePoint Throttling) e tomar medidas (caching, backoff).
+  - **Métricas acionáveis**: taxas de REJECTED por reason_code = indicador direto de gargalo ou política inadequada.
+  - **Sem perda de dados**: mensagens rejeitadas por rate limiting ficam registradas e reprocessáveis — hoje muitas dependem de intervenção manual.
+
 
 #### C. Controle do RNF
-_Esta seção deve indicar como as transações corretas e inadequadas são controladas no novo sistema (sistemicamente e/ou manualmente), relacionando as táticas e componentes que eliminam as vulnerabilidades anteriores._
+
+**Camadas e táticas envolvidas**:
+
+1. **_API Gateway_ / _Azure API Management_**: 
+    - Centraliza todas as chamadas externas - autenticação (_Azure AD_), _rate limiting_ por _subscription/key / caller_, _quotas_ por cliente, _policies_ de _transformation_.
+    - Rejeição por excesso é registrada com `reason_code RATE_LIMIT` e métricas incrementadas.
+2. **_Queueing_ (_Azure Service Bus_)** — desacoplamento:
+    - Todas as transações que exigem integração com _SharePoint/Power BI_ são enqueueadas. _Workers_ consomem a fila com _backoff_ e _concurrency control_.
+    - _Rate Limiting_ e _Throttling_ do SharePoint são mitigados: fila controla taxa de saída.
+3. **_Workers_ (_Azure Functions_)**:
+    - Processamento assíncrono com _retry_ automático (exponencial + _jitter_) e _circuit-breaker logic_.
+    - _Retries_ limitados; mensagens que excedem attempts vão para DLQ.
+4. **_Retries_ e _Dead-Letter Queues_**:
+    - Retry automático parametrizado (ex.: 3 tentativas com _backoff_) e DLQs para tratamento manual ou _reprocessing_.
+5. **Persistência de eventos + _transaction log_ (Azure SQL + Blob)**
+    - Log central com status e _payload refs_.
+6. **Operações/Interface manual**:
+    - Painel de reprocessamento: mostra DLQ, permite _requeue_ com correção, priorização manual e export de incidentes.
+7. **Políticas de _shedding_ e _circuit breaker_**:
+    - Em caso de sobrecarga persistente, o _gateway_ devolve errors controlados (HTTP 429) e ativa _shedding_ para preservar disponibilidade.
+8. **Cache**:
+    - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
+
+**Eliminação das vulnerabilidades anteriores**:
+  - **Dependência de UI/Power Automate**: agora as integrações passam por APIs controladas; o uso direto e massivo da UI/Power Automate para integrações críticas é reduzido.
+  - **Sem retry/sem fila antes**: agora existe fila + retries + DLQ → elimina perda de transações por throttling.
+  - **Controle de tráfego**: API Management + Service Bus + Workers permitem aplicar Rate Limiting e balanceamento do processamento, reduzindo Throttling do SharePoint.
 
 ---
 
