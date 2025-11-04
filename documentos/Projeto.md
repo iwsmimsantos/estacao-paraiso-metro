@@ -165,7 +165,7 @@
           - [4. Exclusão Acidental ou Maliciosa de Documentos:](#4-exclusão-acidental-ou-maliciosa-de-documentos)
           - [5. Exportação Não Autorizada e Vazamento de Informações:](#5-exportação-não-autorizada-e-vazamento-de-informações)
           - [6. Indisponibilidade por Falha da Microsoft 365:](#6-indisponibilidade-por-falha-da-microsoft-365)
-    - [5.3.3 RNF-03 — ](#533-rnf-03--)
+    - [5.3.3 RNF-03 — Rastreabilidade](#533-rnf-03--rastreabilidade)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-2)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-2)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-2)
@@ -182,7 +182,7 @@
         - [Critérios para Escalonamento de Incidentes:](#critérios-para-escalonamento-de-incidentes)
         - [Exemplo de Justificativa Consolidada para Alta Gestão:](#exemplo-de-justificativa-consolidada-para-alta-gestão)
         - [Vulnerabilidade Final de Recuperação:](#vulnerabilidade-final-de-recuperação)
-    - [5.4.3 RNF-03 — ](#543-rnf-03--)
+    - [5.4.3 RNF-03 — Rastreabilidade](#543-rnf-03--rastreabilidade)
       - [Causas e Impactos da Quebra de Rastreabilidade](#causas-e-impactos-da-quebra-de-rastreabilidade)
       - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço-1)
       - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos-1)
@@ -1295,7 +1295,6 @@ A tabela a seguir resume as principais vulnerabilidades identificadas no sistema
   - **Auditoria Impossível:** O resultado é a incapacidade de realizar uma auditoria de ponta a ponta. Se for necessário verificar por que um valor específico está no relatório final, o sistema não oferece um caminho de volta à origem.
 
 - **Vulnerabilidade:** A vulnerabilidade aqui é que o sistema **não possui um mecanismo para diferenciar dados confiáveis de dados não confiáveis**. Ele trata todos os dados armazenados no SharePoint como válidos, mesmo que sua origem seja desconhecida. A falta de um **ID de Correlação** e de um **processo de ingestão auditável** significa que o sistema armazena e processa dados potencialmente inválidos sem qualquer controle.
--
 
 #### C. Controle do RNF
 
@@ -1936,7 +1935,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 
 ---
 
-### 5.3.3 RNF-03 — <Rastreabilidade>
+### 5.3.3 RNF-03 — Rastreabilidade
 
 &emsp;A análise do RNF de Rastreabilidade no sistema atual (AS-IS) deve focar na descrição das **táticas arquiteturais e componentes** que, mesmo de forma limitada, ajudam na execução e controle deste requisito. Conforme a seção 5.2.3, o sistema atual é baseado em um ecossistema de ferramentas Microsoft (SharePoint, Power Automate) e ferramentas externas (Miro, Excel), o que implica que a rastreabilidade de ponta a ponta é **inexistente**, e as táticas se limitam a silos de auditoria dentro de componentes específicos.
 
@@ -2212,7 +2211,7 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 ---
 
-### 5.4.3 RNF-03 — <Rastreabilidade>
+### 5.4.3 RNF-03 — Rastreabilidade
 
 &emsp; Esta seção aprofunda a análise de causa e impacto em relação ao requisito não funcional de rastreabilidade.
 
