@@ -1292,6 +1292,15 @@ A tabela a seguir resume as principais vulnerabilidades identificadas no sistema
 
 - **Vulnerabilidade:** A principal vulnerabilidade reside na **ausência de um ponto de entrada de dados unificado e transacional**. Sem uma API ou um conector que gerencie a ingestão de dados de forma atômica e auditável, o sistema não tem como validar a integridade ou a origem das informações que recebe. Isso significa que uma transação de entrada inadequada (seja por erro humano ou intenção maliciosa) não é diferenciada de uma transação normal, resultando em uma corrupção silenciosa dos dados desde a sua concepção.
 
+**Tabela — Entradas que exigem rastreabilidade (RNF-03)**
+
+| Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
+| :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
+| Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
+| Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
+| Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
+
 #### B. Saída
 
 &emsp; A saída do sistema atual evidencia a falta de rastreabilidade não por erros que geram logs, mas pela **geração de dados cuja origem e integridade não podem ser verificadas**, mesmo que as operações individuais sejam concluídas com sucesso.
@@ -2306,19 +2315,74 @@ _Esta seção deve indicar como o requisito é controlado no novo sistema (polí
 
 ---
 
-### 6.2.3 RNF-03 — <Rastreabilidade>
+### 6.2.3 RNF-03 — Rastreabilidade
 
-#### A. Entrada
+&emsp; A Rastreabilidade no novo sistema do Portfólio do Metrô será garantida por meio de uma arquitetura centralizada e auditável, que assegura a rastreabilidade ponta a ponta das transações de negócio desde sua origem até os relatórios consolidados. As táticas de rastreabilidade deixam de ser operacionais e passam a ser estruturalmente sistêmicas, com mecanismos de identificação única, auditoria integrada e correlação automática de eventos.
 
-_Esta seção deve descrever as entradas que geram eventos auditáveis (ações de usuários e agentes), com a cobertura mínima aceitável para o sistema novo._
+#### A. Entrada — Dados e Transações de Entrada
 
-#### B. Saída
+&emsp; No novo cenário, todas as entradas de dados ocorrem através de pontos de ingestão controlados, eliminando os fluxos manuais e não auditados do sistema anterior. Cada operação de entrada gera um ID de correlação único, que permite traçar sua origem, responsável, timestamp e integridade.
 
-_Esta seção deve listar os registros de auditoria esperados (ações corretas e tentativas indevidas), destacando como a saída evidencia a melhoria de rastreabilidade e consulta em relação ao atual._
+##### Descrição das Entradas
 
-#### C. Controle do RNF
+| Tipo de Transação                  | Origem                                    | Mecanismo de Entrada             | Controle de Auditoria                                             | Observações                                |
+| :--------------------------------- | :---------------------------------------- | :------------------------------- | :---------------------------------------------------------------- | :----------------------------------------- |
+| Submissão de Nova Iniciativa       | Usuário autenticado (Portal de Portfólio) | API de Ingestão / Formulário Web | Log automatizado com ID de correlação, autenticação e checksum    | Substitui envio manual via Forms e Excel   |
+| Atualização de Status / Benefícios | Gestor de Projeto / PMO                   | Interface Web autenticada        | Registro automático em log transacional e histórico de alterações | Mantém versão anterior para rastreio       |
+| Importação de Dados Legados        | Integração Miro/Excel → SharePoint        | Conector automatizado            | Validação de integridade e hash comparativo                       | Detecta divergências entre fonte e destino |
 
-_Esta seção deve indicar como o requisito é controlado (event sourcing, políticas de retenção, integridade por hash), relacionando componentes que eliminam as falhas do sistema atual._
+&emsp; A ausência de ponto único de entrada e a dependência de inserções manuais, principais vulnerabilidades do AS-IS, são eliminadas. Agora, toda transação é auditável e validada sistemicamente, permitindo contabilizar tanto transações corretas quanto tentativas de inserção não conformes.
+
+ - **Transações de Entrada:** Toda criação/edição/aprovação passa pela borda controlada (API de Ingestão/Portal autenticado), com autenticação, validação de contrato e geração de trilha no momento da entrada.
+ - **Transação Crítica para Auditoria:** A primeira gravação do evento de negócio no `audit log` imutável, com `correlationId` e `payloadHash`, é o ponto de verdade para toda a trilha subsequente. (Termos podem ser alterados).
+ - **Vulnerabilidade:** Em cenários excepcionais de importação de legado, falhas temporárias de conectores podem exigir reprocesso; o evento é colocado em quarentena com justificativa e não altera o dado de negócio até regularização.
+
+**Tabela — Entradas que exigem rastreabilidade (RNF-03) — Itens numerados**
+
+| Nº | Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
+| :-- | :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| 1  | Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
+| 2  | Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
+| 3  | Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
+| 4  | Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
+
+#### B. Saída — Registros de Transações Corretas e Inadequadas
+
+&emsp; As saídas do sistema passam a refletir o nível de rastreabilidade e integridade dos dados, diferenciando transações corretas das transações potencialmente fraudulentas ou inconsistentes.
+
+##### Descrição das Saídas
+
+| Tipo de Transação     | Critério de Classificação                                 | Evidência de Rastreabilidade                    | Destino / Registro                          | Observações                      |
+| :-------------------- | :-------------------------------------------------------- | :---------------------------------------------- | :------------------------------------------ | :------------------------------- |
+| Transação Correta     | ID de correlação válido e ciclo de vida completo          | Log completo da ingestão, transformação e saída | Data Lake / SharePoint com versão auditável | Dado confiável e rastreável      |
+| Transação Inadequada  | Ausência de ID de correlação ou divergência de hash       | Alerta de inconsistência no monitoramento       | Registro marcado como “não rastreável”      | Requer validação manual pelo PMO |
+| Transação Fraudulenta | Alteração não autorizada / fonte desconhecida             | Alerta crítico e bloqueio automático            | Log imutável e notificação a segurança       | Ação investigativa obrigatória   |
+
+&emsp; Como benefício, passa a ser possível demonstrar, de forma objetiva, a melhoria de rastreabilidade em relação ao sistema anterior, onde não havia diferenciação entre dados válidos e dados sem origem conhecida.
+
+ - **Transações Corretas (Nominais):** A saída traz vínculo explícito ao evento de origem, versão do registro e histórico de transformações, permitindo navegação de linhagem até o relatório.
+ - **Transação Crítica para Auditoria:** A publicação da mudança no repositório de domínio com versionamento e a propagação do `correlationId` aos artefatos analíticos consolidam a trilha ponta a ponta.
+ - **Vulnerabilidade:** Possíveis perdas de correlação em integrações de terceiros são tratadas por detecção e enriquecimento posterior; enquanto não resolvidas, as saídas são marcadas como não rastreáveis.
+
+#### C. Controle do RNF — Mecanismos e Táticas de Controle
+
+&emsp; O controle da rastreabilidade deixa de ser um processo reativo e manual e passa a ser automatizado, centralizado e mensurável, baseado em componentes sistêmicos que monitoram e logam todas as transações de ponta a ponta.
+
+##### Descrição dos Controles
+
+| Tipo de Controle                  | Mecanismo / Componente                                | Natureza              | Função                                                                    | Vulnerabilidade Corrigida               |
+| :-------------------------------- | :----------------------------------------------------- | :-------------------- | :------------------------------------------------------------------------ | :-------------------------------------- |
+| Controle Sistêmico de Ingestão    | API Gateway + Ingestion API com autenticação e logs    | Sistêmica             | Valida e registra cada transação de entrada com ID único                  | Elimina inserções manuais não auditadas |
+| Controle de Correlação de Dados   | ID de correlação global em todo o fluxo                | Sistêmica             | Rastreia o dado desde a origem até os relatórios finais                   | Elimina dados “órfãos”                  |
+| Agregação e Monitoramento de Logs | SIEM corporativo integrado: Microsoft Sentinel   | Sistêmica             | Consolida logs de SharePoint, Power Automate e APIs; detecta anomalias    | Elimina monitoramento em silos          |
+| Indicadores de Rastreabilidade    | Painel operacional no Power BI                         | Sistêmica             | Acompanha percentual de dados rastreáveis e incidentes                     | Introduz gestão contínua do RNF         |
+| Revisão de Auditoria              | Processo periódico conduzido pelo PMO                  | Manual (complementar) | Confirma registros críticos e justifica correções de dados                | Substitui investigações ad hoc          |
+
+&emsp; A única dependência manual residual é a validação de exceções detectadas automaticamente. Essa ação é auditada e registrada, para que nenhuma intervenção humana ocorra fora do escopo controlado do sistema.
+
+- **Controle Sistêmico:** Gate único de escrita, contratos de dados, `audit log` imutável, correlação distribuída e bloqueio de escrita direta garantem trilha completa sem bypass.
+- **Controle Manual:** Atuará apenas em exceções (ex.: validação de dados legados), sempre com justificativa registrada e nova versão vinculada ao incidente.
+- **Vulnerabilidade:** O risco remanescente limita-se à necessidade de análise humana em casos atípicos; é mitigado por quarentena, segregação de funções e registro detalhado das ações.
 
 ---
 
@@ -2364,19 +2428,48 @@ _Exemplo de táticas para requisito de privacidade:_
 
 ---
 
-### 6.3.3 RNF-03 — <Rastreabilidade>
+### 6.3.3 RNF-03 — Rastreabilidade
 
 #### A. Como monitorar o RNF
 
-_Esta seção deve indicar como a cobertura de auditoria será verificada (ex.: amostragem contínua, SLIs de cobertura, tempo de consulta), mostrando a superação do atual._
+&emsp; O monitoramento passa a ser simples de entender e de acessar: toda mudança relevante fica registrada automaticamente e é possível seguir o caminho do dado desde a origem até o relatório. Isso resolve os pontos levantados em 5.4.3 (processo manual, silos e falta de correlação) sem depender de varreduras manuais.
+
+| Causa do AS-IS (5.4.3)                | Resposta no sistema novo (TO-BE)                                                                       |
+| :------------------------------------ | :----------------------------------------------------------------------------------------------------- |
+| Processo Manual Não Auditado          | Entradas apenas por pontos controlados, com registro automático e trilha de auditoria                 |
+| Arquitetura de Dados Fragmentada      | Consolidação de registros e eventos em um repositório de auditoria consultável em um único lugar     |
+| Ausência de ID de Correlação          | Identificador único por transação propagado ao longo do fluxo e visível nos relatórios e consultas   |
+
+&emsp; Na prática, isso significa que qualquer pessoa autorizada consegue verificar, sem esforço técnico, a origem de um dado apresentado em um relatório e o caminho que ele percorreu dentro do sistema. O time de auditoria não precisa mais juntar evidências manualmente: a trilha está disponível em um único lugar e em linguagem compreensível.
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
 
-_Esta seção deve listar táticas preventivas (ex.: event sourcing, correlação automática, políticas de retenção) e reativas (ex.: reconstrução de trilhas, enriquecimento de logs)._
+&emsp; A solução utiliza prevenção (para evitar que o problema ocorra) e reação rápida (para corrigir, caso aconteça):
+
+- Preventivo: entradas passam por um ponto único e validado; cada mudança recebe um identificador e fica registrada; ninguém escreve diretamente nos repositórios finais fora do fluxo controlado.
+- Reativo: se algo vier incompleto ou incoerente, fica em quarentena e não altera o dado de negócio; é possível reprocessar a partir do registro de auditoria, ou desfazer uma versão com justificativa.
+
+&emsp; O objetivo é evitar que problemas cheguem aos relatórios finais e, caso surjam, corrigi-los de forma segura e rastreável. As regras são claras: tudo entra pelo mesmo caminho controlado, tudo fica registrado, e qualquer ajuste posterior deixa um histórico transparente do que foi feito e por quê.
+
+&emsp; Com isso, PMO e áreas de negócio passam a ter previsibilidade sobre o funcionamento do processo: há um caminho único para solicitações, critérios claros para aceite ou rejeição e responsáveis definidos para tratar exceções. Esse alinhamento reduz discussões subjetivas e acelera a tomada de decisão.
+
+&emsp; Além disso, toda decisão, inclusive desvios justificados, fica documentada. Isso facilita a prestação de contas para auditoria e diretoria, e cria um registro consistente de como e por que cada alteração foi realizada, fortalecendo o aspecto de governança do portfólio.
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 
-_Esta seção deve descrever como subsidiar investigações (ex.: integridade por hash, cadeia de custódia, export de evidências) e procedimentos de recuperação._
+&emsp; Quando houver um problema, a equipe encontra rapidamente o que aconteceu e corrige com segurança, sem perder a trilha:
+
+| O que é usado                          | Para que serve                                                                 |
+| :------------------------------------- | :------------------------------------------------------------------------------ |
+| Registro de auditoria consolidado      | Ver o histórico exato de quem fez o quê e quando, sem depender de entrevistas |
+| Consulta simples da linhagem           | Navegar do relatório até a origem do dado                                     |
+| Reprocessamento ou desfazer uma versão | Corrigir o estado atual sem esconder o histórico e com justificativa          |
+
+&emsp; Em termos práticos, quando um incidente é identificado, a equipe consegue rapidamente ver qual transação o causou, quem executou a ação, qual foi o conteúdo envolvido e em que momento ocorreu. Com base nisso, decide-se entre reprocessar as informações ou desfazer a última alteração. Em ambos os casos, a justificativa e o resultado ficam documentados, o que facilita a comunicação com as áreas de negócio e com a auditoria.
+
+&emsp; A comunicação também fica mais simples: ao apresentar o ocorrido para as áreas impactadas ou para a diretoria, é possível anexar a trilha de como o problema surgiu e como foi tratado. Isso reduz retrabalho, evita versões diferentes da mesma história e ajuda a preservar a confiança nos relatórios.
+
+&emsp; Por fim, cada incidente gera aprendizado. As causas identificadas alimentam melhorias no processo (por exemplo, ajustes de validação na entrada ou revisões de responsabilidade) para reduzir a recorrência. Esse ciclo de melhoria contínua reforça a governança e mantém a rastreabilidade efetiva ao longo do tempo. Isto responde aos impactos descritos em 5.4.3: reduz o tempo de diagnóstico, evita decisões com base em dados incorretos e fornece evidências claras para auditoria e governança.
 
 ---
 
