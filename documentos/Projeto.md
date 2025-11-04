@@ -2031,6 +2031,8 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 | **Reativa**    | **Runbooks Automáticos (Azure Automation / Logic Apps)** — Executam ações de mitigação quando alertas críticos são disparados.                                            | Operacional / Plataforma   | Necessário definir gatilhos e scripts robustos; risco de intervenção incorreta.                                      |
 | **Reativa**    | **Fallbacks** — Utiliza cópias read-only ou dados cacheados quando o SharePoint está indisponível ou lento.                                                               | Arquitetural               | Dados podem estar desatualizados; nem sempre aplicável a fluxos de escrita.                                          |
 
+<sup>Fonte: material elaborado pelos autores (2025).</sup>
+</div>
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 _Esta seção deve descrever os componentes e procedimentos para recuperar níveis de serviço (ex.: fila de prioridade, reprocessamento, rollback), com justificativas e passos._
