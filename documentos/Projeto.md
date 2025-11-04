@@ -90,9 +90,9 @@
       - [**4. Escalabilidade e Performance**](#4-escalabilidade-e-performance)
 - [4. Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
   - [4.1 Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
-    - [**RNF-01: Rastreabilidade** ⭐ **PRIORIDADE ALTA**](#rnf-01-rastreabilidade--prioridade-alta)
-    - [**RNF-02: Segurança** ⭐ **PRIORIDADE ALTA**](#rnf-02-segurança--prioridade-alta)
-    - [**RNF-03: Escalabilidade** ⭐ **PRIORIDADE ALTA**](#rnf-03-escalabilidade--prioridade-alta)
+    - [**RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**](#rnf-01-rastreabilidade--prioridade-alta)
+    - [**RNF-02: Segurança**  **PRIORIDADE ALTA**](#rnf-02-segurança--prioridade-alta)
+    - [**RNF-03: Escalabilidade**  **PRIORIDADE ALTA**](#rnf-03-escalabilidade--prioridade-alta)
   - [4.2 Justificativas para RNFs](#42-justificativas-para-rnfs)
     - [4.2.1 Controle de Riscos e Mitigação](#421-controle-de-riscos-e-mitigação)
     - [4.2.2 Argumentação por RNF](#422-argumentação-por-rnf)
@@ -215,7 +215,17 @@
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-5)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-6)
   - [6.4 Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
-- [7. Simulação do Sistema Novo](#7-simulação-do-sistema-novo)
+ - [7. Simulação do Sistema](#7-simulação-do-sistema)
+   - [7.1 Simulação RNF - 01](#71-simulação-rnf---01)
+     - [7.1.1 Simulação Sistema: Atual](#711-simulação-sistema-atual)
+     - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
+   - [7.2 Simulação RNF - 02](#72-simulação-rnf---02)
+     - [7.2.1 Simulação Sistema: Atual](#721-simulação-sistema-atual)
+     - [7.2.2 Simulação Sistema: Novo](#722-simulação-sistema-novo)
+   - [7.3 Simulação RNF - 03](#73-simulação-rnf---03)
+     - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
+     - [7.3.2 Simulação Sistema: Novo](#732-simulação-sistema-novo)
+   - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
   - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
 - [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
@@ -914,7 +924,7 @@ Com base na análise da Seção 3.1, o sistema atual apresenta **ausência crít
 
 Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **3 RNFs críticos**:
 
-#### **RNF-01: Rastreabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -931,7 +941,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Integridade**    | 0%        | 100% (hash) | Não repúdio          |
 | **Compliance**     | Violado   | Atendido    | Requisito legal      |
 
-#### **RNF-02: Segurança** ⭐ **PRIORIDADE ALTA**
+#### **RNF-02: Segurança**  **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -948,7 +958,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Criptografia**     | Básica       | End-to-end      | Proteção integral |
 | **LGPD**             | Não atendida | Atendida        | Conformidade      |
 
-#### **RNF-03: Escalabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-03: Escalabilidade**  **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -2376,9 +2386,57 @@ _(Sintetize as decisões e seus impactos sobre a qualidade do sistema.)_
 
 ---
 
-# 7. Simulação do Sistema Novo
+# 7. Simulação do Sistema
 
 _(Apresente a simulação comparativa entre o sistema atual e o sistema novo, evidenciando as melhorias obtidas nos RNFs selecionados.)_
+
+---
+
+## 7.1 Simulação RNF - 01
+
+_(Introduza seção para RNF01)_
+
+### 7.1.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.1.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.2 Simulação RNF - 02
+
+_(Introduza seção para RNF02)_
+
+### 7.2.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.2.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.3 Simulação RNF - 03
+
+_(Introduza seção para RNF02)_
+
+### 7.3.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.3.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.4 Tabela de Comparação Consolidada
+
+_(Tabela Final comparando resultados entre as simulações do sistema atual x novo)_
 
 ---
 
