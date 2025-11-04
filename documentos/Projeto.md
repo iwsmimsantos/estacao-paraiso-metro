@@ -1912,7 +1912,6 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
   - **Métricas acionáveis**: taxas de REJECTED por reason_code = indicador direto de gargalo ou política inadequada.
   - **Sem perda de dados**: mensagens rejeitadas por rate limiting ficam registradas e reprocessáveis — hoje muitas dependem de intervenção manual.
 
-
 #### C. Controle do RNF
 
 **Camadas e táticas envolvidas**:
@@ -1937,10 +1936,16 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 8. **Cache**:
     - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
 
+<div align="center">
+  <sub>Figura X - Fluxo proposto para escalabilidade</sub>
+    <img src="../documentos/img/section6/proposed_architecture.png" width="100%">
+  <sup>Fonte: material elaborado pelos autores (2025).</sup>
+</div>
+
 **Eliminação das vulnerabilidades anteriores**:
-  - **Dependência de UI/Power Automate**: agora as integrações passam por APIs controladas; o uso direto e massivo da UI/Power Automate para integrações críticas é reduzido.
-  - **Sem retry/sem fila antes**: agora existe fila + retries + DLQ → elimina perda de transações por throttling.
-  - **Controle de tráfego**: API Management + Service Bus + Workers permitem aplicar Rate Limiting e balanceamento do processamento, reduzindo Throttling do SharePoint.
+  - **Dependência de _UI/Power Automate_**: agora as integrações passam por APIs controladas; o uso direto e massivo da _UI/Power Automate_ para integrações críticas é reduzido.
+  - **Sem retry/sem fila antes**: agora existe fila + _retries_ + DLQ → elimina perda de transações por _throttling_.
+  - **Controle de tráfego**: _API Management_ + _Service Bus_ + _Workers_ permitem aplicar _Rate Limiting_ e balanceamento do processamento, reduzindo _Throttling_ do SharePoint.
 
 ---
 
