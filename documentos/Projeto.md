@@ -2268,33 +2268,73 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 #### A. Entrada
 
-_Esta seção deve descrever os dados e transações de entrada esperados para o sistema novo (volumetria, tipos, frequência, origem), incluindo o patamar aceitável em cenários de pico._
-
 #### B. Saída
 
-_Esta seção deve listar os registros de transações realizadas corretamente e as inadequadas (ex.: rejeitadas por limite), destacando como esses registros evidenciam a melhoria frente ao sistema atual._
-
 #### C. Controle do RNF
-
-_Esta seção deve indicar como as transações corretas e inadequadas são controladas no novo sistema (sistemicamente e/ou manualmente), relacionando as táticas e componentes que eliminam as vulnerabilidades anteriores._
-
----
 
 ### 6.2.2 RNF-02 — <Segurança>
 
 #### A. Entrada
 
-_Esta seção deve descrever os dados e transações de entrada sob a ótica de segurança/privacidade (ex.: tentativas de login, chamadas autenticadas, volume de queries), com limites aceitáveis para o sistema novo._
+&nbsp; O sistema novo de gerenciamento de projetos do Metrô de São Paulo deve controlar rigorosamente os dados e transações de entrada, assegurando confiabilidade, confidencialidade e integridade desde o ponto inicial de acesso. Detalhes importantes incluem:
+
+- Tentativas de Login:
+&nbsp;Todas as tentativas de autenticação, incluindo sucesso, falhas, bloqueios temporários e uso de MFA, serão registradas. O sistema preverá limites máximos para tentativas mal-sucedidas para mitigar ataques de força bruta e evitar bloqueios indevidos. Controles adaptativos poderão bloquear acessos de localizações ou dispositivos suspeitos.
+
+- Chamadas Autenticadas:
+&nbsp;APIs do sistema aceitarão somente chamadas autenticadas com tokens válidos emitidos após autorização adequada. Tokens terão validade limitada e sofrerão renovação e revogação automatizadas em caso de anomalias.
+
+- Volume de Queries e Usuários:
+&nbsp;O sistema é dimensionado para suportar, com baixa latência, um volume médio de 40 a 60 usuários simultâneos em operação contínua e picos até 100 simultâneos, sem perda de desempenho ou degradação dos controles de segurança. As consultas são sujeitas a limites para evitar negação de serviço por abuso.
+
+- Validação e Verificação de Dados:
+&nbsp;Toda inserção ou modificação em documentos, cronogramas e formulários passa por validações automáticas para garantir formatos corretos, integridade semântica e ausência de alterações não autorizadas, incluindo identificação e bloqueio de transações suspeitas.
+
+- Detecção Precoce e Bloqueio de Acessos Indevidos:
+&nbsp;Mecanismos proativos atuarão para identificar padrões de comportamento anômalo já nas fases iniciais (ex.: tentativas sequenciais de acesso a recursos não autorizados), garantindo medidas instantâneas de bloqueio, isolamento e alerta.
 
 #### B. Saída
 
-_Esta seção deve listar os registros de transações corretas e fraudulentas/bloqueadas, mostrando como a nova arquitetura evidencia a melhoria de bloqueio, detecção e rastreabilidade em relação ao atual._
+&nbsp;A saída do sistema novo demonstra ganhos significativos em segurança e rastreabilidade, visíveis por meio dos registros produzidos:
 
+- Logs Detalhados e Imutáveis:
+&nbsp;Todas as ações realizadas dentro do sistema, desde autenticações até modificações em documentos e uso de agentes de IA, geram entradas de log criptografadas, armazenadas em local seguro e protegido contra adulterações. Estes logs suportam auditorias internas e externas com total transparência.
+
+- Transações Fraudulentas/Bloqueadas:
+&nbsp;Eventos como tentativas de login não autorizadas, ataques de negação de serviço, uso de credenciais inválidas e acessos a áreas restritas são categorizados com detalhamento suficiente para investigação posterior e possibilitam bloqueio automático e revogação imediata de sessões ou permissões.
+
+- Correlação e Contextualização de Eventos:
+&nbsp;O sistema integra dados de múltiplos módulos (portal usuário, agentes de IA, base documental) permitindo cruzar eventos para identificar tentativas multifacetadas de comprometimento, reforçando a segurança por meio da análise combinada.
+
+- Indicadores de Segurança:
+&nbsp;Relatórios e dashboards em tempo real exibem métricas sobre volumes de acesso, tentativas bloqueadas, status das sessões e padrões de uso, permitindo que equipes de segurança ajustem políticas e verifiquem a eficácia dos controles implantados.
 #### C. Controle do RNF
 
-_Esta seção deve indicar como o requisito é controlado no novo sistema (políticas, mecanismos sistêmicos e procedimentos), considerando as táticas e componentes que suplantam as vulnerabilidades._
+&nbsp;O controle do requisito RNF-02 assegura a robustez da segurança por meio de um ecossistema integrado de políticas, mecanismos técnicos e procedimentos operacionalizados:
 
----
+- Políticas de Controle de Acesso:
+&nbsp;Estabelecem regras claras para concessão, revisão e revogação de acessos, com segregação de funções e perímetros definidos, compatíveis com a criticidade dos dados e operações. Revisões periódicas garantem alinhamento atempado às mudanças organizacionais e de perfil.
+
+- Autenticação Robusta e Autorização Dinâmica:
+&nbsp;Implementação obrigatória de MFA para acessos sensíveis, aplicação rigorosa de RBAC e ABAC, com adaptações contextuais em tempo real para ajuste fino das permissões.
+
+- Criptografia End-to-End:
+&nbsp;Dados são protegidos durante todo o ciclo - desde a transmissão via canais TLS até o armazenamento com chaves gerenciadas, neutralizando riscos de interceptação, acesso físico indevido e vazamento.
+
+- Monitoramento Contínuo e Alarmes:
+&nbsp;Sistemas de SIEM recebem inputs contínuos dos módulos de registro, análise e alerta, assegurando resposta rápida a incidentes, com workflows automatizados para investigação, bloqueio e mitigação.
+
+- Processos e Workflows de Aprovação:
+&nbsp;Implementação de procedimentos sistêmicos para validação formal de alterações em documentos e dados sensíveis, garantindo que somente ações aprovadas sejam efetivadas no sistema.
+
+- Capacitação e Sensibilização:
+&nbsp;Incluem treinamentos periódicos aos usuários para reforçar boas práticas, reconhecer tentativas de fraude e incentivar o reporte imediato de incidentes, fechando o ciclo de governança com foco no fator humano.
+
+- Auditorias Regulares e Testes de Segurança:
+&nbsp;Revisões de conformidade e testes periódicos (pentests e monitoramento de vulnerabilidades) garantem a manutenção dos níveis de segurança conforme requisitos legais e técnicos.
+
+&nbsp;Dessa maneira, o sistema novo supera as fragilidades de segurança do modelo atual, oferecendo um ambiente confiável, auditável e resiliente, fundamental para a governança eficaz dos projetos do Metrô de São Paulo.
+
 
 ### 6.2.3 RNF-03 — <Rastreabilidade>
 
@@ -2336,23 +2376,59 @@ _Esta seção deve descrever os componentes e procedimentos para recuperar níve
 
 #### A. Como monitorar o RNF
 
-_Esta seção deve indicar como o requisito será monitorado (ex.: SIEM, alertas de IAM, WAF), e como essa monitoração elimina as vulnerabilidades do atual._
+&nbsp;O monitoramento constante do requisito RNF-02 é crucial para manter a segurança e a integridade do sistema novo do Metrô. Para isso, será adotada a integração de múltiplas soluções e técnicas:
 
+- Sistema SIEM (Security Information and Event Management): Coleta, centraliza e correlaciona logs e eventos de segurança provenientes de diversos componentes do sistema, tais como servidores de autenticação, gates de API, agentes de IA e subsistemas de armazenamento. A análise em tempo real permite identificar rapidamente tentativas de intrusão, acesso não autorizado ou ataques, automatizando alertas e medidas iniciais de contenção.
+
+- Alertas e Relatórios do IAM: O sistema de gerenciamento de identidades e acessos gera notificações instantâneas em casos de tentativas suspeitas, como múltiplas falhas de login, acessos fora do perímetro definido, alterações abruptas de privilégios ou uso simultâneo indevido de contas.
+
+- Firewall de Aplicação Web (WAF): Foca na proteção contra ataques direcionados às interfaces web da solução, filtrando requisições maliciosas, prevenindo injeção de código e garantindo que acessos indevidos sejam bloqueados no perímetro da aplicação.
+
+- Monitoramento Comportamental por IA: Módulos inteligentes monitoram padrões de acesso e uso, identificando variações atípicas relacionadas a usuários e agentes, como acessos em horários incomuns, volumes anormais de dados e sequências fora do padrão, aumentando a precisão da detecção.
+
+&nbsp;Essa arquitetura conjunta supera as limitações do sistema atual, que carece de componentes integrados de monitoramento, dificultando a identificação eficiente e o bloqueio de ameaças.
 #### B. Como resolver o RNF (Preventivo e Reativo)
 
-_Esta seção deve listar componentes preventivos (ex.: login/senha, MFA, RBAC/ABAC, criptografia de dados em trânsito e em repouso) e reativos (ex.: detecção de anomalias, contenção, revogação de sessões)._
+&nbsp;Para mitigar riscos e responder a incidentes, o sistema novo integra um conjunto robusto de componentes e estratégias:
+
+- Preventivos:
+
+  - Autenticação poderosa com MFA obrigatória para acessos sensíveis, evitando comprometimento por simples vazamento de senhas.
+
+  - Implementação de RBAC e ABAC, permitindo controle fino e dinâmico sobre quem pode acessar o quê, baseado em função, contexto e atributos do usuário.
+
+  - Criptografia forte (TLS 1.2+ para dados em trânsito e AES-256 para dados armazenados) garantindo que informações estejam protegidas contra interceptação e vazamento.
+
+  - Validação e sanitização rigorosas para prevenir injeções e manipulações maliciosas.
+
+  - Versionamento automático em documentos críticos, permitindo rastreamento e reversão de alterações.
+
+- Reativos:
+
+  - Detecção automática de anomalias baseada em inteligência artificial, com identificação precoce de tentativas de fraude, uso irregular de credenciais e comportamentos fora do padrão.
+
+  - Contenção automática de ameaças, como bloqueio temporário ou permanente de contas suspeitas, isolamento de sessões comprometidas e restrição de privilégios.
+
+  - Revogação rápida de sessões de usuários ou agentes que apresentem risco, garantindo o corte imediato do acesso não autorizado.
+
+  - Notificações em tempo real para equipe de segurança, permitindo resposta rápida e eficaz a incidentes.
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 
-_Esta seção deve descrever procedimentos para recuperação pós-incidente (ex.: identificação de transações fraudulentas, recomposição de dados, comunicação e evidências)._
+&nbsp;Para minimizar os impactos após incidentes, o sistema conta com procedimentos claros e estruturados:
 
-_Exemplo de táticas para requisito de privacidade:_
+- Auditoria detalhada e análise forense: A partir dos logs imutáveis centralizados e das correlações do SIEM, é possível identificar os responsáveis, os vetores da invasão e os dados afetados, suportando ações legais e correções eficazes.
 
-- _Resistência à invasão: autenticação forte (MFA), RBAC/ABAC, criptografia end-to-end._
-- _Detecção da invasão: rastreabilidade de transações, monitoramento de acessos, análise de padrões/sazonalidade._
-- _Recuperação da invasão: identificação e reversão de transações fraudulentas, recomposição de impactos._
+- Recuperação de dados e versões: Utilização de backups regulares e mecanismos de versionamento que permitem restaurar estados anteriores ao incidente, mantendo a integridade das informações críticas.
 
----
+- Comunicação transparente e controlada: Relatórios e notificações formais são gerados para os gestores do Metrô e áreas afetadas, detalhando o incidente e as medidas adotadas.
+
+- Aperfeiçoamento contínuo: Aprendizado a partir dos incidentes para fortalecer políticas de segurança, melhorar detecção e respostas, atualizando processos e tecnologias.
+
+- Testes periódicos: Exercícios simulados e testes de restauração são realizados para garantir que os planos de recuperação funcionem efetivamente, reduzindo o tempo de indisponibilidade.
+
+
+&nbsp;A seção 6.3.2 RNF-02 reforça que a segurança do sistema novo será garantida por monitoramento integrado e contínuo, controles preventivos rigorosos e respostas rápidas a incidentes. Com o uso de SIEM, IAM, WAF e IA para análise comportamental, o sistema elimina as vulnerabilidades atuais, assegurando proteção, rastreabilidade e resiliência. O foco na recuperação ágil pós-incidente fecha o ciclo de segurança, garantindo governança eficaz e continuidade para os projetos do Metrô de São Paulo.
 
 ### 6.3.3 RNF-03 — <Rastreabilidade>
 
