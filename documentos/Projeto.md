@@ -1936,12 +1936,6 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 8. **Cache**:
     - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
 
-<div align="center">
-  <sub>Figura X - Fluxo proposto para escalabilidade</sub>
-    <img src="../documentos/img/section6/proposed_architecture.png" width="100%">
-  <sup>Fonte: material elaborado pelos autores (2025).</sup>
-</div>
-
 **Eliminação das vulnerabilidades anteriores**:
   - **Dependência de _UI/Power Automate_**: agora as integrações passam por APIs controladas; o uso direto e massivo da _UI/Power Automate_ para integrações críticas é reduzido.
   - **Sem retry/sem fila antes**: agora existe fila + _retries_ + DLQ → elimina perda de transações por _throttling_.
@@ -2035,7 +2029,30 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 </div>
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos para recuperar níveis de serviço (ex.: fila de prioridade, reprocessamento, rollback), com justificativas e passos._
+
+**Componentes-chave**:
+  - _Dead Letter Queue_ (DLQ) por fila — armazena mensagens não processáveis.
+  - Reprocessamento com prioridade — UI para requeue com ajuste de prioridade.
+  - _Audit store_ (transaction log) — fonte de verdade para reprocessamentos e forensics.
+  - _Runbooks_ e _playbooks_ operacionais — procedimentos documentados para incidentes.
+  - _Snapshots_ / Backups dos dados críticos — para rollback se uma integração aplicar mudanças incorretas.
+  - Jobs de reprocessamento (_batch workers_) — workers específicos para DLQ que rodam em horário de menor tráfego.
+
+**Passos e justificativa para recuperação**:
+1. Detecção e triagem automática
+    - Alerta automático por threshold (queue depth, 429 rate) aciona runbook de contenção.
+2. Mitigação imediata (automática)
+    - Auto-scale de workers; circuit breaker abre para reduzir chamadas; shedding para tarefas não críticas.
+    - Resultado: preserva capacidade para fluxos críticos e evita colapso total.
+3. Isolamento e investigação
+    - Ver logs e traces (Application Insights) para localizar origem (um job em loop? um connector mal configurado?).
+4. Reprocessamento controlado
+    - Mensagens em DLQ analisadas via UI: operador corrige payload (se necessário) e requeue selecionando prioridade.
+    - Reprocessamento em batch com rate control para evitar novo pico.
+5. Rollback (se aplicável)
+    - Se integração escreveu dados incorretos em massa (ex.: atualizações erradas no SharePoint), usar backups/versions do SharePoint ou scripts idempotentes para restaurar.
+6. Post-mortem e ajustes
+    - Após recuperação, gerar relatório: root cause, ações corretivas (ex.: aumentar cache TTL, reduzir batch size, ajustar SLOs) e fechar ações pendentes.
 
 ---
 
