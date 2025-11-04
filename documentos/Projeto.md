@@ -1982,7 +1982,32 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 ### 6.3.1 RNF-01 — <Escalabilidade>
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como o nível de atendimento deste RNF será monitorado (componentes, métricas, SLIs/SLOs), justificando como a monitoração aprimorada suplantará limitações do atual._
+
+**Componentes de Observalidade**:
+  - _Azure Monitor_ + _Log Analytics_: centraliza logs, métricas e alertas.
+  - _Application Insights_: traces distribuídos, dependências, custom events.
+  - _Dashboards_ (Power BI ou Grafana conectado ao Log Analytics): visibilidade operacional.
+  - _Alerting_: _action groups_ (email, Teams, runbook, PagerDuty).
+  - _Health endpoints & exporter_: cada _worker_ expõe `/health` e métricas _Prometheus-compatible_ (se AKS).
+
+**SLIs (_Service Level Indicators_)**:
+  - **_Success rate_**: % de transações processadas com status SUCCESS em intervalo.
+  - **_Latency_**: p50/p95/p99 da latência de resposta (API ingress) e tempo de processamento na fila.
+  - **Queue depth**: número de messages na fila por nome (Service Bus).
+  - **Retry rate**: % de mensagens que passaram por retry.
+  - **DLQ rate**: mensagens/dia que vão para DLQ.
+  - **Throttling events**: contagem de erros 429/requests limit hits por origem.
+
+**_SLOs (Service Level Objectives)_**:
+  - **Disponibilidade API**: 99.9% (mensal).
+  - **Success Rate**: ≥ 99.5% transações concluídas sem intervenção manual.
+  - **Latency**: p95 < 2s para chamadas de API de controle; tempo de processamento assíncrono PROCESS_COMPLETE p95 ≤ 2 min (depende de integração).
+  - **Queue Depth**: alertar se mensagens por fila > 1.000 (ou 10× média normal).
+  - **DLQ rate**: < 0.1% das mensagens (meta operacional). 
+
+**SLAs operacionais**:
+- Métricas automatizadas (queue depth, throttling events) substituem monitoramento manual; correlação logs-traces facilita identificação de gargalos.
+- Dashboards e alertas automáticos permitem ação preventiva (_scale out_) antes de degradação.
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
 _Esta seção deve listar os componentes e táticas preventivas (ex.: auto-scaling, rate limiting, cache) e reativas (ex.: circuit breaker, shedding) que eliminam as limitações._
