@@ -2287,9 +2287,70 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 #### A. Entrada
 
+**Tipos de entrada**:
+  - Ações de usuário vindas de UI (SharePoint forms, Miro hooks): criação/atualização de itens, anexos, solicitações de workflow.
+  - Jobs/integrações programadas (sincronizações Power BI, exportações, ingestões de planilhas).
+  - Webhooks/automations vindos de Miro ou de ferramentas externas.
+
+**Origens**:
+  - Sharepoint 
+  - PowerBI (refresh requests / queries read-only)
+  - Miro (webhooks)
+  - Integradores externos
+
+**Frequência/Volumetria**: 
+  - Usuários ativos: 40–60 em ciclos mensais.
+  - Padrão operacional: até 5–10 _requests_ por usuário/hora durante pico de atividade colaborativa.
+  - Pico aceitável: 200–300 reqs/min (~3–5 req/s) para garantir margem; dimensionamento automático lidará com variações. 
+  - Picos curtos de até 60s a 5 min com ampliação automática (_auto-scale_) para o dobro da taxa média esperada.
+  - Se necessário, modo _burst_: filas absorvem _bursts_ maiores sem perda de dados.
+
 #### B. Saída
 
+**Registros (persistidos em DB de auditoria)**:
+  
+- **Transação bem-sucedida (SUCCESS)**: `tx_id`, `origem`, `endpoint`, `payload_ref`, `status=SUCCESS`, `timestamp_in`, `timestamp_out`, `latency_ms`, `worker_id`, `retries`, `output_ref`.
+- **Transação reprocessada com sucesso (RETRIED_SUCCESS)**: Mesmos campos + `retry_count`, `first_failure_timestamp`, `recovery_path (auto/manual)`.
+- **Transação pendente/na fila (PENDING)**: `tx_id`, `origin`, `queue_name`, `enqueue_time`, `priority`.
+- **Transação rejeitada (REJECTED)**: `tx_id`, `origin`, `reason_code (RATE_LIMIT, AUTH, SIZE_EXCEEDED, INVALID_PAYLOAD)`, `rejection_time`, `policy_id`.
+- **Transação movida para Dead Letter Queue (DLQ/POISON)**: `tx_id`, `origin`, `failure_reason`, `attempts`, `dlq_timestamp`, `sample_payload_ref`.
+
+**Melhorias propostas**:
+  - **Rastreabilidade completa**: cada transação fica identificável (`tx_id`) e com histórico de tentativas. Hoje, fluxos falhos “desaparecem” ou ficam sem rastreio; no novo sistema tudo fica auditado.
+  - **Detecção de padrão de falhas**: logs estruturados permitem agrupar por reason_code (ex.: SharePoint Throttling) e tomar medidas (caching, backoff).
+  - **Métricas acionáveis**: taxas de REJECTED por reason_code = indicador direto de gargalo ou política inadequada.
+  - **Sem perda de dados**: mensagens rejeitadas por rate limiting ficam registradas e reprocessáveis — hoje muitas dependem de intervenção manual.
+
 #### C. Controle do RNF
+
+**Camadas e táticas envolvidas**:
+
+1. **_API Gateway_ / _Azure API Management_**: 
+    - Centraliza todas as chamadas externas - autenticação (_Azure AD_), _rate limiting_ por _subscription/key / caller_, _quotas_ por cliente, _policies_ de _transformation_.
+    - Rejeição por excesso é registrada com `reason_code RATE_LIMIT` e métricas incrementadas.
+2. **_Queueing_ (_Azure Service Bus_)** — desacoplamento:
+    - Todas as transações que exigem integração com _SharePoint/Power BI_ são enqueueadas. _Workers_ consomem a fila com _backoff_ e _concurrency control_.
+    - _Rate Limiting_ e _Throttling_ do SharePoint são mitigados: fila controla taxa de saída.
+3. **_Workers_ (_Azure Functions_)**:
+    - Processamento assíncrono com _retry_ automático (exponencial + _jitter_) e _circuit-breaker logic_.
+    - _Retries_ limitados; mensagens que excedem attempts vão para DLQ.
+4. **_Retries_ e _Dead-Letter Queues_**:
+    - Retry automático parametrizado (ex.: 3 tentativas com _backoff_) e DLQs para tratamento manual ou _reprocessing_.
+5. **Persistência de eventos + _transaction log_ (Azure SQL + Blob)**
+    - Log central com status e _payload refs_.
+6. **Operações/Interface manual**:
+    - Painel de reprocessamento: mostra DLQ, permite _requeue_ com correção, priorização manual e export de incidentes.
+7. **Políticas de _shedding_ e _circuit breaker_**:
+    - Em caso de sobrecarga persistente, o _gateway_ devolve errors controlados (HTTP 429) e ativa _shedding_ para preservar disponibilidade.
+8. **Cache**:
+    - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
+
+**Eliminação das vulnerabilidades anteriores**:
+  - **Dependência de _UI/Power Automate_**: agora as integrações passam por APIs controladas; o uso direto e massivo da _UI/Power Automate_ para integrações críticas é reduzido.
+  - **Sem retry/sem fila antes**: agora existe fila + _retries_ + DLQ → elimina perda de transações por _throttling_.
+  - **Controle de tráfego**: _API Management_ + _Service Bus_ + _Workers_ permitem aplicar _Rate Limiting_ e balanceamento do processamento, reduzindo _Throttling_ do SharePoint.
+
+---
 
 ### 6.2.2 RNF-02 — <Segurança>
 
@@ -2434,15 +2495,82 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 
 #### A. Como monitorar o RNF
 
-_Esta seção deve indicar como o nível de atendimento deste RNF será monitorado (componentes, métricas, SLIs/SLOs), justificando como a monitoração aprimorada suplantará limitações do atual._
+**Componentes de Observalidade**:
+  - _Azure Monitor_ + _Log Analytics_: centraliza logs, métricas e alertas.
+  - _Application Insights_: traces distribuídos, dependências, custom events.
+  - _Dashboards_ (Power BI ou Grafana conectado ao Log Analytics): visibilidade operacional.
+  - _Alerting_: _action groups_ (email, Teams, runbook, PagerDuty).
+  - _Health endpoints & exporter_: cada _worker_ expõe `/health` e métricas _Prometheus-compatible_ (se AKS).
+
+**SLIs (_Service Level Indicators_)**:
+  - **_Success rate_**: % de transações processadas com status SUCCESS em intervalo.
+  - **_Latency_**: p50/p95/p99 da latência de resposta (API ingress) e tempo de processamento na fila.
+  - **Queue depth**: número de messages na fila por nome (Service Bus).
+  - **Retry rate**: % de mensagens que passaram por retry.
+  - **DLQ rate**: mensagens/dia que vão para DLQ.
+  - **Throttling events**: contagem de erros 429/requests limit hits por origem.
+
+**_SLOs (Service Level Objectives)_**:
+  - **Disponibilidade API**: 99.9% (mensal).
+  - **Success Rate**: ≥ 99.5% transações concluídas sem intervenção manual.
+  - **Latency**: p95 < 2s para chamadas de API de controle; tempo de processamento assíncrono PROCESS_COMPLETE p95 ≤ 2 min (depende de integração).
+  - **Queue Depth**: alertar se mensagens por fila > 1.000 (ou 10× média normal).
+  - **DLQ rate**: < 0.1% das mensagens (meta operacional). 
+
+**SLAs operacionais**:
+- Métricas automatizadas (queue depth, throttling events) substituem monitoramento manual; correlação logs-traces facilita identificação de gargalos.
+- Dashboards e alertas automáticos permitem ação preventiva (_scale out_) antes de degradação.
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
 
-_Esta seção deve listar os componentes e táticas preventivas (ex.: auto-scaling, rate limiting, cache) e reativas (ex.: circuit breaker, shedding) que eliminam as limitações._
+<div align="center">
+<sub>Tabela X - Mecanismos Preventivos e Reativos</sub>
+
+| Tipo           | Componente/Mecanismo                                                                                                                                                      | Natureza                   | Vulnerabilidade / Observação                                                                                         |
+| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| **Preventiva** | **Rate Limiting no Edge (API Management)** — Implementa cotas por cliente e controle de rajadas (burst control) para evitar picos que provoquem throttling no SharePoint. | Arquitetural / Plataforma  | Depende de integração correta com o gateway; sem configuração granular, alguns fluxos ainda podem saturar o destino. |
+| **Preventiva** | **Desacoplamento via Filas (Azure Service Bus)** — Absorve picos de requisições e processa de forma gradual conforme a capacidade do destino.                             | Arquitetural / Plataforma  | Falha se consumidores não respeitarem o ritmo da fila ou se houver gargalo no worker.                                |
+| **Preventiva** | **Auto-scaling (Workers e API Layer)** — Escalonamento horizontal baseado em métricas de CPU e profundidade da fila.                                                      | Arquitetural / Plataforma  | Limites do provedor podem restringir o scaling dinâmico; não resolve throttling do SharePoint.                       |
+| **Preventiva** | **Cache Layer (Azure Cache for Redis)** — Reduz leituras repetitivas ao SharePoint para dados estáticos/semi-estáticos.                                                   | Arquitetural               | Requer estratégia de invalidação bem definida; risco de dados desatualizados.                                        |
+| **Preventiva** | **Throttling-aware Clients** — Clientes implementam backoff exponencial e jitter, evitando reenvios agressivos.                                                           | Lógica de Aplicação        | Se mal configurado, pode aumentar a latência geral e congestionar filas.                                             |
+| **Preventiva** | **Bulk/Batching** — Agrupar operações em lotes para reduzir o número de chamadas ao SharePoint.                                                                           | Lógica de Aplicação        | Nem todos os endpoints suportam batching; erros parciais dificultam rollback.                                        |
+| **Preventiva** | **Rate-controlled Connectors** — Wrappers que limitam taxa de chamadas a serviços externos (SP, Power BI).                                                                | Lógica de Aplicação        | Pode introduzir filas internas não monitoradas; risco de latência acumulada.                                         |
+| **Preventiva** | **Capacity Planning & Load Testing (k6, JMeter)** — Testes regulares para medir limites e ajustar thresholds.                                                             | Processual / Arquitetural  | Depende de disciplina operacional; não previne picos reais em produção.                                              |
+| **Reativa**    | **Circuit Breaker** — Suspende tentativas quando SharePoint retorna erros sucessivos; reduz pressão sobre o serviço.                                                      | Lógica de Aplicação        | Exige monitoração para reabrir circuito no tempo certo; risco de downtime prolongado.                                |
+| **Reativa**    | **Shedding / Graceful Degradation** — Prioriza fluxos críticos, adia ou descarta tarefas não críticas.                                                                    | Arquitetural / Estratégica | Pode afetar SLAs de fluxos secundários; requer classificação prévia.                                                 |
+| **Reativa**    | **Backpressure** — Instrui gateways e produtores a reduzir envios quando filas estão cheias ou destino saturado.                                                          | Arquitetural               | Falha se não houver integração entre produtores e consumidores.                                                      |
+| **Reativa**    | **Escalada Automática por Thresholds** — Policies que disparam scale-up/replicação com base em métricas (latência, fila).                                                 | Arquitetural / Plataforma  | Requer telemetria precisa; pode demorar para reagir a picos súbitos.                                                 |
+| **Reativa**    | **Runbooks Automáticos (Azure Automation / Logic Apps)** — Executam ações de mitigação quando alertas críticos são disparados.                                            | Operacional / Plataforma   | Necessário definir gatilhos e scripts robustos; risco de intervenção incorreta.                                      |
+| **Reativa**    | **Fallbacks** — Utiliza cópias read-only ou dados cacheados quando o SharePoint está indisponível ou lento.                                                               | Arquitetural               | Dados podem estar desatualizados; nem sempre aplicável a fluxos de escrita.                                          |
+
+<sup>Fonte: material elaborado pelos autores (2025).</sup>
+</div>
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 
-_Esta seção deve descrever os componentes e procedimentos para recuperar níveis de serviço (ex.: fila de prioridade, reprocessamento, rollback), com justificativas e passos._
+**Componentes-chave**:
+  - _Dead Letter Queue_ (DLQ) por fila — armazena mensagens não processáveis.
+  - Reprocessamento com prioridade — UI para requeue com ajuste de prioridade.
+  - _Audit store_ (transaction log) — fonte de verdade para reprocessamentos e forensics.
+  - _Runbooks_ e _playbooks_ operacionais — procedimentos documentados para incidentes.
+  - _Snapshots_ / Backups dos dados críticos — para rollback se uma integração aplicar mudanças incorretas.
+  - Jobs de reprocessamento (_batch workers_) — workers específicos para DLQ que rodam em horário de menor tráfego.
+
+**Passos e justificativa para recuperação**:
+1. Detecção e triagem automática
+    - Alerta automático por threshold (queue depth, 429 rate) aciona runbook de contenção.
+2. Mitigação imediata (automática)
+    - Auto-scale de workers; circuit breaker abre para reduzir chamadas; shedding para tarefas não críticas.
+    - Resultado: preserva capacidade para fluxos críticos e evita colapso total.
+3. Isolamento e investigação
+    - Ver logs e traces (Application Insights) para localizar origem (um job em loop? um connector mal configurado?).
+4. Reprocessamento controlado
+    - Mensagens em DLQ analisadas via UI: operador corrige payload (se necessário) e requeue selecionando prioridade.
+    - Reprocessamento em batch com rate control para evitar novo pico.
+5. Rollback (se aplicável)
+    - Se integração escreveu dados incorretos em massa (ex.: atualizações erradas no SharePoint), usar backups/versions do SharePoint ou scripts idempotentes para restaurar.
+6. Post-mortem e ajustes
+    - Após recuperação, gerar relatório: root cause, ações corretivas (ex.: aumentar cache TTL, reduzir batch size, ajustar SLOs) e fechar ações pendentes.
 
 ---
 
