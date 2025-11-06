@@ -23,8 +23,8 @@
 
 # Sumário
 
-- [Nome do Projeto: ](#nome-do-projeto-)
-  - [Nome do Grupo: ](#nome-do-grupo-)
+- [Nome do Projeto: Estação Portuguesa Tietê Acesso ao Terminal Rodoviário](#nome-do-projeto-estação-portuguesa-tietê-acesso-ao-terminal-rodoviário)
+  - [Nome do Grupo: Estação Paraíso](#nome-do-grupo-estação-paraíso)
   - [Integrantes:](#integrantes)
 - [Sumário](#sumário)
 - [Projeto · Módulo 08 – Arquitetura Digital Segura e Tolerante a Falhas](#projeto--módulo-08--arquitetura-digital-segura-e-tolerante-a-falhas)
@@ -90,19 +90,142 @@
       - [**4. Escalabilidade e Performance**](#4-escalabilidade-e-performance)
 - [4. Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
   - [4.1 Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
+    - [**RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**](#rnf-01-rastreabilidade--prioridade-alta)
+    - [**RNF-02: Segurança**  **PRIORIDADE ALTA**](#rnf-02-segurança--prioridade-alta)
+    - [**RNF-03: Escalabilidade**  **PRIORIDADE ALTA**](#rnf-03-escalabilidade--prioridade-alta)
   - [4.2 Justificativas para RNFs](#42-justificativas-para-rnfs)
+    - [4.2.1 Controle de Riscos e Mitigação](#421-controle-de-riscos-e-mitigação)
+    - [4.2.2 Argumentação por RNF](#422-argumentação-por-rnf)
+      - [**Rastreabilidade**](#rastreabilidade)
+      - [**Segurança**](#segurança)
+      - [**Escalabilidade**](#escalabilidade)
   - [4.3 Melhorias Esperadas com Implementação de RNFs](#43-melhorias-esperadas-com-implementação-de-rnfs)
+    - [4.3.1 Melhorias por RNF](#431-melhorias-por-rnf)
+    - [4.3.2 Indicadores Consolidados](#432-indicadores-consolidados)
+    - [4.3.3 Benefícios Transversais](#433-benefícios-transversais)
   - [4.4 Consolidação dos Requisitos e Diretrizes para a Nova Arquitetura](#44-consolidação-dos-requisitos-e-diretrizes-para-a-nova-arquitetura)
+    - [4.4.1 Requisitos Não Funcionais (Priorizados)](#441-requisitos-não-funcionais-priorizados)
+    - [4.4.2 Requisitos Funcionais (Suporte)](#442-requisitos-funcionais-suporte)
+    - [4.4.3 Diretrizes Arquiteturais](#443-diretrizes-arquiteturais)
+    - [4.4.4 Mapa de Rastreabilidade](#444-mapa-de-rastreabilidade)
 - [5. Avaliação dos Mecanismos Utilizados no Sistema Atual (Diagnóstico ATAM)](#5-avaliação-dos-mecanismos-utilizados-no-sistema-atual-diagnóstico-atam)
-  - [5.1 Revisão do Mapa de RNFs e Vulnerabilidades](#51-revisão-do-mapa-de-rnfs-e-vulnerabilidades)
-  - [5.2 Táticas Arquiteturais e Componentes Adotados](#52-táticas-arquiteturais-e-componentes-adotados)
-  - [5.3 Análise de Causas e Impactos](#53-análise-de-causas-e-impactos)
+  - [5.1 Mapa de RNFs](#51-mapa-de-rnfs)
+  - [5.2 Revisão do Mapa de RNFs e Vulnerabilidades](#52-revisão-do-mapa-de-rnfs-e-vulnerabilidades)
+    - [**Fluxo de Trabalho do Sistema Atual (AS-IS)**](#fluxo-de-trabalho-do-sistema-atual-as-is)
+    - [**Consolidação dos RNFs e Vulnerabilidades Mapeadas**](#consolidação-dos-rnfs-e-vulnerabilidades-mapeadas)
+    - [5.2.1 RNF-01 — Escalabilidade](#521-rnf-01--escalabilidade)
+      - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada)
+      - [B. Saída – Registros de Transações Corretas e Inadequadas](#b-saída--registros-de-transações-corretas-e-inadequadas)
+      - [C. Controle do RNF – Indicação de Controle](#c-controle-do-rnf--indicação-de-controle)
+    - [5.2.2 RNF-02 — \<Segurança\>](#522-rnf-02--segurança)
+      - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada-1)
+      - [B. Saída - Registros de Transações Corretas e Inadequadas](#b-saída---registros-de-transações-corretas-e-inadequadas)
+      - [C. Controle do RNF - Indicação de Controle](#c-controle-do-rnf---indicação-de-controle)
+      - [1ª Etapa (Elaboração de Cronograma) - Controle de Acesso ao SharePoint:](#1ª-etapa-elaboração-de-cronograma---controle-de-acesso-ao-sharepoint)
+      - [2ª Etapa (Documentação Miro/TAP) - Duplo Controle:](#2ª-etapa-documentação-mirotap---duplo-controle)
+      - [3ª Etapa (Reporte Mensal) - Controle de Atualização:](#3ª-etapa-reporte-mensal---controle-de-atualização)
+      - [4ª Etapa (Armazenamento de Dados) - Controle de Inserção/Alteração:](#4ª-etapa-armazenamento-de-dados---controle-de-inserçãoalteração)
+      - [5ª Etapa (Geração de Relatórios) - Controle de Acesso e Exportação:](#5ª-etapa-geração-de-relatórios---controle-de-acesso-e-exportação)
+    - [5.2.3 RNF-03 — Rastreabilidade](#523-rnf-03--rastreabilidade)
+      - [A. Entrada](#a-entrada)
+      - [B. Saída](#b-saída)
+      - [C. Controle do RNF](#c-controle-do-rnf)
+  - [5.3 Táticas Arquiteturais e Componentes Adotados](#53-táticas-arquiteturais-e-componentes-adotados)
+    - [5.3.1 RNF-01 — Escalabilidade](#531-rnf-01--escalabilidade)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos)
+    - [5.3.2 RNF-02 — \<Segurança\>](#532-rnf-02--segurança)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-1)
+        - [1ª Etapa (Elaboração de Cronograma) - SharePoint Audit Logs:](#1ª-etapa-elaboração-de-cronograma---sharepoint-audit-logs)
+        - [2ª Etapa (Documentação Miro/TAP):](#2ª-etapa-documentação-mirotap)
+        - [3ª Etapa (Reporte Mensal) - SharePoint Audit Logs:](#3ª-etapa-reporte-mensal---sharepoint-audit-logs)
+        - [4ª Etapa (Armazenamento de Dados) - SharePoint Audit Logs:](#4ª-etapa-armazenamento-de-dados---sharepoint-audit-logs)
+        - [5ª Etapa (Geração de Relatórios):](#5ª-etapa-geração-de-relatórios)
+        - [Componentes Transversais de Monitoramento de Segurança:](#componentes-transversais-de-monitoramento-de-segurança)
+        - [Indicadores de Nível de Serviço de Segurança (SLIs/SLOs):](#indicadores-de-nível-de-serviço-de-segurança-slisslos)
+        - [Tipo de Monitoramento:](#tipo-de-monitoramento)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-1)
+        - [Táticas Preventivas:](#táticas-preventivas)
+          - [1ª Etapa (Elaboração de Cronograma) - Controle de Acesso:](#1ª-etapa-elaboração-de-cronograma---controle-de-acesso)
+          - [2ª Etapa (Documentação Miro/TAP) - Rastreabilidade e Controle de Integridade:](#2ª-etapa-documentação-mirotap---rastreabilidade-e-controle-de-integridade)
+          - [3ª Etapa (Reporte Mensal) - Validação de Status:](#3ª-etapa-reporte-mensal---validação-de-status)
+          - [4ª Etapa (Armazenamento de Dados) - Controle de Alterações Críticas:](#4ª-etapa-armazenamento-de-dados---controle-de-alterações-críticas)
+          - [5ª Etapa (Geração de Relatórios) - Controle de Exportação:](#5ª-etapa-geração-de-relatórios---controle-de-exportação)
+          - [Táticas Preventivas Transversais (Microsoft 365):](#táticas-preventivas-transversais-microsoft-365)
+        - [Táticas Reativas:](#táticas-reativas)
+          - [Detecção de Violações:](#detecção-de-violações)
+          - [Contenção de Incidentes:](#contenção-de-incidentes)
+          - [Correção e Recuperação:](#correção-e-recuperação)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-1)
+        - [Componentes de Recuperação por Tipo de Incidente:](#componentes-de-recuperação-por-tipo-de-incidente)
+          - [1. Acesso Inadequado a Cronogramas/TAPs/Documentos (Violação de Segregação por Projeto):](#1-acesso-inadequado-a-cronogramastapsdocumentos-violação-de-segregação-por-projeto)
+          - [2. Manipulação de Dados em Transferência Manual (Miro → TAP no SharePoint):](#2-manipulação-de-dados-em-transferência-manual-miro--tap-no-sharepoint)
+          - [3. Alteração Não Autorizada de Documentos Críticos (TAP Aprovado, Cronograma Baseline):](#3-alteração-não-autorizada-de-documentos-críticos-tap-aprovado-cronograma-baseline)
+          - [4. Exclusão Acidental ou Maliciosa de Documentos:](#4-exclusão-acidental-ou-maliciosa-de-documentos)
+          - [5. Exportação Não Autorizada e Vazamento de Informações:](#5-exportação-não-autorizada-e-vazamento-de-informações)
+          - [6. Indisponibilidade por Falha da Microsoft 365:](#6-indisponibilidade-por-falha-da-microsoft-365)
+    - [5.3.3 RNF-03 — Rastreabilidade](#533-rnf-03--rastreabilidade)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-2)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-2)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-2)
+  - [5.4 Análise de Causas e Impactos](#54-análise-de-causas-e-impactos)
+    - [5.4.1 RNF-01 — Escalabilidade](#541-rnf-01--escalabilidade)
+      - [Causas e Impactos da Quebra de Escalabilidade](#causas-e-impactos-da-quebra-de-escalabilidade)
+      - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço)
+      - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos)
+    - [5.4.2 RNF-02 — \<Segurança\>](#542-rnf-02--segurança)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-3)
+        - [Matriz Consolidada de Recuperação por Tipo de Incidente:](#matriz-consolidada-de-recuperação-por-tipo-de-incidente)
+        - [Template de Relatório de Incidente para Gestão:](#template-de-relatório-de-incidente-para-gestão)
+        - [Documentação de Suporte para Justificativas (Anexos-Padrão):](#documentação-de-suporte-para-justificativas-anexos-padrão)
+        - [Critérios para Escalonamento de Incidentes:](#critérios-para-escalonamento-de-incidentes)
+        - [Exemplo de Justificativa Consolidada para Alta Gestão:](#exemplo-de-justificativa-consolidada-para-alta-gestão)
+        - [Vulnerabilidade Final de Recuperação:](#vulnerabilidade-final-de-recuperação)
+    - [5.4.3 RNF-03 — Rastreabilidade](#543-rnf-03--rastreabilidade)
+      - [Causas e Impactos da Quebra de Rastreabilidade](#causas-e-impactos-da-quebra-de-rastreabilidade)
+      - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço-1)
+      - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos-1)
 - [6. Especificação da Solução Técnica do Sistema Novo](#6-especificação-da-solução-técnica-do-sistema-novo)
   - [6.1 Revisão do Mapa de RNFs do Sistema Novo](#61-revisão-do-mapa-de-rnfs-do-sistema-novo)
-  - [6.2 Táticas Arquiteturais e Componentes Adotados](#62-táticas-arquiteturais-e-componentes-adotados)
-  - [6.3 Justificativas Arquiteturais e Racional das Decisões](#63-justificativas-arquiteturais-e-racional-das-decisões)
+  - [6.2 Revisão do Mapa de RNFs do Sistema Novo e Vulnerabilidades Eliminadas](#62-revisão-do-mapa-de-rnfs-do-sistema-novo-e-vulnerabilidades-eliminadas)
+    - [6.2.1 RNF-01 — ](#621-rnf-01--)
+      - [A. Entrada](#a-entrada-1)
+      - [B. Saída](#b-saída-1)
+      - [C. Controle do RNF](#c-controle-do-rnf-1)
+    - [6.2.2 RNF-02 — \<Segurança\>](#622-rnf-02--segurança)
+      - [A. Entrada](#a-entrada-2)
+      - [B. Saída](#b-saída-2)
+      - [C. Controle do RNF](#c-controle-do-rnf-2)
+    - [6.2.3 RNF-03 — ](#623-rnf-03--)
+      - [A. Entrada](#a-entrada-3)
+      - [B. Saída](#b-saída-3)
+      - [C. Controle do RNF](#c-controle-do-rnf-3)
+  - [6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)](#63-táticas-arquiteturais-e-componentes-adotados-sistema-novo)
+    - [6.3.1 RNF-01 — ](#631-rnf-01--)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-3)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-3)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-4)
+    - [6.3.2 RNF-02 — \<Segurança\>](#632-rnf-02--segurança)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-4)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-4)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-5)
+    - [6.3.3 RNF-03 — ](#633-rnf-03--)
+      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-5)
+      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-5)
+      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-6)
   - [6.4 Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
-- [7. Simulação do Sistema Novo](#7-simulação-do-sistema-novo)
+ - [7. Simulação do Sistema](#7-simulação-do-sistema)
+   - [7.1 Simulação RNF - 01](#71-simulação-rnf---01)
+     - [7.1.1 Simulação Sistema: Atual](#711-simulação-sistema-atual)
+     - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
+   - [7.2 Simulação RNF - 02](#72-simulação-rnf---02)
+     - [7.2.1 Simulação Sistema: Atual](#721-simulação-sistema-atual)
+     - [7.2.2 Simulação Sistema: Novo](#722-simulação-sistema-novo)
+   - [7.3 Simulação RNF - 03](#73-simulação-rnf---03)
+     - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
+     - [7.3.2 Simulação Sistema: Novo](#732-simulação-sistema-novo)
+   - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
   - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
 - [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
@@ -402,7 +525,6 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 
 &emsp;O sistema atual de gestão de portfólio do Metrô de São Paulo utiliza majoritariamente ferramentas do ecossistema Microsoft (_SharePoint_, _Power Automate_, _Power BI_) e o _Miro_ como apoio colaborativo. Apesar de atender às demandas básicas, essa estrutura apresenta riscos operacionais e técnicos relacionados à integração, à dependência de processos manuais e à governança dos dados.
 
-
 <div align="center">
   <sub>Figura X - Matriz de Risco</sub>
   <img src="../documentos/img/section2/risk_matrix.png">
@@ -411,34 +533,34 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 
 ### 2.2.2 Riscos ligados ao sistema
 
-| Código | Nome do Risco | Tipo | Descrição | Aspectos Afetados | Probabilidade | Impacto |
-|:--:|:--|:--|:--|:--|:--:|:--:|
-| **R1** | **Inconsistência de Dados** | Técnico / Negócio | O preenchimento manual de informações em diferentes plataformas (Miro, SharePoint, Excel) pode gerar divergências e falta de padronização. | **Precisão**, **Integridade de Dados** | 70% | Alto |
-| **R2** | **Dependência de Processos Manuais** | Técnico / Operacional | A ausência de automação completa para entrada, validação e atualização de dados aumenta a chance de erros humanos. | **Desempenho**, **Disponibilidade**, **Confiabilidade** | 80% | Moderado | 
-| **R3** | **Falha de Integração entre Ferramentas** | Técnico | Problemas de sincronização entre _Power Automate_, _Power BI_ e _SharePoint_ podem comprometer relatórios e atualizações de status. | **Disponibilidade**, **Tolerância a Falhas**, **Desempenho** | 60% | Alto | 
-| **R4** | **Acesso Indevido a Informações** | Compliance / Segurança | Falhas nas permissões de acesso no _SharePoint_ ou _Power BI_ podem permitir a visualização de dados sensíveis por usuários não autorizados. | **Segurança**, **Governança**, **Confidencialidade** | 40% | Muito Alto | 
-| **R5** | **Baixa Rastreabilidade das Ações** | Técnico / Governança | As plataformas atuais não possuem logs integrados e centralizados de auditoria das ações dos usuários e fluxos do _Power Automate_. | **Rastreabilidade**, **Auditoria**, **Transparência** | 50% | Moderado | 
-| **R6** | **Dependência de Conectividade e Licenciamento Microsoft** | Negócio / Técnico | A indisponibilidade de serviços Microsoft ou falhas de licenciamento podem interromper o funcionamento das automações e relatórios. | **Disponibilidade**, **Continuidade Operacional** | 30% | Alto | 
-
+| Código | Nome do Risco                                              | Tipo                   | Descrição                                                                                                                                    | Aspectos Afetados                                            | Probabilidade |  Impacto   |
+| :----: | :--------------------------------------------------------- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- | :-----------: | :--------: |
+| **R1** | **Inconsistência de Dados**                                | Técnico / Negócio      | O preenchimento manual de informações em diferentes plataformas (Miro, SharePoint, Excel) pode gerar divergências e falta de padronização.   | **Precisão**, **Integridade de Dados**                       |      70%      |    Alto    |
+| **R2** | **Dependência de Processos Manuais**                       | Técnico / Operacional  | A ausência de automação completa para entrada, validação e atualização de dados aumenta a chance de erros humanos.                           | **Desempenho**, **Disponibilidade**, **Confiabilidade**      |      80%      |  Moderado  |
+| **R3** | **Falha de Integração entre Ferramentas**                  | Técnico                | Problemas de sincronização entre _Power Automate_, _Power BI_ e _SharePoint_ podem comprometer relatórios e atualizações de status.          | **Disponibilidade**, **Tolerância a Falhas**, **Desempenho** |      60%      |    Alto    |
+| **R4** | **Acesso Indevido a Informações**                          | Compliance / Segurança | Falhas nas permissões de acesso no _SharePoint_ ou _Power BI_ podem permitir a visualização de dados sensíveis por usuários não autorizados. | **Segurança**, **Governança**, **Confidencialidade**         |      40%      | Muito Alto |
+| **R5** | **Baixa Rastreabilidade das Ações**                        | Técnico / Governança   | As plataformas atuais não possuem logs integrados e centralizados de auditoria das ações dos usuários e fluxos do _Power Automate_.          | **Rastreabilidade**, **Auditoria**, **Transparência**        |      50%      |  Moderado  |
+| **R6** | **Dependência de Conectividade e Licenciamento Microsoft** | Negócio / Técnico      | A indisponibilidade de serviços Microsoft ou falhas de licenciamento podem interromper o funcionamento das automações e relatórios.          | **Disponibilidade**, **Continuidade Operacional**            |      30%      |    Alto    |
 
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 
 &emsp;Apesar de funcional, o ecossistema apresenta oportunidades de melhoria voltadas à disponibilidade, desempenho, segurança, rastreabilidade e governança dos dados, com foco em elevar os níveis de serviço (SLA) e reduzir riscos operacionais.
 
-| Código | Oportunidade | Descrição | SLA Impactado | Benefício Esperado |
-|:--:|:--|:--|:--|:--|
-| **O1** | **Automatização de Monitoramento de Serviços** | Criação de fluxos no Power Automate para monitorar a disponibilidade das integrações entre SharePoint, Power BI e Miro, com alertas automáticos em caso de falhas. | **Disponibilidade**, **Tolerância a Falhas** | Redução do tempo de detecção e resposta a incidentes, garantindo continuidade dos serviços. |
-| **O2** | **Padronização de Logs e Auditorias** | Implementação de uma política de versionamento e armazenamento centralizado de logs das ações realizadas nas plataformas. | **Rastreabilidade**, **Segurança** | Melhoria na rastreabilidade e suporte a auditorias internas e externas. |
-| **O3** | **Otimização de Processos no Power Automate** | Revisão e otimização dos fluxos de automação existentes para eliminar redundâncias e gargalos de execução. | **Desempenho**, **Disponibilidade** | Redução do tempo de processamento e aumento da eficiência operacional. |
-| **O4** | **Melhoria na Integração entre Ferramentas** | Criação de conectores otimizados entre SharePoint, Power BI e Miro, minimizando falhas de sincronização e perda de dados. | **Disponibilidade**, **Rastreabilidade** | Garantia de consistência dos dados e maior confiabilidade nas informações compartilhadas. |
-| **O5** | **Fortalecimento das Políticas de Segurança e Compliance** | Revisão dos controles de acesso, autenticação e permissões no SharePoint e Miro, alinhando-se às diretrizes da LGPD. | **Segurança**, **Compliance** | Diminuição do risco de acesso indevido e exposição de informações sensíveis. |
-| **O6** | **Criação de Painéis de Acompanhamento de SLA** | Desenvolvimento de dashboards no Power BI para consolidar métricas de disponibilidade, desempenho e incidentes. | **Governança**, **Transparência** | Visibilidade contínua sobre o cumprimento dos SLAs e suporte à tomada de decisão gerencial. |
+| Código | Oportunidade                                               | Descrição                                                                                                                                                          | SLA Impactado                                | Benefício Esperado                                                                          |
+| :----: | :--------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- | :------------------------------------------------------------------------------------------ |
+| **O1** | **Automatização de Monitoramento de Serviços**             | Criação de fluxos no Power Automate para monitorar a disponibilidade das integrações entre SharePoint, Power BI e Miro, com alertas automáticos em caso de falhas. | **Disponibilidade**, **Tolerância a Falhas** | Redução do tempo de detecção e resposta a incidentes, garantindo continuidade dos serviços. |
+| **O2** | **Padronização de Logs e Auditorias**                      | Implementação de uma política de versionamento e armazenamento centralizado de logs das ações realizadas nas plataformas.                                          | **Rastreabilidade**, **Segurança**           | Melhoria na rastreabilidade e suporte a auditorias internas e externas.                     |
+| **O3** | **Otimização de Processos no Power Automate**              | Revisão e otimização dos fluxos de automação existentes para eliminar redundâncias e gargalos de execução.                                                         | **Desempenho**, **Disponibilidade**          | Redução do tempo de processamento e aumento da eficiência operacional.                      |
+| **O4** | **Melhoria na Integração entre Ferramentas**               | Criação de conectores otimizados entre SharePoint, Power BI e Miro, minimizando falhas de sincronização e perda de dados.                                          | **Disponibilidade**, **Rastreabilidade**     | Garantia de consistência dos dados e maior confiabilidade nas informações compartilhadas.   |
+| **O5** | **Fortalecimento das Políticas de Segurança e Compliance** | Revisão dos controles de acesso, autenticação e permissões no SharePoint e Miro, alinhando-se às diretrizes da LGPD.                                               | **Segurança**, **Compliance**                | Diminuição do risco de acesso indevido e exposição de informações sensíveis.                |
+| **O6** | **Criação de Painéis de Acompanhamento de SLA**            | Desenvolvimento de dashboards no Power BI para consolidar métricas de disponibilidade, desempenho e incidentes.                                                    | **Governança**, **Transparência**            | Visibilidade contínua sobre o cumprimento dos SLAs e suporte à tomada de decisão gerencial. |
 
 As oportunidades identificadas visam fortalecer o sistema de gestão de projetos atual por meio de:
-- **Automatização e otimização de fluxos**, reduzindo falhas e atrasos operacionais.  
-- **Aprimoramento da rastreabilidade e governança**, com maior controle sobre logs e dados.  
-- **Reforço da segurança e conformidade**, garantindo aderência à LGPD e políticas internas.  
-- **Melhoria da integração entre ferramentas**, assegurando consistência e confiabilidade das informações.  
+
+- **Automatização e otimização de fluxos**, reduzindo falhas e atrasos operacionais.
+- **Aprimoramento da rastreabilidade e governança**, com maior controle sobre logs e dados.
+- **Reforço da segurança e conformidade**, garantindo aderência à LGPD e políticas internas.
+- **Melhoria da integração entre ferramentas**, assegurando consistência e confiabilidade das informações.
 
 Essas iniciativas contribuem para a consolidação de um **ecossistema mais estável, seguro e eficiente**, promovendo a evolução contínua da gestão de portfólio do Metrô de São Paulo.
 
@@ -456,14 +578,14 @@ A análise do sistema atual de gestão de projetos do Metrô de São Paulo revel
 
 A tabela abaixo compara o **estado atual (deficiente)** versus os **requisitos que a nova arquitetura deveria ter**, incluindo o **status de implementação** para tracking do progresso:
 
-| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               | **Checklist de Implementação** |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
-| **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos | **☐ Implementar auto-scaling horizontal**<br>**☐ Configurar load balancer (HAProxy/Nginx)**<br>**☐ Implementar processamento paralelo com IA**<br>**☐ Otimizar para milhares de usuários simultâneos**<br>**☐ Configurar métricas de escalabilidade** |
-| **Disponibilidade**         | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s                                         | Não Trabalharemos|
-| **Segurança**               | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                              | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD                                    | **☐ Implementar controle de acesso granular (RBAC)**<br>**☐ Configurar auditoria completa de ações**<br>**☐ Implementar criptografia end-to-end**<br>**☐ Garantir conformidade com LGPD**<br>**☐ Implementar autenticação multi-fator** |
+| **Requisito Não Funcional** | **Estado Atual do Metrô (Deficiente)**                                                                                                                                       | **Arquitetura Reformada (Desejada)**                                                                                                                               | **Checklist de Implementação**                                                                                                                                                                                                                              |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Escalabilidade**          | • Dependência total de ferramentas externas sem controle<br>• Ausência de balanceamento de carga<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Arquitetura escalável com auto-scaling<br>• Balanceamento de carga automático<br>• Processamento paralelo com IA<br>• Suporte a milhares de usuários simultâneos | **☐ Implementar auto-scaling horizontal**<br>**☐ Configurar load balancer (HAProxy/Nginx)**<br>**☐ Implementar processamento paralelo com IA**<br>**☐ Otimizar para milhares de usuários simultâneos**<br>**☐ Configurar métricas de escalabilidade**       |
+| **Disponibilidade**         | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                | • SLA de 99.9% garantido<br>• Redundância e failover automático<br>• Monitoramento 24/7<br>• Recuperação automática em <5s                                         | Não Trabalharemos                                                                                                                                                                                                                                           |
+| **Segurança**               | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                              | • Controle de acesso granular<br>• Auditoria completa de todas as ações<br>• Criptografia end-to-end<br>• Conformidade com LGPD                                    | **☐ Implementar controle de acesso granular (RBAC)**<br>**☐ Configurar auditoria completa de ações**<br>**☐ Implementar criptografia end-to-end**<br>**☐ Garantir conformidade com LGPD**<br>**☐ Implementar autenticação multi-fator**                     |
 | **Rastreabilidade**         | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático                                             | • Logs detalhados de todas as ações<br>• Trilha de auditoria integrada<br>• Correlação automática de eventos<br>• Compliance e relatórios automáticos              | **☐ Implementar logs detalhados de todas as ações**<br>**☐ Configurar trilha de auditoria integrada**<br>**☐ Implementar correlação automática de eventos**<br>**☐ Configurar compliance e relatórios automáticos**<br>**☐ Implementar sistema de alertas** |
-| **Performance**             | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA                                                           | Não Trabalharemos |
-| **Tolerância a Falhas**     | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                      | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente                                                 | Não Trabalharemos |
+| **Performance**             | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                | • Processamento local otimizado<br>• Cache inteligente<br>• Tempo de resposta <1s<br>• Otimização com IA                                                           | Não Trabalharemos                                                                                                                                                                                                                                           |
+| **Tolerância a Falhas**     | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                      | • Recuperação automática<br>• Redundância em múltiplas camadas<br>• Zero perda de dados<br>• Failover transparente                                                 | Não Trabalharemos                                                                                                                                                                                                                                           |
 
 ### **Principais Lacunas Identificadas no Sistema Atual:**
 
@@ -789,66 +911,69 @@ O objetivo é evidenciar as melhorias esperadas no sistema novo, considerando **
 
 Com base na análise da Seção 3.1, o sistema atual apresenta **ausência crítica de RNFs adequados**. A tabela abaixo consolida os RNFs vulneráveis identificados:
 
-| **RNF** | **Estado Atual (Deficiente)** | **Vulnerabilidades Críticas** | **Impacto no Negócio** |
-|---------|------------------------------|-------------------------------|------------------------|
-| **Escalabilidade** | • Dependência de ferramentas externas sem controle<br>• Ausência de balanceamento de carga, sem previsibilidade e controle de demanda<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Sistema colapsa com muitos usuários simultâneos<br>• Impossibilidade de crescimento proporcional à demanda<br>• Gargalos de processamento | • Operações paralisadas em picos de demanda<br>• Limitação de uso<br>• Inviabilidade de expansão futura |
-| **Disponibilidade** | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado | • Risco de indisponibilidade em software de terceiros<br>• Qualquer reparo nas ferramentas depende de uma equipe externa<br>• Perda de dados em falhas | • Paralisação de projetos de R$ 1,5 bi/ano<br>• +6.000 colaboradores impactados<br>• Perda de informações para decisões estratégicas |
-| **Segurança** | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros | • Dados sensíveis expostos a políticas externas<br>• 0% de tentativas de ataque detectadas<br>• Criptografia básica | • Risco de vazamento de informações estratégicas<br>• Violação de LGPD<br>• Danos à imagem institucional |
-| **Rastreabilidade** | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático | • Ações não auditáveis<br>• Falta de recuperação de logs<br>• Sem verificação de integridade | • Violação de compliance para empresa pública<br>• Impossibilidade de investigação de incidentes<br>• Riscos legais de multas |
-| **Performance** | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis | • Tempo de resposta muito lento<br>• Degradação severa em picos<br>• Baixa eficiência operacional | • Perda de produtividade de equipes<br>• Frustração de usuários<br>• Retrabalho por timeouts |
-| **Tolerância a Falhas** | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual | • Sistema colapsado em qualquer falha<br>• Recuperação manual prolongada<br>• Alta perda de dados | • Downtime prolongado (60-120 min)<br>• Perda de informações críticas<br>• Impacto operacional severo |
+| **RNF**                 | **Estado Atual (Deficiente)**                                                                                                                                                                                     | **Vulnerabilidades Críticas**                                                                                                                          | **Impacto no Negócio**                                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Escalabilidade**      | • Dependência de ferramentas externas sem controle<br>• Ausência de balanceamento de carga, sem previsibilidade e controle de demanda<br>• Processamento sequencial manual<br>• Limitação de usuários simultâneos | • Sistema colapsa com muitos usuários simultâneos<br>• Impossibilidade de crescimento proporcional à demanda<br>• Gargalos de processamento            | • Operações paralisadas em picos de demanda<br>• Limitação de uso<br>• Inviabilidade de expansão futura                              |
+| **Disponibilidade**     | • Dependência de SLA de terceiros (Miro/SharePoint)<br>• Ausência de redundância<br>• Sem monitoramento proativo<br>• Downtime não controlado                                                                     | • Risco de indisponibilidade em software de terceiros<br>• Qualquer reparo nas ferramentas depende de uma equipe externa<br>• Perda de dados em falhas | • Paralisação de projetos de R$ 1,5 bi/ano<br>• +6.000 colaboradores impactados<br>• Perda de informações para decisões estratégicas |
+| **Segurança**           | • Controle de acesso limitado<br>• Ausência de auditoria<br>• Dependência de políticas externas<br>• Dados expostos em ferramentas de terceiros                                                                   | • Dados sensíveis expostos a políticas externas<br>• 0% de tentativas de ataque detectadas<br>• Criptografia básica                                    | • Risco de vazamento de informações estratégicas<br>• Violação de LGPD<br>• Danos à imagem institucional                             |
+| **Rastreabilidade**     | • Logs limitados das ferramentas<br>• Ausência de trilha integrada<br>• Dificuldade de correlação<br>• Sem compliance automático                                                                                  | • Ações não auditáveis<br>• Falta de recuperação de logs<br>• Sem verificação de integridade                                                           | • Violação de compliance para empresa pública<br>• Impossibilidade de investigação de incidentes<br>• Riscos legais de multas        |
+| **Performance**         | • Dependência de conectividade externa<br>• Processamento manual<br>• Ausência de cache<br>• Tempos de resposta imprevisíveis                                                                                     | • Tempo de resposta muito lento<br>• Degradação severa em picos<br>• Baixa eficiência operacional                                                      | • Perda de produtividade de equipes<br>• Frustração de usuários<br>• Retrabalho por timeouts                                         |
+| **Tolerância a Falhas** | • Sem mecanismos de recuperação<br>• Falha única pode parar todo o sistema<br>• Perda de dados em caso de falha<br>• Recuperação manual                                                                           | • Sistema colapsado em qualquer falha<br>• Recuperação manual prolongada<br>• Alta perda de dados                                                      | • Downtime prolongado (60-120 min)<br>• Perda de informações críticas<br>• Impacto operacional severo                                |
 
 **Seleção dos RNFs Críticos (Priorizados)**
 
 Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **3 RNFs críticos**:
 
-#### **RNF-01: Rastreabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**
 
 **Justificativa:**
+
 - **Business Driver:** "Rastreabilidade completa das tentativas de acesso"
 - **Compliance:** Empresa pública sob fiscalização do TCE
 - **Risco:** Multas e violação de governança
 
 **Métricas:**
 
-| **Métrica** | **Atual** | **Meta** | **Ganho** |
-|------------|----------|---------|-----------|
-| **Cobertura logs** | Limitada | 100% | Auditabilidade total |
-| **Recuperação** | Demorada | <2s | Investigação ágil |
-| **Integridade** | 0% | 100% (hash) | Não repúdio |
-| **Compliance** | Violado | Atendido | Requisito legal |
+| **Métrica**        | **Atual** | **Meta**    | **Ganho**            |
+| ------------------ | --------- | ----------- | -------------------- |
+| **Cobertura logs** | Limitada  | 100%        | Auditabilidade total |
+| **Recuperação**    | Demorada  | <2s         | Investigação ágil    |
+| **Integridade**    | 0%        | 100% (hash) | Não repúdio          |
+| **Compliance**     | Violado   | Atendido    | Requisito legal      |
 
-#### **RNF-02: Segurança** ⭐ **PRIORIDADE ALTA**
+#### **RNF-02: Segurança**  **PRIORIDADE ALTA**
 
 **Justificativa:**
+
 - **Business Driver:** "Segurança com controle de acesso baseado em perfis"
 - **LGPD:** Proteção de dados de R$ 10 bilhões em projetos
 - **Risco:** Vazamento de informações estratégicas
 
 **Métricas:**
 
-| **Métrica** | **Atual** | **Meta** | **Ganho** |
-|------------|----------|---------|-----------|
-| **Controle acesso** | Limitado | Granular (RBAC) | Segmentação |
-| **Detecção ataques** | 0% | 100% | Proteção proativa |
-| **Criptografia** | Básica | End-to-end | Proteção integral |
-| **LGPD** | Não atendida | Atendida | Conformidade |
+| **Métrica**          | **Atual**    | **Meta**        | **Ganho**         |
+| -------------------- | ------------ | --------------- | ----------------- |
+| **Controle acesso**  | Limitado     | Granular (RBAC) | Segmentação       |
+| **Detecção ataques** | 0%           | 100%            | Proteção proativa |
+| **Criptografia**     | Básica       | End-to-end      | Proteção integral |
+| **LGPD**             | Não atendida | Atendida        | Conformidade      |
 
-#### **RNF-03: Escalabilidade** ⭐ **PRIORIDADE ALTA**
+#### **RNF-03: Escalabilidade**  **PRIORIDADE ALTA**
 
 **Justificativa:**
+
 - **Business Driver:** "Preparar sistema para crescimento futuro e integração de agentes de IA"
 - **Contexto:** Expansão da rede metroviária + aumento de projetos + automação com IA
 - **Risco:** Limitação atual impede expansão operacional
 
 **Métricas:**
 
-| **Métrica** | **Atual** | **Meta** | **Ganho** |
-|------------|----------|---------|-----------|
-| **Usuários simultâneos** | Limitado | 100+ | Suporte crescimento |
-| **Balanceamento** | Ausente | Automático | Distribuição carga |
-| **Processamento** | Sequencial | Paralelo com IA | Automação |
-| **Previsibilidade** | Zero | Total | Planejamento |
+| **Métrica**              | **Atual**  | **Meta**        | **Ganho**           |
+| ------------------------ | ---------- | --------------- | ------------------- |
+| **Usuários simultâneos** | Limitado   | 100+            | Suporte crescimento |
+| **Balanceamento**        | Ausente    | Automático      | Distribuição carga  |
+| **Processamento**        | Sequencial | Paralelo com IA | Automação           |
+| **Previsibilidade**      | Zero       | Total           | Planejamento        |
 
 ---
 
@@ -856,25 +981,28 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 ### 4.2.1 Controle de Riscos e Mitigação
 
-| **RNF** | **Risco** | **Impacto** | **Mitigação** |
-|---------|-----------|-------------|---------------|
-| **Rastreabilidade** | Logs limitados impedem auditoria | Violação compliance TCE + multas | Logs 100% + trilha integrada + hash SHA-256 |
-| **Segurança** | Dados expostos a políticas externas | Vazamento estratégico + LGPD | RBAC + detecção 100% + AES-256 |
-| **Escalabilidade** | Gargalos impedem crescimento | Operações paralisadas + expansão inviável | Auto-scaling + balanceamento + IA |
+| **RNF**             | **Risco**                           | **Impacto**                               | **Mitigação**                               |
+| ------------------- | ----------------------------------- | ----------------------------------------- | ------------------------------------------- |
+| **Rastreabilidade** | Logs limitados impedem auditoria    | Violação compliance TCE + multas          | Logs 100% + trilha integrada + hash SHA-256 |
+| **Segurança**       | Dados expostos a políticas externas | Vazamento estratégico + LGPD              | RBAC + detecção 100% + AES-256              |
+| **Escalabilidade**  | Gargalos impedem crescimento        | Operações paralisadas + expansão inviável | Auto-scaling + balanceamento + IA           |
 
 ### 4.2.2 Argumentação por RNF
 
 #### **Rastreabilidade**
+
 - **Problema:** Ações não auditáveis violam compliance público
 - **Solução:** 100% registrado + recuperação <2s + hash verification
 - **Ganho:** Conformidade TCE + investigação ágil
 
 #### **Segurança**
+
 - **Problema:** 0% ataques detectados + criptografia básica
 - **Solução:** RBAC + WAF/IDS/IPS + criptografia end-to-end
 - **Ganho:** Proteção R$ 10 bi + LGPD atendida
 
 #### **Escalabilidade**
+
 - **Problema:** Sistema colapsa com muitos usuários + sem previsibilidade
 - **Solução:** Auto-scaling + balanceamento automático + processamento paralelo
 - **Ganho:** Suporte expansão + preparação para IA
@@ -885,21 +1013,21 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 ### 4.3.1 Melhorias por RNF
 
-| **RNF** | **Atual** | **Novo** | **Ganhos** |
-|---------|----------|---------|------------|
-| **Rastreabilidade** | Logs limitados<br>Sem trilha<br>Compliance violado | 100% logs<br>Trilha integrada<br>Compliance total | Auditabilidade<br>Recuperação <2s<br>Conformidade TCE |
-| **Segurança** | Controle limitado<br>0% detecção<br>LGPD não atendida | RBAC<br>100% detecção<br>LGPD atendida | Segmentação<br>Proteção proativa<br>Conformidade legal |
-| **Escalabilidade** | Usuários limitados<br>Sem balanceamento<br>Sequencial | 100+ usuários<br>Auto-scaling<br>Paralelo IA | Suporte crescimento<br>Distribuição carga<br>Automação |
+| **RNF**             | **Atual**                                             | **Novo**                                          | **Ganhos**                                             |
+| ------------------- | ----------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| **Rastreabilidade** | Logs limitados<br>Sem trilha<br>Compliance violado    | 100% logs<br>Trilha integrada<br>Compliance total | Auditabilidade<br>Recuperação <2s<br>Conformidade TCE  |
+| **Segurança**       | Controle limitado<br>0% detecção<br>LGPD não atendida | RBAC<br>100% detecção<br>LGPD atendida            | Segmentação<br>Proteção proativa<br>Conformidade legal |
+| **Escalabilidade**  | Usuários limitados<br>Sem balanceamento<br>Sequencial | 100+ usuários<br>Auto-scaling<br>Paralelo IA      | Suporte crescimento<br>Distribuição carga<br>Automação |
 
 ### 4.3.2 Indicadores Consolidados
 
-| **Indicador** | **Atual** | **Meta** | **Impacto** |
-|--------------|----------|---------|-------------|
-| **Autonomia operacional** | Dependência externa | Controle total | Decisões ágeis |
-| **Auditabilidade** | Limitada | 100% | Compliance TCE |
-| **Detecção ameaças** | 0% | 100% | Proteção integral |
-| **Usuários simultâneos** | Limitado | 100+ | Expansão viável |
-| **Conformidade legal** | Violada | Atendida | LGPD + TCE |
+| **Indicador**             | **Atual**           | **Meta**       | **Impacto**       |
+| ------------------------- | ------------------- | -------------- | ----------------- |
+| **Autonomia operacional** | Dependência externa | Controle total | Decisões ágeis    |
+| **Auditabilidade**        | Limitada            | 100%           | Compliance TCE    |
+| **Detecção ameaças**      | 0%                  | 100%           | Proteção integral |
+| **Usuários simultâneos**  | Limitado            | 100+           | Expansão viável   |
+| **Conformidade legal**    | Violada             | Atendida       | LGPD + TCE        |
 
 ### 4.3.3 Benefícios Transversais
 
@@ -914,24 +1042,24 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 ### 4.4.1 Requisitos Não Funcionais (Priorizados)
 
-| **ID** | **RNF** | **Critérios** | **Prioridade** |
-|--------|---------|---------------|----------------|
-| **RNF-01** | **Rastreabilidade** | 100% logs + recuperação <2s + hash |ALTA |
-| **RNF-02** | **Segurança** | RBAC + 100% detecção + AES-256 |ALTA |
-| **RNF-03** | **Escalabilidade** | 100+ usuários + auto-scaling + IA |ALTA |
+| **ID**     | **RNF**             | **Critérios**                      | **Prioridade** |
+| ---------- | ------------------- | ---------------------------------- | -------------- |
+| **RNF-01** | **Rastreabilidade** | 100% logs + recuperação <2s + hash | ALTA           |
+| **RNF-02** | **Segurança**       | RBAC + 100% detecção + AES-256     | ALTA           |
+| **RNF-03** | **Escalabilidade**  | 100+ usuários + auto-scaling + IA  | ALTA           |
 
 ### 4.4.2 Requisitos Funcionais (Suporte)
 
-| **RF** | **Descrição** | **RNFs** |
-|--------|---------------|----------|
+| **RF**    | **Descrição**                           | **RNFs**       |
+| --------- | --------------------------------------- | -------------- |
 | **RF-01** | Logs centralizado (100% + hash SHA-256) | RNF-02, RNF-03 |
-| **RF-02** | Autenticação RBAC + MFA | RNF-03 |
-| **RF-03** | Failover automático <5s | RNF-01 |
-| **RF-04** | Backup contínuo + replicação | RNF-01 |
-| **RF-05** | Painel auditoria <2s | RNF-02 |
-| **RF-06** | Detecção ameaças (WAF + IDS/IPS) | RNF-03 |
-| **RF-07** | Balanceador carga automático | RNF-04 |
-| **RF-08** | Auto-scaling elástico | RNF-04 |
+| **RF-02** | Autenticação RBAC + MFA                 | RNF-03         |
+| **RF-03** | Failover automático <5s                 | RNF-01         |
+| **RF-04** | Backup contínuo + replicação            | RNF-01         |
+| **RF-05** | Painel auditoria <2s                    | RNF-02         |
+| **RF-06** | Detecção ameaças (WAF + IDS/IPS)        | RNF-03         |
+| **RF-07** | Balanceador carga automático            | RNF-04         |
+| **RF-08** | Auto-scaling elástico                   | RNF-04         |
 
 ### 4.4.3 Diretrizes Arquiteturais
 
@@ -943,11 +1071,11 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 
 ### 4.4.4 Mapa de Rastreabilidade
 
-| **Business Driver** | **RNF** | **RF** | **Benefício** |
-|---------------------|---------|--------|---------------|
-| "Rastreabilidade total" | RNF-01 | RF-01, RF-05 | 100% auditável |
-| "Segurança com controle" | RNF-02 | RF-02, RF-06 | RBAC + proteção |
-| "Escalabilidade futura" | RNF-03 | RF-07, RF-08 | Crescimento + IA |
+| **Business Driver**      | **RNF** | **RF**       | **Benefício**    |
+| ------------------------ | ------- | ------------ | ---------------- |
+| "Rastreabilidade total"  | RNF-01  | RF-01, RF-05 | 100% auditável   |
+| "Segurança com controle" | RNF-02  | RF-02, RF-06 | RBAC + proteção  |
+| "Escalabilidade futura"  | RNF-03  | RF-07, RF-08 | Crescimento + IA |
 
 ---
 
@@ -957,24 +1085,97 @@ Esta seção detalha os **mecanismos e componentes arquiteturais** do sistema at
 O objetivo é compreender **as causas dos defeitos** e construir a base para propor **táticas e soluções evolutivas**.
 
 ---
+
 ## 5.1 Mapa de RNFs
 
 _(Definir o mapa da de RNFs e definir se será realmente o decidido na última sprint)_
 
 ## 5.2 Revisão do Mapa de RNFs e Vulnerabilidades
 
-_(Esta seção deve consolidar os 3 RNFs selecionados e suas vulnerabilidades. Para cada RNF, detalhe entradas, saídas e como o controle é feito.)_
+&emsp;Esta seção apresenta a consolidação dos Requisitos Não Funcionais (RNFs) priorizados para a análise do sistema atual (AS-IS), focando nas vulnerabilidades críticas que justificam a necessidade de uma nova arquitetura. Os RNFs analisados são Escalabilidade, Segurança e Rastreabilidade.
 
-### 5.2.1 RNF-01 — <Escalabilidade>
+&emsp;A análise detalhada a seguir utiliza como referência as 5 etapas do fluxo de trabalho do Portfólio de Projetos, conforme mapeado pelo grupo.
 
-#### A. Entrada
-_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+### **Fluxo de Trabalho do Sistema Atual (AS-IS)**
 
-#### B. Saída
-_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+O sistema atual é composto por um fluxo de trabalho sequencial e manual, dividido nas seguintes etapas:
 
-#### C. Controle do RNF
-_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
+| Etapa        | Descrição                           | Ferramentas Envolvidas     |
+| :----------- | :---------------------------------- | :------------------------- |
+| **1ª Etapa** | **Elaborar Cronograma**             | Miro, MS Office            |
+| **2ª Etapa** | **Documentação do Miro para o TAP** | SharePoint, Miro           |
+| **3ª Etapa** | **Reporte Mensal de Status**        | SharePoint, Power BI       |
+| **4ª Etapa** | **Armazenamento de Dados**          | SharePoint, Power Automate |
+| **5ª Etapa** | **Geração de Relatórios**           | Power BI, SharePoint       |
+
+### **Consolidação dos RNFs e Vulnerabilidades Mapeadas**
+
+A tabela a seguir resume as principais vulnerabilidades identificadas no sistema atual, correlacionando-as com as etapas do processo e os RNFs afetados, com a linguagem técnica concisa:
+
+| RNF                 | Etapa do Processo                         | Vulnerabilidade Mapeada (Descrição Técnica Concisa)                                                                                      |
+| :------------------ | :---------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **Segurança**       | 1ª Etapa: Elaborar Cronograma             | **Controle de Acesso Insuficiente:** Dependência exclusiva do controle nativo do SharePoint.                                             |
+| **Segurança**       | 2ª Etapa: Documentação do Miro para o TAP | **Autorização Ampla e Manual:** Permissões excessivas (todos os projetos) devido à gestão manual.                                        |
+| **Rastreabilidade** | 2ª Etapa: Documentação do Miro para o TAP | **Auditoria Descentralizada:** Falta de log unificado e imutável para ações em ferramentas externas (Miro).                              |
+| **Escalabilidade**  | 3ª Etapa: Reporte Mensal de Status        | **Falta de Padronização:** Ausência de formato de dados e processo de _reporting_ padronizado.                                           |
+| **Segurança**       | 4ª Etapa: Armazenamento de Dados          | **Gestão de Permissões Manual:** Processo de concessão/revogação não auditável (risco de acesso indevido).                               |
+| **Rastreabilidade** | 4ª Etapa: Armazenamento de Dados          | **Integridade de Dados Comprometida:** Falha na captura consistente de metadados de auditoria (_quem, o quê, quando_).                   |
+| **Escalabilidade**  | 4ª Etapa: Armazenamento de Dados          | **Arquitetura de Dados Inadequada:** Uso de repositórios de arquivos (SharePoint) como banco de dados transacional.                      |
+| **Segurança**       | 5ª Etapa: Geração de Relatórios           | **Risco de Exposição de Dados:** Gestão de permissões baseada na ferramenta de _reporting_ (Power BI), sem camada de acesso segura.      |
+| **Rastreabilidade** | 5ª Etapa: Geração de Relatórios           | **Falta de Rastreabilidade de Consulta:** Ausência de auditoria sobre as consultas e dados acessados durante a geração de relatórios.    |
+| **Escalabilidade**  | 5ª Etapa: Geração de Relatórios           | **Performance de Consulta Crítica:** Dependência de repositórios de arquivos, causando lentidão e falhas em relatórios de grande volume. |
+
+---
+
+### 5.2.1 RNF-01 — Escalabilidade
+
+&emsp;A Escalabilidade é um requisito não funcional crítico para o sistema de gestão de portfólio do Metrô de São Paulo, uma vez que a instituição lida com dezenas de projetos ativos simultaneamente e depende da atualização constante de informações estratégicas. A capacidade de o sistema suportar o aumento de usuários, dados e transações sem perda de desempenho é determinante para garantir a eficiência operacional e a confiabilidade dos processos de governança.
+
+&emsp;Atualmente, o sistema é composto por um ecossistema de ferramentas como Miro e do ambiente Microsoft 365, como SharePoint, Power Automate e Power BI. Apesar de atenderem parcialmente à demanda atual, essas plataformas apresentam limitações estruturais e dependência de integrações manuais, o que restringe a expansão das operações e impede o controle direto de capacidade por parte da equipe de TI do Metrô.
+
+&emsp;A seguir, são detalhados os elementos de entrada, saída e controle que evidenciam as vulnerabilidades relacionadas à escalabilidade do ambiente atual (AS-IS).
+
+#### A. Entrada - Dados e Transações de Entrada
+
+&emsp;A entrada de dados no sistema atual ocorre de forma descentralizada e não estruturada, o que impacta diretamente a escalabilidade.
+
+- **Volume de Acessos:** O sistema suporta a entrada e atualização de dados por aproximadamente 40 a 60 usuários ativos (líderes de projeto e equipe) em ciclos mensais. As transações envolvem a edição de listas no SharePoint, a atualização de quadros no Miro e a execução de fluxos no Power Automate.
+
+- **Transações Críticas:** As operações de maior impacto na escalabilidade são o Reporte Mensal de Status (etapa 3), a transferência manual de dados para o SharePoint (etapa 4) e a geração de relatórios no Power BI (etapa 5). Todas essas atividades exigem processamento intenso e síncrono, ocasionando sobrecarga dos serviços e aumento do tempo de resposta.
+
+- **Vulnerabilidade:** A principal vulnerabilidade está na ausência de uma API centralizada, o que impede o controle técnico do tráfego de dados. Todas as integrações dependem de interfaces de usuário e conectores de terceiros (como Power Automate), impossibilitando a implementação de mecanismos de Rate Limiting, Load Balancing ou Parallel Processing, necessários para absorver picos de uso sem degradação.
+
+&emsp;Essas restrições estruturais tornam o sistema sensível a variações no volume de dados, comprometendo a capacidade de expansão e a estabilidade das operações críticas.
+
+#### B. Saída – Registros de Transações Corretas e Inadequadas
+
+&emsp;A análise da saída de dados evidencia como o sistema responde ao processamento das informações e às operações realizadas pelos usuários. A seguir, aborda-se o comportamento das transações corretas e inadequadas, destacando gargalos de desempenho e falhas que afetam a confiabilidade e a estabilidade do ambiente.
+
+- **Transações Corretas:** Em condições normais, as operações são concluídas com sucesso, resultando em listas e relatórios atualizados no SharePoint e Power BI. O sistema consegue atender às demandas de uso cotidiano, desde que o volume de requisições simultâneas se mantenha baixo.
+
+- **Transações Inadequadas:** Durante períodos de alta utilização, o sistema apresenta erros de Throttling (limitação de requisições) impostos pelo SharePoint Online, impactando diretamente fluxos críticos. Os principais sintomas observados são:
+
+  - Lentidão perceptível na execução de consultas e carregamento de dados;
+  - Perda de dados em fluxos interrompidos no Power Automate, que não completam suas execuções;
+  - Indisponibilidade temporária, devido ao bloqueio de serviços após o limite de requisições simultâneas ser atingido.
+
+&emsp;Essas falhas geram impactos diretos na governança do portfólio, uma vez que relatórios mensais e indicadores estratégicos podem conter informações incompletas ou desatualizadas, comprometendo a tomada de decisão da diretoria.
+
+- **Vulnerabilidade:** O sistema não possui mecanismos de Retry (reexecução automática) nem Message Queues (filas de mensagens). Assim, quando uma transação falha, ela não é reprocessada nem registrada adequadamente, exigindo intervenção manual e aumentando a probabilidade de inconsistências.
+
+&emsp;Em um contexto de portfólio corporativo com grande volume de projetos, essa limitação representa uma ameaça à continuidade operacional e à precisão das informações compartilhadas entre as equipes.
+
+#### C. Controle do RNF – Indicação de Controle
+
+&emsp;A análise do controle do requisito de escalabilidade permite compreender como o sistema é monitorado e administrado diante de variações de carga e limitações de desempenho. A seguir, são descritos os controles sistêmicos e manuais existentes, suas restrições operacionais e as melhorias recomendadas para garantir maior autonomia e estabilidade ao ambiente.
+
+- **Controle Sistêmico:** A infraestrutura de escalabilidade é totalmente gerida pela Microsoft (SharePoint Online), o que significa que o Metrô não possui autonomia para ajustar ou otimizar parâmetros de capacidade, balanceamento de carga ou recursos de hardware.
+
+- **Controle Manual:** O único controle existente é de natureza operacional, consistindo em orientações manuais para os usuários — como evitar horários de pico ou dividir tarefas grandes em partes menores. Esse tipo de mitigação não resolve o problema de forma arquitetural e depende do comportamento dos usuários, o que reduz a confiabilidade do sistema.
+
+- **Vulnerabilidade:** Essa dependência de um único fornecedor representa um risco crítico de disponibilidade e dificulta a gestão de performance. A falta de observabilidade (monitoramento contínuo de métricas de uso e falhas) impede que a equipe de TI detecte problemas antes que afetem o usuário final.
+
+- **Melhoria Recomendada:** A arquitetura proposta deve prever a implementação de ferramentas de monitoramento centralizado, integrando métricas de uso, logs de eventos e alertas automáticos. Isso permitiria uma reação preventiva e não apenas corretiva a incidentes, além de subsidiar futuras estratégias de escalabilidade, como o uso de serviços modulares, balanceamento dinâmico e processamento assíncrono.
 
 ---
 
@@ -1077,21 +1278,56 @@ _Esta seção deve indicar como as transações corretas e inadequadas são cont
 
 ---
 
-### 5.2.3 RNF-03 — <Rastreabilidade>
+### 5.2.3 RNF-03 — Rastreabilidade
+
+&emsp; A Rastreabilidade é um requisito não funcional crítico para o sistema de Portfólio do Metrô, pois a capacidade de auditar a origem, as modificações e o ciclo de vida dos dados é fundamental para a governança, conformidade e tomada de decisão. Na arquitetura atual, o fluxo de informações depende de processos manuais e ferramentas descentralizadas (Miro, Excel, SharePoint), criando pontos cegos que comprometem a capacidade de rastrear a linhagem dos dados de ponta a ponta, caracterizando uma vulnerabilidade significativa.
 
 #### A. Entrada
-_Esta seção deve descrever os dados e transações de entrada relevantes a este RNF (volumetria, tipos, frequência, origem), incluindo casos normais e tentativas indevidas._
+
+&emsp; A entrada de dados no sistema atual ocorre de forma descentralizada e não auditada, o que compromete fundamentalmente a rastreabilidade desde sua origem, tornando impossível para o sistema garantir a proveniência das informações que armazena.
+
+- **Transações de Entrada:** O fluxo de entrada se inicia em múltiplos componentes antes de chegar ao repositório central (SharePoint). As transações incluem a coleta de novas iniciativas via **Forms**, a priorização em planilhas **Excel** locais, e a criação de mapas de benefícios no **Miro**. Essas transações, embora normais do ponto de vista operacional, ocorrem fora do perímetro de auditoria do sistema principal, impedindo o registro de quem as realizou e quando.
+
+- **Transação Crítica para Auditoria:** A transação de maior impacto na rastreabilidade é a **transferência manual de dados do Miro e Excel para o SharePoint**. Este processo representa a entrada oficial dos dados no sistema de registro, mas opera como uma "caixa-preta". A ação de inserir ou atualizar os dados no SharePoint não é registrada de forma a conectá-la à sua fonte, tornando impossível verificar se os dados foram transcritos fielmente ou alterados no processo.
+
+- **Vulnerabilidade:** A principal vulnerabilidade reside na **ausência de um ponto de entrada de dados unificado e transacional**. Sem uma API ou um conector que gerencie a ingestão de dados de forma atômica e auditável, o sistema não tem como validar a integridade ou a origem das informações que recebe. Isso significa que uma transação de entrada inadequada (seja por erro humano ou intenção maliciosa) não é diferenciada de uma transação normal, resultando em uma corrupção silenciosa dos dados desde a sua concepção.
+
+**Tabela — Entradas que exigem rastreabilidade (RNF-03)**
+
+| Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
+| :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
+| Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
+| Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
+| Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
 
 #### B. Saída
-_Esta seção deve listar os registros de transações realizadas corretamente e as realizadas de maneira inadequada (ex.: fraudulentas), indicando como são diferenciadas e armazenadas._
+
+&emsp; A saída do sistema atual evidencia a falta de rastreabilidade não por erros que geram logs, mas pela **geração de dados cuja origem e integridade não podem ser verificadas**, mesmo que as operações individuais sejam concluídas com sucesso.
+
+- **Transações Corretas (Nominais):** Uma transação é considerada "correta" do ponto de vista técnico quando os dados são transferidos com sucesso e armazenados no SharePoint, e os relatórios são gerados no Power BI. O **resultado** é um sistema funcional, com listas e documentos atualizados, mas que esconde uma falha de rastreabilidade.
+
+- **Transações Inadequadas (Falhas de Rastreabilidade):** A inadequação não está em uma falha da transação que gera um erro, mas no **resultado** que ela produz. Uma transação que depende da transferência manual de dados do Miro/Excel para o SharePoint, mesmo que concluída sem erros, é inerentemente inadequada. O resultado é:
+
+  - **Dados Órfãos:** O sistema armazena dados no SharePoint que são "órfãos", sem qualquer vínculo sistêmico com sua fonte original no Miro ou Excel. O resultado é a impossibilidade de provar de onde veio a informação.
+  - **Integridade Comprometida:** O resultado final é um conjunto de dados no SharePoint cuja integridade é questionável. Como a transferência é manual, alterações (intencionais ou acidentais) podem ocorrer, e o sistema armazena o dado corrompido como se fosse válido.
+  - **Auditoria Impossível:** O resultado é a incapacidade de realizar uma auditoria de ponta a ponta. Se for necessário verificar por que um valor específico está no relatório final, o sistema não oferece um caminho de volta à origem.
+
+- **Vulnerabilidade:** A vulnerabilidade aqui é que o sistema **não possui um mecanismo para diferenciar dados confiáveis de dados não confiáveis**. Ele trata todos os dados armazenados no SharePoint como válidos, mesmo que sua origem seja desconhecida. A falta de um **ID de Correlação** e de um **processo de ingestão auditável** significa que o sistema armazena e processa dados potencialmente inválidos sem qualquer controle.
 
 #### C. Controle do RNF
-_Esta seção deve indicar como as transações corretas e inadequadas são controladas (sistemicamente ou manualmente), incluindo limites, regras, validações e responsáveis._
+
+&emsp; O controle sobre a Rastreabilidade no sistema atual é inexistente do ponto de vista de ponta a ponta, sendo uma solução puramente operacional e reativa, não arquitetural.
+
+- **Controle Sistêmico:** Não há controle sistêmico por parte do Metrô para a rastreabilidade do fluxo completo. O controle se resume às funcionalidades de auditoria de cada plataforma (SharePoint, Power Platform), que não são integradas. O fato de o Power Automate realizar a "Aprovação de TAP" não constitui um controle de rastreabilidade, pois ele opera sobre dados que já foram inseridos manualmente, confiando implicitamente em sua integridade, sem validá-la ou rastreá-la.
+
+- **Controle Manual:** O único "controle" é a **investigação forense reativa**, de responsabilidade do PMO ou da equipe de TI. Este processo consiste em entrevistar os envolvidos e cruzar manualmente os logs isolados de cada ferramenta para tentar reconstruir a sequência de eventos após a descoberta de uma inconsistência. É uma solução operacional frágil, dependente da memória e boa-fé das pessoas.
+
+- **Vulnerabilidade:** A vulnerabilidade final é a **dependência de um processo manual não auditado para uma etapa crítica do fluxo de dados**. A integridade de todo o sistema de portfólio depende de uma ação humana que não é registrada, validada ou controlada por nenhum sistema, o que é inaceitável para um processo de missão crítica e representa um risco de governança severo.
 
 ---
 
 ## 5.3 Táticas Arquiteturais e Componentes Adotados
-
 
 &emsp;Esta seção descreve as táticas arquiteturais e componentes tecnológicos que suportam a execução e o controle dos Requisitos Não Funcionais (RNFs) no sistema atual de gestão de Portfólio do Metrô. Para cada RNF identificado na seção 5.2, são detalhados os mecanismos de monitoramento, as estratégias preventivas e reativas de atendimento, e os procedimentos de recuperação diante de falhas ou quebras de níveis de serviço.
 
@@ -1101,11 +1337,11 @@ _Esta seção deve indicar como as transações corretas e inadequadas são cont
 
 Para cada RNF, são apresentadas três dimensões críticas de análise:
 
-**A. Como monitorar o RNF:** Identificação dos componentes de monitoramento (sistêmicos e manuais), métricas coletadas, indicadores de nível de serviço (SLIs/SLOs propostos), e limitações/vulnerabilidades de observabilidade. Esta seção responde à questão: *"Como sabemos se o RNF está sendo atendido?"*
+**A. Como monitorar o RNF:** Identificação dos componentes de monitoramento (sistêmicos e manuais), métricas coletadas, indicadores de nível de serviço (SLIs/SLOs propostos), e limitações/vulnerabilidades de observabilidade. Esta seção responde à questão: _"Como sabemos se o RNF está sendo atendido?"_
 
-**B. Como resolver o RNF (Preventivo e Reativo):** Descrição das táticas arquiteturais preventivas (controles que impedem violações antes que ocorram) e reativas (mecanismos de detecção, contenção e correção após violações). Esta seção responde à questão: *"O que o sistema faz para garantir o atendimento do RNF?"*
+**B. Como resolver o RNF (Preventivo e Reativo):** Descrição das táticas arquiteturais preventivas (controles que impedem violações antes que ocorram) e reativas (mecanismos de detecção, contenção e correção após violações). Esta seção responde à questão: _"O que o sistema faz para garantir o atendimento do RNF?"_
 
-**C. Como recuperar/subsidiar o tratamento de impactos:** Procedimentos de recuperação diante de falhas que causem quebras de níveis de serviço, incluindo componentes utilizados, tempos de recuperação (RTO/RPO), justificativas para gestão e documentação de suporte para auditoria. Esta seção responde à questão: *"Como respondemos quando o RNF não é atendido?"*
+**C. Como recuperar/subsidiar o tratamento de impactos:** Procedimentos de recuperação diante de falhas que causem quebras de níveis de serviço, incluindo componentes utilizados, tempos de recuperação (RTO/RPO), justificativas para gestão e documentação de suporte para auditoria. Esta seção responde à questão: _"Como respondemos quando o RNF não é atendido?"_
 
 **Contexto Arquitetural Comum:**
 
@@ -1123,17 +1359,42 @@ Todos os RNFs compartilham as seguintes características do sistema atual:
 
 Estas características arquiteturais fundamentais impactam diretamente a capacidade de atendimento, monitoramento e recuperação de cada RNF, conforme detalhado nas subseções a seguir. As vulnerabilidades identificadas refletem não apenas limitações técnicas das ferramentas, mas principalmente a **ausência de camadas customizadas de controle, monitoramento e automação** que seriam necessárias para um sistema de missão crítica de governança de portfólio.
 
+### 5.3.1 RNF-01 — Escalabilidade
 
-### 5.3.1 RNF-01 — <Escalabilidade>
+&emsp;A análise do RNF de Escalabilidade no sistema atual (AS-IS) deve focar na descrição das **táticas arquiteturais e componentes** que, mesmo de forma limitada, ajudam na execução e controle deste requisito. Conforme a seção 5.2.1, o sistema atual é baseado em um ecossistema de ferramentas Microsoft (SharePoint, Power Automate, Power BI) e Miro, o que implica que a maioria das táticas de escalabilidade são **inerentes e gerenciadas pelo provedor (Microsoft)**, e não pela equipe de TI do Metrô.
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+&emsp;O monitoramento do RNF de Escalabilidade é **predominantemente sistêmico, mas com visibilidade e controle limitados** por parte do Metrô.
+
+| Aspecto                            | Descrição no Sistema Atual (AS-IS)                                                                                                                                                                                                  | Limitações/Vulnerabilidades                                                                                                                                                                                             |
+| :--------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Componentes de Monitoramento**   | **SharePoint Online e Power Automate Logs:** O monitoramento é realizado pelas ferramentas nativas do Microsoft 365. O SharePoint registra o uso de recursos e o Power Automate fornece logs de execução de fluxos (sucesso/falha). | A equipe de TI do Metrô não tem acesso a métricas de infraestrutura (CPU, memória, latência de rede) e o monitoramento é limitado a logs de aplicação e _throttling_ (limitação de requisições) imposto pela Microsoft. |
+| **Métricas/SLIs/SLOs**             | **SLI Implícito:** Taxa de sucesso na execução de fluxos do Power Automate e tempo de carregamento de páginas/listas no SharePoint.                                                                                                 | Não existem **SLOs (Service Level Objectives)** formalmente definidos e controlados pelo Metrô. O **SLI** de performance é monitorado de forma reativa, através de reclamações de usuários sobre lentidão.              |
+| **Monitoramento Manual/Sistêmico** | **Sistêmico:** Logs e alertas de _throttling_ do SharePoint. **Manual:** Acompanhamento visual dos _dashboards_ de uso do Power BI e verificação manual dos logs de falha no Power Automate.                                        | A falta de uma ferramenta de **Observabilidade** centralizada impede a correlação de eventos e a detecção proativa de gargalos. O monitoramento manual é ineficiente e propenso a falhas.                               |
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
-_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+&emsp;As táticas de resolução para a Escalabilidade no sistema atual são limitadas, dependendo majoritariamente de políticas de uso e das limitações impostas pelo fornecedor.
+
+| Tática         | Componente/Mecanismo                                                                                                                              | Natureza             | Vulnerabilidade                                                                                                                                              |
+| :------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Preventiva** | **Políticas de Uso:** Orientação manual aos usuários para evitar picos de uso e dividir grandes tarefas em partes menores.                        | Manual/Processual    | Dependência do **comportamento do usuário**; não é uma tática arquitetural. Não há _Rate Limiting_ ou _Load Balancing_ sob controle do Metrô.                |
+| **Preventiva** | **Limites do SharePoint Online:** O provedor impõe limites de requisições (_throttling_) por usuário e por aplicação.                             | Sistêmica (Provedor) | Os limites são **rígidos e não configuráveis**, levando a interrupções de serviço quando atingidos. A prevenção é feita pelo provedor, não pela arquitetura. |
+| **Reativa**    | **Alertas de Falha no Power Automate:** Notificações automáticas quando um fluxo falha.                                                           | Sistêmica (Provedor) | O alerta é apenas um **sintoma** da quebra de escalabilidade (_throttling_). A correção exige intervenção manual (reexecução do fluxo).                      |
+| **Reativa**    | **Contenção Manual:** A equipe de TI pode solicitar a reexecução manual de fluxos falhos ou aguardar a liberação do _throttling_ pelo SharePoint. | Manual/Processual    | Alto **MTTR** (Mean Time to Recovery) e risco de inconsistência de dados devido à falta de mecanismos de _Retry_ automático.                                 |
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+&emsp;A recuperação de impactos no sistema atual é **extremamente frágil e dependente de intervenção humana**, sem mecanismos arquiteturais robustos para _Failover_ ou reprocessamento automático.
+
+| Componente/Procedimento         | Descrição                                                                                                                                                                                                | Justificativa/Impacto                                                                                                                                                                                              |
+| :------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Registro de Falhas**          | **Logs do Power Automate:** Registra o _status_ de falha e a causa (ex: erro de _throttling_).                                                                                                           | **Subsidia a Justificativa:** O log é a única evidência técnica para justificar a quebra do nível de serviço. O detalhamento é superficial, indicando a falha, mas não o impacto total no negócio.                 |
+| **Procedimento de Recuperação** | **Reexecução Manual:** A equipe de suporte ou o usuário deve reexecutar manualmente o fluxo falho no Power Automate.                                                                                     | **Alto Custo Operacional:** O procedimento é lento e não garante a ordem de processamento, podendo levar a **inconsistências de dados** (se os dados de origem tiverem sido alterados após a falha).               |
+| **Componente de Recuperação**   | **Nenhum:** O sistema atual **não possui** componentes de recuperação arquiteturalmente definidos, como _Message Queues_ (filas de mensagens) ou _Dead Letter Queues_ (DLQ) para reprocessamento seguro. | **Risco Crítico:** A falta de mecanismos de _Retry_ e DLQ significa que transações perdidas exigem **reentrada manual de dados**, o que é a maior vulnerabilidade para a integridade e disponibilidade do sistema. |
+
+&emsp;A ausência de táticas arquiteturais de recuperação e a dependência de mecanismos de _throttling_ de terceiros demonstram que o RNF de Escalabilidade é **mal atendido** no sistema AS-IS, justificando a necessidade de uma nova arquitetura com controle de tráfego, filas de mensagens e _failover_ explícitos.
 
 ---
 
@@ -1156,6 +1417,7 @@ O monitoramento da Segurança no sistema atual é realizado através de componen
 ##### 2ª Etapa (Documentação Miro/TAP):
 
 **Miro - Activity Log Nativo:**
+
 - **Tipo:** Sistêmico com visualização direta no board
 - **Funcionalidades Monitoradas:** Todas as alterações com granularidade total - quem adicionou/apagou/moveu elementos, qual conteúdo foi modificado (antes/depois), timestamp preciso.
 - **Métricas Coletadas:** Alterações por usuário/período. Padrões de edição (horários, volume, tipos de ação).
@@ -1163,6 +1425,7 @@ O monitoramento da Segurança no sistema atual é realizado através de componen
 - **Limitação:** Histórico interno ao Miro, não integrado aos logs corporativos do Metrô. **Não há monitoramento da transferência manual Miro → SharePoint** - ausência de validação sistêmica de correspondência entre planejamento (Miro) e documento formal (TAP no SharePoint).
 
 **SharePoint (TAPs) - Audit Logs:**
+
 - **Tipo:** Sistêmico com análise manual
 - **Funcionalidades Monitoradas:** Criação/edição de documentos TAP, versionamento, acessos.
 - **Limitação:** Mesma vulnerabilidade da 1ª etapa - não identifica acessos inadequados por permissão ampla. **Não monitora integridade entre Miro e TAP**.
@@ -1183,6 +1446,7 @@ O monitoramento da Segurança no sistema atual é realizado através de componen
 ##### 5ª Etapa (Geração de Relatórios):
 
 **Power BI - Activity Log:**
+
 - **Tipo:** Sistêmico com exportação para análise
 - **Funcionalidades Monitoradas:** Acessos a relatórios/dashboards (usuário, timestamp, relatório específico), visualizações de páginas, exportações de dados (formato .csv/.xlsx/.pdf, volume de linhas exportadas), compartilhamentos de relatórios, tentativas de acesso negadas a workspaces restritos.
 - **Métricas Coletadas:** Acessos por usuário/relatório/período. Taxa de exportações por usuário. Compartilhamentos externos (se habilitados).
@@ -1190,6 +1454,7 @@ O monitoramento da Segurança no sistema atual é realizado através de componen
 - **Limitação:** Logs requerem exportação via API REST ou Power BI Admin Portal para análise detalhada. **Não há alertas automáticos** para exportações em massa ou acessos anômalos. Permissão de workspace é "tudo ou nada" - não monitora se usuário deveria ter acesso apenas a projetos específicos (pois controle granular não existe).
 
 **SharePoint (Documentos Consolidados) - Audit Logs:**
+
 - **Tipo:** Sistêmico com análise manual
 - **Funcionalidades Monitoradas:** Acessos a relatórios mensais/semestrais/anuais salvos no SharePoint, downloads.
 - **Limitação:** Mesma vulnerabilidade de acesso amplo. **Não monitora o que acontece com documentos após download local** (compartilhamento externo via e-mail, pen drive não é rastreável).
@@ -1197,26 +1462,28 @@ O monitoramento da Segurança no sistema atual é realizado através de componen
 ##### Componentes Transversais de Monitoramento de Segurança:
 
 **Microsoft 365 Security & Compliance Center (se licenciado):**
+
 - **Tipo:** Sistêmico com alertas configuráveis
 - **Funcionalidades:** Detecção de login suspeito (localização atípica, múltiplas falhas), atividades anômalas de usuários (acesso em horários incomuns, volume atípico de downloads), violações de políticas DLP (se configuradas), detecção de malware.
 - **Limitação:** Requer licenciamento específico (Microsoft 365 E3/E5). Alertas requerem configuração manual. **Não monitora violações de segregação lógica por projeto** (acesso amplo permitido tecnicamente).
 
 **Microsoft Defender for Cloud Apps (se licenciado):**
+
 - **Tipo:** Sistêmico com UEBA (User and Entity Behavior Analytics)
 - **Funcionalidades:** Detecção de comportamento anômalo via análise estatística (desvios de padrões normais), sessões de risco (IPs suspeitos, dispositivos não gerenciados), downloads em massa.
 - **Limitação:** Requer licenciamento específico (Microsoft 365 E5). Foco em ameaças externas e comportamentos obviamente anômalos. **Não detecta acessos inadequados quando usuário tem permissão técnica ampla**.
 
 ##### Indicadores de Nível de Serviço de Segurança (SLIs/SLOs):
 
-| **SLI** | **Descrição** | **SLO Proposto** | **Status Atual** | **Método de Medição** |
-|---------|---------------|------------------|------------------|----------------------|
-| Taxa de disponibilidade do sistema | % de tempo que sistema está acessível (inclui indisponibilidade por ataques) | ≥99,9% (Microsoft SLA) | Atingido (sistêmico) | Microsoft Service Health Dashboard |
-| Tentativas de acesso totalmente não autorizado | Número de acessos negados/total de acessos | <0,5% | Não medido sistematicamente | SharePoint Audit Logs (requer dashboard customizado) |
-| Tempo de detecção de ameaças conhecidas | Tempo entre ocorrência e detecção de malware/ransomware | <15 minutos | Atingido (se Defender licenciado) | Microsoft Defender for Office 365 |
-| Conformidade com segregação de acesso por projeto | % de usuários com acessos apenas aos projetos autorizados após auditoria | 100% | Não auditado sistematicamente | Auditoria manual (não implementada regularmente) |
-| Identificação de acessos inadequados | % de acessos a projetos não autorizados detectados automaticamente | >95% | 0% (não detectado automaticamente) | Não disponível (requer correlação de logs com matriz de projetos) |
-| Integridade de transferências manuais | % de TAPs validados como íntegros em relação ao planejamento Miro | 100% | Não medido | Não disponível (requer auditoria manual Miro vs. TAP) |
-| Documentos críticos alterados sem aprovação | Número de alterações em TAPs/baselines sem workflow de aprovação | 0 | Não medido | Não disponível (requer marcação de documentos críticos + workflow) |
+| **SLI**                                           | **Descrição**                                                                | **SLO Proposto**       | **Status Atual**                   | **Método de Medição**                                              |
+| ------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------- | ---------------------------------- | ------------------------------------------------------------------ |
+| Taxa de disponibilidade do sistema                | % de tempo que sistema está acessível (inclui indisponibilidade por ataques) | ≥99,9% (Microsoft SLA) | Atingido (sistêmico)               | Microsoft Service Health Dashboard                                 |
+| Tentativas de acesso totalmente não autorizado    | Número de acessos negados/total de acessos                                   | <0,5%                  | Não medido sistematicamente        | SharePoint Audit Logs (requer dashboard customizado)               |
+| Tempo de detecção de ameaças conhecidas           | Tempo entre ocorrência e detecção de malware/ransomware                      | <15 minutos            | Atingido (se Defender licenciado)  | Microsoft Defender for Office 365                                  |
+| Conformidade com segregação de acesso por projeto | % de usuários com acessos apenas aos projetos autorizados após auditoria     | 100%                   | Não auditado sistematicamente      | Auditoria manual (não implementada regularmente)                   |
+| Identificação de acessos inadequados              | % de acessos a projetos não autorizados detectados automaticamente           | >95%                   | 0% (não detectado automaticamente) | Não disponível (requer correlação de logs com matriz de projetos)  |
+| Integridade de transferências manuais             | % de TAPs validados como íntegros em relação ao planejamento Miro            | 100%                   | Não medido                         | Não disponível (requer auditoria manual Miro vs. TAP)              |
+| Documentos críticos alterados sem aprovação       | Número de alterações em TAPs/baselines sem workflow de aprovação             | 0                      | Não medido                         | Não disponível (requer marcação de documentos críticos + workflow) |
 
 ##### Tipo de Monitoramento:
 
@@ -1236,16 +1503,19 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 ###### 1ª Etapa (Elaboração de Cronograma) - Controle de Acesso:
 
 **Componentes:**
+
 - **Microsoft Entra ID (Azure AD):** Autenticação obrigatória via SSO. Suporte a MFA (status de implementação não especificado - assumido como disponível mas não obrigatório universalmente).
 - **SharePoint Online:** Sistema de permissões por biblioteca/pasta com níveis predefinidos (Administrador, Colaborador, Visualizador).
 
 **Táticas Implementadas (Preventivas):**
+
 - **Autenticação Forte:** SSO obrigatório para acesso ao SharePoint. Credenciais corporativas gerenciadas centralmente. Bloqueio automático após múltiplas tentativas de login falhas (configurável via Entra ID).
 - **Controle de Acesso Baseado em Função (RBAC):** Permissões concedidas por nível (Administrador = controle total, Colaborador = edição, Visualizador = leitura). Usuário sem permissão **alguma** é bloqueado automaticamente.
 - **Versionamento Automático:** SharePoint preserva até 500 versões de cada documento. Permite reversão em caso de alteração indevida.
 - **Lixeira de Recuperação:** Documentos excluídos mantidos em lixeira de 1º estágio (93 dias) e 2º estágio (mais 93 dias), permitindo recuperação.
 
 **Limitações/Vulnerabilidades Preventivas:**
+
 - **Ausência de Granularidade:** Permissões concedidas no nível de biblioteca, não por projeto. **Não previne** acesso inadequado (usuário autorizado acessando cronograma de projeto não autorizado).
 - **Gestão Manual Propensa a Erros:** Concessão/revogação de permissões requer ação manual do administrador. Risco de permissões esquecidas após mudança de função/projeto.
 - **Sem Validação de Contexto:** Sistema bloqueia acesso totalmente não autorizado, mas **não valida** se usuário autorizado deveria acessar aquele documento específico (contexto de projeto).
@@ -1253,45 +1523,53 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 ###### 2ª Etapa (Documentação Miro/TAP) - Rastreabilidade e Controle de Integridade:
 
 **Componentes:**
+
 - **Miro:** Sistema de controle de acesso por board + histórico imutável de alterações.
 - **SharePoint:** Versionamento de documentos TAP.
 
 **Táticas Implementadas (Preventivas):**
+
 - **Controle de Acesso por Board (Miro):** Acesso restrito apenas a membros convidados do board específico. Previne acesso não autorizado ao planejamento inicial.
 - **Rastreabilidade Total (Miro):** Registro automático e imutável de todas as alterações (quem fez o que, quando, conteúdo antes/depois). Permite auditoria posterior.
 - **Integração SSO (Miro):** Autenticação via Microsoft 365, garantindo identidade validada.
 - **Versionamento (SharePoint):** TAPs versionados automaticamente, permitindo comparação entre versões.
 
 **Limitações/Vulnerabilidades Preventivas:**
+
 - **Transferência Manual Sem Validação:** Processo de cópia Miro → SharePoint é manual. **Não há validação sistêmica de integridade** (checksum, hash, comparação automatizada). Não previne manipulação durante transcrição.
 - **Acesso Amplo ao TAP (SharePoint):** Mesma vulnerabilidade da 1ª etapa - usuários autorizados no SharePoint podem acessar TAPs de todos os projetos.
-- **Rastreabilidade Não Correlacionada:** Histórico do Miro e versionamento do SharePoint são sistemas separados. **
-
+- **Rastreabilidade Não Correlacionada:** Histórico do Miro e versionamento do SharePoint são sistemas separados. \*\*
 
 ###### 3ª Etapa (Reporte Mensal) - Validação de Status:
 
 **Componentes:**
+
 - **SharePoint:** Versionamento de documentos de reporte.
 
 **Táticas Implementadas (Preventivas):**
+
 - **Versionamento:** Permite rastreamento de alterações em reportes ao longo do tempo.
 - **Revisão Manual (PMO):** Processo organizacional de revisão antes de consolidação (não sistêmico).
 
 **Limitações/Vulnerabilidades Preventivas:**
+
 - **Sem Workflow de Aprovação Sistêmico:** Não há validação formal automatizada de reportes antes de consolidação. **Não previne** alteração de status sem aprovação adequada.
 - **Acesso Amplo:** Mesma vulnerabilidade - usuários podem visualizar/editar reportes de projetos não autorizados.
 
 ###### 4ª Etapa (Armazenamento de Dados) - Controle de Alterações Críticas:
 
 **Componentes:**
+
 - **SharePoint:** Versionamento, lixeira, audit logs.
 
 **Táticas Implementadas (Preventivas):**
+
 - **Versionamento Completo:** Até 500 versões preservadas. Permite reversão de alterações indevidas.
 - **Lixeira de Recuperação:** Proteção contra exclusões acidentais (até 186 dias de recuperação total).
 - **Criptografia em Repouso:** AES-256 para todos os documentos armazenados. Previne acesso direto a arquivos em infraestrutura.
 
 **Limitações/Vulnerabilidades Preventivas:**
+
 - **Sem Distinção de Documentos Críticos:** Sistema não identifica automaticamente quais documentos requerem workflow de aprovação para alteração (TAP aprovado, cronograma baseline, atas de comitê). **Não previne** alteração não autorizada de documentos já aprovados.
 - **Sem Workflow de Aprovação:** Usuário com permissão de "Colaborador" pode alterar qualquer documento sem aprovação formal. Sistema registra alteração (log), mas **não bloqueia preventivamente**.
 - **Acesso Amplo:** Mesma vulnerabilidade - usuários podem inserir/alterar documentos de projetos não autorizados.
@@ -1299,16 +1577,19 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 ###### 5ª Etapa (Geração de Relatórios) - Controle de Exportação:
 
 **Componentes:**
+
 - **Power BI:** Permissões de workspace, Row-Level Security (RLS - se configurado), activity logs.
 - **SharePoint:** Controle de acesso a documentos consolidados.
 
 **Táticas Implementadas (Preventivas):**
+
 - **Permissões de Workspace (Power BI):** Acesso restrito por função (Admin, Member, Contributor, Viewer). Usuário sem permissão ao workspace é bloqueado.
 - **Row-Level Security (RLS - se configurado):** Filtragem de dados por perfil de usuário. Permite segregação de visualização por projeto dentro do mesmo relatório (status de implementação não especificado - assumido como não implementado).
 - **Audit Logs (Power BI):** Registro de exportações para detecção posterior.
 - **Versionamento (SharePoint - documentos consolidados):** Proteção de relatórios formais salvos no SharePoint.
 
 **Limitações/Vulnerabilidades Preventivas:**
+
 - **Permissão de Workspace "Tudo ou Nada":** Usuário com acesso ao workspace visualiza relatórios de **todo o portfólio**. Se RLS não implementado, **não previne** visualização de projetos não autorizados.
 - **Exportações Não Bloqueadas:** Sistema registra exportações, mas **não bloqueia** (.csv, .xlsx, .pdf). Não previne vazamento de dados via exportação.
 - **Perda de Controle Pós-Download:** Documentos exportados para ambiente local (relatórios Word/PowerPoint, exportações Power BI) perdem criptografia automática. **Não previne** compartilhamento externo via e-mail, WhatsApp, pen drive.
@@ -1316,35 +1597,40 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 ###### Táticas Preventivas Transversais (Microsoft 365):
 
 **Criptografia:**
+
 - **Em Trânsito:** TLS 1.2+ obrigatório para todas as conexões (SharePoint, Miro via navegador, Power BI). Previne interceptação de dados.
 - **Em Repouso:** AES-256 no SharePoint/OneDrive. Previne acesso direto a arquivos na infraestrutura Microsoft.
 
 **Backup e Redundância:**
+
 - **Snapshots Automáticos (SharePoint):** A cada 12 horas. Previne perda total de dados.
 - **Geo-Redundância:** Dados replicados em múltiplos datacenters. Previne indisponibilidade por falha de datacenter único.
 
 **Detecção de Malware (se Defender licenciado):**
+
 - **Scan em Tempo Real:** Arquivos verificados no upload. Previne introdução de malware no repositório.
 
 **Limitação Geral das Táticas Preventivas:** Os controles preventivos sistêmicos (autenticação, criptografia, versionamento, backup) são eficazes para ameaças externas e erros técnicos, mas **não previnem as vulnerabilidades críticas de governança**: acesso inadequado por permissão ampla, manipulação em transferências manuais, alterações em documentos críticos sem aprovação. O sistema depende de disciplina organizacional e processos manuais (não sistêmicos) para prevenção destas violações, o que é insuficiente.
-
 
 ##### Táticas Reativas:
 
 ###### Detecção de Violações:
 
 **Componentes:**
+
 - **SharePoint Audit Logs:** Registro de todas as ações para análise posterior.
 - **Miro Activity Log:** Histórico de alterações para auditoria.
 - **Power BI Activity Log:** Registro de acessos e exportações.
 - **Microsoft Defender/Security Center (se licenciado):** Alertas automáticos para ameaças conhecidas (malware, login suspeito).
 
 **Táticas Implementadas (Reativas):**
+
 - **Logs de Auditoria:** Todos os componentes (SharePoint, Miro, Power BI) registram ações automaticamente. Permite investigação forense após incidente.
 - **Alertas Automáticos (Ameaças Conhecidas):** Se Defender licenciado, alertas para malware, ransomware, login de localização atípica. Notificação via e-mail/Teams para administradores.
 - **Análise Manual de Logs:** Administradores podem exportar logs do SharePoint/Power BI e analisar acessos, modificações, exportações.
 
 **Limitações/Vulnerabilidades Reativas:**
+
 - **Detecção Reativa, Não Proativa:** Logs registram ações, mas **não alertam automaticamente** para violações de segregação por projeto. Detecção requer auditoria manual posterior.
 - **Análise Manual Esporádica:** Não há processo sistemático de auditoria periódica (semanal, mensal). Análise ocorre após incidente reportado ou em revisões ad hoc.
 - **Sem Correlação Automatizada:** Logs dispersos em múltiplas plataformas (SharePoint, Miro, Power BI). **Não há SIEM** (Security Information and Event Management) correlacionando eventos. Identificação de padrões suspeitos depende de análise manual.
@@ -1352,28 +1638,33 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 ###### Contenção de Incidentes:
 
 **Componentes:**
+
 - **Microsoft Entra ID:** Suspensão de contas comprometidas.
 - **SharePoint Admin Center:** Revogação de permissões, bloqueio de compartilhamentos.
 - **Microsoft Defender (se licenciado):** Quarentena automática de malware.
 
 **Táticas Implementadas (Reativas):**
+
 - **Suspensão de Conta:** Administrador pode desativar conta de usuário comprometido via Entra ID (<5 minutos). Bloqueio imediato de acesso a todos os sistemas Microsoft 365.
 - **Revogação de Permissões:** Administrador do SharePoint pode revogar acesso específico a biblioteca/pasta (<10 minutos para ação manual).
 - **Quarentena de Malware:** Defender (se licenciado) isola automaticamente arquivos infectados, impedindo propagação.
 - **Bloqueio de Compartilhamentos Externos:** Administrador pode desativar compartilhamentos externos no SharePoint (temporariamente ou permanentemente).
 
 **Limitações/Vulnerabilidades Reativas:**
+
 - **Dependência de Detecção Manual:** Contenção requer que violação seja detectada primeiro. Como detecção de violações de governança é manual e esporádica, **tempo de contenção pode ser muito longo** (dias, semanas até descoberta).
 - **Sem Automação de Contenção:** Todas as ações de contenção (suspensão de conta, revogação de permissões) são manuais. Requerem intervenção do administrador.
 
 ###### Correção e Recuperação:
 
 **Componentes:**
+
 - **SharePoint:** Versionamento, lixeira, suporte Microsoft para restauração.
 - **Miro:** Histórico de versões, restauração de board.
 - **Power BI:** Backups gerenciados pela Microsoft (sem controle direto).
 
 **Táticas Implementadas (Reativas):**
+
 - **Reversão de Versões (SharePoint):** Administrador ou usuário autorizado pode restaurar versão anterior de documento alterado indevidamente (<15 minutos para ação). Recupera integridade de cronogramas, TAPs, reportes, documentos.
 - **Recuperação de Lixeira (SharePoint):** Documentos excluídos acidentalmente ou maliciosamente podem ser restaurados via lixeira de 1º estágio (self-service, <5 minutos) ou 2º estágio (administrador, <30 minutos). Até 186 dias de janela de recuperação total.
 - **Restauração de Board (Miro):** Miro permite restaurar board completo para versão anterior ou duplicar versão limpa. Recupera planejamento corrompido.
@@ -1381,6 +1672,7 @@ O atendimento ao RNF de Segurança no sistema atual combina controles preventivo
 - **Reprocessamento Manual:** Transações críticas que falharam (ex.: transferência Miro → SharePoint corrompida) requerem reexecução manual completa.
 
 **Limitações/Vulnerabilidades Reativas:**
+
 - **Recuperação Depende de Identificação Rápida:** Quanto mais tempo entre violação e detecção, maior a complexidade de recuperação (múltiplas versões alteradas, dificuldade de identificar versão limpa).
 - **Sem Automação de Recuperação:** Todas as ações de recuperação são manuais. Requerem análise de logs, identificação de versão correta, ações de restauração por administrador.
 - **Reprocessamento Manual Custoso:** Transferências manuais corrompidas (Miro → TAP) requerem reexecução completa do trabalho. Sem backup automatizado da transferência, pode haver perda de trabalho.
@@ -1398,11 +1690,13 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 1. Acesso Inadequado a Cronogramas/TAPs/Documentos (Violação de Segregação por Projeto):
 
 **Componente de Suporte:**
+
 - **SharePoint Audit Logs:** Registro de quem acessou qual documento, quando, ação realizada (visualização, download, edição).
 
 **Procedimento de Detecção e Recuperação:**
 
 1. **Detecção (Manual, Reativa):** Violação identificada através de:
+
    - Usuário reporta acesso indevido observado (ex.: viu documento de projeto que não deveria conhecer)
    - Auditoria periódica de logs (se implementada - atualmente não sistemática)
    - Investigação após vazamento de informação (incidente já consumado)
@@ -1418,12 +1712,14 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 6. **Comunicação:** Notificação ao líder do projeto afetado sobre acesso indevido → avaliação de necessidade de comunicação a stakeholders/alta gestão.
 
 **Tempo de Recuperação (RTO):**
+
 - Detecção: Indeterminado (depende de quando auditoria manual ocorrer ou incidente ser reportado - pode ser dias, semanas, meses após violação)
 - Investigação: 2-8 horas (dependendo do volume de logs e número de usuários/documentos envolvidos)
 - Contenção: <1 hora (revogação de permissões)
 - Recuperação: <30 minutos (se alteração indevida ocorreu)
 
 **Justificativa para Gestão (Quebra de Nível de Serviço de Governança):**
+
 - **Causa Raiz:** Vulnerabilidade arquitetural - ausência de segregação granular de acesso por projeto no SharePoint. Sistema permite acesso amplo a todos os projetos para usuários autorizados tecnicamente.
 - **Evidências:** SharePoint Audit Logs exportados mostrando acessos indevidos (usuário, timestamp, documentos acessados). Matriz de responsabilidades por projeto demonstrando que usuário não tinha autorização lógica.
 - **Impacto:** Exposição de informações estratégicas/sensíveis (cronogramas, orçamentos, riscos, decisões) de projetos a usuários não autorizados. Potencial vazamento de informações competitivas ou confidenciais.
@@ -1432,17 +1728,20 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 2. Manipulação de Dados em Transferência Manual (Miro → TAP no SharePoint):
 
 **Componentes de Suporte:**
+
 - **Miro Activity Log:** Histórico completo do planejamento original.
 - **SharePoint Audit Logs + Versionamento:** Registro de criação/edição do TAP e versões do documento.
 
 **Procedimento de Detecção e Recuperação:**
 
 1. **Detecção (Manual, Reativa):** Violação identificada através de:
+
    - Stakeholder identifica inconsistência entre planejamento apresentado (Miro) e documento formal (TAP)
    - Auditoria de qualidade de TAPs (se implementada - atualmente não sistemática)
    - Problema no projeto decorrente de escopo/benefícios incorretos documentados
 
-2. **Investigação Forense:** 
+2. **Investigação Forense:**
+
    - Acesso ao Miro Activity Log → identificação do estado do planejamento na data da transferência
    - Acesso ao SharePoint → identificação da primeira versão do TAP e quem criou
    - Comparação manual entre conteúdo do Miro (escopo, benefícios, premissas, riscos) e TAP no SharePoint
@@ -1451,6 +1750,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 3. **Avaliação de Impacto:** Determinar criticidade das divergências (escopo alterado, benefícios inflacionados, riscos omitidos), impacto em aprovações já realizadas, decisões tomadas baseadas em informação incorreta.
 
 4. **Recuperação de Integridade:**
+
    - Criação de nova versão do TAP corrigida com base no planejamento original do Miro
    - Versionamento no SharePoint preserva documento incorreto para auditoria
    - Se TAP já foi aprovado com informações incorretas → necessidade de reaprovação formal
@@ -1460,14 +1760,16 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 6. **Comunicação:** Notificação ao comitê de aprovação sobre correção de TAP → reavaliação de aprovação → comunicação à equipe do projeto.
 
 **Tempo de Recuperação (RTO):**
+
 - Detecção: Indeterminado (depende de quando inconsistência é percebida - pode ser semanas, meses após transferência, potencialmente após aprovação e início do projeto)
 - Investigação: 4-12 horas (comparação manual detalhada Miro vs. TAP)
 - Recuperação: 2-8 horas (recriação de TAP correto) + tempo de reaprovação (dias a semanas)
 - Impacto Total: Pode incluir retrabalho significativo se projeto já iniciado com base em TAP incorreto
 
 **Justificativa para Gestão (Quebra de Integridade de Documentação):**
+
 - **Causa Raiz:** Vulnerabilidade de processo - transferência manual sem validação sistêmica de integridade. Ausência de checksum, hash ou comparação automatizada entre Miro e SharePoint.
-- **Evidências:** 
+- **Evidências:**
   - Miro Activity Log mostrando estado do planejamento original (exportação com timestamp)
   - TAP no SharePoint com divergências documentadas
   - Análise comparativa (relatório de auditoria manual)
@@ -1477,17 +1779,20 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 3. Alteração Não Autorizada de Documentos Críticos (TAP Aprovado, Cronograma Baseline):
 
 **Componentes de Suporte:**
+
 - **SharePoint Versionamento:** Preservação de todas as versões anteriores (até 500 versões).
 - **SharePoint Audit Logs:** Registro de quem alterou, quando.
 
 **Procedimento de Detecção e Recuperação:**
 
 1. **Detecção (Manual, Reativa):** Violação identificada através de:
+
    - Usuário autorizado percebe alteração não comunicada em documento crítico
    - Comparação de versões durante revisão de projeto
    - Auditoria de integridade de baselines (se implementada - atualmente não sistemática)
 
 2. **Investigação Forense:**
+
    - Acesso ao histórico de versões do SharePoint → identificação de todas as versões do documento
    - Análise de diff entre versões → identificação exata do que foi alterado (escopo, datas, orçamento, etc.)
    - Acesso ao Audit Log → identificação de quem realizou a alteração e quando
@@ -1496,6 +1801,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 3. **Avaliação de Impacto:** Determinar se alteração foi acidental (erro de usuário editando documento errado) ou intencional, criticidade da alteração (mudança de baseline de cronograma afeta todo o planejamento, alteração de escopo do TAP invalida aprovação), impacto em decisões/ações já tomadas.
 
 4. **Recuperação de Integridade:**
+
    - Restauração da versão aprovada anterior via versionamento do SharePoint (<15 minutos)
    - Notificação ao autor da alteração sobre reversão
    - Se alteração era legítima mas sem aprovação formal → iniciar workflow correto de aprovação de mudança
@@ -1505,12 +1811,14 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 6. **Comunicação:** Notificação ao líder do projeto e PMO sobre alteração não autorizada e reversão → investigação de necessidade de ações disciplinares se intencional.
 
 **Tempo de Recuperação (RTO):**
+
 - Detecção: Indeterminado (depende de quando alteração é percebida - dias, semanas, meses após modificação)
 - Investigação: 1-4 horas (análise de versões e logs)
 - Recuperação: <30 minutos (restauração de versão)
 - Reaprovação (se necessário): Dias a semanas
 
 **Justificativa para Gestão (Quebra de Integridade de Baseline):**
+
 - **Causa Raiz:** Vulnerabilidade de controle - ausência de workflow sistêmico de aprovação de mudanças para documentos críticos. Sistema não distingue documentos aprovados que requerem controle de mudança vs. documentos de trabalho.
 - **Evidências:**
   - Histórico de versões do SharePoint mostrando alteração e diff entre versões
@@ -1522,6 +1830,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 4. Exclusão Acidental ou Maliciosa de Documentos:
 
 **Componentes de Suporte:**
+
 - **SharePoint Lixeira de 1º Estágio (Usuário):** 93 dias de retenção.
 - **SharePoint Lixeira de 2º Estágio (Site Collection):** Mais 93 dias de retenção.
 - **SharePoint Audit Logs:** Registro de exclusão.
@@ -1529,12 +1838,14 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 **Procedimento de Detecção e Recuperação:**
 
 1. **Detecção (Imediata ou Reativa):** Exclusão identificada quando:
+
    - Usuário tenta acessar documento e não encontra (imediata)
    - Auditoria de estrutura de pastas/documentos (reativa)
 
 2. **Investigação:** Acesso ao Audit Log → identificação de quem excluiu, quando, se exclusão foi via interface (acidental provável) ou programática (maliciosa potencial).
 
 3. **Recuperação:**
+
    - **Se dentro de 93 dias:** Usuário acessa própria lixeira (1º estágio) → restaura documento ao local original (<5 minutos, self-service)
    - **Se entre 93-186 dias:** Administrador acessa lixeira de 2º estágio → restaura documento (<30 minutos)
    - **Se após 186 dias:** Documento permanentemente perdido → necessidade de reconstrução manual ou restauração via suporte Microsoft (snapshot de site, disponível até 14 dias retroativos, processo complexo e demorado)
@@ -1542,10 +1853,12 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 4. **Validação:** Verificação de integridade do documento restaurado (versão correta, conteúdo íntegro).
 
 **Tempo de Recuperação (RTO):**
+
 - Detecção: Imediata (se usuário tenta acessar) ou indeterminada (se ninguém procura o documento)
 - Recuperação: <5 minutos (1º estágio) a <30 minutos (2º estágio) a 4-24 horas (suporte Microsoft após 186 dias)
 
 **Justificativa para Gestão (Quebra de Disponibilidade Temporária):**
+
 - **Causa Raiz:** Erro humano (exclusão acidental por usuário com permissão de Colaborador) ou ação maliciosa (sabotagem).
 - **Evidências:** Audit Log mostrando exclusão (usuário, timestamp, documento).
 - **Impacto:** Indisponibilidade temporária de documento crítico. Se não detectado dentro de 186 dias, perda permanente. Interrupção de trabalho de equipe do projeto.
@@ -1554,17 +1867,20 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 5. Exportação Não Autorizada e Vazamento de Informações:
 
 **Componentes de Suporte:**
+
 - **SharePoint Audit Logs:** Registro de downloads.
 - **Power BI Activity Logs:** Registro de exportações de relatórios.
 
 **Procedimento de Detecção e Recuperação:**
 
 1. **Detecção (Manual, Reativa - Pós-Incidente):** Vazamento identificado quando:
+
    - Informação sensível aparece em canal não autorizado (e-mail externo, mídia, concorrente)
    - Denúncia de compartilhamento inadequado
    - Auditoria de exportações (se implementada - atualmente não sistemática)
 
 2. **Investigação Forense:**
+
    - Acesso ao SharePoint/Power BI Audit Logs → identificação de quem exportou/baixou o documento/relatório, quando
    - Análise de padrão (volume atípico de downloads, horário suspeito, exportação de múltiplos documentos sensíveis em curto período)
    - Cruzamento com evidência externa (se informação vazada tem marcas d'água, metadados identificáveis)
@@ -1573,6 +1889,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 3. **Avaliação de Impacto:** Determinar criticidade da informação vazada (estratégico, financeiro, regulatório), abrangência (quantas pessoas tiveram acesso indevido), dano potencial (vantagem competitiva perdida, exposição regulatória, dano reputacional).
 
 4. **Contenção (Limitada):**
+
    - Suspensão da conta do usuário responsável pelo vazamento
    - Revogação de permissões de exportação (se possível - Power BI permite bloquear exportações por workspace, SharePoint não permite bloquear downloads seletivamente)
    - Comunicação de recall (se informação foi compartilhada via e-mail corporativo - eficácia limitada)
@@ -1583,9 +1900,11 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 6. **Comunicação:** Notificação à alta gestão, avaliação de necessidade de comunicação externa (se impacto regulatório ou contratual com stakeholders externos), comunicação interna sobre reforço de políticas de segurança.
 
 **Tempo de Recuperação (RTO):**
+
 - **Não Aplicável:** Informação vazada não pode ser "recuperada". Contenção de danos adicionais: <2 horas. Investigação completa: Dias a semanas.
 
 **Justificativa para Gestão (Quebra de Confidencialidade - Irreversível):**
+
 - **Causa Raiz:** Vulnerabilidade de controle - ausência de bloqueio sistêmico de exportações para usuários autorizados + perda de controle sobre documentos após download local. Sistema registra exportações, mas não previne.
 - **Evidências:**
   - Audit Logs mostrando exportação/download (usuário, timestamp, documento/relatório)
@@ -1597,6 +1916,7 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 ###### 6. Indisponibilidade por Falha da Microsoft 365:
 
 **Componentes de Suporte:**
+
 - **Microsoft Service Health Dashboard:** Status de serviços Microsoft 365.
 - **Suporte Microsoft:** Tickets de suporte prioritários.
 - **SLA Microsoft:** 99,9% de disponibilidade (até 43,2 minutos de downtime/mês permitido).
@@ -1616,11 +1936,13 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 6. **Validação Pós-Restauração:** Após notificação de recuperação pela Microsoft, administrador valida acesso ao SharePoint/Power BI, integridade de dados (verificação amostral de documentos), funcionalidades críticas (upload, download, edição).
 
 **Tempo de Recuperação (RTO):**
+
 - Detecção: <15 minutos (usuários reportam + verificação de Service Health)
 - Recuperação: Dependente da Microsoft - geralmente <4 horas para incidentes críticos (conforme SLA). Pode chegar a 24 horas em casos excepcionais (falha de datacenter inteiro).
 - **RPO (Recovery Point Objective):** <15 minutos (último snapshot/versionamento antes da falha - geralmente sem perda de dados devido a redundância).
 
 **Justificativa para Gestão (Quebra de Disponibilidade por Terceiro):**
+
 - **Causa Raiz:** Falha de infraestrutura terceirizada (Microsoft 365). Indisponibilidade de datacenter, falha de rede, bug em atualização de plataforma, ataque DDoS contra Microsoft.
 - **Evidências:**
   - Microsoft Service Health Dashboard mostrando incidente reportado (ID do incidente, descrição, timeline)
@@ -1630,28 +1952,83 @@ Os procedimentos de recuperação e subsídio ao tratamento de impactos de falha
 - **Justificativa para SLA:** **Dependência de infraestrutura gerenciada por terceiro (Microsoft)**. Metrô não possui controle sobre infraestrutura física, lógica, políticas de manutenção ou capacidade de failover. SLA Microsoft 365 garante 99,9% de disponibilidade mensal (~43 minutos de downtime permitido). Incidente atual dentro ou fora do SLA (especificar duração). Todas as ações de comunicação e monitoramento possíveis foram executadas pela equipe do Metrô conforme playbook. **Nenhuma ação corretiva interna é necessária** - falha externa sem controle.
 - **Ações Pós-Incidente:** Acompanhamento de post-mortem da Microsoft (geralmente publicado 5-7 dias após incidente). Validação se compensação de SLA é aplicável (crédito proporcional ao tempo de indisponibilidade acima do permitido). Revisão de plano de continuidade de negócios para considerar cenários de indisponibilidade prolongada (>4 horas) - alternativas de trabalho offline, priorização de atividades críticas que não dependem de acesso online.
 
-
 ---
 
-### 5.3.3 RNF-03 — <Rastreabilidade>
+### 5.3.3 RNF-03 — Rastreabilidade
+
+&emsp;A análise do RNF de Rastreabilidade no sistema atual (AS-IS) deve focar na descrição das **táticas arquiteturais e componentes** que, mesmo de forma limitada, ajudam na execução e controle deste requisito. Conforme a seção 5.2.3, o sistema atual é baseado em um ecossistema de ferramentas Microsoft (SharePoint, Power Automate) e ferramentas externas (Miro, Excel), o que implica que a rastreabilidade de ponta a ponta é **inexistente**, e as táticas se limitam a silos de auditoria dentro de componentes específicos.
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como o nível de atendimento deste RNF é monitorado (componentes, métricas, SLIs/SLOs), e se o monitoramento é manual e/ou sistêmico, considerando limitações/vulnerabilidades._
+
+&emsp;O monitoramento da Rastreabilidade é **parcial, fragmentado e predominantemente manual**, sendo incapaz de fornecer uma visão de ponta a ponta sobre a integridade e a linhagem dos dados.
+
+| Aspecto                            | Descrição no Sistema Atual (AS-IS)                                                                                                                                                                                                                   | Limitações/Vulnerabilidades                                                                                                                                                                                             |
+| :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Componentes de Monitoramento**   | **Log de Auditoria do SharePoint e Histórico do Power Automate:** O monitoramento se limita aos logs gerados por cada ferramenta individualmente. O SharePoint registra alterações em arquivos e o Power Automate registra o histórico de execuções. | A ausência de um **ID de Correlação** entre os logs impede o monitoramento do fluxo de negócio. O ponto cego principal, a **transferência manual de dados**, não possui nenhum componente de monitoramento.             |
+| **Métricas/SLIs/SLOs**             | **Nenhuma:** Não existem métricas, SLIs ou SLOs definidos para a rastreabilidade.                                                                                                                                                                    | O monitoramento é puramente qualitativo e reativo. Não há como medir o nível de atendimento do requisito, como "percentual de dados com linhagem comprovada".                                                           |
+| **Monitoramento Manual/Sistêmico** | **Sistêmico (em silos):** Consulta aos logs individuais de cada ferramenta. **Manual:** A correlação de eventos e a reconstrução da trilha de auditoria são processos 100% manuais, baseados em entrevistas e análise de timestamps.                 | A falta de uma ferramenta de **SIEM (Security Information and Event Management)** para agregação e correlação de logs torna o monitoramento proativo impossível e o diagnóstico de incidentes extremamente ineficiente. |
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
-_Esta seção deve listar os componentes e táticas presentes para atendimento preventivo (ex.: limites, validações, políticas) e reativo (ex.: alertas, contenção, correção) deste RNF._
+
+&emsp;As táticas de resolução para a Rastreabilidade no sistema atual são mínimas e focadas em controle de acesso, não em auditoria de transações, sendo ineficazes para garantir a integridade do fluxo de dados.
+
+| Tática         | Componente/Mecanismo                                                                                                                                                                | Natureza               | Vulnerabilidade                                                                                                                                                                                |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Preventiva** | **Controle de Acesso (RBAC) no SharePoint:** Limita quem pode inserir ou modificar dados no repositório central.                                                                    | Sistêmica (SharePoint) | **Insuficiente:** Não impede que um usuário autorizado cometa um erro ou fraude durante a transferência manual de dados, e não gera um log detalhado da transação em si.                       |
+| **Preventiva** | **Nenhuma:** Não há políticas de auditoria, validações de integridade ou mecanismos de _checksum_ para garantir que os dados transferidos manualmente sejam idênticos aos da fonte. | Processual             | A prevenção depende inteiramente da **disciplina e boa-fé do usuário**, o que não é uma tática arquitetural confiável.                                                                         |
+| **Reativa**    | **Logs de Auditoria do SharePoint e Power Automate:** Permitem verificar _a posteriori_ quem alterou um dado _dentro do SharePoint_ ou qual fluxo foi executado.                    | Sistêmica (em silos)   | **Diagnóstico Incompleto:** Os logs não respondem à pergunta fundamental: "De onde veio este dado?". A reatividade é limitada a um fragmento do problema.                                      |
+| **Reativa**    | **Investigação Manual Forense:** Entrevistar usuários para reconstruir a sequência de eventos que levaram a uma inconsistência de dados.                                            | Manual/Processual      | **Ineficiente e Não Confiável:** Processo lento, sujeito a falhas de memória humana e sem garantia de precisão. O MTTR (Mean Time to Recovery) para um incidente de dados é extremamente alto. |
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+
+&emsp;A recuperação de impactos causados por falhas de rastreabilidade é **extremamente frágil, não sistêmica e baseada em arqueologia de dados**, sem componentes arquiteturais que garantam a recuperação da integridade.
+
+| Componente/Procedimento         | Descrição                                                                                                                                                                                                                                  | Justificativa/Impacto                                                                                                                                                                                                                                              |
+| :------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Registro de Falhas**          | **Nenhum:** A falha de rastreabilidade (ex: um dado inserido incorretamente) **não gera um registro de falha**. O único registro é o log de auditoria do SharePoint que mostra a alteração, mas a classifica como uma operação normal.     | **Impossibilidade de Justificativa:** Sem um registro claro da transação original (transferência manual), é impossível justificar formalmente a causa de uma inconsistência de dados. A "falha" é silenciosa.                                                      |
+| **Procedimento de Recuperação** | **Investigação Manual e Correção Direta:** O procedimento envolve (1) identificar a inconsistência, (2) investigar manualmente a origem através de entrevistas, e (3) corrigir o dado diretamente no SharePoint.                           | **Risco de Novos Erros:** A correção manual é, em si, outra transação não rastreada em seu contexto de negócio. Não há um vínculo formal entre o incidente e a correção, perpetuando o ciclo de falta de rastreabilidade.                                          |
+| **Componente de Recuperação**   | **Nenhum:** O sistema **não possui** componentes de recuperação arquiteturalmente definidos para a integridade dos dados, como versionamento de dados com justificativa, _rollback_ de transações de negócio ou um _log de imutabilidade_. | **Risco Crítico:** A falta de mecanismos de recuperação significa que a integridade dos dados históricos não pode ser garantida. Uma vez que um dado incorreto é inserido e processado, a confiança em todo o conjunto de dados fica permanentemente comprometida. |
+
+&emsp;A ausência de táticas arquiteturais para garantir uma trilha de auditoria de ponta a ponta e a dependência de processos manuais não auditados demonstram que o RNF de Rastreabilidade é **criticamente mal atendido** no sistema AS-IS, justificando a necessidade de uma nova arquitetura com um ponto de ingestão de dados centralizado, transacional e auditável, e o uso de um ID de Correlação em todo o fluxo.
 
 ---
 
 ## 5.4 Análise de Causas e Impactos
 
-### 5.4.1 RNF-01 — <Escalabilidade>
+### 5.4.1 RNF-01 — Escalabilidade
 
-#### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+Esta seção aprofunda a análise do RNF de Escalabilidade no sistema atual (AS-IS), focando na correlação entre as vulnerabilidades identificadas, suas causas raiz e os impactos diretos no negócio do Metrô-SP.
+
+#### Causas e Impactos da Quebra de Escalabilidade
+
+A principal causa da quebra de escalabilidade reside na **Arquitetura de Dados Inadequada** (uso de repositórios de arquivos como banco de dados transacional) e na **Dependência de um Único Fornecedor** (Microsoft SharePoint Online), conforme detalhado na seção 5.2.1.
+
+| Causa Raiz (Vulnerabilidade)                             | Cenário de Falha (Gatilho)                                                  | Impacto no Negócio (Consequência)                                                                                                                                                                                                                                        |
+| :------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Arquitetura de Dados Inadequada** (SharePoint como DB) | Geração de relatórios de grande volume (Etapa 5) ou consultas complexas.    | **Degradação Crítica de Performance:** Lentidão no acesso a dados e falhas na geração de relatórios estratégicos. **Impacto:** Atraso na tomada de decisão da diretoria e perda de credibilidade nos dados do PMO.                                                       |
+| **Dependência de um Único Fornecedor** (Throttling)      | Picos de acesso simultâneo durante o ciclo de reporte mensal (Etapa 3 e 4). | **Indisponibilidade Operacional:** Bloqueio temporário de requisições (_throttling_). **Impacto:** Interrupção dos fluxos de trabalho do Power Automate, perda de dados e necessidade de intervenção manual para reprocessamento.                                        |
+| **Ausência de API Centralizada**                         | Tentativa de processamento assíncrono ou _load balancing_ de requisições.   | **Incapacidade de Controle Técnico:** Impossibilidade de implementar táticas arquiteturais preventivas (_Rate Limiting_, _Load Balancing_) sob controle do Metrô. **Impacto:** Risco não mitigável de sobrecarga, dependendo exclusivamente das políticas do fornecedor. |
+
+#### Detalhamento da Quebra de Nível de Serviço
+
+A quebra do nível de serviço (SLA) de escalabilidade se manifesta principalmente pela não-conclusão de transações críticas dentro do tempo esperado (latência excessiva) ou pela interrupção total do serviço (indisponibilidade).
+
+- **Quebra por Latência:** O tempo de resposta para a geração de relatórios (Etapa 5) excede o limite aceitável, resultando em relatórios desatualizados ou incompletos.
+- **Quebra por Indisponibilidade:** O sistema atinge o limite de _throttling_ do SharePoint, impedindo que os fluxos do Power Automate (Etapa 4) concluam a transferência de dados.
+
+O impacto direto é a **inconsistência de dados** entre as fontes (Miro, SharePoint, Power BI), comprometendo a **integridade** e a **confiabilidade** das informações estratégicas do portfólio.
+
+#### Como recuperar/subsidiar o tratamento de impactos
+
+Esta seção detalha os procedimentos e componentes (ou a falta deles) usados para subsidiar o tratamento de falhas causadas pela quebra de escalabilidade, focando na **justificativa** para a necessidade de mudança.
+
+| Componente/Procedimento           | Descrição Detalhada                                                                                                                                                                                                             | Justificativa da Inadequação (Racional para a Nova Arquitetura)                                                                                                                                                                                                                                                          |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Registro de Falhas (Subsídio)** | **Logs do Power Automate:** O log registra a falha (ex: `429 Too Many Requests` do SharePoint) e o momento da ocorrência.                                                                                                       | O log **apenas registra o sintoma**, mas não oferece o contexto completo da transação (ex: quais dados foram perdidos, qual o impacto exato no projeto X). O subsídio é insuficiente para uma **análise de causa raiz (RCA)** eficiente, pois não há correlação com métricas de infraestrutura.                          |
+| **Procedimento de Recuperação**   | **Intervenção Manual e Reexecução:** A equipe de suporte deve identificar o fluxo falho, analisar o log e reexecutá-lo manualmente, muitas vezes após um período de espera para que o _throttling_ do SharePoint seja liberado. | **Alto MTTR e Risco de Inconsistência:** O procedimento é lento e oneroso (alto custo operacional). A reexecução manual não garante a **ordem de processamento** e pode resultar em **dados duplicados** ou **desatualizados** se a fonte original tiver sido modificada.                                                |
+| **Componentes de Recuperação**    | **Nenhum Mecanismo Arquitetural:** Não existem componentes como _Message Queues_ (Filas de Mensagens) ou _Dead Letter Queues_ (DLQ) para reprocessamento automático e seguro.                                                   | **Vulnerabilidade Crítica de Integridade:** A ausência de um mecanismo de _Retry_ automático e seguro significa que a **perda de transações** é um risco constante. A nova arquitetura deve introduzir **processamento assíncrono** com filas para garantir a entrega e o reprocessamento de mensagens em caso de falha. |
+
+A atual dependência de processos manuais para recuperação e a falta de um subsídio técnico adequado para a análise de falhas reforçam a conclusão de que o sistema AS-IS não é tolerante a falhas de escalabilidade, sendo imperativo o redesenho arquitetural.
 
 ---
 
@@ -1661,16 +2038,17 @@ _Esta seção deve descrever os componentes e procedimentos usados para subsidia
 
 ##### Matriz Consolidada de Recuperação por Tipo de Incidente:
 
-| **Tipo de Incidente** | **RTO (Tempo de Recuperação)** | **RPO (Perda de Dados)** | **Componente Principal** | **Procedimento-Chave** | **Reversibilidade** |
-|----------------------|-------------------------------|--------------------------|--------------------------|----------------------|-------------------|
-| Acesso inadequado por permissão ampla | Indeterminado (detecção) + <1h (contenção) | N/A (não há perda de dados) | SharePoint Audit Logs + Permissões | Auditoria manual de logs → Ajuste de permissões | Reversível (contenção impede acessos futuros, mas exposição passada é irreversível) |
-| Manipulação em transferência Miro→TAP | Indeterminado (detecção) + 4-12h (investigação) + 2-8h (correção) | Integridade comprometida até detecção | Miro Activity Log + SharePoint Versionamento | Comparação manual Miro vs. TAP → Correção de TAP | Reversível (correção de documento, mas decisões tomadas com base em informação incorreta são irreversíveis) |
-| Alteração não autorizada de documento crítico | Indeterminado (detecção) + <30min (restauração) | <15min (última versão antes da alteração) | SharePoint Versionamento | Restauração de versão anterior | Totalmente reversível (se detectado antes de versões serem purgadas) |
-| Exclusão acidental/maliciosa | Imediata (se usuário percebe) + <5-30min (restauração) | 0 (se dentro de 186 dias) | SharePoint Lixeira (1º e 2º estágio) | Restauração via lixeira | Totalmente reversível (até 186 dias) |
-| Exportação não autorizada/vazamento | Imediata (se reportado) + <2h (contenção) | **Irreversível** | SharePoint/Power BI Audit Logs | Suspensão de conta + Investigação forense | **Irreversível** - informação exposta não pode ser recuperada |
-| Indisponibilidade Microsoft 365 | <15min (detecção) + <4h (recuperação Microsoft) | <15min (snapshots) | Microsoft Service Health + Suporte Microsoft | Monitoramento + Comunicação aos usuários | Totalmente reversível (recuperação automática pela Microsoft) |
+| **Tipo de Incidente**                         | **RTO (Tempo de Recuperação)**                                    | **RPO (Perda de Dados)**                  | **Componente Principal**                     | **Procedimento-Chave**                           | **Reversibilidade**                                                                                         |
+| --------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Acesso inadequado por permissão ampla         | Indeterminado (detecção) + <1h (contenção)                        | N/A (não há perda de dados)               | SharePoint Audit Logs + Permissões           | Auditoria manual de logs → Ajuste de permissões  | Reversível (contenção impede acessos futuros, mas exposição passada é irreversível)                         |
+| Manipulação em transferência Miro→TAP         | Indeterminado (detecção) + 4-12h (investigação) + 2-8h (correção) | Integridade comprometida até detecção     | Miro Activity Log + SharePoint Versionamento | Comparação manual Miro vs. TAP → Correção de TAP | Reversível (correção de documento, mas decisões tomadas com base em informação incorreta são irreversíveis) |
+| Alteração não autorizada de documento crítico | Indeterminado (detecção) + <30min (restauração)                   | <15min (última versão antes da alteração) | SharePoint Versionamento                     | Restauração de versão anterior                   | Totalmente reversível (se detectado antes de versões serem purgadas)                                        |
+| Exclusão acidental/maliciosa                  | Imediata (se usuário percebe) + <5-30min (restauração)            | 0 (se dentro de 186 dias)                 | SharePoint Lixeira (1º e 2º estágio)         | Restauração via lixeira                          | Totalmente reversível (até 186 dias)                                                                        |
+| Exportação não autorizada/vazamento           | Imediata (se reportado) + <2h (contenção)                         | **Irreversível**                          | SharePoint/Power BI Audit Logs               | Suspensão de conta + Investigação forense        | **Irreversível** - informação exposta não pode ser recuperada                                               |
+| Indisponibilidade Microsoft 365               | <15min (detecção) + <4h (recuperação Microsoft)                   | <15min (snapshots)                        | Microsoft Service Health + Suporte Microsoft | Monitoramento + Comunicação aos usuários         | Totalmente reversível (recuperação automática pela Microsoft)                                               |
 
 ##### Template de Relatório de Incidente para Gestão:
+
 ```
 RELATÓRIO DE INCIDENTE DE SEGURANÇA - RNF-02
 ID do Incidente: [SEC-YYYY-MM-NNN]
@@ -1748,20 +2126,21 @@ Aprovado por: [Gestor de TI / CISO / Gestor do Portfólio]
 
 ##### Critérios para Escalonamento de Incidentes:
 
-| **Severidade** | **Critérios** | **Notificação Imediata** | **SLA de Resposta** |
-|---------------|---------------|-------------------------|-------------------|
-| **Crítica** | Vazamento de informações estratégicas; Alteração de múltiplos documentos críticos; Indisponibilidade >4h; Evidência de ataque malicioso | CISO, Gestor do Portfólio, Diretoria, Jurídico | <30min (detecção) + <2h (contenção) |
-| **Alta** | Acesso inadequado a documentos sensíveis por múltiplos usuários; Manipulação detectada em TAP; Exclusão de documentos críticos; Indisponibilidade 1-4h | Gestor de TI, Gestor do Portfólio, PMO | <2h (detecção) + <4h (contenção) |
-| **Média** | Acesso inadequado isolado; Alteração não autorizada em documento de trabalho; Exclusão acidental recuperável | Administrador do SharePoint, Gestor de TI | <8h (detecção) + <8h (recuperação) |
-| **Baixa** | Falso positivo; Anomalia benigna; Indisponibilidade <30min | Log interno apenas | <24h (documentação) |
+| **Severidade** | **Critérios**                                                                                                                                          | **Notificação Imediata**                       | **SLA de Resposta**                 |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- | ----------------------------------- |
+| **Crítica**    | Vazamento de informações estratégicas; Alteração de múltiplos documentos críticos; Indisponibilidade >4h; Evidência de ataque malicioso                | CISO, Gestor do Portfólio, Diretoria, Jurídico | <30min (detecção) + <2h (contenção) |
+| **Alta**       | Acesso inadequado a documentos sensíveis por múltiplos usuários; Manipulação detectada em TAP; Exclusão de documentos críticos; Indisponibilidade 1-4h | Gestor de TI, Gestor do Portfólio, PMO         | <2h (detecção) + <4h (contenção)    |
+| **Média**      | Acesso inadequado isolado; Alteração não autorizada em documento de trabalho; Exclusão acidental recuperável                                           | Administrador do SharePoint, Gestor de TI      | <8h (detecção) + <8h (recuperação)  |
+| **Baixa**      | Falso positivo; Anomalia benigna; Indisponibilidade <30min                                                                                             | Log interno apenas                             | <24h (documentação)                 |
 
 ##### Exemplo de Justificativa Consolidada para Alta Gestão:
+
 ```
 JUSTIFICATIVA DE INCIDENTE DE SEGURANÇA - ACESSO INADEQUADO A PROJETOS
 
 Contexto:
-Durante auditoria mensal de logs do SharePoint (implementada após incidentes anteriores), 
-identificou-se que 5 usuários acessaram cronogramas e TAPs de projetos para os quais não 
+Durante auditoria mensal de logs do SharePoint (implementada após incidentes anteriores),
+identificou-se que 5 usuários acessaram cronogramas e TAPs de projetos para os quais não
 possuíam autorização lógica, embora tivessem permissão técnica no sistema.
 
 Causa Raiz Arquitetural:
@@ -1789,7 +2168,7 @@ Ações Imediatas Executadas:
 
 Por Que Este Incidente Não Representa Falha da Equipe de TI:
 1. Sistema opera conforme projetado - permissões amplas são funcionalidade, não bug
-2. Equipe de TI não possui ferramentas de detecção automatizada de "acessos inadequados" 
+2. Equipe de TI não possui ferramentas de detecção automatizada de "acessos inadequados"
    (sistema não diferencia acesso tecnicamente permitido vs. logicamente não autorizado)
 3. Detecção dependeu de auditoria manual implementada proativamente pela equipe
 4. Tempo de resposta pós-detecção foi adequado (<2h para contenção)
@@ -1821,10 +2200,10 @@ Longo Prazo (>90 dias - Requer Investimento):
   Estimativa: Projeto de 6 meses
 
 Conclusão:
-O incidente atual é resultado de vulnerabilidade arquitetural conhecida e documentada, 
-não de falha operacional da equipe. A detecção proativa via auditoria manual representa 
-MELHORIA em relação ao cenário anterior (ausência de auditoria). Ações corretivas de 
-curto/médio prazo são viáveis dentro de recursos atuais. Solução definitiva requer 
+O incidente atual é resultado de vulnerabilidade arquitetural conhecida e documentada,
+não de falha operacional da equipe. A detecção proativa via auditoria manual representa
+MELHORIA em relação ao cenário anterior (ausência de auditoria). Ações corretivas de
+curto/médio prazo são viáveis dentro de recursos atuais. Solução definitiva requer
 investimento em reestruturação arquitetural e ferramentas de monitoramento avançadas.
 
 Aprovação Solicitada:
@@ -1833,11 +2212,11 @@ Aprovação Solicitada:
 - Autorização para criação de grupo de trabalho dedicado à reestruturação de segurança
 ```
 
-##### Vulnerabilidade Final de Recuperação: 
+##### Vulnerabilidade Final de Recuperação:
 
-O sistema atual possui **capacidade técnica de recuperação adequada para falhas técnicas** (exclusões, alterações indevidas de documentos individuais, indisponibilidades temporárias) através de versionamento robusto, lixeira com retenção longa e redundância da Microsoft. Porém, possui **capacidade crítica inadequada de recuperação para violações de governança** (acessos inadequados, manipulações em transferências manuais, vazamentos) devido à **dependência de detecção manual reativa**. 
+O sistema atual possui **capacidade técnica de recuperação adequada para falhas técnicas** (exclusões, alterações indevidas de documentos individuais, indisponibilidades temporárias) através de versionamento robusto, lixeira com retenção longa e redundância da Microsoft. Porém, possui **capacidade crítica inadequada de recuperação para violações de governança** (acessos inadequados, manipulações em transferências manuais, vazamentos) devido à **dependência de detecção manual reativa**.
 
-O tempo entre violação e detecção pode ser semanas a meses, período durante o qual danos (exposição de informações, decisões baseadas em dados incorretos) são acumulados e tornam-se **irreversíveis**. A recuperação é eficaz quando o incidente é detectado rapidamente, mas **ineficaz quando a detecção é tardia** devido à ausência de monitoramento automatizado de conformidade com políticas de segregação e integridade. 
+O tempo entre violação e detecção pode ser semanas a meses, período durante o qual danos (exposição de informações, decisões baseadas em dados incorretos) são acumulados e tornam-se **irreversíveis**. A recuperação é eficaz quando o incidente é detectado rapidamente, mas **ineficaz quando a detecção é tardia** devido à ausência de monitoramento automatizado de conformidade com políticas de segregação e integridade.
 
 O sistema não subsidia adequadamente o tratamento proativo de impactos - apenas possibilita resposta reativa após consumação do dano. Esta limitação é resultado de:
 
@@ -1851,10 +2230,40 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 ---
 
-### 5.4.3 RNF-03 — <Rastreabilidade>
+### 5.4.3 RNF-03 — Rastreabilidade
 
-#### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever os componentes e procedimentos usados para subsidiar o atendimento a falhas que causem quebras de níveis de serviço, incluindo justificativas, detalhamento e passos de recuperação._
+&emsp; Esta seção aprofunda a análise de causa e impacto em relação ao requisito não funcional de rastreabilidade.
+
+#### Causas e Impactos da Quebra de Rastreabilidade
+
+&emsp; A principal causa da quebra de rastreabilidade reside no **Processo Manual Não Auditado** (transferência de dados entre ferramentas) e na **Arquitetura de Dados Fragmentada** (silos de informação sem conexão), conforme detalhado na seção 5.2.3.
+
+| Causa Raiz (Vulnerabilidade)                                             | Cenário de Falha (Gatilho)                                                                                                | Impacto no Negócio (Consequência)                                                                                                                                                                                                                                 |
+| :----------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Processo Manual Não Auditado** (Transferência Miro/Excel → SharePoint) | Um usuário comete um erro (acidental ou intencional) ao copiar dados para o SharePoint (Etapa 2).                         | **Corrupção Silenciosa de Dados:** Decisões estratégicas são tomadas com base em informações incorretas, sem que ninguém perceba a falha. **Impacto:** Risco de investimentos equivocados e perda de credibilidade do PMO perante a diretoria.                    |
+| **Arquitetura de Dados Fragmentada** (Silos de Logs)                     | Um auditor solicita a trilha de auditoria completa de um indicador de desempenho, desde sua origem até o relatório final. | **Impossibilidade de Auditoria e Conformidade:** A equipe de TI é incapaz de fornecer uma trilha de auditoria ponta a ponta. **Impacto:** Falha em atender a requisitos de governança interna e risco de não conformidade com regulações futuras.                 |
+| **Ausência de ID de Correlação**                                         | Ocorre uma inconsistência de dados em um relatório do Power BI (Etapa 5) e é necessário encontrar a causa raiz.           | **Diagnóstico Ineficiente e Custo Operacional Elevado:** A equipe gasta horas ou dias em uma investigação manual, entrevistando pessoas e cruzando logs. **Impacto:** Alto custo de suporte (horas/homem) e lentidão na resolução de problemas críticos de dados. |
+
+#### Detalhamento da Quebra de Nível de Serviço
+
+&emsp; A quebra do nível de serviço (SLA) de rastreabilidade não se manifesta como uma falha sistêmica (erro 404 ou 500), mas sim pela **incapacidade do sistema de garantir a integridade e a proveniência dos dados que ele fornece**, o que é uma falha crítica para um sistema de registro.
+
+- **Quebra por Integridade:** O sistema armazena e apresenta dados que podem ter sido corrompidos durante a entrada manual, tratando-os como informações válidas e confiáveis.
+- **Quebra por Auditabilidade:** O sistema é incapaz de responder a perguntas fundamentais de auditoria, como "Quem alterou este valor e quando, durante a transição do Miro para o SharePoint?" ou "Qual a origem deste dado no relatório?".
+
+&emsp;O impacto direto é a **erosão da confiança nos dados**, o que compromete a função primária do sistema de Portfólio: fornecer uma visão única e verdadeira sobre os projetos estratégicos do Metrô.
+
+#### Como recuperar/subsidiar o tratamento de impactos
+
+&emsp; Esta seção detalha os procedimentos e componentes (ou a falta deles) usados para subsidiar o tratamento de falhas causadas pela quebra de rastreabilidade, focando na **justificativa** para a necessidade de mudança.
+
+| Componente/Procedimento           | Descrição Detalhada                                                                                                                                                                                                              | Justificativa da Inadequação (Racional para a Nova Arquitetura)                                                                                                                                                                                                                                                         |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Registro de Falhas (Subsídio)** | **Logs de Auditoria do SharePoint:** O log registra que uma alteração foi feita com sucesso por um usuário autorizado, mas não tem o contexto da transação de negócio (ex: "transferência de dados do Miro").                    | O log **registra uma operação técnica, não uma transação de negócio**. Ele subsidia a informação de "quem alterou no SharePoint", mas é insuficiente para uma **análise de causa raiz (RCA)**, pois a origem da informação (Miro/Excel) é desconhecida.                                                                 |
+| **Procedimento de Recuperação**   | **Investigação Manual e Correção Direta:** A equipe de TI ou o PMO deve (1) identificar a inconsistência, (2) entrevistar os envolvidos para tentar descobrir a origem do erro, e (3) corrigir o dado diretamente no SharePoint. | **Alto MTTR e Risco de Perpetuar Erros:** O procedimento é lento, não confiável e depende da memória humana. A correção manual é, em si, outra transação sem rastreabilidade de negócio, o que agrava o problema de governança e não garante a integridade a longo prazo.                                               |
+| **Componentes de Recuperação**    | **Nenhum Mecanismo Arquitetural:** Não existem componentes como _versionamento de dados com justificativa de negócio_, _rollback_ de transações ou um _log de imutabilidade_ que conecte as diferentes etapas do fluxo.          | **Vulnerabilidade Crítica de Governança:** A ausência de um mecanismo de recuperação auditável significa que a **integridade dos dados históricos não pode ser garantida**. A nova arquitetura deve introduzir um **ponto de ingestão transacional e auditável** que registre a linhagem de cada dado desde sua origem. |
+
+&emsp; Sendo assim, o sistema AS-IS não é auditável, sendo necessário o redesenho da arquitetura para garantir a rastreabilidade de ponta a ponta.
 
 ---
 
@@ -1946,26 +2355,135 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 ### 6.2.2 RNF-02 — <Segurança>
 
 #### A. Entrada
-_Esta seção deve descrever os dados e transações de entrada sob a ótica de segurança/privacidade (ex.: tentativas de login, chamadas autenticadas, volume de queries), com limites aceitáveis para o sistema novo._
+
+&nbsp; O sistema novo de gerenciamento de projetos do Metrô de São Paulo deve controlar rigorosamente os dados e transações de entrada, assegurando confiabilidade, confidencialidade e integridade desde o ponto inicial de acesso. Detalhes importantes incluem:
+
+- Tentativas de Login:
+&nbsp;Todas as tentativas de autenticação, incluindo sucesso, falhas, bloqueios temporários e uso de MFA, serão registradas. O sistema preverá limites máximos para tentativas mal-sucedidas para mitigar ataques de força bruta e evitar bloqueios indevidos. Controles adaptativos poderão bloquear acessos de localizações ou dispositivos suspeitos.
+
+- Chamadas Autenticadas:
+&nbsp;APIs do sistema aceitarão somente chamadas autenticadas com tokens válidos emitidos após autorização adequada. Tokens terão validade limitada e sofrerão renovação e revogação automatizadas em caso de anomalias.
+
+- Volume de Queries e Usuários:
+&nbsp;O sistema é dimensionado para suportar, com baixa latência, um volume médio de 40 a 60 usuários simultâneos em operação contínua e picos até 100 simultâneos, sem perda de desempenho ou degradação dos controles de segurança. As consultas são sujeitas a limites para evitar negação de serviço por abuso.
+
+- Validação e Verificação de Dados:
+&nbsp;Toda inserção ou modificação em documentos, cronogramas e formulários passa por validações automáticas para garantir formatos corretos, integridade semântica e ausência de alterações não autorizadas, incluindo identificação e bloqueio de transações suspeitas.
+
+- Detecção Precoce e Bloqueio de Acessos Indevidos:
+&nbsp;Mecanismos proativos atuarão para identificar padrões de comportamento anômalo já nas fases iniciais (ex.: tentativas sequenciais de acesso a recursos não autorizados), garantindo medidas instantâneas de bloqueio, isolamento e alerta.
 
 #### B. Saída
-_Esta seção deve listar os registros de transações corretas e fraudulentas/bloqueadas, mostrando como a nova arquitetura evidencia a melhoria de bloqueio, detecção e rastreabilidade em relação ao atual._
 
+&nbsp;A saída do sistema novo demonstra ganhos significativos em segurança e rastreabilidade, visíveis por meio dos registros produzidos:
+
+- Logs Detalhados e Imutáveis:
+&nbsp;Todas as ações realizadas dentro do sistema, desde autenticações até modificações em documentos e uso de agentes de IA, geram entradas de log criptografadas, armazenadas em local seguro e protegido contra adulterações. Estes logs suportam auditorias internas e externas com total transparência.
+
+- Transações Fraudulentas/Bloqueadas:
+&nbsp;Eventos como tentativas de login não autorizadas, ataques de negação de serviço, uso de credenciais inválidas e acessos a áreas restritas são categorizados com detalhamento suficiente para investigação posterior e possibilitam bloqueio automático e revogação imediata de sessões ou permissões.
+
+- Correlação e Contextualização de Eventos:
+&nbsp;O sistema integra dados de múltiplos módulos (portal usuário, agentes de IA, base documental) permitindo cruzar eventos para identificar tentativas multifacetadas de comprometimento, reforçando a segurança por meio da análise combinada.
+
+- Indicadores de Segurança:
+&nbsp;Relatórios e dashboards em tempo real exibem métricas sobre volumes de acesso, tentativas bloqueadas, status das sessões e padrões de uso, permitindo que equipes de segurança ajustem políticas e verifiquem a eficácia dos controles implantados.
 #### C. Controle do RNF
-_Esta seção deve indicar como o requisito é controlado no novo sistema (políticas, mecanismos sistêmicos e procedimentos), considerando as táticas e componentes que suplantam as vulnerabilidades._
 
----
+&nbsp;O controle do requisito RNF-02 assegura a robustez da segurança por meio de um ecossistema integrado de políticas, mecanismos técnicos e procedimentos operacionalizados:
 
-### 6.2.3 RNF-03 — <Rastreabilidade>
+- Políticas de Controle de Acesso:
+&nbsp;Estabelecem regras claras para concessão, revisão e revogação de acessos, com segregação de funções e perímetros definidos, compatíveis com a criticidade dos dados e operações. Revisões periódicas garantem alinhamento atempado às mudanças organizacionais e de perfil.
 
-#### A. Entrada
-_Esta seção deve descrever as entradas que geram eventos auditáveis (ações de usuários e agentes), com a cobertura mínima aceitável para o sistema novo._
+- Autenticação Robusta e Autorização Dinâmica:
+&nbsp;Implementação obrigatória de MFA para acessos sensíveis, aplicação rigorosa de RBAC e ABAC, com adaptações contextuais em tempo real para ajuste fino das permissões.
 
-#### B. Saída
-_Esta seção deve listar os registros de auditoria esperados (ações corretas e tentativas indevidas), destacando como a saída evidencia a melhoria de rastreabilidade e consulta em relação ao atual._
+- Criptografia End-to-End:
+&nbsp;Dados são protegidos durante todo o ciclo - desde a transmissão via canais TLS até o armazenamento com chaves gerenciadas, neutralizando riscos de interceptação, acesso físico indevido e vazamento.
 
-#### C. Controle do RNF
-_Esta seção deve indicar como o requisito é controlado (event sourcing, políticas de retenção, integridade por hash), relacionando componentes que eliminam as falhas do sistema atual._
+- Monitoramento Contínuo e Alarmes:
+&nbsp;Sistemas de SIEM recebem inputs contínuos dos módulos de registro, análise e alerta, assegurando resposta rápida a incidentes, com workflows automatizados para investigação, bloqueio e mitigação.
+
+- Processos e Workflows de Aprovação:
+&nbsp;Implementação de procedimentos sistêmicos para validação formal de alterações em documentos e dados sensíveis, garantindo que somente ações aprovadas sejam efetivadas no sistema.
+
+- Capacitação e Sensibilização:
+&nbsp;Incluem treinamentos periódicos aos usuários para reforçar boas práticas, reconhecer tentativas de fraude e incentivar o reporte imediato de incidentes, fechando o ciclo de governança com foco no fator humano.
+
+- Auditorias Regulares e Testes de Segurança:
+&nbsp;Revisões de conformidade e testes periódicos (pentests e monitoramento de vulnerabilidades) garantem a manutenção dos níveis de segurança conforme requisitos legais e técnicos.
+
+&nbsp;Dessa maneira, o sistema novo supera as fragilidades de segurança do modelo atual, oferecendo um ambiente confiável, auditável e resiliente, fundamental para a governança eficaz dos projetos do Metrô de São Paulo.
+
+
+### 6.2.3 RNF-03 — Rastreabilidade
+
+&emsp; A Rastreabilidade no novo sistema do Portfólio do Metrô será garantida por meio de uma arquitetura centralizada e auditável, que assegura a rastreabilidade ponta a ponta das transações de negócio desde sua origem até os relatórios consolidados. As táticas de rastreabilidade deixam de ser operacionais e passam a ser estruturalmente sistêmicas, com mecanismos de identificação única, auditoria integrada e correlação automática de eventos.
+
+#### A. Entrada — Dados e Transações de Entrada
+
+&emsp; No novo cenário, todas as entradas de dados ocorrem através de pontos de ingestão controlados, eliminando os fluxos manuais e não auditados do sistema anterior. Cada operação de entrada gera um ID de correlação único, que permite traçar sua origem, responsável, timestamp e integridade.
+
+##### Descrição das Entradas
+
+| Tipo de Transação                  | Origem                                    | Mecanismo de Entrada             | Controle de Auditoria                                             | Observações                                |
+| :--------------------------------- | :---------------------------------------- | :------------------------------- | :---------------------------------------------------------------- | :----------------------------------------- |
+| Submissão de Nova Iniciativa       | Usuário autenticado (Portal de Portfólio) | API de Ingestão / Formulário Web | Log automatizado com ID de correlação, autenticação e checksum    | Substitui envio manual via Forms e Excel   |
+| Atualização de Status / Benefícios | Gestor de Projeto / PMO                   | Interface Web autenticada        | Registro automático em log transacional e histórico de alterações | Mantém versão anterior para rastreio       |
+| Importação de Dados Legados        | Integração Miro/Excel → SharePoint        | Conector automatizado            | Validação de integridade e hash comparativo                       | Detecta divergências entre fonte e destino |
+
+&emsp; A ausência de ponto único de entrada e a dependência de inserções manuais, principais vulnerabilidades do AS-IS, são eliminadas. Agora, toda transação é auditável e validada sistemicamente, permitindo contabilizar tanto transações corretas quanto tentativas de inserção não conformes.
+
+ - **Transações de Entrada:** Toda criação/edição/aprovação passa pela borda controlada (API de Ingestão/Portal autenticado), com autenticação, validação de contrato e geração de trilha no momento da entrada.
+ - **Transação Crítica para Auditoria:** A primeira gravação do evento de negócio no `audit log` imutável, com `correlationId` e `payloadHash`, é o ponto de verdade para toda a trilha subsequente. (Termos podem ser alterados).
+ - **Vulnerabilidade:** Em cenários excepcionais de importação de legado, falhas temporárias de conectores podem exigir reprocesso; o evento é colocado em quarentena com justificativa e não altera o dado de negócio até regularização.
+
+**Tabela — Entradas que exigem rastreabilidade (RNF-03) — Itens numerados**
+
+| Nº | Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
+| :-- | :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| 1  | Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
+| 2  | Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
+| 3  | Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
+| 4  | Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
+
+#### B. Saída — Registros de Transações Corretas e Inadequadas
+
+&emsp; As saídas do sistema passam a refletir o nível de rastreabilidade e integridade dos dados, diferenciando transações corretas das transações potencialmente fraudulentas ou inconsistentes.
+
+##### Descrição das Saídas
+
+| Tipo de Transação     | Critério de Classificação                                 | Evidência de Rastreabilidade                    | Destino / Registro                          | Observações                      |
+| :-------------------- | :-------------------------------------------------------- | :---------------------------------------------- | :------------------------------------------ | :------------------------------- |
+| Transação Correta     | ID de correlação válido e ciclo de vida completo          | Log completo da ingestão, transformação e saída | Data Lake / SharePoint com versão auditável | Dado confiável e rastreável      |
+| Transação Inadequada  | Ausência de ID de correlação ou divergência de hash       | Alerta de inconsistência no monitoramento       | Registro marcado como “não rastreável”      | Requer validação manual pelo PMO |
+| Transação Fraudulenta | Alteração não autorizada / fonte desconhecida             | Alerta crítico e bloqueio automático            | Log imutável e notificação a segurança       | Ação investigativa obrigatória   |
+
+&emsp; Como benefício, passa a ser possível demonstrar, de forma objetiva, a melhoria de rastreabilidade em relação ao sistema anterior, onde não havia diferenciação entre dados válidos e dados sem origem conhecida.
+
+ - **Transações Corretas (Nominais):** A saída traz vínculo explícito ao evento de origem, versão do registro e histórico de transformações, permitindo navegação de linhagem até o relatório.
+ - **Transação Crítica para Auditoria:** A publicação da mudança no repositório de domínio com versionamento e a propagação do `correlationId` aos artefatos analíticos consolidam a trilha ponta a ponta.
+ - **Vulnerabilidade:** Possíveis perdas de correlação em integrações de terceiros são tratadas por detecção e enriquecimento posterior; enquanto não resolvidas, as saídas são marcadas como não rastreáveis.
+
+#### C. Controle do RNF — Mecanismos e Táticas de Controle
+
+&emsp; O controle da rastreabilidade deixa de ser um processo reativo e manual e passa a ser automatizado, centralizado e mensurável, baseado em componentes sistêmicos que monitoram e logam todas as transações de ponta a ponta.
+
+##### Descrição dos Controles
+
+| Tipo de Controle                  | Mecanismo / Componente                                | Natureza              | Função                                                                    | Vulnerabilidade Corrigida               |
+| :-------------------------------- | :----------------------------------------------------- | :-------------------- | :------------------------------------------------------------------------ | :-------------------------------------- |
+| Controle Sistêmico de Ingestão    | API Gateway + Ingestion API com autenticação e logs    | Sistêmica             | Valida e registra cada transação de entrada com ID único                  | Elimina inserções manuais não auditadas |
+| Controle de Correlação de Dados   | ID de correlação global em todo o fluxo                | Sistêmica             | Rastreia o dado desde a origem até os relatórios finais                   | Elimina dados “órfãos”                  |
+| Agregação e Monitoramento de Logs | SIEM corporativo integrado: Microsoft Sentinel   | Sistêmica             | Consolida logs de SharePoint, Power Automate e APIs; detecta anomalias    | Elimina monitoramento em silos          |
+| Indicadores de Rastreabilidade    | Painel operacional no Power BI                         | Sistêmica             | Acompanha percentual de dados rastreáveis e incidentes                     | Introduz gestão contínua do RNF         |
+| Revisão de Auditoria              | Processo periódico conduzido pelo PMO                  | Manual (complementar) | Confirma registros críticos e justifica correções de dados                | Substitui investigações ad hoc          |
+
+&emsp; A única dependência manual residual é a validação de exceções detectadas automaticamente. Essa ação é auditada e registrada, para que nenhuma intervenção humana ocorra fora do escopo controlado do sistema.
+
+- **Controle Sistêmico:** Gate único de escrita, contratos de dados, `audit log` imutável, correlação distribuída e bloqueio de escrita direta garantem trilha completa sem bypass.
+- **Controle Manual:** Atuará apenas em exceções (ex.: validação de dados legados), sempre com justificativa registrada e nova versão vinculada ao incidente.
+- **Vulnerabilidade:** O risco remanescente limita-se à necessidade de análise humana em casos atípicos; é mitigado por quarentena, segregação de funções e registro detalhado das ações.
 
 ---
 
@@ -2059,31 +2577,103 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 ### 6.3.2 RNF-02 — <Segurança>
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como o requisito será monitorado (ex.: SIEM, alertas de IAM, WAF), e como essa monitoração elimina as vulnerabilidades do atual._
 
+&nbsp;O monitoramento constante do requisito RNF-02 é crucial para manter a segurança e a integridade do sistema novo do Metrô. Para isso, será adotada a integração de múltiplas soluções e técnicas:
+
+- Sistema SIEM (Security Information and Event Management): Coleta, centraliza e correlaciona logs e eventos de segurança provenientes de diversos componentes do sistema, tais como servidores de autenticação, gates de API, agentes de IA e subsistemas de armazenamento. A análise em tempo real permite identificar rapidamente tentativas de intrusão, acesso não autorizado ou ataques, automatizando alertas e medidas iniciais de contenção.
+
+- Alertas e Relatórios do IAM: O sistema de gerenciamento de identidades e acessos gera notificações instantâneas em casos de tentativas suspeitas, como múltiplas falhas de login, acessos fora do perímetro definido, alterações abruptas de privilégios ou uso simultâneo indevido de contas.
+
+- Firewall de Aplicação Web (WAF): Foca na proteção contra ataques direcionados às interfaces web da solução, filtrando requisições maliciosas, prevenindo injeção de código e garantindo que acessos indevidos sejam bloqueados no perímetro da aplicação.
+
+- Monitoramento Comportamental por IA: Módulos inteligentes monitoram padrões de acesso e uso, identificando variações atípicas relacionadas a usuários e agentes, como acessos em horários incomuns, volumes anormais de dados e sequências fora do padrão, aumentando a precisão da detecção.
+
+&nbsp;Essa arquitetura conjunta supera as limitações do sistema atual, que carece de componentes integrados de monitoramento, dificultando a identificação eficiente e o bloqueio de ameaças.
 #### B. Como resolver o RNF (Preventivo e Reativo)
-_Esta seção deve listar componentes preventivos (ex.: login/senha, MFA, RBAC/ABAC, criptografia de dados em trânsito e em repouso) e reativos (ex.: detecção de anomalias, contenção, revogação de sessões)._ 
+
+&nbsp;Para mitigar riscos e responder a incidentes, o sistema novo integra um conjunto robusto de componentes e estratégias:
+
+- Preventivos:
+
+  - Autenticação poderosa com MFA obrigatória para acessos sensíveis, evitando comprometimento por simples vazamento de senhas.
+
+  - Implementação de RBAC e ABAC, permitindo controle fino e dinâmico sobre quem pode acessar o quê, baseado em função, contexto e atributos do usuário.
+
+  - Criptografia forte (TLS 1.2+ para dados em trânsito e AES-256 para dados armazenados) garantindo que informações estejam protegidas contra interceptação e vazamento.
+
+  - Validação e sanitização rigorosas para prevenir injeções e manipulações maliciosas.
+
+  - Versionamento automático em documentos críticos, permitindo rastreamento e reversão de alterações.
+
+- Reativos:
+
+  - Detecção automática de anomalias baseada em inteligência artificial, com identificação precoce de tentativas de fraude, uso irregular de credenciais e comportamentos fora do padrão.
+
+  - Contenção automática de ameaças, como bloqueio temporário ou permanente de contas suspeitas, isolamento de sessões comprometidas e restrição de privilégios.
+
+  - Revogação rápida de sessões de usuários ou agentes que apresentem risco, garantindo o corte imediato do acesso não autorizado.
+
+  - Notificações em tempo real para equipe de segurança, permitindo resposta rápida e eficaz a incidentes.
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever procedimentos para recuperação pós-incidente (ex.: identificação de transações fraudulentas, recomposição de dados, comunicação e evidências)._ 
 
-_Exemplo de táticas para requisito de privacidade:_
-- _Resistência à invasão: autenticação forte (MFA), RBAC/ABAC, criptografia end-to-end._
-- _Detecção da invasão: rastreabilidade de transações, monitoramento de acessos, análise de padrões/sazonalidade._
-- _Recuperação da invasão: identificação e reversão de transações fraudulentas, recomposição de impactos._
+&nbsp;Para minimizar os impactos após incidentes, o sistema conta com procedimentos claros e estruturados:
 
----
+- Auditoria detalhada e análise forense: A partir dos logs imutáveis centralizados e das correlações do SIEM, é possível identificar os responsáveis, os vetores da invasão e os dados afetados, suportando ações legais e correções eficazes.
 
-### 6.3.3 RNF-03 — <Rastreabilidade>
+- Recuperação de dados e versões: Utilização de backups regulares e mecanismos de versionamento que permitem restaurar estados anteriores ao incidente, mantendo a integridade das informações críticas.
+
+- Comunicação transparente e controlada: Relatórios e notificações formais são gerados para os gestores do Metrô e áreas afetadas, detalhando o incidente e as medidas adotadas.
+
+- Aperfeiçoamento contínuo: Aprendizado a partir dos incidentes para fortalecer políticas de segurança, melhorar detecção e respostas, atualizando processos e tecnologias.
+
+- Testes periódicos: Exercícios simulados e testes de restauração são realizados para garantir que os planos de recuperação funcionem efetivamente, reduzindo o tempo de indisponibilidade.
+
+
+&nbsp;A seção 6.3.2 RNF-02 reforça que a segurança do sistema novo será garantida por monitoramento integrado e contínuo, controles preventivos rigorosos e respostas rápidas a incidentes. Com o uso de SIEM, IAM, WAF e IA para análise comportamental, o sistema elimina as vulnerabilidades atuais, assegurando proteção, rastreabilidade e resiliência. O foco na recuperação ágil pós-incidente fecha o ciclo de segurança, garantindo governança eficaz e continuidade para os projetos do Metrô de São Paulo.
+
+### 6.3.3 RNF-03 — Rastreabilidade
 
 #### A. Como monitorar o RNF
-_Esta seção deve indicar como a cobertura de auditoria será verificada (ex.: amostragem contínua, SLIs de cobertura, tempo de consulta), mostrando a superação do atual._
+
+&emsp; O monitoramento passa a ser simples de entender e de acessar: toda mudança relevante fica registrada automaticamente e é possível seguir o caminho do dado desde a origem até o relatório. Isso resolve os pontos levantados em 5.4.3 (processo manual, silos e falta de correlação) sem depender de varreduras manuais.
+
+| Causa do AS-IS (5.4.3)                | Resposta no sistema novo (TO-BE)                                                                       |
+| :------------------------------------ | :----------------------------------------------------------------------------------------------------- |
+| Processo Manual Não Auditado          | Entradas apenas por pontos controlados, com registro automático e trilha de auditoria                 |
+| Arquitetura de Dados Fragmentada      | Consolidação de registros e eventos em um repositório de auditoria consultável em um único lugar     |
+| Ausência de ID de Correlação          | Identificador único por transação propagado ao longo do fluxo e visível nos relatórios e consultas   |
+
+&emsp; Na prática, isso significa que qualquer pessoa autorizada consegue verificar, sem esforço técnico, a origem de um dado apresentado em um relatório e o caminho que ele percorreu dentro do sistema. O time de auditoria não precisa mais juntar evidências manualmente: a trilha está disponível em um único lugar e em linguagem compreensível.
 
 #### B. Como resolver o RNF (Preventivo e Reativo)
-_Esta seção deve listar táticas preventivas (ex.: event sourcing, correlação automática, políticas de retenção) e reativas (ex.: reconstrução de trilhas, enriquecimento de logs)._ 
+
+&emsp; A solução utiliza prevenção (para evitar que o problema ocorra) e reação rápida (para corrigir, caso aconteça):
+
+- Preventivo: entradas passam por um ponto único e validado; cada mudança recebe um identificador e fica registrada; ninguém escreve diretamente nos repositórios finais fora do fluxo controlado.
+- Reativo: se algo vier incompleto ou incoerente, fica em quarentena e não altera o dado de negócio; é possível reprocessar a partir do registro de auditoria, ou desfazer uma versão com justificativa.
+
+&emsp; O objetivo é evitar que problemas cheguem aos relatórios finais e, caso surjam, corrigi-los de forma segura e rastreável. As regras são claras: tudo entra pelo mesmo caminho controlado, tudo fica registrado, e qualquer ajuste posterior deixa um histórico transparente do que foi feito e por quê.
+
+&emsp; Com isso, PMO e áreas de negócio passam a ter previsibilidade sobre o funcionamento do processo: há um caminho único para solicitações, critérios claros para aceite ou rejeição e responsáveis definidos para tratar exceções. Esse alinhamento reduz discussões subjetivas e acelera a tomada de decisão.
+
+&emsp; Além disso, toda decisão, inclusive desvios justificados, fica documentada. Isso facilita a prestação de contas para auditoria e diretoria, e cria um registro consistente de como e por que cada alteração foi realizada, fortalecendo o aspecto de governança do portfólio.
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
-_Esta seção deve descrever como subsidiar investigações (ex.: integridade por hash, cadeia de custódia, export de evidências) e procedimentos de recuperação._
+
+&emsp; Quando houver um problema, a equipe encontra rapidamente o que aconteceu e corrige com segurança, sem perder a trilha:
+
+| O que é usado                          | Para que serve                                                                 |
+| :------------------------------------- | :------------------------------------------------------------------------------ |
+| Registro de auditoria consolidado      | Ver o histórico exato de quem fez o quê e quando, sem depender de entrevistas |
+| Consulta simples da linhagem           | Navegar do relatório até a origem do dado                                     |
+| Reprocessamento ou desfazer uma versão | Corrigir o estado atual sem esconder o histórico e com justificativa          |
+
+&emsp; Em termos práticos, quando um incidente é identificado, a equipe consegue rapidamente ver qual transação o causou, quem executou a ação, qual foi o conteúdo envolvido e em que momento ocorreu. Com base nisso, decide-se entre reprocessar as informações ou desfazer a última alteração. Em ambos os casos, a justificativa e o resultado ficam documentados, o que facilita a comunicação com as áreas de negócio e com a auditoria.
+
+&emsp; A comunicação também fica mais simples: ao apresentar o ocorrido para as áreas impactadas ou para a diretoria, é possível anexar a trilha de como o problema surgiu e como foi tratado. Isso reduz retrabalho, evita versões diferentes da mesma história e ajuda a preservar a confiança nos relatórios.
+
+&emsp; Por fim, cada incidente gera aprendizado. As causas identificadas alimentam melhorias no processo (por exemplo, ajustes de validação na entrada ou revisões de responsabilidade) para reduzir a recorrência. Esse ciclo de melhoria contínua reforça a governança e mantém a rastreabilidade efetiva ao longo do tempo. Isto responde aos impactos descritos em 5.4.3: reduz o tempo de diagnóstico, evita decisões com base em dados incorretos e fornece evidências claras para auditoria e governança.
 
 ---
 
@@ -2093,9 +2683,57 @@ _(Sintetize as decisões e seus impactos sobre a qualidade do sistema.)_
 
 ---
 
-# 7. Simulação do Sistema Novo
+# 7. Simulação do Sistema
 
 _(Apresente a simulação comparativa entre o sistema atual e o sistema novo, evidenciando as melhorias obtidas nos RNFs selecionados.)_
+
+---
+
+## 7.1 Simulação RNF - 01
+
+_(Introduza seção para RNF01)_
+
+### 7.1.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.1.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.2 Simulação RNF - 02
+
+_(Introduza seção para RNF02)_
+
+### 7.2.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.2.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.3 Simulação RNF - 03
+
+_(Introduza seção para RNF02)_
+
+### 7.3.1 Simulação Sistema: Atual
+
+_(Apresente a simulação do sistema atual)_
+
+### 7.3.2 Simulação Sistema: Novo
+
+_(Apresente a simulação do sistema novo)_
+
+---
+
+## 7.4 Tabela de Comparação Consolidada
+
+_(Tabela Final comparando resultados entre as simulações do sistema atual x novo)_
 
 ---
 
