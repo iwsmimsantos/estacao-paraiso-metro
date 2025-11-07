@@ -234,6 +234,7 @@
       - [7.3.2.1 Cenário 10 - Encerramento automático do projeto (TO-BE)](#7321-cenário-10---encerramento-automático-do-projeto-to-be)
       - [7.3.2.2 Cenário 11 - Controle automatizado de cronograma (TO-BE)](#7322-cenário-11---controle-automatizado-de-cronograma-to-be)
       - [7.3.2.3 Cenário 14 - Registro obrigatório / bloqueio (TO-BE)](#7323-cenário-14---registro-obrigatório--bloqueio-to-be)
+  - [Conclusão final - RNF-03 (Rastreabilidade)](#conclusão-final---rnf-03-rastreabilidade)
   - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
   - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
@@ -2755,7 +2756,7 @@ _(Apresente a simulação do sistema novo)_
 #### 7.3.1.1 Cenário 10 - Encerramento manual de projeto (AS-IS)
 
 **Contexto**  
-Atualmente o encerramento de projeto é manual: inativação de elementos, remoção de acessos e arquivamento do histórico dependem de ações humanas, o que provoca risco de perda de rastreabilidade e acessos residuais.
+&emsp; Atualmente o encerramento de projeto é manual: inativação de elementos, remoção de acessos e arquivamento do histórico dependem de ações humanas, o que provoca risco de perda de rastreabilidade e acessos residuais.
 
 **Configuração do modelo (AS-IS)**
 
@@ -2774,19 +2775,17 @@ Atualmente o encerramento de projeto é manual: inativação de elementos, remo�
 | Probabilidade Empírica (simulação) |  **0.999750** |
 | Tempo Médio Empírico (dias)        | **53.503208** |
 
-**Gráficos:**
-
 - Cadeia de estados (Markov) - AS-IS:
 <div align="center">
 <sub>Figura 7.3.1.1.1 - Cadeia de Markov As Is - Cenário 10</sub><br>
-<img src="img/section7/asis10.png" width="100%"><br>
+<img src="img/section7/asis10.png" width=70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento
 <div align="center">
 <sub>Figura 7.3.1.1.2 - Evolução da probabilidade - Cenário 10</sub><br>
-<img src="img/section7/evolucao10.png" width="100%"><br>
+<img src="img/section7/evolucao10.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2798,7 +2797,7 @@ Atualmente o encerramento de projeto é manual: inativação de elementos, remo�
 #### 7.3.1.2 Cenário 11 - Alterações sem controle de cronograma (AS-IS)
 
 **Contexto**  
-Cronogramas mantidos em arquivos anexos (Excel / Project) sem versionamento: alterações manuais provocam versões órfãs e perda de histórico.
+&emsp; Cronogramas mantidos em arquivos anexos (Excel / Project) sem versionamento: alterações manuais provocam versões órfãs e perda de histórico.
 
 **Configuração do modelo (AS-IS)**
 
@@ -2823,14 +2822,14 @@ Cronogramas mantidos em arquivos anexos (Excel / Project) sem versionamento: alt
 
 <div align="center">
 <sub>Figura 7.3.1.2.1 - Cadeia de Markov As Is - Cenário 11</sub><br>
-<img src="img/section7/asis11.png" width="100%"><br>
+<img src="img/section7/asis11.png" width="70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento:
  <div align="center">
 <sub>Figura 7.3.1.2.2 - Evolução da probabilidade - Cenário 11</sub><br>
-<img src="img/section7/evolucao11.png" width="100%"><br>
+<img src="img/section7/evolucao11.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2842,7 +2841,7 @@ Cronogramas mantidos em arquivos anexos (Excel / Project) sem versionamento: alt
 #### 7.3.1.3 Cenário 14 - Registro de mudança manual (AS-IS)
 
 **Contexto**  
-O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer sem justificativa formal, o que quebra a trilha de auditoria.
+&emsp; O registro de mudanças é opcional/manual. Mudanças de impacto podem ocorrer sem justificativa formal, o que quebra a trilha de auditoria.
 
 **Configuração do modelo (AS-IS)**
 
@@ -2866,7 +2865,7 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 - Cadeia de estados (Markov) — AS-IS:
  <div align="center">
 <sub>Figura 7.3.1.3.1 - Cadeia de Markov As Is - Cenário 14</sub><br>
-<img src="img/section7/asis14.png" width="100%"><br>
+<img src="img/section7/asis14.png" width="70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2874,12 +2873,12 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 
 <div align="center">
 <sub>Figura 7.3.1.3.2 - Evolução de probabilidade de inconsistência</sub><br>
-<img src="img/section7/evolucao14.png" width="100%"><br>
+<img src="img/section7/evolucao14.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 **Interpretação (AS-IS)**  
-É o pior caso: perda de rastreabilidade consolida muito rápido (≈37 dias) em praticamente todas as simulações. Isso evidencia a criticidade de forçar registro/justificativa antes de aplicar mudanças.
+&emsp; É o pior caso: perda de rastreabilidade consolida muito rápido (≈37 dias) em praticamente todas as simulações. Isso evidencia a criticidade de forçar registro/justificativa antes de aplicar mudanças.
 
 ---
 
@@ -2910,18 +2909,18 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 
 **Gráficos:**
 
-- Cadeia de estados (Markov) — TO-BE:
+- Cadeia de estados (Markov) - TO-BE:
  <div align="center">
 <sub>Figura 7.3.2.1.2 - Cadeia de Markov TO-BE - Cenário 10</sub><br>
-<img src="img/section7/tobe10.png" width="100%"><br>
+<img src="img/section7/tobe10.png" width="70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
-- Evolução da probabilidade de comprometimento — TO-BE:
+- Evolução da probabilidade de comprometimento - TO-BE:
 
 <div align="center">
 <sub>Figura 7.3.2.1.2 - Evolução de probabilidade - Cenário 10</sub><br>
-<img src="img/section7/evolucao10.png" width="100%"><br>
+<img src="img/section7/evolucao10.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2956,14 +2955,14 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 
 <div align="center">
 <sub>Figura 7.3.2.2.1 - Cadeia de Markov TO-BE - Cenário 11</sub><br>
-<img src="img/section7/tobe11.png" width="100%"><br>
+<img src="img/section7/tobe11.png" width="70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento - TO-BE:
  <div align="center">
 <sub>Figura 7.3.2.2.2 - Evolução de probabilidade - Cenário 11</sub><br>
-<img src="img/section7/evolucao11.png" width="100%"><br>
+<img src="img/section7/evolucao11.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2998,7 +2997,7 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 
 <div align="center">
 <sub>Figura 7.3.2.3.1 - Cadeia de Markov TO-BE - Cenário 14</sub><br>
-<img src="img/section7/tobe10.png" width="100%"><br>
+<img src="img/section7/tobe10.png" width="70%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -3006,14 +3005,17 @@ O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer 
 
 <div align="center">
 <sub>Figura 7.3.2.3.2 - Evolução da probabilidade - Cenário 14</sub><br>
-<img src="img/section7/evolucao14.png" width="100%"><br>
+<img src="img/section7/evolucao14.png" width="90%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
-**Interpretação (TO-BE)**  
-Forçar registro antes de alterar reduz a probabilidade empírica de perda para ~8,9% e aumenta o tempo médio até falha para ≈183 dias. Resultado: histórico preservado e conformidade reforçada.
+**Interpretação (TO-BE)**
+
+&emsp; Forçar registro antes de alterar reduz a probabilidade empírica de perda para ~8,9% e aumenta o tempo médio até falha para ≈183 dias. Resultado: histórico preservado e conformidade reforçada.
 
 ---
+
+## Conclusão final - RNF-03 (Rastreabilidade)
 
 &emsp;Comparando AS-IS → TO-BE (empírico):
 
@@ -3023,7 +3025,7 @@ Forçar registro antes de alterar reduz a probabilidade empírica de perda para 
 | Alterações cronograma (11) |                     0.965000 |                     0.051583 |  **−94.7%** |                    98.52 |                   182.28 |
 |   Registro de mudança (14) |                     1.000000 |                     0.089000 |  **−91.1%** |                    36.68 |                   183.21 |
 
-**Principais conclusões:**
+**Análise:**
 
 - As automações propostas (ingestão controlada, correlationId, validação de hash, versionamento e bloqueios) **reduzem dramaticamente** a probabilidade de perda de rastreabilidade em todos os cenários.
 - O **tempo médio até comprometimento** aumenta de dezenas de dias para centenas ou milhares (analítico), o que significa janela maior para detecção e remediação.
