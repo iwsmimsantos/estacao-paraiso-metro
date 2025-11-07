@@ -2703,6 +2703,8 @@ A metodologia empregada foi a **Análise "What-If"** no JMT (Java Modeling Tools
 
 &emsp;A simulação do sistema atual demonstrou uma **baixa capacidade de escalabilidade**, com o ponto de saturação sendo atingido no cenário de 200% da carga.
 
+Para detalhes completos da metodologia e resultados, consulte o documento anexo: [Simulação de Escalabilidade RNF-01](../src\simulacoes\simulacao_escalabilidade_sistema_atual.jsimg). 
+
 #### 7.1.1.1 Modelo de Rede de Filas (JMT)
 
 &emsp;O sistema atual foi modelado no JMT como uma Rede de Filas, representando os principais componentes de processamento e o fluxo de requisições.
