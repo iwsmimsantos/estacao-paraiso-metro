@@ -137,7 +137,7 @@
 | **Riscos**                     | Definidos na Matriz de Risco            | Atualizados e monitorados   | A ser avaliado              |
 
 
-&emsp;A Sprint 2 teve como foco o mapeamento detalhado da arquitetura AS-IS (estado atual) do sistema de gestão de portfólio do Metrô e o início da especificação da arquitetura TO-BE (estado futuro), com ênfase na definição de padrões arquiteturais que suportem a integração de agentes de IA. Mas além disso, foi pensado em possíveis simulações do sistema antigo e do sistema atual para que fosse possível identificar possíveis pontos de melhoria.
+&emsp;A Sprint 2 teve como foco o mapeamento detalhado da arquitetura do estado atual do sistema de gestão de portfólio do Metrô e o início da especificação da arquitetura futura, com ênfase na definição de padrões arquiteturais que suportem a integração de agentes de IA. Mas além disso, foi pensado em possíveis simulações do sistema antigo e do sistema atual para que fosse possível identificar possíveis pontos de melhoria e medir os principais impactos.
 
 ---
 
@@ -187,33 +187,31 @@
 ### Pontos Fracos
 - Dificuldade inicial em obter informações detalhadas sobre as APIs do SharePoint utilizadas atualmente.
 - Necessidade de mais sessões técnicas para compreender os fluxos do Power Automate existentes.
-- Atraso de 2 dias na entrega dos diagramas de sequência devido à complexidade identificada.
-- Desafio em conciliar os requisitos de confidencialidade com a necessidade de integração externa para IA.
+- Dificuldade com entender como poderiamos simular os testes da sprint.
+- Desafio em entender como realizar a cadeia de markov com dados projetados pelo grupo.
 
 ---
 ### Entregas da Sprint
-- Diagrama de Arquitetura AS-IS completo (contexto, containers, componentes e código).
-- Documento técnico: "Análise de Integrações Atuais SharePoint-PowerBI-Miro".
-- Especificação inicial da arquitetura TO-BE com camadas: apresentação, aplicação, domínio e infraestrutura.
-- Documento de requisitos de segurança: autenticação, autorização, criptografia e auditoria.
-- Protótipo conceitual de fluxo de dados para integração com agentes de IA.
-- Atualização da matriz de riscos com 3 novos riscos técnicos identificados.
-
----
-
-### Ações de Melhoria Verificáveis
-- Estabelecido prazo de 24h para revisão de PRs, com notificações automáticas via Teams.
-- Criação de glossário técnico compartilhado para padronizar terminologias Microsoft e de IA.
-- Discussões semanais de 30 minutos com o grupo para validação continua de entendimento do projeto.
+- Diagrama de Arquitetura com Modelo C4 explorando o contexto e os containers
+- Táticas de arquitetura e identificação das principais vulnerabilidades
+- Simulação dos principais requisitos não funcionais escolhidos pelo grupo no sistema atual e novo
+- Atualização da matriz de riscos com novos riscos técnicos identificados.
 
 ---
 ### Propostas de Melhoria para a Sprint 3
-- Agendar workshop técnico com equipe de segurança da informação do Metrô para validar especificações de compliance.
-- Implementar proof of concept (POC) de integração básica entre SharePoint e um agente de IA simulado.
-- Aprofundar análise de ferramentas de observabilidade e monitoramento (Application Insights, Grafana).
-- Validar escolha de tecnologias para API Gateway e autenticação/autorização com time de arquitetura do Metrô.
+- Criar planos de contingência (Planos B) para tasks críticas.
+- Estabelecer revisões rápidas e contínuas de Pull Requests e tasks no Trello mantendo um prazo de 24 horas.
+- Criar mais tasks individuais, diminuindo as dependencias.
+- Garantir que todas as tasks estejam claras e detalhadas no Trello antes da execução.
 
-&emsp;Na Sprint 2 houve avanço significativo no entendimento técnico do ambiente atual e na definição de fundamentos arquiteturais. O engajamento com stakeholders técnicos do Metrô foi fundamental para qualidade das entregas.
+### Ações de Melhoria Verificáveis
+- Estabelecido prazo de 24h para revisão de PRs, com notificações automáticas via Teams.
+- Discussões semanais de 30 minutos com o grupo para validação continua de entendimento do projeto.
+- 100% das tarefas no trello devem estar com DOR e DOD, além de uma descrição detalhada.
+
+---
+
+&emsp;Na Sprint 2 houve avanço significativo no entendimento técnico do ambiente atual e na definição de fundamentos arquiteturais. O engajamento com stakeholders técnicos do Metrô foi fundamental para qualidade das entregas. E para a Sprint 3, iremos focar em implementar e validar os mecanismos arquiteturais através de: codificação de testes automatizados com TDD, implementação dos componentes com documentação completa, execução e registro de testes não funcionais, avaliação de desempenho e riscos, e simulação do sistema em cenários normais, de exceção e limites para validar as melhorias.
 
 ## 2.3 Sprint 3
 _conteúdo_
