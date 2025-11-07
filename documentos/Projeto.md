@@ -2861,8 +2861,163 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 ### 7.1.2 Simulação Sistema: Novo
 
-_(Apresente a simulação do sistema novo)_
+&emsp;O objetivo é verificar se uma melhoria de **150% nos valores de *service time***, permitirá que o sistema suporte uma escala de até **300%** da taxa de chegada inicial. A análise a seguir apresenta os resultados da simulação que validam a hipótese de escalabilidade e descreve as estratégias propostas para atingir o desempenho simulado.
 
+#### 7.1.2.1 Validação da Carga (Throughput de Entrada)
+
+&emsp;A **Vazão** no nó `Início` demonstra que o sistema é capaz de processar o aumento da carga. O aumento de 200% na carga resultou em um aumento de ~198.5% na vazão (0.1660 / 0.0556 ≈ 2.985), indicando comportamento praticamente linear.
+
+<div align="center">
+<sub>Figura 7.1.2.1.1 - Gráfico de Throughput (Início)</sub><br>
+<img src="img/section7/sistemaNovo/tgpgrafico.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+| Carga | Vazão (J/s) |
+| :--- | :--- |
+| **100% (x1)** | $0.0556$ |
+| **300% (x3)** | $0.1660$ |
+
+#### 7.1.2.2 Identificação do Gargalo (Utilização)
+
+&emsp;Os resultados indicam que `Acesso Projeto` é o gargalo primário e `Acesso Relatorio` o gargalo secundário. `Acesso Contrato` opera com folga e `Navegacao` apresenta utilização muito baixa.
+
+| Componente | Utilização em 100% (x1) | Utilização em 300% (x3) |
+| :--- | :--- | :--- |
+| **Acesso Projeto** | $19.88\%$ | $59.62\%$ |
+| **Acesso Relatorio** | $19.78\%$ | $59.56\%$ |
+| **Acesso Contrato** | $10.01\%$ | $29.96\%$ |
+| **Navegacao** | $1.39\%$ | $4.12\%$ |
+
+##### Gráfico de Utilização - Acesso Contrato
+
+&emsp;O gráfico de Utilização para `Acesso Contrato` mostra uma relação linear e controlada entre o aumento da taxa de chegada e a utilização do recurso. Mesmo a 300% da carga, a utilização permanece abaixo de 30%, indicando margem de segurança e ausência de gargalo.
+
+<div align="center">
+<sub>Figura 7.1.2.2.1 - Gráfico de Utilization (Acesso Contrato)</sub><br>
+<img src="img/section7/sistemaNovo/utilacessocont.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Navegacao
+
+&emsp;A utilização de `Navegacao` é muito baixa e linear. A estação não é limitante e absorve o aumento de carga sem degradação de eficiência por tratar-se um estado que exige pouco poder do sistema.
+
+<div align="center">
+<sub>Figura 7.1.2.2.2 - Gráfico de Utilization (Navegacao)</sub><br>
+<img src="img/section7/sistemaNovo/utinav.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Acesso Projeto
+
+&emsp;`Acesso Projeto` apresenta a maior utilização do sistema, atingindo ~60% no cenário de 300% da carga. A melhoria de 150% nos tempos de serviço mantém a utilização abaixo do nível crítico, permitindo a escalabilidade de 3x.
+
+<div align="center">
+<sub>Figura 7.1.2.2.3 - Gráfico de Utilization (Acesso Projeto)</sub><br>
+<img src="img/section7/sistemaNovo/utiproj.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Acesso Relatorio
+
+&emsp;`Acesso Relatorio` opera com utilização alta e semelhante a `Acesso Projeto`, configurando-se como gargalo secundário.
+
+<div align="center">
+<sub>Figura 7.1.2.2.4 - Gráfico de Utilization (Acesso Relatorio)</sub><br>
+<img src="img/section7/sistemaNovo/utirelat.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.2.3 Consequência da Carga (Tempo de Fila)
+
+&emsp;O **Tempo de Fila** cresce de forma não linear sob cargas elevadas, com maior impacto nos gargalos identificados.
+
+| Componente | 100% (x1) | 150% (x1.5) | 300% (x3) |
+| :--- | :--- | :--- | :--- |
+| **Acesso Projeto** | $7.5280$ s | $13.0194$ s | $45.2569$ s |
+| **Acesso Relatorio** | $7.4852$ s | - | $45.2019$ s |
+| **Acesso Contrato** | $5.1430$ s | - | $19.8450$ s |
+
+##### Gráfico de Tempo de Fila - Acesso Projeto
+
+&emsp;Primeira métrica a mostrar crescimento não linear acentuado; a melhoria de 150% nos tempos de serviço é determinante para manter estabilidade até 300% da carga.
+
+<div align="center">
+<sub>Figura 7.1.2.3.1 - Gráfico de Queue Time (Acesso Projeto)</sub><br>
+<img src="img/section7/sistemaNovo/filaproj.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Tempo de Fila - Acesso Contrato
+
+&emsp;Crescimento não linear menos acentuado que em `Acesso Projeto`, consistente com a menor utilização do recurso.
+
+<div align="center">
+<sub>Figura 7.1.2.3.2 - Gráfico de Queue Time (Acesso Contrato)</sub><br>
+<img src="img/section7/sistemaNovo/filacont.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Tempo de Fila - Acesso Relatorio
+
+&emsp;Segue o padrão de `Acesso Projeto`, com aumento acentuado do tempo de fila sob carga 3x.
+
+<div align="center">
+<sub>Figura 7.1.2.3.3 - Gráfico de Queue Time (Acesso Relatorio)</sub><br>
+<img src="img/section7/sistemaNovo/filarelat.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.2.4 Análise Adicional (Número de Clientes)
+
+&emsp;O número médio de clientes em `Navegacao` permanece extremamente baixo mesmo com o triplo da carga, sugerindo tempo de serviço muito rápido ou comportamento de delay station.
+
+<div align="center">
+<sub>Figura 7.1.2.4.1 - Gráfico de Number of Customers (Navegacao)</sub><br>
+<img src="img/section7/sistemaNovo/clientnum.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.2.5 Simulação TO-BE
+
+&emsp;Os resultados da simulação validam a hipótese de que o sistema se tornará escalável e suportará integralmente 300% da carga inicial, condicionado à melhoria de 150% nos tempos de serviço. `Acesso Projeto` e `Acesso Relatorio` permanecem como pontos de maior exigência, enquanto a linearidade da vazão em `Início` confirma a capacidade de absorção de carga sem saturação no intervalo analisado.
+
+#### 7.1.2.6 Estratégias para Atingir a Melhoria de 150% no Service Time e Escalabilidade de 300%
+
+&emsp;A melhoria de 150% nos tempos de serviço e a consequente capacidade de escalar em 300% serão buscadas por meio de otimização de código, eficiência de recursos e paralelismo, conforme segue:
+
+- **Paralelismo e processamento assíncrono**:
+  - Assincronizar operações longas (e.g., geração de relatórios) para liberar threads de atendimento.
+  - Executar subtarefas independentes em paralelo via thread pools/workers.
+
+- **Otimização de infraestrutura e recursos**:
+  - Ajustar configurações do servidor de aplicação (threads/workers) nos nós gargalo.
+  - Balancear carga entre instâncias para evitar saturação precoce.
+
+##### Comparativo Sistema Novo vs Antigo e Estratégias
+
+&emsp;Resumo dos principais indicadores sob 300% da carga (x3):
+
+| Indicador | Nó | Sistema Atual (AS-IS) | Sistema Novo (TO-BE) |
+| :--- | :--- | :--- | :--- |
+| Utilização | Acesso Projeto | $100.00\%$ | $59.62\%$ |
+| Utilização | Acesso Relatorio | $100.00\%$ | $59.56\%$ |
+| Utilização | Acesso Contrato | $74.66\%$ | $29.96\%$ |
+| Utilização | Navegacao | $75.86\%$ | $4.12\%$ |
+| Tempo de Fila | Acesso Projeto | $12.000.000$ s | $45.2569$ s |
+| Tempo de Fila | Acesso Relatorio | $12.000.000$ s | $45.2019$ s |
+| Tempo de Fila | Acesso Contrato | $349.63$ s | $19.8450$ s |
+
+&emsp;Para mitigar o gargalo e atender ao RNF de Escalabilidade, a mudança de arquitetura deve focar nos componentes **Acesso Projeto** e **Acesso Relatorio** (gargalos primários) e considerar o **Navegacao** (gargalo secundário). As táticas arquiteturais recomendadas, visando reduzir a utilização e o tempo de fila, incluem:
+
+1.  **Otimização de Serviço (Service Time):** Reduzir o tempo de processamento das requisições nesses componentes através de otimização de código, consultas a banco de dados ou algoritmos.
+
+2.  **Paralelização (Scaling Up/Out):**
+
+    *   **Scaling Up:** Aumentar a capacidade de processamento (CPU/Memória) do servidor que hospeda esses componentes.
+
+    *   **Scaling Out:** Implementar múltiplos servidores (multi-server station no JMT) para que as requisições possam ser processadas em paralelo, aumentando a taxa de serviço ($\mu$).
 ---
 
 ## 7.2 Simulação RNF - 02
