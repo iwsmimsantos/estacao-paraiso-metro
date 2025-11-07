@@ -2269,19 +2269,19 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 # 6. Especificação da Solução Técnica do Sistema Novo
 
-_(Descreva como a nova arquitetura elimina as vulnerabilidades e implementa melhorias técnicas e de negócio.)_
+Esta seção especifica a solução técnica proposta para o sistema novo, descrevendo como a arquitetura recomendada elimina as principais vulnerabilidades identificadas no sistema atual e implementa melhorias técnicas e de negócio. Aqui são apresentadas a revisão dos Requisitos Não Funcionais (RNFs) priorizados, a descrição detalhada das entradas/saídas e controles (para fins de auditoria e operação), as táticas arquiteturais e componentes adotados, e a consolidação técnica que justifica as decisões de projeto. O foco está em garantir rastreabilidade, segurança e escalabilidade da solução.
 
 ---
 
 ## 6.1 Revisão do Mapa de RNFs do Sistema Novo
 
-_(Definir e destacar os 3 RNFs priorizados para o sistema novo, alinhados aos defeitos do atual. Evidenciar, de forma objetiva, as melhorias esperadas em relação ao estado atual.)_
+Nesta subseção fazemos a revisão do mapa de Requisitos Não Funcionais (RNFs) priorizados para a solução proposta. Com base no diagnóstico anterior, destacamos os RNFs de maior impacto (Rastreabilidade, Segurança e Escalabilidade), definimos metas mensuráveis para cada um e alinhamos as melhorias esperadas em relação ao sistema atual. As metas irão orientar a validação técnica e os critérios de aceitação das entregas.
 
 ---
 
 ## 6.2 Revisão do Mapa de RNFs do Sistema Novo e Vulnerabilidades Eliminadas
 
-_(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e controles, evidenciando como suplantam as vulnerabilidades do sistema atual.)_
+Esta subseção detalha, para cada RNF priorizado, como o sistema novo trata as vulnerabilidades identificadas no AS‑IS. Para facilitar a leitura e a verificação, cada RNF é apresentado em três frentes: A) Entrada — tipos, origens e volumetrias esperadas; B) Saída — registros, evidências e artefatos persistidos para auditoria; C) Controles — mecanismos de prevenção, detecção e recuperação que garantem integridade, não repúdio e conformidade. O objetivo é tornar explícito o vínculo entre os requisitos e as contramedidas arquiteturais.
 
 ### 6.2.1 RNF-01 — <Escalabilidade>
 
@@ -2489,7 +2489,7 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 ## 6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)
 
-_(Descrever táticas e componentes que viabilizam a execução e o controle dos RNFs do sistema novo, demonstrando a eliminação das vulnerabilidades.)_
+Nesta subseção são descritas as táticas arquiteturais, os padrões de projeto e os componentes tecnológicos selecionados para atender aos RNFs do sistema novo. Serão apresentadas decisões essenciais — por exemplo, processamento assíncrono com filas, observabilidade centralizada, estratégias de failover e replicação, mecanismos de autenticação e autorização (RBAC/MFA), e controles de integridade (hashing, event sourcing) — bem como a justificativa técnica de como cada escolha elimina vulnerabilidades do sistema atual.
 
 ### 6.3.1 RNF-01 — <Escalabilidade>
 
