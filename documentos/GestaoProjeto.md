@@ -120,8 +120,98 @@
 - Monitorar engajamento dos integrantes com feedbacks regulares.
 
 ## 2.2 Sprint 2
-_conteúdo_
- **Nota:** Insira informações sobre mudanças realizadas.
+
+### **Acompanhamento de Progresso**
+
+| Aspecto                        | Sprint 1                                | Sprint 2                   | Sprint 3                   |
+| :----------------------------- | :-------------------------------------- | :-------------------------- | :-------------------------- |
+| **Pontualidade**               | Ponto de melhora (demora nas revisões)  | Melhorou, prazos cumpridos  | A ser avaliado              |
+| **Priorização das tasks**      | Funcionou bem                           | Mantido o padrão            | A ser avaliado              |
+| **Divisão de tarefas**         | Livre e incentivou autonomia            | Mais estruturada            | A ser avaliado              |
+| **Dailys**                     | Produtivas e bem aproveitadas           | Consistentes                | A ser avaliado              |
+| **Revisões (PRs)**             | Demora nas revisões                     | Agilizadas com limite de 24h| A ser avaliado              |
+| **Apresentação Sprint Review** | Bem planejada e estruturada             | Técnica e objetiva          | A ser avaliado              |
+| **Validação com professores**  | Ótimo, ponto a ser mantido              | Feedbacks incorporados      | A ser avaliado              |
+| **Documentação**               | Bem elaborada                           | Diagramas adicionados       | A ser avaliado              |
+| **Sugestões implementadas**    | Identificadas                           | 80% implementadas           | A ser avaliado              |
+| **Riscos**                     | Definidos na Matriz de Risco            | Atualizados e monitorados   | A ser avaliado              |
+
+
+&emsp;A Sprint 2 teve como foco o mapeamento detalhado da arquitetura do estado atual do sistema de gestão de portfólio do Metrô e o início da especificação da arquitetura futura, com ênfase na definição de padrões arquiteturais que suportem a integração de agentes de IA. Mas além disso, foi pensado em possíveis simulações do sistema antigo e do sistema atual para que fosse possível identificar possíveis pontos de melhoria e medir os principais impactos.
+
+---
+
+### Matriz de Risco do Projeto - Sprint 2
+
+| ID | Risco                                              | Probabilidade | Impacto   | Severidade | Estratégia de Mitigação                                    | Responsável  | Status       |
+|----|---------------------------------------------------|---------------|-----------|------------|------------------------------------------------------------|--------------|--------------|
+| 1  | Atraso na entrega de tarefas                      | Média         | Alto      | Alto       | Revisão semanal do cronograma e dailys                     | Scrum Master | Mitigado     |
+| 2  | Falha na comunicação entre membros                | Baixa         | Médio     | Moderado   | Reuniões regulares e uso de canais oficiais                | Todos        | Controlado   |
+| 3  | Problemas técnicos com ferramentas                | Média         | Alto      | Alto       | Treinamento e suporte técnico                              | DevOps       | Ativo        |
+| 4  | Escopo mal definido                               | Baixa         | Médio     | Moderado   | Revisão do escopo com o cliente                            | PO           | Mitigado     |
+| 5  | Falta de engajamento dos integrantes              | Baixa         | Médio     | Moderado   | Feedbacks constantes e acompanhamento                      | Scrum Master | Controlado   |
+| 6  | Mudanças de requisitos do cliente                 | Média         | Alto      | Alto       | Documentação de mudanças e validação contínua              | PO           | Ativo        |
+| 7  | Dificuldade de acesso às APIs do SharePoint       | Alta          | Alto      | Crítico    | Sessões técnicas com TI do Metrô e documentação Microsoft  | Tech Lead    | Novo         |
+| 8  | Incompatibilidade entre requisitos de segurança   | Média         | Crítico   | Crítico    | Workshop com equipe de compliance e segurança da informação| Arquiteto    | Novo         |
+| 9  | Complexidade dos fluxos do Power Automate         | Média         | Médio     | Moderado   | Mapeamento detalhado e sessões com usuários-chave          | Analista     | Novo         |
+| 10 | Limitações técnicas do ambiente Microsoft         | Baixa         | Alto      | Alto       | POCs antecipados e consulta com especialistas Microsoft    | Tech Lead    | Novo         |
+| 11 | Dependência de disponibilidade da equipe do Metrô | Média         | Médio     | Moderado   | Agendamento antecipado de reuniões e canais assíncronos    | PO           | Novo         |
+| 12 | Integração com sistemas legados não documentados  | Alta          | Alto      | Crítico    | Reverse engineering e documentação progressiva             | Arquiteto    | Novo         |
+
+#### Legenda de Status:
+- **Novo**: Risco identificado na Sprint 2
+- **Ativo**: Risco ainda presente e sendo monitorado
+- **Controlado**: Risco com mitigação parcial implementada
+- **Mitigado**: Risco com baixa probabilidade após ações de mitigação
+
+#### Resumo de Mudanças da Matriz de Risco para Sprint 2:
+- **Risco 1** (Atraso nas entregas): Probabilidade reduzida de Alta para Média devido ao SLA de 24h para revisões
+- **Risco 2** (Comunicação): Probabilidade reduzida de Média para Baixa devido às dailys consistentes
+- **Risco 4** (Escopo mal definido): Impacto reduzido de Alto para Médio após validações com cliente
+- **6 novos riscos técnicos identificados** durante o mapeamento da arquitetura AS-IS e levantamento de requisitos
+
+#### Riscos Críticos Priorizados para Sprint 3:
+1. Risco 7 - Acesso às APIs do SharePoint
+2. Risco 8 - Compatibilidade de segurança e compliance
+3. Risco 12 - Sistemas legados não documentados
+
+---
+
+### Pontos Fortes da Sprint
+- Colaboração efetiva da equipe para levantamento técnico do ambiente atual.
+- Criação de diagramas C4 (contexto, containers e componentes) que facilitaram o entendimento da arquitetura existente.
+- Identificação clara dos pontos de integração entre SharePoint, Power BI, Power Automate e Miro.
+- Definição de padrões de segurança e rastreabilidade alinhados com as políticas de compliance do Metrô.
+- Melhoria significativa no tempo de resposta das revisões de código (de 48h para 24h em média).
+
+### Pontos Fracos
+- Dificuldade inicial em obter informações detalhadas sobre as APIs do SharePoint utilizadas atualmente.
+- Necessidade de mais sessões técnicas para compreender os fluxos do Power Automate existentes.
+- Dificuldade com entender como poderiamos simular os testes da sprint.
+- Desafio em entender como realizar a cadeia de markov com dados projetados pelo grupo.
+
+---
+### Entregas da Sprint
+- Diagrama de Arquitetura com Modelo C4 explorando o contexto e os containers
+- Táticas de arquitetura e identificação das principais vulnerabilidades
+- Simulação dos principais requisitos não funcionais escolhidos pelo grupo no sistema atual e novo
+- Atualização da matriz de riscos com novos riscos técnicos identificados.
+
+---
+### Propostas de Melhoria para a Sprint 3
+- Criar planos de contingência (Planos B) para tasks críticas.
+- Estabelecer revisões rápidas e contínuas de Pull Requests e tasks no Trello mantendo um prazo de 24 horas.
+- Criar mais tasks individuais, diminuindo as dependencias.
+- Garantir que todas as tasks estejam claras e detalhadas no Trello antes da execução.
+
+### Ações de Melhoria Verificáveis
+- Estabelecido prazo de 24h para revisão de PRs, com notificações automáticas via Teams.
+- Discussões semanais de 30 minutos com o grupo para validação continua de entendimento do projeto.
+- 100% das tarefas no trello devem estar com DOR e DOD, além de uma descrição detalhada.
+
+---
+
+&emsp;Na Sprint 2 houve avanço significativo no entendimento técnico do ambiente atual e na definição de fundamentos arquiteturais. O engajamento com stakeholders técnicos do Metrô foi fundamental para qualidade das entregas. E para a Sprint 3, iremos focar em implementar e validar os mecanismos arquiteturais através de: codificação de testes automatizados com TDD, implementação dos componentes com documentação completa, execução e registro de testes não funcionais, avaliação de desempenho e riscos, e simulação do sistema em cenários normais, de exceção e limites para validar as melhorias.
 
 ## 2.3 Sprint 3
 _conteúdo_
