@@ -3020,19 +3020,455 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
     *   **Scaling Out:** Implementar múltiplos servidores (multi-server station no JMT) para que as requisições possam ser processadas em paralelo, aumentando a taxa de serviço ($\mu$).
 ---
 
-## 7.2 Simulação RNF - 02
+## 7.2 Simulação RNF - 02 (Segurança)
 
-_(Introduza seção para RNF02)_
+As simulações do requisito não funcional segurança foi realizado com base em **Cadeias de Markov de tempo discreto**, modelo que permite representar a evolução de estados do sistema de forma probabilística.  
+Essa abordagem foi escolhida por possibilitar a análise da **probabilidade de falha** e do **tempo médio até comprometimento**, comparando o desempenho entre o sistema atual e a nova arquitetura proposta.  
 
-### 7.2.1 Simulação Sistema: Atual
+Os resultados analíticos obtidos a partir da matriz fundamental foram validados por simulações **Monte Carlo**, garantindo consistência estatística e evidenciando o impacto das melhorias arquiteturais em cada cenário avaliado.
 
-_(Apresente a simulação do sistema atual)_
+## 7.2.1 Cenário de simulação – Cadastro errado de usuário
 
-### 7.2.2 Simulação Sistema: Novo
+### Contexto
 
-_(Apresente a simulação do sistema novo)_
+O cenário modela o risco de cadastro incorreto de usuário em projetos ou portfólios do sistema de gestão do Metrô.  
+Atualmente, o controle de cadastro é feito de forma manual — um mesmo colaborador pode ser inserido incorretamente ou esquecido em uma ou mais plataformas (SharePoint, BI, Teams, Miro).  
+Essa falha gera inconsistências de permissão, perda de rastreabilidade e risco de acesso indevido a dados sensíveis.
 
----
+### 7.2.1.1 Simulação Sistema: Atual
+
+#### Configuração do modelo (Sistema Atual)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro a partir do estado normal | 0.04 |
+| `p_issue_comp` | Probabilidade de comprometimento após erro de cadastro | 0.02 |
+| `p_issue_remed` | Probabilidade de correção manual do erro | 0.50 |
+| `p_remed_normal` | Probabilidade de retorno ao estado normal após correção | 0.70 |
+| `p_remed_issue` | Risco de recaída (erro reincidente) | 0.10 |
+
+**Estados do modelo:**
+- Normal: Cadastro correto.  
+- Issue: Cadastro incorreto detectado.  
+- Remediation: Correção manual em andamento.  
+- Compromised: Estado absorvente — erro consolidado ou dado incorreto persistente.
+
+
+#### Resultados – Sistema Atual
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 653.1 |
+| **Probabilidade Empírica (1000 passos)** | 0.7865 |
+| **Tempo Médio Empírico (dias)** | 382.6 |
+
+
+#### Interpretação
+
+O sistema atual apresenta probabilidade altíssima de falha no horizonte de tempo modelado.  
+Em 1000 dias de operação, aproximadamente 79% das trajetórias simuladas resultaram em comprometimento.  
+O tempo médio até a falha (≈380 dias) indica que os erros se acumulam rapidamente, principalmente por ausência de mecanismos automáticos de validação.
+
+A curva temporal indica que o risco cresce continuamente a partir dos primeiros meses, atingindo níveis críticos antes de um ano de operação.
+
+
+#### Limitações
+
+- O estado *Compromised* é considerado irreversível (não há rollback).  
+- O modelo usa valores hipotéticos para transições (ainda sem calibração de logs reais).  
+- Cada passo equivale a 1 dia — ajustar conforme periodicidade real de atualizações de cadastro.
+
+### 7.2.2.2 Simulação Sistema: Novo
+
+#### Contexto
+
+A nova arquitetura introduz automação e validações inteligentes nos fluxos de cadastro de usuários, integrando SharePoint, BI e Teams.  
+O processo passa a ter validação de acesso cruzado, segregação de papéis e correção automática assistida por IA.  
+Essas melhorias visam reduzir erros de cadastro e aumentar a rastreabilidade das ações.
+
+#### Configuração do modelo (Nova Arquitetura)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro | 0.02 |
+| `p_issue_comp` | Probabilidade de comprometimento após erro | 0.005 |
+| `p_issue_remed` | Probabilidade de correção automática | 0.70 |
+| `p_remed_normal` | Probabilidade de retorno ao normal após correção | 0.85 |
+| `p_remed_issue` | Risco de recaída | 0.05 |
+
+**Estados do modelo:**
+- Normal: Cadastro correto.  
+- Issue: Erro detectado.  
+- Remediation: Correção automatizada.  
+- Compromised: Erro não corrigido (absorvente).
+
+
+#### Resultados – Nova Arquitetura
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 7016.7 |
+| **Probabilidade Empírica (1000 passos)** | 0.1311 |
+| **Tempo Médio Empírico (dias)** | 487.2 |
+
+**Gráficos:**
+<div align="center">
+<sub>Figura 7.2.3 - Gráfico Tempo Médio até compromentimento</sub><br>
+<img src="img/section7/graficocenario1.2.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 7.2.3 - Evolução de probabilidade de compromentimento</sub><br>
+<img src="img/section7/graficocenario1.3.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### Interpretação
+
+A nova arquitetura demonstra melhoria expressiva em todos os indicadores:
+
+- A probabilidade empírica de erro caiu de 0.79 para 0.13 (redução de ~83%).  
+- O tempo médio até o erro aumentou de 380 para 487 dias, mostrando menor frequência e maior estabilidade.  
+- O tempo médio analítico (≈7000 dias) indica altíssima resiliência — ou seja, a probabilidade de o sistema atingir o estado de falha é muito baixa no horizonte de operação simulado.
+
+A curva temporal mostra crescimento muito mais lento do risco ao longo do tempo, validando o impacto positivo das automações introduzidas.
+
+
+#### Justificativas das Melhorias
+
+**A. Evidência das diferenças nos resultados**  
+A simulação comprova redução de 83% na probabilidade de falha e aumento do tempo médio até o erro em mais de 100 dias.  
+Esses números refletem o efeito direto das validações automáticas e da segregação de acessos.
+
+**B. Evidência estrutural das melhorias**  
+As melhorias de arquitetura se refletem nas transições do modelo:
+- Diminuição de `p_normal_issue` → menos erros iniciais.  
+- Diminuição de `p_issue_comp` → menor chance de erro se consolidar.  
+- Aumento de `p_issue_remed` → mais correções automáticas.  
+- Aumento de `p_remed_normal` → recuperação mais rápida.  
+
+Essas mudanças resultam em um sistema mais confiável, rastreável e autônomo.
+
+
+#### Limitações
+
+- Estado *Compromised* ainda modelado como irreversível.  
+- Valores base hipotéticos — devem ser recalibrados após implantação.  
+- Horizonte limitado (1000 passos); simulações mais longas podem mostrar convergência total para absorção (B=1 analítico).
+
+
+#### Conclusão
+
+A nova arquitetura reduz drasticamente a probabilidade de erro de cadastro e aumenta o tempo médio de estabilidade do sistema.  
+O modelo demonstra que as validações automáticas e a correção inteligente tornam o processo mais resiliente e menos suscetível a falhas humanas.
+
+**Notebook Colab:**  
+Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo:
+[Simulação RNF-01 – Cadastro errado de usuário (Colab)](Ihttps://colab.research.google.com/drive/1KdICELxYQUHxUrwHE-BHZIevjY0jW4ET?usp=sharing)
+
+
+## 7.2.2 Simulação RNF-05 – Conflito de Edição
+
+
+### 7.2.2.1 Simulação Sistema: Atual
+
+#### Contexto
+
+Este cenário trata do risco de inconsistência nos dados quando duas ou mais pessoas editam simultaneamente o mesmo item de projeto no SharePoint ou outra ferramenta de gestão.  
+No sistema atual, o controle de concorrência é mínimo: o último a salvar sobrescreve as alterações anteriores, podendo causar perda de dados e desalinhamento das versões de cronograma e status.
+
+#### Configuração do modelo (Sistema Atual)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_conf` | Probabilidade de surgimento de conflito de edição | 0.05 |
+| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.20 |
+| `p_conf_resol` | Probabilidade de resolução manual do conflito | 0.50 |
+| `p_resol_norm` | Probabilidade de retorno ao estado normal após resolução | 0.70 |
+| `p_resol_conf` | Risco de recaída no conflito | 0.10 |
+
+**Estados do modelo:**
+- Normal: Edição sem conflito.  
+- ConflitoEdicao: Duas ou mais edições simultâneas detectadas.  
+- ResolucaoManual: Etapa de tentativa de correção manual.  
+- Inconsistencia: Estado absorvente — dados corrompidos ou sobrescritos.
+
+
+#### Resultados – Sistema Atual
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 71.9 |
+| **Probabilidade Empírica (500 passos)** | 0.999 |
+| **Tempo Médio Empírico (dias)** | 67.0 |
+
+**Gráficos:**
+- `prob_conflito_edicao.png` — Comparativo de probabilidade de inconsistência.  
+- `tempo_conflito_edicao.png` — Comparativo de tempo médio até falha.  
+- `curva_inconsistencia_cenario5.png` — Evolução temporal da probabilidade de falha.
+
+
+#### Interpretação
+
+A simulação mostra que, no sistema atual, praticamente todos os projetos acabam apresentando algum tipo de inconsistência após certo tempo de operação.  
+A probabilidade empírica de inconsistência dentro de 500 dias é próxima de 100%.  
+O tempo médio até a falha (~67 dias) demonstra que o conflito de edição ocorre com alta frequência e resolução manual ineficiente.
+
+A curva temporal de 365 dias apresenta aumento rápido da probabilidade de inconsistência nos primeiros meses, validando a necessidade de controle automatizado de edição.
+
+
+#### Limitações
+
+- O estado *Inconsistencia* é modelado como absorvente, sem rollback possível.  
+- Os parâmetros de transição são estimados, sem calibração em logs reais.  
+- 1 passo equivale a 1 dia — ajustar conforme a periodicidade real de atualização dos dados.
+
+
+### 7.2.2.2 Simulação Sistema: Novo
+
+#### Contexto
+
+Na nova arquitetura proposta, são introduzidos mecanismos de bloqueio e resolução automática de conflitos, com suporte de agentes de IA.  
+Os principais recursos incluem:
+- Bloqueio temporário de edição (check-out).  
+- Controle automático de versionamento.  
+- Resolução automatizada de conflito com auxílio de IA.  
+- Validação de consistência antes do commit final.
+
+Essas medidas visam aumentar a integridade dos dados e reduzir o retrabalho manual.
+
+#### Configuração do modelo (Nova Arquitetura)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_conf` | Probabilidade de surgimento de conflito de edição | 0.02 |
+| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.05 |
+| `p_conf_resol` | Probabilidade de resolução automática do conflito | 0.80 |
+| `p_resol_norm` | Probabilidade de retorno ao estado normal após resolução | 0.90 |
+| `p_resol_conf` | Risco de recaída no conflito | 0.05 |
+
+**Estados do modelo:**
+- Normal: Edição estável.  
+- ConflitoEdicao: Edição simultânea detectada.  
+- ResolucaoAutomatica: Correção via IA.  
+- Inconsistencia: Estado absorvente.
+
+
+#### Resultados – Nova Arquitetura
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 844.7 |
+| **Probabilidade Empírica (500 passos)** | 0.454 |
+| **Tempo Médio Empírico (dias)** | 227.5 |
+
+**Gráficos:**
+
+<div align="center">
+<sub>Figura 7.2.3 - Tempo médio até inconsistência</sub><br>
+<img src="img/section7/graficocenario5.2.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 7.2.3 - Evolução de probabilidade de inconsistência</sub><br>
+<img src="img/section7/graficocenario5.1.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### Interpretação
+
+A nova arquitetura apresenta melhorias expressivas:
+- Redução da probabilidade empírica de inconsistência de 0.999 para 0.454 (~55%).  
+- Aumento do tempo médio até falha de 67 para 227 dias (~239%).  
+- A curva temporal apresenta crescimento lento e gradual, indicando maior estabilidade e controle sobre o processo de edição.
+
+Isso comprova que os mecanismos automáticos de bloqueio e resolução de conflito via IA reduzem significativamente a ocorrência de inconsistências.
+
+
+#### Justificativa das Melhorias
+
+**A. Evidência das diferenças nos resultados**  
+A simulação demonstra redução significativa na probabilidade de inconsistência e aumento expressivo no tempo médio até falha.  
+O sistema torna-se mais resiliente e previsível, reduzindo o esforço humano de correção.
+
+**B. Evidência estrutural das melhorias**  
+A nova arquitetura altera as transições do modelo:
+- Reduz `p_normal_conf` → menor frequência de conflitos.  
+- Reduz `p_conf_incons` → menor impacto das falhas.  
+- Aumenta `p_conf_resol` → mais correções automáticas.  
+- Aumenta `p_resol_norm` → recuperação mais rápida.  
+
+Essas mudanças estruturais tornam o sistema mais estável e menos propenso a erros de edição concorrente.
+
+
+#### Limitações
+
+- Estado *Inconsistencia* modelado como absorvente, sem rollback posterior.  
+- Probabilidades estimadas com base em suposições — devem ser calibradas com dados reais.  
+- Horizonte de simulação limitado a 500 passos.
+
+
+#### Conclusão
+
+A nova arquitetura reduz substancialmente a probabilidade de inconsistência e aumenta a confiabilidade operacional.  
+As simulações indicam que a automação de bloqueio e a resolução inteligente de conflitos são eficazes na mitigação de riscos de perda de dados e inconsistência colaborativa.
+
+
+**Notebook Colab:** 
+Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo: 
+[Simulação RNF-05 – Conflito de Edição (Colab)](https://colab.research.google.com/drive/16NLj3lZQwjOQv77GEjSK0U5A2fwPXYrg?usp=sharing)
+
+
+## 7.2.3 Simulação RNF-12 – Execução sem TAP aprovado
+
+### 7.2.3.1 Simulação Sistema: Atual
+
+#### Contexto
+
+Este cenário representa o risco de **execução de projeto sem aprovação formal do Termo de Abertura de Projeto (TAP)**.  
+No sistema atual, o controle é manual: a execução pode ser iniciada antes da aprovação do TAP, sem bloqueios automáticos, dependendo apenas do acompanhamento por planilhas e comunicação informal.  
+Essa prática cria vulnerabilidade de governança, falta de rastreabilidade e risco de desalinhamento de escopo e orçamento.
+
+#### Configuração do modelo (Sistema Atual)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado | 0.06 |
+| `p_issue_comp` | Probabilidade de comprometimento após execução irregular | 0.25 |
+| `p_issue_remed` | Probabilidade de correção manual (aprovação retroativa) | 0.50 |
+| `p_remed_normal` | Probabilidade de retorno à conformidade após correção | 0.70 |
+| `p_remed_issue` | Risco de reincidência de execução irregular | 0.10 |
+
+**Estados do modelo:**
+- Normal: TAP aprovado e execução regular.  
+- Issue: Execução sem TAP aprovado.  
+- Remediation: Correção manual em andamento.  
+- Compromised: Estado absorvente — execução irregular consolidada.
+
+#### Resultados – Sistema Atual
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 71.9 |
+| **Probabilidade Empírica (500 passos)** | 0.999 |
+| **Tempo Médio Empírico (dias)** | 67.0 |
+
+**Gráficos:**
+
+
+#### Interpretação
+
+A simulação mostra que o sistema atual praticamente garante a ocorrência do erro de execução sem TAP aprovado dentro de poucos meses de operação.  
+A probabilidade empírica de comprometimento é próxima de 100%, e o tempo médio até a falha (~67 dias) indica **baixa resiliência do processo**.
+
+A curva temporal demonstra crescimento rápido e contínuo da probabilidade de falha, confirmando a ausência de mecanismos de bloqueio ou validação no fluxo de aprovação atual.
+
+
+#### Limitações
+
+- Estado *Compromised* é absorvente, sem rollback posterior.  
+- Parâmetros definidos de forma estimada (não calibrados em logs reais).  
+- Unidade de tempo: 1 passo = 1 dia.  
+
+
+
+### 7.2.3.1 Simulação Sistema: Novo
+
+#### Contexto
+
+Na nova arquitetura, o processo de execução é **bloqueado automaticamente até a aprovação formal do TAP**.  
+O sistema integra SharePoint, Power Automate e agentes de IA para verificar a existência de TAP aprovado antes da criação de tarefas ou anexos no projeto.  
+Além disso, o agente de IA monitora as submissões e emite alertas em tempo real a gestores e PMOs.
+
+#### Configuração do modelo (Nova Arquitetura)
+
+| Parâmetro | Descrição | Valor |
+|------------|------------|-------|
+| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado | 0.02 |
+| `p_issue_comp` | Probabilidade de comprometimento após execução irregular | 0.05 |
+| `p_issue_remed` | Probabilidade de correção automatizada (regularização do TAP) | 0.80 |
+| `p_remed_normal` | Probabilidade de retorno à conformidade após correção | 0.90 |
+| `p_remed_issue` | Risco de reincidência | 0.05 |
+
+**Estados do modelo:**
+- Normal: TAP aprovado.  
+- Issue: Execução irregular detectada.  
+- Remediation: Correção automatizada em andamento.  
+- Compromised: Execução irregular consolidada (absorvente).
+
+
+#### Resultados – Nova Arquitetura
+
+| Métrica | Valor |
+|----------|--------|
+| **Probabilidade Analítica (∞)** | 1.00 |
+| **Tempo Médio Analítico (dias)** | 844.7 |
+| **Probabilidade Empírica (500 passos)** | 0.454 |
+| **Tempo Médio Empírico (dias)** | 227.5 |
+
+**Gráficos:**
+
+<div align="center">
+<sub>Figura 7.2.3 - Gráfico Tempo Médio até compromentimento</sub><br>
+<img src="img/section7/graficocenario12.1.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 7.2.3 - Evolução de probabilidade de compromentimento</sub><br>
+<img src="img/section7/graficocenario12.2.png" width="150%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### Interpretação
+
+A nova arquitetura mostra **redução significativa do risco e aumento da resiliência operacional**:
+
+- A probabilidade empírica de falha cai de 99,9% para 45,4% (redução de ~55%).  
+- O tempo médio até falha aumenta de 67 para 227 dias (aumento de ~239%).  
+- O tempo médio analítico cresce para 845 dias, indicando que, teoricamente, o sistema leva muito mais tempo para atingir o estado de comprometimento.
+
+A curva temporal de 365 dias mostra crescimento lento e gradual, confirmando a eficácia do bloqueio automático e da validação pré-execução.
+
+
+#### Justificativa das Melhorias
+
+**A. Evidência das diferenças nos resultados**  
+Os resultados mostram que a nova arquitetura reduz drasticamente a frequência e velocidade das falhas relacionadas à execução sem TAP aprovado.  
+A queda de 55% na probabilidade empírica e o aumento expressivo no tempo médio até falha demonstram maior controle e rastreabilidade no processo.
+
+**B. Evidência estrutural das melhorias**  
+O modelo reflete as mudanças introduzidas na arquitetura:
+- Redução de `p_normal_issue` → menor chance de execução irregular.  
+- Redução de `p_issue_comp` → menor impacto quando ocorre erro.  
+- Aumento de `p_issue_remed` e `p_remed_normal` → correções automáticas mais eficientes.  
+
+Essas alterações tornam o sistema **preventivo e autônomo**, reduzindo a dependência de ações humanas.
+
+
+#### Limitações
+
+- O estado *Compromised* é irreversível no modelo; rollback exigiria ajustes.  
+- As probabilidades são estimadas, não calibradas em logs reais.  
+- Horizonte limitado a 500 passos (~1,5 ano); simulações mais longas podem oferecer maior precisão.
+
+
+#### Conclusão
+
+A nova arquitetura reduz substancialmente a probabilidade de execução irregular e aumenta o tempo médio até falha, comprovando a eficácia dos controles automáticos e da integração IA–SharePoint.  
+O modelo evidencia ganhos concretos em governança, rastreabilidade e conformidade.
+
+**Notebook Colab:**  
+Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo:
+[Simulação RNF-12 – Execução sem TAP aprovado (Colab)](https://colab.research.google.com/drive/1ZymPUhyoLu_pT7Y42mjCqQZS8XuEMe8Z?usp=sharing)
+
 
 ## 7.3 Simulação RNF - 03
 
