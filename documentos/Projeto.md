@@ -2269,7 +2269,66 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 # 6. Especificação da Solução Técnica do Sistema Novo
 
-Esta seção especifica a solução técnica proposta para o sistema novo, descrevendo como a arquitetura recomendada elimina as principais vulnerabilidades identificadas no sistema atual e implementa melhorias técnicas e de negócio. Aqui são apresentadas a revisão dos Requisitos Não Funcionais (RNFs) priorizados, a descrição detalhada das entradas/saídas e controles (para fins de auditoria e operação), as táticas arquiteturais e componentes adotados, e a consolidação técnica que justifica as decisões de projeto. O foco está em garantir rastreabilidade, segurança e escalabilidade da solução.
+> Para acessar a arquitetura proposta, acesse o [link para o Miro](https://miro.com/app/board/uXjVJvSz32Y=/?share_link_id=47487974781). 
+
+&emsp;Esta arquitetura (_To-Be_) foi projetada para resolver vulnerabilidades de Confiabilidade, Desempenho (Throttling) e Rastreabilidade presentes no sistema atual, centralizando o controle de tráfego, garantindo processamento assíncrono e auditoria completa das transações.
+
+<div align="center">
+
+<sub>Tabela 6.1 - Soluções Arquiteturais</sub>
+
+| **RNF Chave**            | **Problema Resolvido**                                                                 | **Solução Arquitetural**                                                                                       |
+|---------------------------|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| **RNF-01 (Desempenho)**   | Perda de transações por *throttling* do SharePoint e picos de tráfego.                | API Gateway (Rate Limit) + Azure Service Bus (Queueing/Burst) + Azure Functions (Retries).                      |
+| **RNF-03 (Rastreabilidade)** | Fluxos “caixa-preta” e impossibilidade de rastrear a origem das transações.          | Log de Transação/Auditoria Central com ID de Correlação (`tx_id`) gerado na borda.                              |
+| **RNF-02 (Segurança)**    | Dependência de fluxos manuais e ausência de controle de acesso centralizado.          | API Gateway (Autenticação Azure AD) e segregação de responsabilidade nos Workers.                               |
+
+<sup>Fonte: material elaborado pelos autores (2025).</sup>
+
+</div>
+
+**Contexto**: 
+
+O Diagrama de Contexto define os limites do novo Sistema de Gerenciamento de Portfólio, mostrando os usuários e sistemas externos com os quais ele interage.
+
+<div align="center">
+
+<sub>Tabela 6.2 - Diagrama de Contexto</sub>
+
+| **Entidade**              | **Tipo**            | **Descrição no Contexto**                                                                                  |
+|----------------------------|--------------------|-------------------------------------------------------------------------------------------------------------|
+| **Usuário (PMO/Gestor)**  | Pessoa             | Usuários que originam dados (via SharePoint/Miro) e utilizam a Interface Manual (DLQ).                     |
+| **SharePoint Online**     | Sistema Externo    | Fonte de dados (formulários/documentos) e repositório final de artefatos.                                  |
+| **Miro**                  | Sistema Externo    | Fonte de dados ideacionais (brainstorming/mapas).                                                          |
+| **Power BI**              | Sistema Externo    | Consumidor de dados consolidados e origem de requisições de refresh.                                       |
+| **Integradores Externos** | Sistema Externo    | Sistemas que disparam jobs ou webhooks programados.                                                        |
+| **Sistema Proposto**      | Sistema            | O núcleo de controle, filas e processamento assíncrono.                                                    |
+
+<sup>Fonte: material elaborado pelos autores (2025).</sup>
+
+</div>
+
+**Contêiners**:
+
+O Diagrama de Contêineres detalha a estrutura interna do Sistema Proposto, mostrando como os componentes da Azure são utilizados para atender aos RNFs.
+
+<div align="center">
+
+<sub>Tabela 6.3 - Diagrama de Contêiners</sub>
+
+| **Contêiner**              | **Tecnologia**                     | **Função Principal**                                                 | **Contribuição ao RNF**                                                                                                                        |
+|-----------------------------|------------------------------------|---------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| **1. API Gateway**          | Azure API Management (APIM)        | Borda Controlada. Centraliza todas as chamadas de entrada.          | **RNF-01/02/03:** Autenticação, Rate Limiting, Registro de `tx_id` inicial, Policy de shedding.                                               |
+| **2. Fila de Mensagens**    | Azure Service Bus (ASB)            | Desacoplamento e Buffer de Picos de Carga.                          | **RNF-01 (Escalabilidade):** Absorve bursts (até 200–300 reqs/min).                                                                            |
+| **3. Workers**              | Azure Functions                    | Processamento Assíncrono da Lógica de Negócio e Integração.         | **RNF-01 (Confiabilidade):** Retry automático, backoff exponencial, circuit breaker, controle de concorrência.                                 |
+| **4. Log de Transação/Auditoria** | Azure SQL + Azure Blob               | Repositório imutável para todos os eventos de transação.            | **RNF-03 (Rastreabilidade):** Armazena status (`SUCCESS`, `DLQ/POISON`, `REJECTED`) e o histórico de retries.                                 |
+| **5. Cache**                | Azure Cache for Redis              | Cache de leituras frequentes e dados de idempotência.               | **RNF-01 (Desempenho):** Reduz latência e chamadas ao SharePoint.                                        |
+| **6. Monitoramento Central**| Azure Monitor / Log Analytics      | Coleta logs, métricas (SLIs/SLOs) e dispara alertas.                | **RNF-01/02:** Monitora Queue Depth, Success Rate, Latency e eventos de Throttling.                                                           |
+| **7. Interface Manual**     | Portal Web                         | Painel operacional para tratamento de exceções.                     | **RNF-01 (Confiabilidade):** Permite re-enqueue manual de mensagens da DLQ.                                                                   |
+
+<sup>Fonte: material elaborado pelos autores (2025).</sup>
+
+</div>
 
 ---
 
