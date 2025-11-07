@@ -110,6 +110,9 @@
     - [4.4.4 Mapa de Rastreabilidade](#444-mapa-de-rastreabilidade)
 - [5. Avaliação dos Mecanismos Utilizados no Sistema Atual (Diagnóstico ATAM)](#5-avaliação-dos-mecanismos-utilizados-no-sistema-atual-diagnóstico-atam)
   - [5.1 Mapa de RNFs](#51-mapa-de-rnfs)
+    - [RNFs Priorizados](#rnfs-priorizados)
+    - [Matriz de Criticidade por Etapa](#matriz-de-criticidade-por-etapa)
+    - [Inter-Relação de RNFs](#inter-relação-de-rnfs)
   - [5.2 Revisão do Mapa de RNFs e Vulnerabilidades](#52-revisão-do-mapa-de-rnfs-e-vulnerabilidades)
     - [**Fluxo de Trabalho do Sistema Atual (AS-IS)**](#fluxo-de-trabalho-do-sistema-atual-as-is)
     - [**Consolidação dos RNFs e Vulnerabilidades Mapeadas**](#consolidação-dos-rnfs-e-vulnerabilidades-mapeadas)
@@ -117,7 +120,7 @@
       - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada)
       - [B. Saída – Registros de Transações Corretas e Inadequadas](#b-saída--registros-de-transações-corretas-e-inadequadas)
       - [C. Controle do RNF – Indicação de Controle](#c-controle-do-rnf--indicação-de-controle)
-    - [5.2.2 RNF-02 — \<Segurança\>](#522-rnf-02--segurança)
+    - [5.2.2 RNF-02 — Segurança](#522-rnf-02--segurança)
       - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada-1)
       - [B. Saída - Registros de Transações Corretas e Inadequadas](#b-saída---registros-de-transações-corretas-e-inadequadas)
       - [C. Controle do RNF - Indicação de Controle](#c-controle-do-rnf---indicação-de-controle)
@@ -135,7 +138,7 @@
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos)
-    - [5.3.2 RNF-02 — \<Segurança\>](#532-rnf-02--segurança)
+    - [5.3.2 RNF-02 — Segurança](#532-rnf-02--segurança)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-1)
         - [1ª Etapa (Elaboração de Cronograma) - SharePoint Audit Logs:](#1ª-etapa-elaboração-de-cronograma---sharepoint-audit-logs)
         - [2ª Etapa (Documentação Miro/TAP):](#2ª-etapa-documentação-mirotap)
@@ -174,7 +177,7 @@
       - [Causas e Impactos da Quebra de Escalabilidade](#causas-e-impactos-da-quebra-de-escalabilidade)
       - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço)
       - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos)
-    - [5.4.2 RNF-02 — \<Segurança\>](#542-rnf-02--segurança)
+    - [5.4.2 RNF-02 — Segurança](#542-rnf-02--segurança)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-3)
         - [Matriz Consolidada de Recuperação por Tipo de Incidente:](#matriz-consolidada-de-recuperação-por-tipo-de-incidente)
         - [Template de Relatório de Incidente para Gestão:](#template-de-relatório-de-incidente-para-gestão)
@@ -189,11 +192,11 @@
 - [6. Especificação da Solução Técnica do Sistema Novo](#6-especificação-da-solução-técnica-do-sistema-novo)
   - [6.1 Revisão do Mapa de RNFs do Sistema Novo](#61-revisão-do-mapa-de-rnfs-do-sistema-novo)
   - [6.2 Revisão do Mapa de RNFs do Sistema Novo e Vulnerabilidades Eliminadas](#62-revisão-do-mapa-de-rnfs-do-sistema-novo-e-vulnerabilidades-eliminadas)
-    - [6.2.1 RNF-01 — ](#621-rnf-01--)
+    - [6.2.1 RNF-01 — Escalabilidade](#621-rnf-01--escalabilidade)
       - [A. Entrada](#a-entrada-1)
       - [B. Saída](#b-saída-1)
       - [C. Controle do RNF](#c-controle-do-rnf-1)
-    - [6.2.2 RNF-02 — \<Segurança\>](#622-rnf-02--segurança)
+    - [6.2.2 RNF-02 — Segurança](#622-rnf-02--segurança)
       - [A. Entrada](#a-entrada-2)
       - [B. Saída](#b-saída-2)
       - [C. Controle do RNF](#c-controle-do-rnf-2)
@@ -205,11 +208,11 @@
       - [C. Controle do RNF — Mecanismos e Táticas de Controle](#c-controle-do-rnf--mecanismos-e-táticas-de-controle)
         - [Descrição dos Controles](#descrição-dos-controles)
   - [6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)](#63-táticas-arquiteturais-e-componentes-adotados-sistema-novo)
-    - [6.3.1 RNF-01 — ](#631-rnf-01--)
+    - [6.3.1 RNF-01 — Escalabilidade](#631-rnf-01--escalabilidade)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-3)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-3)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-4)
-    - [6.3.2 RNF-02 — \<Segurança\>](#632-rnf-02--segurança)
+    - [6.3.2 RNF-02 — Segurança](#632-rnf-02--segurança)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-4)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-4)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-5)
@@ -219,12 +222,82 @@
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-6)
   - [6.4 Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
 - [7. Simulação do Sistema](#7-simulação-do-sistema)
-  - [7.1 Simulação RNF - 01](#71-simulação-rnf---01)
+  - [7.1 Simulação RNF - 01: Escalabilidade](#71-simulação-rnf---01-escalabilidade)
     - [7.1.1 Simulação Sistema: Atual](#711-simulação-sistema-atual)
+      - [7.1.1.1 Modelo de Rede de Filas (JMT)](#7111-modelo-de-rede-de-filas-jmt)
+      - [7.1.1.2 Validação da Carga (Throughput de Entrada)](#7112-validação-da-carga-throughput-de-entrada)
+      - [7.1.1.3 Identificação do Gargalo (Utilização)](#7113-identificação-do-gargalo-utilização)
+        - [Gráfico de Utilização - Acesso Projeto](#gráfico-de-utilização---acesso-projeto)
+        - [Gráfico de Utilização - Acesso Relatorio](#gráfico-de-utilização---acesso-relatorio)
+        - [Gráfico de Utilização - Acesso Contrato](#gráfico-de-utilização---acesso-contrato)
+        - [Gráfico de Utilização - Navegacao](#gráfico-de-utilização---navegacao)
+      - [7.1.1.4 Consequência da Saturação (Tempo de Fila)](#7114-consequência-da-saturação-tempo-de-fila)
+        - [Gráfico de Tempo de Fila - Acesso Projeto](#gráfico-de-tempo-de-fila---acesso-projeto)
+        - [Gráfico de Tempo de Fila - Acesso Relatorio](#gráfico-de-tempo-de-fila---acesso-relatorio)
+        - [Gráfico de Tempo de Fila - Acesso Contrato](#gráfico-de-tempo-de-fila---acesso-contrato)
+      - [7.1.1.5 Análise Adicional (Número de Clientes)](#7115-análise-adicional-número-de-clientes)
+      - [7.1.1.6 Conclusão da Simulação AS-IS](#7116-conclusão-da-simulação-as-is)
     - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
-  - [7.2 Simulação RNF - 02](#72-simulação-rnf---02)
-    - [7.2.1 Simulação Sistema: Atual](#721-simulação-sistema-atual)
-    - [7.2.2 Simulação Sistema: Novo](#722-simulação-sistema-novo)
+      - [7.1.2.1 Validação da Carga (Throughput de Entrada)](#7121-validação-da-carga-throughput-de-entrada)
+      - [7.1.2.2 Identificação do Gargalo (Utilização)](#7122-identificação-do-gargalo-utilização)
+        - [Gráfico de Utilização - Acesso Contrato](#gráfico-de-utilização---acesso-contrato-1)
+        - [Gráfico de Utilização - Navegacao](#gráfico-de-utilização---navegacao-1)
+        - [Gráfico de Utilização - Acesso Projeto](#gráfico-de-utilização---acesso-projeto-1)
+        - [Gráfico de Utilização - Acesso Relatorio](#gráfico-de-utilização---acesso-relatorio-1)
+      - [7.1.2.3 Consequência da Carga (Tempo de Fila)](#7123-consequência-da-carga-tempo-de-fila)
+        - [Gráfico de Tempo de Fila - Acesso Projeto](#gráfico-de-tempo-de-fila---acesso-projeto-1)
+        - [Gráfico de Tempo de Fila - Acesso Contrato](#gráfico-de-tempo-de-fila---acesso-contrato-1)
+        - [Gráfico de Tempo de Fila - Acesso Relatorio](#gráfico-de-tempo-de-fila---acesso-relatorio-1)
+      - [7.1.2.4 Análise Adicional (Número de Clientes)](#7124-análise-adicional-número-de-clientes)
+      - [7.1.2.5 Simulação TO-BE](#7125-simulação-to-be)
+      - [7.1.2.6 Estratégias para Atingir a Melhoria de 150% no Service Time e Escalabilidade de 300%](#7126-estratégias-para-atingir-a-melhoria-de-150-no-service-time-e-escalabilidade-de-300)
+        - [Comparativo Sistema Novo vs Antigo e Estratégias](#comparativo-sistema-novo-vs-antigo-e-estratégias)
+  - [7.2 Simulação RNF - 02 (Segurança)](#72-simulação-rnf---02-segurança)
+  - [7.2.1 Cenário de simulação – Cadastro errado de usuário](#721-cenário-de-simulação--cadastro-errado-de-usuário)
+    - [Contexto](#contexto)
+    - [7.2.1.1 Simulação Sistema: Atual](#7211-simulação-sistema-atual)
+      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual)
+      - [Resultados – Sistema Atual](#resultados--sistema-atual)
+      - [Interpretação](#interpretação)
+      - [Limitações](#limitações)
+    - [7.2.2.2 Simulação Sistema: Novo](#7222-simulação-sistema-novo)
+      - [Contexto](#contexto-1)
+      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura)
+      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura)
+      - [Interpretação](#interpretação-1)
+      - [Justificativas das Melhorias](#justificativas-das-melhorias)
+      - [Limitações](#limitações-1)
+      - [Conclusão](#conclusão)
+  - [7.2.2 Simulação RNF-05 – Conflito de Edição](#722-simulação-rnf-05--conflito-de-edição)
+    - [7.2.2.1 Simulação Sistema: Atual](#7221-simulação-sistema-atual)
+      - [Contexto](#contexto-2)
+      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual-1)
+      - [Resultados – Sistema Atual](#resultados--sistema-atual-1)
+      - [Interpretação](#interpretação-2)
+      - [Limitações](#limitações-2)
+    - [7.2.2.2 Simulação Sistema: Novo](#7222-simulação-sistema-novo-1)
+      - [Contexto](#contexto-3)
+      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura-1)
+      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura-1)
+      - [Interpretação](#interpretação-3)
+      - [Justificativa das Melhorias](#justificativa-das-melhorias)
+      - [Limitações](#limitações-3)
+      - [Conclusão](#conclusão-1)
+  - [7.2.3 Simulação RNF-12 – Execução sem TAP aprovado](#723-simulação-rnf-12--execução-sem-tap-aprovado)
+    - [7.2.3.1 Simulação Sistema: Atual](#7231-simulação-sistema-atual)
+      - [Contexto](#contexto-4)
+      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual-2)
+      - [Resultados – Sistema Atual](#resultados--sistema-atual-2)
+      - [Interpretação](#interpretação-4)
+      - [Limitações](#limitações-4)
+    - [7.2.3.1 Simulação Sistema: Novo](#7231-simulação-sistema-novo)
+      - [Contexto](#contexto-5)
+      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura-2)
+      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura-2)
+      - [Interpretação](#interpretação-5)
+      - [Justificativa das Melhorias](#justificativa-das-melhorias-1)
+      - [Limitações](#limitações-5)
+      - [Conclusão](#conclusão-2)
   - [7.3 Simulação RNF - 03 (Rastreabilidade)](#73-simulação-rnf---03-rastreabilidade)
     - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
       - [7.3.1.1 Cenário 10 - Encerramento manual de projeto (AS-IS)](#7311-cenário-10---encerramento-manual-de-projeto-as-is)
@@ -1097,7 +1170,31 @@ O objetivo é compreender **as causas dos defeitos** e construir a base para pro
 
 ## 5.1 Mapa de RNFs
 
-_(Definir o mapa da de RNFs e definir se será realmente o decidido na última sprint)_
+&emsp;Esta seção consolida os três RNFs priorizados para análise arquitetural do sistema atual, com base em impacto no negócio, frequência de ocorrência e viabilidade de melhoria.
+
+### RNFs Priorizados
+
+| RNF                         | Etapas Críticas               | Vulnerabilidade Principal                                                                                |
+| :-------------------------- | :---------------------------- | :------------------------------------------------------------------------------------------------------- |
+| **RNF-01: Escalabilidade**  | 3ª, 4ª, 5ª                    | Throttling do SharePoint; arquitetura de dados inadequada (repositório de arquivos como BD transacional) |
+| **RNF-02: Segurança**       | 1ª, 2ª, 4ª                    | Gestão manual de permissões amplas; ausência de validação de integridade em transferências manuais       |
+| **RNF-03: Rastreabilidade** | 2ª (crítica), todas as demais | Transferência manual Miro/Excel→SharePoint não auditada; logs fragmentados sem ID de correlação          |
+
+### Matriz de Criticidade por Etapa
+
+| Etapa                          | Escalabilidade | Segurança   | Rastreabilidade |
+| :----------------------------- | :------------- | :---------- | :-------------- |
+| **1ª - Elaborar Cronograma**   | Baixa          | Alta        | Média           |
+| **2ª - Documentação Miro→TAP** | Baixa          | **Crítica** | **Crítica**     |
+| **3ª - Reporte Mensal**        | **Alta**       | Média       | Média           |
+| **4ª - Armazenamento**         | **Crítica**    | Alta        | Alta            |
+| **5ª - Geração de Relatórios** | **Crítica**    | Alta        | Média           |
+
+### Inter-Relação de RNFs
+
+- **Escalabilidade → Segurança:** Throttling impede registro completo de logs de auditoria
+- **Segurança → Rastreabilidade:** Acessos não auditados comprometem integridade de dados rastreados
+- **Rastreabilidade → Segurança:** Impossibilidade de provar origem dificulta detecção de manipulação
 
 ## 5.2 Revisão do Mapa de RNFs e Vulnerabilidades
 
@@ -1188,7 +1285,7 @@ A tabela a seguir resume as principais vulnerabilidades identificadas no sistema
 
 ---
 
-### 5.2.2 RNF-02 — <Segurança>
+### 5.2.2 RNF-02 — Segurança
 
 &emsp;A Segurança é um requisito não funcional crítico para o sistema de Portfólio do Metrô, pois a proteção de dados sensíveis de projetos, o controle de acesso granular e a integridade de informações são fundamentais para a governança adequada do portfólio. No sistema atual, composto por ferramentas como SharePoint, Miro e Power BI, a segurança apresenta vulnerabilidades significativas relacionadas ao controle manual de permissões, ausência de granularidade de acesso por projeto e falta de validação de integridade em transferências manuais de dados.
 
@@ -1407,7 +1504,7 @@ Estas características arquiteturais fundamentais impactam diretamente a capacid
 
 ---
 
-### 5.3.2 RNF-02 — <Segurança>
+### 5.3.2 RNF-02 — Segurança
 
 #### A. Como monitorar o RNF
 
@@ -2041,7 +2138,7 @@ A atual dependência de processos manuais para recuperação e a falta de um sub
 
 ---
 
-### 5.4.2 RNF-02 — <Segurança>
+### 5.4.2 RNF-02 — Segurança
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 
@@ -2278,7 +2375,7 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 # 6. Especificação da Solução Técnica do Sistema Novo
 
-> Para acessar a arquitetura proposta, acesse o [link para o Miro](https://miro.com/app/board/uXjVJvSz32Y=/?share_link_id=47487974781). 
+> Para acessar a arquitetura proposta, acesse o [link para o Miro](https://miro.com/app/board/uXjVJvSz32Y=/?share_link_id=47487974781).
 
 &emsp;Esta arquitetura (_To-Be_) foi projetada para resolver vulnerabilidades de Confiabilidade, Desempenho (Throttling) e Rastreabilidade presentes no sistema atual, centralizando o controle de tráfego, garantindo processamento assíncrono e auditoria completa das transações.
 
@@ -2286,17 +2383,17 @@ Para um sistema de missão crítica de governança de portfólio, esta dependên
 
 <sub>Tabela 6.1 - Soluções Arquiteturais</sub>
 
-| **RNF Chave**            | **Problema Resolvido**                                                                 | **Solução Arquitetural**                                                                                       |
-|---------------------------|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| **RNF-01 (Desempenho)**   | Perda de transações por *throttling* do SharePoint e picos de tráfego.                | API Gateway (Rate Limit) + Azure Service Bus (Queueing/Burst) + Azure Functions (Retries).                      |
-| **RNF-03 (Rastreabilidade)** | Fluxos “caixa-preta” e impossibilidade de rastrear a origem das transações.          | Log de Transação/Auditoria Central com ID de Correlação (`tx_id`) gerado na borda.                              |
-| **RNF-02 (Segurança)**    | Dependência de fluxos manuais e ausência de controle de acesso centralizado.          | API Gateway (Autenticação Azure AD) e segregação de responsabilidade nos Workers.                               |
+| **RNF Chave**                | **Problema Resolvido**                                                       | **Solução Arquitetural**                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **RNF-01 (Desempenho)**      | Perda de transações por _throttling_ do SharePoint e picos de tráfego.       | API Gateway (Rate Limit) + Azure Service Bus (Queueing/Burst) + Azure Functions (Retries). |
+| **RNF-03 (Rastreabilidade)** | Fluxos “caixa-preta” e impossibilidade de rastrear a origem das transações.  | Log de Transação/Auditoria Central com ID de Correlação (`tx_id`) gerado na borda.         |
+| **RNF-02 (Segurança)**       | Dependência de fluxos manuais e ausência de controle de acesso centralizado. | API Gateway (Autenticação Azure AD) e segregação de responsabilidade nos Workers.          |
 
 <sup>Fonte: material elaborado pelos autores (2025).</sup>
 
 </div>
 
-**Contexto**: 
+**Contexto**:
 
 O Diagrama de Contexto define os limites do novo Sistema de Gerenciamento de Portfólio, mostrando os usuários e sistemas externos com os quais ele interage.
 
@@ -2304,14 +2401,14 @@ O Diagrama de Contexto define os limites do novo Sistema de Gerenciamento de Por
 
 <sub>Tabela 6.2 - Diagrama de Contexto</sub>
 
-| **Entidade**              | **Tipo**            | **Descrição no Contexto**                                                                                  |
-|----------------------------|--------------------|-------------------------------------------------------------------------------------------------------------|
-| **Usuário (PMO/Gestor)**  | Pessoa             | Usuários que originam dados (via SharePoint/Miro) e utilizam a Interface Manual (DLQ).                     |
-| **SharePoint Online**     | Sistema Externo    | Fonte de dados (formulários/documentos) e repositório final de artefatos.                                  |
-| **Miro**                  | Sistema Externo    | Fonte de dados ideacionais (brainstorming/mapas).                                                          |
-| **Power BI**              | Sistema Externo    | Consumidor de dados consolidados e origem de requisições de refresh.                                       |
-| **Integradores Externos** | Sistema Externo    | Sistemas que disparam jobs ou webhooks programados.                                                        |
-| **Sistema Proposto**      | Sistema            | O núcleo de controle, filas e processamento assíncrono.                                                    |
+| **Entidade**              | **Tipo**        | **Descrição no Contexto**                                                              |
+| ------------------------- | --------------- | -------------------------------------------------------------------------------------- |
+| **Usuário (PMO/Gestor)**  | Pessoa          | Usuários que originam dados (via SharePoint/Miro) e utilizam a Interface Manual (DLQ). |
+| **SharePoint Online**     | Sistema Externo | Fonte de dados (formulários/documentos) e repositório final de artefatos.              |
+| **Miro**                  | Sistema Externo | Fonte de dados ideacionais (brainstorming/mapas).                                      |
+| **Power BI**              | Sistema Externo | Consumidor de dados consolidados e origem de requisições de refresh.                   |
+| **Integradores Externos** | Sistema Externo | Sistemas que disparam jobs ou webhooks programados.                                    |
+| **Sistema Proposto**      | Sistema         | O núcleo de controle, filas e processamento assíncrono.                                |
 
 <sup>Fonte: material elaborado pelos autores (2025).</sup>
 
@@ -2325,15 +2422,15 @@ O Diagrama de Contêineres detalha a estrutura interna do Sistema Proposto, most
 
 <sub>Tabela 6.3 - Diagrama de Contêiners</sub>
 
-| **Contêiner**              | **Tecnologia**                     | **Função Principal**                                                 | **Contribuição ao RNF**                                                                                                                        |
-|-----------------------------|------------------------------------|---------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
-| **1. API Gateway**          | Azure API Management (APIM)        | Borda Controlada. Centraliza todas as chamadas de entrada.          | **RNF-01/02/03:** Autenticação, Rate Limiting, Registro de `tx_id` inicial, Policy de shedding.                                               |
-| **2. Fila de Mensagens**    | Azure Service Bus (ASB)            | Desacoplamento e Buffer de Picos de Carga.                          | **RNF-01 (Escalabilidade):** Absorve bursts (até 200–300 reqs/min).                                                                            |
-| **3. Workers**              | Azure Functions                    | Processamento Assíncrono da Lógica de Negócio e Integração.         | **RNF-01 (Confiabilidade):** Retry automático, backoff exponencial, circuit breaker, controle de concorrência.                                 |
-| **4. Log de Transação/Auditoria** | Azure SQL + Azure Blob               | Repositório imutável para todos os eventos de transação.            | **RNF-03 (Rastreabilidade):** Armazena status (`SUCCESS`, `DLQ/POISON`, `REJECTED`) e o histórico de retries.                                 |
-| **5. Cache**                | Azure Cache for Redis              | Cache de leituras frequentes e dados de idempotência.               | **RNF-01 (Desempenho):** Reduz latência e chamadas ao SharePoint.                                        |
-| **6. Monitoramento Central**| Azure Monitor / Log Analytics      | Coleta logs, métricas (SLIs/SLOs) e dispara alertas.                | **RNF-01/02:** Monitora Queue Depth, Success Rate, Latency e eventos de Throttling.                                                           |
-| **7. Interface Manual**     | Portal Web                         | Painel operacional para tratamento de exceções.                     | **RNF-01 (Confiabilidade):** Permite re-enqueue manual de mensagens da DLQ.                                                                   |
+| **Contêiner**                     | **Tecnologia**                | **Função Principal**                                        | **Contribuição ao RNF**                                                                                        |
+| --------------------------------- | ----------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **1. API Gateway**                | Azure API Management (APIM)   | Borda Controlada. Centraliza todas as chamadas de entrada.  | **RNF-01/02/03:** Autenticação, Rate Limiting, Registro de `tx_id` inicial, Policy de shedding.                |
+| **2. Fila de Mensagens**          | Azure Service Bus (ASB)       | Desacoplamento e Buffer de Picos de Carga.                  | **RNF-01 (Escalabilidade):** Absorve bursts (até 200–300 reqs/min).                                            |
+| **3. Workers**                    | Azure Functions               | Processamento Assíncrono da Lógica de Negócio e Integração. | **RNF-01 (Confiabilidade):** Retry automático, backoff exponencial, circuit breaker, controle de concorrência. |
+| **4. Log de Transação/Auditoria** | Azure SQL + Azure Blob        | Repositório imutável para todos os eventos de transação.    | **RNF-03 (Rastreabilidade):** Armazena status (`SUCCESS`, `DLQ/POISON`, `REJECTED`) e o histórico de retries.  |
+| **5. Cache**                      | Azure Cache for Redis         | Cache de leituras frequentes e dados de idempotência.       | **RNF-01 (Desempenho):** Reduz latência e chamadas ao SharePoint.                                              |
+| **6. Monitoramento Central**      | Azure Monitor / Log Analytics | Coleta logs, métricas (SLIs/SLOs) e dispara alertas.        | **RNF-01/02:** Monitora Queue Depth, Success Rate, Latency e eventos de Throttling.                            |
+| **7. Interface Manual**           | Portal Web                    | Painel operacional para tratamento de exceções.             | **RNF-01 (Confiabilidade):** Permite re-enqueue manual de mensagens da DLQ.                                    |
 
 <sup>Fonte: material elaborado pelos autores (2025).</sup>
 
@@ -2351,7 +2448,7 @@ Nesta subseção fazemos a revisão do mapa de Requisitos Não Funcionais (RNFs)
 
 Esta subseção detalha, para cada RNF priorizado, como o sistema novo trata as vulnerabilidades identificadas no AS‑IS. Para facilitar a leitura e a verificação, cada RNF é apresentado em três frentes: A) Entrada — tipos, origens e volumetrias esperadas; B) Saída — registros, evidências e artefatos persistidos para auditoria; C) Controles — mecanismos de prevenção, detecção e recuperação que garantem integridade, não repúdio e conformidade. O objetivo é tornar explícito o vínculo entre os requisitos e as contramedidas arquiteturais.
 
-### 6.2.1 RNF-01 — <Escalabilidade>
+### 6.2.1 RNF-01 — Escalabilidade
 
 #### A. Entrada
 
@@ -2425,7 +2522,7 @@ Esta subseção detalha, para cada RNF priorizado, como o sistema novo trata as 
 
 ---
 
-### 6.2.2 RNF-02 — <Segurança>
+### 6.2.2 RNF-02 — Segurança
 
 #### A. Entrada
 
@@ -2564,7 +2661,7 @@ Esta subseção detalha, para cada RNF priorizado, como o sistema novo trata as 
 
 Nesta subseção são descritas as táticas arquiteturais, os padrões de projeto e os componentes tecnológicos selecionados para atender aos RNFs do sistema novo. Serão apresentadas decisões essenciais — por exemplo, processamento assíncrono com filas, observabilidade centralizada, estratégias de failover e replicação, mecanismos de autenticação e autorização (RBAC/MFA), e controles de integridade (hashing, event sourcing) — bem como a justificativa técnica de como cada escolha elimina vulnerabilidades do sistema atual.
 
-### 6.3.1 RNF-01 — <Escalabilidade>
+### 6.3.1 RNF-01 — Escalabilidade
 
 #### A. Como monitorar o RNF
 
@@ -2654,7 +2751,7 @@ Nesta subseção são descritas as táticas arquiteturais, os padrões de projet
 
 ---
 
-### 6.3.2 RNF-02 — <Segurança>
+### 6.3.2 RNF-02 — Segurança
 
 #### A. Como monitorar o RNF
 
@@ -2775,15 +2872,15 @@ _(Apresente a simulação comparativa entre o sistema atual e o sistema novo, ev
 
 A metodologia empregada foi a **Análise "What-If"** no JMT (Java Modeling Tools), que utiliza o modelo de **Redes de Filas (Queueing Networks)** para prever o desempenho. A simulação foi configurada como um modelo de **Classe Aberta** (Open Class) com variação do parâmetro **Arrival Rate** (Taxa de Chegada) em três cenários distintos:
 
-*   **Cenário x1:** 100% da carga base (100 usuários em 30 minutos).
-*   **Cenário x2:** 200% da carga base (200 usuários em 30 minutos).
-*   **Cenário x3:** 300% da carga base (300 usuários em 30 minutos).
+- **Cenário x1:** 100% da carga base (100 usuários em 30 minutos).
+- **Cenário x2:** 200% da carga base (200 usuários em 30 minutos).
+- **Cenário x3:** 300% da carga base (300 usuários em 30 minutos).
 
 ### 7.1.1 Simulação Sistema: Atual
 
 &emsp;A simulação do sistema atual demonstrou uma **baixa capacidade de escalabilidade**, com o ponto de saturação sendo atingido no cenário de 200% da carga.
 
-Para detalhes completos da metodologia e resultados, consulte o documento anexo: [Simulação de Escalabilidade RNF-01](../src\simulacoes\simulacao_escalabilidade_sistema_atual.jsimg). 
+Para detalhes completos da metodologia e resultados, consulte o documento anexo: [Simulação de Escalabilidade RNF-01](../src\simulacoes\simulacao_escalabilidade_sistema_atual.jsimg).
 
 #### 7.1.1.1 Modelo de Rede de Filas (JMT)
 
@@ -2797,16 +2894,15 @@ Para detalhes completos da metodologia e resultados, consulte o documento anexo:
 
 **Descrição dos Componentes do Modelo:**
 
-| Componente | Tipo de Nó | Função no Sistema |
-| :--- | :--- | :--- |
-| **Início (Source)** | Fonte de Clientes | Representa a chegada dos usuários/requisições ao sistema. |
-| **Router** | Roteador | Distribui as requisições para os diferentes serviços de processamento. |
-| **Acesso Projeto** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a projetos. |
-| **Acesso Contrato** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a contratos. |
-| **Acesso Relatorio** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada à geração/acesso a relatórios. |
-| **Navegacao** | Servidor de Fila (M/M/m) | Componente que simula a camada de interface ou frontend, modelado com múltiplos servidores (m > 1) para representar a capacidade de paralelismo. |
-| **Fim / Fim_1 (Sink)** | Sumidouro | Representa a saída das requisições do sistema. |
-
+| Componente             | Tipo de Nó               | Função no Sistema                                                                                                                                |
+| :--------------------- | :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Início (Source)**    | Fonte de Clientes        | Representa a chegada dos usuários/requisições ao sistema.                                                                                        |
+| **Router**             | Roteador                 | Distribui as requisições para os diferentes serviços de processamento.                                                                           |
+| **Acesso Projeto**     | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a projetos.                                                   |
+| **Acesso Contrato**    | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a contratos.                                                  |
+| **Acesso Relatorio**   | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada à geração/acesso a relatórios.                                |
+| **Navegacao**          | Servidor de Fila (M/M/m) | Componente que simula a camada de interface ou frontend, modelado com múltiplos servidores (m > 1) para representar a capacidade de paralelismo. |
+| **Fim / Fim_1 (Sink)** | Sumidouro                | Representa a saída das requisições do sistema.                                                                                                   |
 
 #### 7.1.1.2 Validação da Carga (Throughput de Entrada)
 
@@ -2818,11 +2914,11 @@ Para detalhes completos da metodologia e resultados, consulte o documento anexo:
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
-| Carga | Vazão (J/s) |
-| :--- | :--- |
-| **100% (x1)** | $0.0554$ |
-| **200% (x2)** | $0.1114$ |
-| **300% (x3)** | $0.1687$ |
+| Carga         | Vazão (J/s) |
+| :------------ | :---------- |
+| **100% (x1)** | $0.0554$    |
+| **200% (x2)** | $0.1114$    |
+| **300% (x3)** | $0.1687$    |
 
 #### 7.1.1.3 Identificação do Gargalo (Utilização)
 
@@ -2830,12 +2926,12 @@ Para detalhes completos da metodologia e resultados, consulte o documento anexo:
 
 Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` são os limitadores da escalabilidade.
 
-| Componente | Utilização em 100% (x1) | Utilização em 200% (x2) | Utilização em 300% (x3) |
-| :--- | :--- | :--- | :--- |
-| **Acesso Projeto** | $49.97\%$ | $98.38\%$ | $100.00\%$ |
-| **Acesso Relatorio** | $50.23\%$ | $100.00\%$ | $100.00\%$ |
-| **Acesso Contrato** | $24.92\%$ | $49.60\%$ | $74.66\%$ |
-| **Navegacao** | $24.78\%$ | $49.80\%$ | $75.86\%$ |
+| Componente           | Utilização em 100% (x1) | Utilização em 200% (x2) | Utilização em 300% (x3) |
+| :------------------- | :---------------------- | :---------------------- | :---------------------- |
+| **Acesso Projeto**   | $49.97\%$               | $98.38\%$               | $100.00\%$              |
+| **Acesso Relatorio** | $50.23\%$               | $100.00\%$              | $100.00\%$              |
+| **Acesso Contrato**  | $24.92\%$               | $49.60\%$               | $74.66\%$               |
+| **Navegacao**        | $24.78\%$               | $49.80\%$               | $75.86\%$               |
 
 ##### Gráfico de Utilização - Acesso Projeto
 
@@ -2881,11 +2977,11 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 &emsp;A saturação dos componentes `Acesso Projeto` e `Acesso Relatorio` resulta em um crescimento exponencial do Tempo de Fila (Queue Time). Em Redes de Filas, o tempo de espera na fila ($W_q$) tende ao infinito quando a utilização se aproxima de 100%.
 
-| Componente | Tempo de Fila em 100% (x1) | Tempo de Fila em 200% (x2) | Tempo de Fila em 300% (x3) |
-| :--- | :--- | :--- | :--- |
-| **Acesso Projeto** | $75.95$ s | $12.100$ s | $12.000.000$ s |
-| **Acesso Relatorio** | $77.19$ s | $11.100$ s | $12.000.000$ s |
-| **Acesso Contrato** | $39.32$ s | $121.35$ s | $349.63$ s |
+| Componente           | Tempo de Fila em 100% (x1) | Tempo de Fila em 200% (x2) | Tempo de Fila em 300% (x3) |
+| :------------------- | :------------------------- | :------------------------- | :------------------------- |
+| **Acesso Projeto**   | $75.95$ s                  | $12.100$ s                 | $12.000.000$ s             |
+| **Acesso Relatorio** | $77.19$ s                  | $11.100$ s                 | $12.000.000$ s             |
+| **Acesso Contrato**  | $39.32$ s                  | $121.35$ s                 | $349.63$ s                 |
 
 ##### Gráfico de Tempo de Fila - Acesso Projeto
 
@@ -2941,7 +3037,7 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 ### 7.1.2 Simulação Sistema: Novo
 
-&emsp;O objetivo é verificar se uma melhoria de **150% nos valores de *service time***, permitirá que o sistema suporte uma escala de até **300%** da taxa de chegada inicial. A análise a seguir apresenta os resultados da simulação que validam a hipótese de escalabilidade e descreve as estratégias propostas para atingir o desempenho simulado.
+&emsp;O objetivo é verificar se uma melhoria de **150% nos valores de _service time_**, permitirá que o sistema suporte uma escala de até **300%** da taxa de chegada inicial. A análise a seguir apresenta os resultados da simulação que validam a hipótese de escalabilidade e descreve as estratégias propostas para atingir o desempenho simulado.
 
 #### 7.1.2.1 Validação da Carga (Throughput de Entrada)
 
@@ -2953,21 +3049,21 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
-| Carga | Vazão (J/s) |
-| :--- | :--- |
-| **100% (x1)** | $0.0556$ |
-| **300% (x3)** | $0.1660$ |
+| Carga         | Vazão (J/s) |
+| :------------ | :---------- |
+| **100% (x1)** | $0.0556$    |
+| **300% (x3)** | $0.1660$    |
 
 #### 7.1.2.2 Identificação do Gargalo (Utilização)
 
 &emsp;Os resultados indicam que `Acesso Projeto` é o gargalo primário e `Acesso Relatorio` o gargalo secundário. `Acesso Contrato` opera com folga e `Navegacao` apresenta utilização muito baixa.
 
-| Componente | Utilização em 100% (x1) | Utilização em 300% (x3) |
-| :--- | :--- | :--- |
-| **Acesso Projeto** | $19.88\%$ | $59.62\%$ |
-| **Acesso Relatorio** | $19.78\%$ | $59.56\%$ |
-| **Acesso Contrato** | $10.01\%$ | $29.96\%$ |
-| **Navegacao** | $1.39\%$ | $4.12\%$ |
+| Componente           | Utilização em 100% (x1) | Utilização em 300% (x3) |
+| :------------------- | :---------------------- | :---------------------- |
+| **Acesso Projeto**   | $19.88\%$               | $59.62\%$               |
+| **Acesso Relatorio** | $19.78\%$               | $59.56\%$               |
+| **Acesso Contrato**  | $10.01\%$               | $29.96\%$               |
+| **Navegacao**        | $1.39\%$                | $4.12\%$                |
 
 ##### Gráfico de Utilização - Acesso Contrato
 
@@ -3013,11 +3109,11 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 &emsp;O **Tempo de Fila** cresce de forma não linear sob cargas elevadas, com maior impacto nos gargalos identificados.
 
-| Componente | 100% (x1) | 150% (x1.5) | 300% (x3) |
-| :--- | :--- | :--- | :--- |
-| **Acesso Projeto** | $7.5280$ s | $13.0194$ s | $45.2569$ s |
-| **Acesso Relatorio** | $7.4852$ s | - | $45.2019$ s |
-| **Acesso Contrato** | $5.1430$ s | - | $19.8450$ s |
+| Componente           | 100% (x1)  | 150% (x1.5) | 300% (x3)   |
+| :------------------- | :--------- | :---------- | :---------- |
+| **Acesso Projeto**   | $7.5280$ s | $13.0194$ s | $45.2569$ s |
+| **Acesso Relatorio** | $7.4852$ s | -           | $45.2019$ s |
+| **Acesso Contrato**  | $5.1430$ s | -           | $19.8450$ s |
 
 ##### Gráfico de Tempo de Fila - Acesso Projeto
 
@@ -3068,6 +3164,7 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 &emsp;A melhoria de 150% nos tempos de serviço e a consequente capacidade de escalar em 300% serão buscadas por meio de otimização de código, eficiência de recursos e paralelismo, conforme segue:
 
 - **Paralelismo e processamento assíncrono**:
+
   - Assincronizar operações longas (e.g., geração de relatórios) para liberar threads de atendimento.
   - Executar subtarefas independentes em paralelo via thread pools/workers.
 
@@ -3079,15 +3176,15 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 &emsp;Resumo dos principais indicadores sob 300% da carga (x3):
 
-| Indicador | Nó | Sistema Atual (AS-IS) | Sistema Novo (TO-BE) |
-| :--- | :--- | :--- | :--- |
-| Utilização | Acesso Projeto | $100.00\%$ | $59.62\%$ |
-| Utilização | Acesso Relatorio | $100.00\%$ | $59.56\%$ |
-| Utilização | Acesso Contrato | $74.66\%$ | $29.96\%$ |
-| Utilização | Navegacao | $75.86\%$ | $4.12\%$ |
-| Tempo de Fila | Acesso Projeto | $12.000.000$ s | $45.2569$ s |
-| Tempo de Fila | Acesso Relatorio | $12.000.000$ s | $45.2019$ s |
-| Tempo de Fila | Acesso Contrato | $349.63$ s | $19.8450$ s |
+| Indicador     | Nó               | Sistema Atual (AS-IS) | Sistema Novo (TO-BE) |
+| :------------ | :--------------- | :-------------------- | :------------------- |
+| Utilização    | Acesso Projeto   | $100.00\%$            | $59.62\%$            |
+| Utilização    | Acesso Relatorio | $100.00\%$            | $59.56\%$            |
+| Utilização    | Acesso Contrato  | $74.66\%$             | $29.96\%$            |
+| Utilização    | Navegacao        | $75.86\%$             | $4.12\%$             |
+| Tempo de Fila | Acesso Projeto   | $12.000.000$ s        | $45.2569$ s          |
+| Tempo de Fila | Acesso Relatorio | $12.000.000$ s        | $45.2019$ s          |
+| Tempo de Fila | Acesso Contrato  | $349.63$ s            | $19.8450$ s          |
 
 &emsp;Para mitigar o gargalo e atender ao RNF de Escalabilidade, a mudança de arquitetura deve focar nos componentes **Acesso Projeto** e **Acesso Relatorio** (gargalos primários) e considerar o **Navegacao** (gargalo secundário). As táticas arquiteturais recomendadas, visando reduzir a utilização e o tempo de fila, incluem:
 
@@ -3095,15 +3192,16 @@ Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` s
 
 2.  **Paralelização (Scaling Up/Out):**
 
-    *   **Scaling Up:** Aumentar a capacidade de processamento (CPU/Memória) do servidor que hospeda esses componentes.
+    - **Scaling Up:** Aumentar a capacidade de processamento (CPU/Memória) do servidor que hospeda esses componentes.
 
-    *   **Scaling Out:** Implementar múltiplos servidores (multi-server station no JMT) para que as requisições possam ser processadas em paralelo, aumentando a taxa de serviço ($\mu$).
+    - **Scaling Out:** Implementar múltiplos servidores (multi-server station no JMT) para que as requisições possam ser processadas em paralelo, aumentando a taxa de serviço ($\mu$).
+
 ---
 
 ## 7.2 Simulação RNF - 02 (Segurança)
 
 As simulações do requisito não funcional segurança foi realizado com base em **Cadeias de Markov de tempo discreto**, modelo que permite representar a evolução de estados do sistema de forma probabilística.  
-Essa abordagem foi escolhida por possibilitar a análise da **probabilidade de falha** e do **tempo médio até comprometimento**, comparando o desempenho entre o sistema atual e a nova arquitetura proposta.  
+Essa abordagem foi escolhida por possibilitar a análise da **probabilidade de falha** e do **tempo médio até comprometimento**, comparando o desempenho entre o sistema atual e a nova arquitetura proposta.
 
 Os resultados analíticos obtidos a partir da matriz fundamental foram validados por simulações **Monte Carlo**, garantindo consistência estatística e evidenciando o impacto das melhorias arquiteturais em cada cenário avaliado.
 
@@ -3119,30 +3217,29 @@ Essa falha gera inconsistências de permissão, perda de rastreabilidade e risco
 
 #### Configuração do modelo (Sistema Atual)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro a partir do estado normal | 0.04 |
-| `p_issue_comp` | Probabilidade de comprometimento após erro de cadastro | 0.02 |
-| `p_issue_remed` | Probabilidade de correção manual do erro | 0.50 |
-| `p_remed_normal` | Probabilidade de retorno ao estado normal após correção | 0.70 |
-| `p_remed_issue` | Risco de recaída (erro reincidente) | 0.10 |
+| Parâmetro        | Descrição                                                                 | Valor |
+| ---------------- | ------------------------------------------------------------------------- | ----- |
+| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro a partir do estado normal | 0.04  |
+| `p_issue_comp`   | Probabilidade de comprometimento após erro de cadastro                    | 0.02  |
+| `p_issue_remed`  | Probabilidade de correção manual do erro                                  | 0.50  |
+| `p_remed_normal` | Probabilidade de retorno ao estado normal após correção                   | 0.70  |
+| `p_remed_issue`  | Risco de recaída (erro reincidente)                                       | 0.10  |
 
 **Estados do modelo:**
-- Normal: Cadastro correto.  
-- Issue: Cadastro incorreto detectado.  
-- Remediation: Correção manual em andamento.  
-- Compromised: Estado absorvente — erro consolidado ou dado incorreto persistente.
 
+- Normal: Cadastro correto.
+- Issue: Cadastro incorreto detectado.
+- Remediation: Correção manual em andamento.
+- Compromised: Estado absorvente — erro consolidado ou dado incorreto persistente.
 
 #### Resultados – Sistema Atual
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 653.1 |
+| Métrica                                  | Valor  |
+| ---------------------------------------- | ------ |
+| **Probabilidade Analítica (∞)**          | 1.00   |
+| **Tempo Médio Analítico (dias)**         | 653.1  |
 | **Probabilidade Empírica (1000 passos)** | 0.7865 |
-| **Tempo Médio Empírico (dias)** | 382.6 |
-
+| **Tempo Médio Empírico (dias)**          | 382.6  |
 
 #### Interpretação
 
@@ -3152,11 +3249,10 @@ O tempo médio até a falha (≈380 dias) indica que os erros se acumulam rapida
 
 A curva temporal indica que o risco cresce continuamente a partir dos primeiros meses, atingindo níveis críticos antes de um ano de operação.
 
-
 #### Limitações
 
-- O estado *Compromised* é considerado irreversível (não há rollback).  
-- O modelo usa valores hipotéticos para transições (ainda sem calibração de logs reais).  
+- O estado _Compromised_ é considerado irreversível (não há rollback).
+- O modelo usa valores hipotéticos para transições (ainda sem calibração de logs reais).
 - Cada passo equivale a 1 dia — ajustar conforme periodicidade real de atualizações de cadastro.
 
 ### 7.2.2.2 Simulação Sistema: Novo
@@ -3169,40 +3265,41 @@ Essas melhorias visam reduzir erros de cadastro e aumentar a rastreabilidade das
 
 #### Configuração do modelo (Nova Arquitetura)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro | 0.02 |
-| `p_issue_comp` | Probabilidade de comprometimento após erro | 0.005 |
-| `p_issue_remed` | Probabilidade de correção automática | 0.70 |
-| `p_remed_normal` | Probabilidade de retorno ao normal após correção | 0.85 |
-| `p_remed_issue` | Risco de recaída | 0.05 |
+| Parâmetro        | Descrição                                        | Valor |
+| ---------------- | ------------------------------------------------ | ----- |
+| `p_normal_issue` | Probabilidade de ocorrência de erro de cadastro  | 0.02  |
+| `p_issue_comp`   | Probabilidade de comprometimento após erro       | 0.005 |
+| `p_issue_remed`  | Probabilidade de correção automática             | 0.70  |
+| `p_remed_normal` | Probabilidade de retorno ao normal após correção | 0.85  |
+| `p_remed_issue`  | Risco de recaída                                 | 0.05  |
 
 **Estados do modelo:**
-- Normal: Cadastro correto.  
-- Issue: Erro detectado.  
-- Remediation: Correção automatizada.  
-- Compromised: Erro não corrigido (absorvente).
 
+- Normal: Cadastro correto.
+- Issue: Erro detectado.
+- Remediation: Correção automatizada.
+- Compromised: Erro não corrigido (absorvente).
 
 #### Resultados – Nova Arquitetura
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 7016.7 |
+| Métrica                                  | Valor  |
+| ---------------------------------------- | ------ |
+| **Probabilidade Analítica (∞)**          | 1.00   |
+| **Tempo Médio Analítico (dias)**         | 7016.7 |
 | **Probabilidade Empírica (1000 passos)** | 0.1311 |
-| **Tempo Médio Empírico (dias)** | 487.2 |
+| **Tempo Médio Empírico (dias)**          | 487.2  |
 
 **Gráficos:**
+
 <div align="center">
 <sub>Figura 7.2.3 - Gráfico Tempo Médio até compromentimento</sub><br>
-<img src="img/section7/graficocenario1.2.png" width="150%"><br>
+<img src="img/section7/graficocenario1.2.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 <div align="center">
 <sub>Figura 7.2.3 - Evolução de probabilidade de compromentimento</sub><br>
-<img src="img/section7/graficocenario1.3.png" width="150%"><br>
+<img src="img/section7/graficocenario1.3.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -3210,12 +3307,11 @@ Essas melhorias visam reduzir erros de cadastro e aumentar a rastreabilidade das
 
 A nova arquitetura demonstra melhoria expressiva em todos os indicadores:
 
-- A probabilidade empírica de erro caiu de 0.79 para 0.13 (redução de ~83%).  
-- O tempo médio até o erro aumentou de 380 para 487 dias, mostrando menor frequência e maior estabilidade.  
+- A probabilidade empírica de erro caiu de 0.79 para 0.13 (redução de ~83%).
+- O tempo médio até o erro aumentou de 380 para 487 dias, mostrando menor frequência e maior estabilidade.
 - O tempo médio analítico (≈7000 dias) indica altíssima resiliência — ou seja, a probabilidade de o sistema atingir o estado de falha é muito baixa no horizonte de operação simulado.
 
 A curva temporal mostra crescimento muito mais lento do risco ao longo do tempo, validando o impacto positivo das automações introduzidas.
-
 
 #### Justificativas das Melhorias
 
@@ -3225,20 +3321,19 @@ Esses números refletem o efeito direto das validações automáticas e da segre
 
 **B. Evidência estrutural das melhorias**  
 As melhorias de arquitetura se refletem nas transições do modelo:
-- Diminuição de `p_normal_issue` → menos erros iniciais.  
-- Diminuição de `p_issue_comp` → menor chance de erro se consolidar.  
-- Aumento de `p_issue_remed` → mais correções automáticas.  
-- Aumento de `p_remed_normal` → recuperação mais rápida.  
+
+- Diminuição de `p_normal_issue` → menos erros iniciais.
+- Diminuição de `p_issue_comp` → menor chance de erro se consolidar.
+- Aumento de `p_issue_remed` → mais correções automáticas.
+- Aumento de `p_remed_normal` → recuperação mais rápida.
 
 Essas mudanças resultam em um sistema mais confiável, rastreável e autônomo.
 
-
 #### Limitações
 
-- Estado *Compromised* ainda modelado como irreversível.  
-- Valores base hipotéticos — devem ser recalibrados após implantação.  
+- Estado _Compromised_ ainda modelado como irreversível.
+- Valores base hipotéticos — devem ser recalibrados após implantação.
 - Horizonte limitado (1000 passos); simulações mais longas podem mostrar convergência total para absorção (B=1 analítico).
-
 
 #### Conclusão
 
@@ -3249,9 +3344,7 @@ O modelo demonstra que as validações automáticas e a correção inteligente t
 Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo:
 [Simulação RNF-01 – Cadastro errado de usuário (Colab)](Ihttps://colab.research.google.com/drive/1KdICELxYQUHxUrwHE-BHZIevjY0jW4ET?usp=sharing)
 
-
 ## 7.2.2 Simulação RNF-05 – Conflito de Edição
-
 
 ### 7.2.2.1 Simulação Sistema: Atual
 
@@ -3262,35 +3355,35 @@ No sistema atual, o controle de concorrência é mínimo: o último a salvar sob
 
 #### Configuração do modelo (Sistema Atual)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_conf` | Probabilidade de surgimento de conflito de edição | 0.05 |
-| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.20 |
-| `p_conf_resol` | Probabilidade de resolução manual do conflito | 0.50 |
-| `p_resol_norm` | Probabilidade de retorno ao estado normal após resolução | 0.70 |
-| `p_resol_conf` | Risco de recaída no conflito | 0.10 |
+| Parâmetro       | Descrição                                                | Valor |
+| --------------- | -------------------------------------------------------- | ----- |
+| `p_normal_conf` | Probabilidade de surgimento de conflito de edição        | 0.05  |
+| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.20  |
+| `p_conf_resol`  | Probabilidade de resolução manual do conflito            | 0.50  |
+| `p_resol_norm`  | Probabilidade de retorno ao estado normal após resolução | 0.70  |
+| `p_resol_conf`  | Risco de recaída no conflito                             | 0.10  |
 
 **Estados do modelo:**
-- Normal: Edição sem conflito.  
-- ConflitoEdicao: Duas ou mais edições simultâneas detectadas.  
-- ResolucaoManual: Etapa de tentativa de correção manual.  
-- Inconsistencia: Estado absorvente — dados corrompidos ou sobrescritos.
 
+- Normal: Edição sem conflito.
+- ConflitoEdicao: Duas ou mais edições simultâneas detectadas.
+- ResolucaoManual: Etapa de tentativa de correção manual.
+- Inconsistencia: Estado absorvente — dados corrompidos ou sobrescritos.
 
 #### Resultados – Sistema Atual
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 71.9 |
+| Métrica                                 | Valor |
+| --------------------------------------- | ----- |
+| **Probabilidade Analítica (∞)**         | 1.00  |
+| **Tempo Médio Analítico (dias)**        | 71.9  |
 | **Probabilidade Empírica (500 passos)** | 0.999 |
-| **Tempo Médio Empírico (dias)** | 67.0 |
+| **Tempo Médio Empírico (dias)**         | 67.0  |
 
 **Gráficos:**
-- `prob_conflito_edicao.png` — Comparativo de probabilidade de inconsistência.  
-- `tempo_conflito_edicao.png` — Comparativo de tempo médio até falha.  
-- `curva_inconsistencia_cenario5.png` — Evolução temporal da probabilidade de falha.
 
+- `prob_conflito_edicao.png` — Comparativo de probabilidade de inconsistência.
+- `tempo_conflito_edicao.png` — Comparativo de tempo médio até falha.
+- `curva_inconsistencia_cenario5.png` — Evolução temporal da probabilidade de falha.
 
 #### Interpretação
 
@@ -3300,13 +3393,11 @@ O tempo médio até a falha (~67 dias) demonstra que o conflito de edição ocor
 
 A curva temporal de 365 dias apresenta aumento rápido da probabilidade de inconsistência nos primeiros meses, validando a necessidade de controle automatizado de edição.
 
-
 #### Limitações
 
-- O estado *Inconsistencia* é modelado como absorvente, sem rollback possível.  
-- Os parâmetros de transição são estimados, sem calibração em logs reais.  
+- O estado _Inconsistencia_ é modelado como absorvente, sem rollback possível.
+- Os parâmetros de transição são estimados, sem calibração em logs reais.
 - 1 passo equivale a 1 dia — ajustar conforme a periodicidade real de atualização dos dados.
-
 
 ### 7.2.2.2 Simulação Sistema: Novo
 
@@ -3314,62 +3405,63 @@ A curva temporal de 365 dias apresenta aumento rápido da probabilidade de incon
 
 Na nova arquitetura proposta, são introduzidos mecanismos de bloqueio e resolução automática de conflitos, com suporte de agentes de IA.  
 Os principais recursos incluem:
-- Bloqueio temporário de edição (check-out).  
-- Controle automático de versionamento.  
-- Resolução automatizada de conflito com auxílio de IA.  
+
+- Bloqueio temporário de edição (check-out).
+- Controle automático de versionamento.
+- Resolução automatizada de conflito com auxílio de IA.
 - Validação de consistência antes do commit final.
 
 Essas medidas visam aumentar a integridade dos dados e reduzir o retrabalho manual.
 
 #### Configuração do modelo (Nova Arquitetura)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_conf` | Probabilidade de surgimento de conflito de edição | 0.02 |
-| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.05 |
-| `p_conf_resol` | Probabilidade de resolução automática do conflito | 0.80 |
-| `p_resol_norm` | Probabilidade de retorno ao estado normal após resolução | 0.90 |
-| `p_resol_conf` | Risco de recaída no conflito | 0.05 |
+| Parâmetro       | Descrição                                                | Valor |
+| --------------- | -------------------------------------------------------- | ----- |
+| `p_normal_conf` | Probabilidade de surgimento de conflito de edição        | 0.02  |
+| `p_conf_incons` | Probabilidade de inconsistência definitiva após conflito | 0.05  |
+| `p_conf_resol`  | Probabilidade de resolução automática do conflito        | 0.80  |
+| `p_resol_norm`  | Probabilidade de retorno ao estado normal após resolução | 0.90  |
+| `p_resol_conf`  | Risco de recaída no conflito                             | 0.05  |
 
 **Estados do modelo:**
-- Normal: Edição estável.  
-- ConflitoEdicao: Edição simultânea detectada.  
-- ResolucaoAutomatica: Correção via IA.  
-- Inconsistencia: Estado absorvente.
 
+- Normal: Edição estável.
+- ConflitoEdicao: Edição simultânea detectada.
+- ResolucaoAutomatica: Correção via IA.
+- Inconsistencia: Estado absorvente.
 
 #### Resultados – Nova Arquitetura
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 844.7 |
+| Métrica                                 | Valor |
+| --------------------------------------- | ----- |
+| **Probabilidade Analítica (∞)**         | 1.00  |
+| **Tempo Médio Analítico (dias)**        | 844.7 |
 | **Probabilidade Empírica (500 passos)** | 0.454 |
-| **Tempo Médio Empírico (dias)** | 227.5 |
+| **Tempo Médio Empírico (dias)**         | 227.5 |
 
 **Gráficos:**
 
 <div align="center">
 <sub>Figura 7.2.3 - Tempo médio até inconsistência</sub><br>
-<img src="img/section7/graficocenario5.2.png" width="150%"><br>
+<img src="img/section7/graficocenario5.2.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 <div align="center">
 <sub>Figura 7.2.3 - Evolução de probabilidade de inconsistência</sub><br>
-<img src="img/section7/graficocenario5.1.png" width="150%"><br>
+<img src="img/section7/graficocenario5.1.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 #### Interpretação
 
 A nova arquitetura apresenta melhorias expressivas:
-- Redução da probabilidade empírica de inconsistência de 0.999 para 0.454 (~55%).  
-- Aumento do tempo médio até falha de 67 para 227 dias (~239%).  
+
+- Redução da probabilidade empírica de inconsistência de 0.999 para 0.454 (~55%).
+- Aumento do tempo médio até falha de 67 para 227 dias (~239%).
 - A curva temporal apresenta crescimento lento e gradual, indicando maior estabilidade e controle sobre o processo de edição.
 
 Isso comprova que os mecanismos automáticos de bloqueio e resolução de conflito via IA reduzem significativamente a ocorrência de inconsistências.
-
 
 #### Justificativa das Melhorias
 
@@ -3379,31 +3471,28 @@ O sistema torna-se mais resiliente e previsível, reduzindo o esforço humano de
 
 **B. Evidência estrutural das melhorias**  
 A nova arquitetura altera as transições do modelo:
-- Reduz `p_normal_conf` → menor frequência de conflitos.  
-- Reduz `p_conf_incons` → menor impacto das falhas.  
-- Aumenta `p_conf_resol` → mais correções automáticas.  
-- Aumenta `p_resol_norm` → recuperação mais rápida.  
+
+- Reduz `p_normal_conf` → menor frequência de conflitos.
+- Reduz `p_conf_incons` → menor impacto das falhas.
+- Aumenta `p_conf_resol` → mais correções automáticas.
+- Aumenta `p_resol_norm` → recuperação mais rápida.
 
 Essas mudanças estruturais tornam o sistema mais estável e menos propenso a erros de edição concorrente.
 
-
 #### Limitações
 
-- Estado *Inconsistencia* modelado como absorvente, sem rollback posterior.  
-- Probabilidades estimadas com base em suposições — devem ser calibradas com dados reais.  
+- Estado _Inconsistencia_ modelado como absorvente, sem rollback posterior.
+- Probabilidades estimadas com base em suposições — devem ser calibradas com dados reais.
 - Horizonte de simulação limitado a 500 passos.
-
 
 #### Conclusão
 
 A nova arquitetura reduz substancialmente a probabilidade de inconsistência e aumenta a confiabilidade operacional.  
 As simulações indicam que a automação de bloqueio e a resolução inteligente de conflitos são eficazes na mitigação de riscos de perda de dados e inconsistência colaborativa.
 
-
-**Notebook Colab:** 
-Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo: 
+**Notebook Colab:**
+Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo:
 [Simulação RNF-05 – Conflito de Edição (Colab)](https://colab.research.google.com/drive/16NLj3lZQwjOQv77GEjSK0U5A2fwPXYrg?usp=sharing)
-
 
 ## 7.2.3 Simulação RNF-12 – Execução sem TAP aprovado
 
@@ -3417,31 +3506,31 @@ Essa prática cria vulnerabilidade de governança, falta de rastreabilidade e ri
 
 #### Configuração do modelo (Sistema Atual)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado | 0.06 |
-| `p_issue_comp` | Probabilidade de comprometimento após execução irregular | 0.25 |
-| `p_issue_remed` | Probabilidade de correção manual (aprovação retroativa) | 0.50 |
-| `p_remed_normal` | Probabilidade de retorno à conformidade após correção | 0.70 |
-| `p_remed_issue` | Risco de reincidência de execução irregular | 0.10 |
+| Parâmetro        | Descrição                                                | Valor |
+| ---------------- | -------------------------------------------------------- | ----- |
+| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado     | 0.06  |
+| `p_issue_comp`   | Probabilidade de comprometimento após execução irregular | 0.25  |
+| `p_issue_remed`  | Probabilidade de correção manual (aprovação retroativa)  | 0.50  |
+| `p_remed_normal` | Probabilidade de retorno à conformidade após correção    | 0.70  |
+| `p_remed_issue`  | Risco de reincidência de execução irregular              | 0.10  |
 
 **Estados do modelo:**
-- Normal: TAP aprovado e execução regular.  
-- Issue: Execução sem TAP aprovado.  
-- Remediation: Correção manual em andamento.  
+
+- Normal: TAP aprovado e execução regular.
+- Issue: Execução sem TAP aprovado.
+- Remediation: Correção manual em andamento.
 - Compromised: Estado absorvente — execução irregular consolidada.
 
 #### Resultados – Sistema Atual
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 71.9 |
+| Métrica                                 | Valor |
+| --------------------------------------- | ----- |
+| **Probabilidade Analítica (∞)**         | 1.00  |
+| **Tempo Médio Analítico (dias)**        | 71.9  |
 | **Probabilidade Empírica (500 passos)** | 0.999 |
-| **Tempo Médio Empírico (dias)** | 67.0 |
+| **Tempo Médio Empírico (dias)**         | 67.0  |
 
 **Gráficos:**
-
 
 #### Interpretação
 
@@ -3450,14 +3539,11 @@ A probabilidade empírica de comprometimento é próxima de 100%, e o tempo méd
 
 A curva temporal demonstra crescimento rápido e contínuo da probabilidade de falha, confirmando a ausência de mecanismos de bloqueio ou validação no fluxo de aprovação atual.
 
-
 #### Limitações
 
-- Estado *Compromised* é absorvente, sem rollback posterior.  
-- Parâmetros definidos de forma estimada (não calibrados em logs reais).  
-- Unidade de tempo: 1 passo = 1 dia.  
-
-
+- Estado _Compromised_ é absorvente, sem rollback posterior.
+- Parâmetros definidos de forma estimada (não calibrados em logs reais).
+- Unidade de tempo: 1 passo = 1 dia.
 
 ### 7.2.3.1 Simulação Sistema: Novo
 
@@ -3469,41 +3555,41 @@ Além disso, o agente de IA monitora as submissões e emite alertas em tempo rea
 
 #### Configuração do modelo (Nova Arquitetura)
 
-| Parâmetro | Descrição | Valor |
-|------------|------------|-------|
-| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado | 0.02 |
-| `p_issue_comp` | Probabilidade de comprometimento após execução irregular | 0.05 |
-| `p_issue_remed` | Probabilidade de correção automatizada (regularização do TAP) | 0.80 |
-| `p_remed_normal` | Probabilidade de retorno à conformidade após correção | 0.90 |
-| `p_remed_issue` | Risco de reincidência | 0.05 |
+| Parâmetro        | Descrição                                                     | Valor |
+| ---------------- | ------------------------------------------------------------- | ----- |
+| `p_normal_issue` | Probabilidade de início de execução sem TAP aprovado          | 0.02  |
+| `p_issue_comp`   | Probabilidade de comprometimento após execução irregular      | 0.05  |
+| `p_issue_remed`  | Probabilidade de correção automatizada (regularização do TAP) | 0.80  |
+| `p_remed_normal` | Probabilidade de retorno à conformidade após correção         | 0.90  |
+| `p_remed_issue`  | Risco de reincidência                                         | 0.05  |
 
 **Estados do modelo:**
-- Normal: TAP aprovado.  
-- Issue: Execução irregular detectada.  
-- Remediation: Correção automatizada em andamento.  
-- Compromised: Execução irregular consolidada (absorvente).
 
+- Normal: TAP aprovado.
+- Issue: Execução irregular detectada.
+- Remediation: Correção automatizada em andamento.
+- Compromised: Execução irregular consolidada (absorvente).
 
 #### Resultados – Nova Arquitetura
 
-| Métrica | Valor |
-|----------|--------|
-| **Probabilidade Analítica (∞)** | 1.00 |
-| **Tempo Médio Analítico (dias)** | 844.7 |
+| Métrica                                 | Valor |
+| --------------------------------------- | ----- |
+| **Probabilidade Analítica (∞)**         | 1.00  |
+| **Tempo Médio Analítico (dias)**        | 844.7 |
 | **Probabilidade Empírica (500 passos)** | 0.454 |
-| **Tempo Médio Empírico (dias)** | 227.5 |
+| **Tempo Médio Empírico (dias)**         | 227.5 |
 
 **Gráficos:**
 
 <div align="center">
 <sub>Figura 7.2.3 - Gráfico Tempo Médio até compromentimento</sub><br>
-<img src="img/section7/graficocenario12.1.png" width="150%"><br>
+<img src="img/section7/graficocenario12.1.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 <div align="center">
 <sub>Figura 7.2.3 - Evolução de probabilidade de compromentimento</sub><br>
-<img src="img/section7/graficocenario12.2.png" width="150%"><br>
+<img src="img/section7/graficocenario12.2.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -3511,12 +3597,11 @@ Além disso, o agente de IA monitora as submissões e emite alertas em tempo rea
 
 A nova arquitetura mostra **redução significativa do risco e aumento da resiliência operacional**:
 
-- A probabilidade empírica de falha cai de 99,9% para 45,4% (redução de ~55%).  
-- O tempo médio até falha aumenta de 67 para 227 dias (aumento de ~239%).  
+- A probabilidade empírica de falha cai de 99,9% para 45,4% (redução de ~55%).
+- O tempo médio até falha aumenta de 67 para 227 dias (aumento de ~239%).
 - O tempo médio analítico cresce para 845 dias, indicando que, teoricamente, o sistema leva muito mais tempo para atingir o estado de comprometimento.
 
 A curva temporal de 365 dias mostra crescimento lento e gradual, confirmando a eficácia do bloqueio automático e da validação pré-execução.
-
 
 #### Justificativa das Melhorias
 
@@ -3526,19 +3611,18 @@ A queda de 55% na probabilidade empírica e o aumento expressivo no tempo médio
 
 **B. Evidência estrutural das melhorias**  
 O modelo reflete as mudanças introduzidas na arquitetura:
-- Redução de `p_normal_issue` → menor chance de execução irregular.  
-- Redução de `p_issue_comp` → menor impacto quando ocorre erro.  
-- Aumento de `p_issue_remed` e `p_remed_normal` → correções automáticas mais eficientes.  
+
+- Redução de `p_normal_issue` → menor chance de execução irregular.
+- Redução de `p_issue_comp` → menor impacto quando ocorre erro.
+- Aumento de `p_issue_remed` e `p_remed_normal` → correções automáticas mais eficientes.
 
 Essas alterações tornam o sistema **preventivo e autônomo**, reduzindo a dependência de ações humanas.
 
-
 #### Limitações
 
-- O estado *Compromised* é irreversível no modelo; rollback exigiria ajustes.  
-- As probabilidades são estimadas, não calibradas em logs reais.  
+- O estado _Compromised_ é irreversível no modelo; rollback exigiria ajustes.
+- As probabilidades são estimadas, não calibradas em logs reais.
 - Horizonte limitado a 500 passos (~1,5 ano); simulações mais longas podem oferecer maior precisão.
-
 
 #### Conclusão
 
@@ -3548,7 +3632,6 @@ O modelo evidencia ganhos concretos em governança, rastreabilidade e conformida
 **Notebook Colab:**  
 Para mais detalhes sobre os cálculos, gráficos e código de simulação, acesse o notebook completo:
 [Simulação RNF-12 – Execução sem TAP aprovado (Colab)](https://colab.research.google.com/drive/1ZymPUhyoLu_pT7Y42mjCqQZS8XuEMe8Z?usp=sharing)
-
 
 ## 7.3 Simulação RNF - 03 (Rastreabilidade)
 
