@@ -235,7 +235,6 @@
       - [7.3.2.2 Cenário 11 - Controle automatizado de cronograma (TO-BE)](#7322-cenário-11---controle-automatizado-de-cronograma-to-be)
       - [7.3.2.3 Cenário 14 - Registro obrigatório / bloqueio (TO-BE)](#7323-cenário-14---registro-obrigatório--bloqueio-to-be)
   - [Conclusão final - RNF-03 (Rastreabilidade)](#conclusão-final---rnf-03-rastreabilidade)
-  - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
   - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
 - [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
@@ -3058,10 +3057,6 @@ _(Apresente a simulação do sistema novo)_
 
 **Notebook Colab:**  
 [Simulação RNF-03 – Rastreabilidade (Colab)](https://colab.research.google.com/drive/1tm95Ku1UB5PkfNQb6Vk5lEn-Uef4TX7D?usp=sharing)
-
-## 7.4 Tabela de Comparação Consolidada
-
-_(Tabela Final comparando resultados entre as simulações do sistema atual x novo)_
 
 ---
 
