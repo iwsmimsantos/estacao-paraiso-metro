@@ -2778,14 +2778,14 @@ _(Apresente a simulação do sistema novo)_
 - Cadeia de estados (Markov) - AS-IS:
 <div align="center">
 <sub>Figura 7.3.1.1.1 - Cadeia de Markov As Is - Cenário 10</sub><br>
-<img src="img/section7/asis10.png" width=50%"><br>
+<img src="img/section7/asis10.png" width=40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento
 <div align="center">
 <sub>Figura 7.3.1.1.2 - Evolução da probabilidade - Cenário 10</sub><br>
-<img src="img/section7/evolucao10.png" width="70%"><br>
+<img src="img/section7/evolucao10.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2822,14 +2822,14 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.1.2.1 - Cadeia de Markov As Is - Cenário 11</sub><br>
-<img src="img/section7/asis11.png" width="50%"><br>
+<img src="img/section7/asis11.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento:
  <div align="center">
 <sub>Figura 7.3.1.2.2 - Evolução da probabilidade - Cenário 11</sub><br>
-<img src="img/section7/evolucao11.png" width="70%"><br>
+<img src="img/section7/evolucao11.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2865,7 +2865,7 @@ _(Apresente a simulação do sistema novo)_
 - Cadeia de estados (Markov) — AS-IS:
  <div align="center">
 <sub>Figura 7.3.1.3.1 - Cadeia de Markov As Is - Cenário 14</sub><br>
-<img src="img/section7/asis14.png" width="50%"><br>
+<img src="img/section7/asis14.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2873,7 +2873,7 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.1.3.2 - Evolução de probabilidade de inconsistência</sub><br>
-<img src="img/section7/evolucao14.png" width="70%"><br>
+<img src="img/section7/evolucao14.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2912,7 +2912,7 @@ _(Apresente a simulação do sistema novo)_
 - Cadeia de estados (Markov) - TO-BE:
  <div align="center">
 <sub>Figura 7.3.2.1.2 - Cadeia de Markov TO-BE - Cenário 10</sub><br>
-<img src="img/section7/tobe10.png" width="50%"><br>
+<img src="img/section7/tobe10.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2920,7 +2920,7 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.2.1.2 - Evolução de probabilidade - Cenário 10</sub><br>
-<img src="img/section7/evolucao10.png" width="70%"><br>
+<img src="img/section7/evolucao10.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2955,14 +2955,14 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.2.2.1 - Cadeia de Markov TO-BE - Cenário 11</sub><br>
-<img src="img/section7/tobe11.png" width="50%"><br>
+<img src="img/section7/tobe11.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
 - Evolução da probabilidade de comprometimento - TO-BE:
  <div align="center">
 <sub>Figura 7.3.2.2.2 - Evolução de probabilidade - Cenário 11</sub><br>
-<img src="img/section7/evolucao11.png" width="70%"><br>
+<img src="img/section7/evolucao11.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -2997,7 +2997,7 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.2.3.1 - Cadeia de Markov TO-BE - Cenário 14</sub><br>
-<img src="img/section7/tobe10.png" width="50%"><br>
+<img src="img/section7/tobe10.png" width="40%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
@@ -3005,7 +3005,7 @@ _(Apresente a simulação do sistema novo)_
 
 <div align="center">
 <sub>Figura 7.3.2.3.2 - Evolução da probabilidade - Cenário 14</sub><br>
-<img src="img/section7/evolucao14.png" width="70%"><br>
+<img src="img/section7/evolucao14.png" width="60%"><br>
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
