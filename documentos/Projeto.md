@@ -2789,8 +2789,11 @@ _(Apresente a simulação do sistema novo)_
 <sup>Fonte: Material produzido pelos autores (2025) </sup>
 </div>
 
-**Interpretação (AS-IS)**  
-&emsp; Mesmo com um p_traceable_manual relativamente baixo (6% por passo), a combinação das demais transições faz com que quase todas as trajetórias terminem em perda de rastreabilidade em prazo curto (~53 dias). Em termos operacionais: esquecer/desalocar incorretamente acessos ou não arquivar histórico gera falha de governança em semanas.
+**Interpretação (AS-IS)**
+
+&emsp; Mesmo com um p_traceable_manual relativamente baixo (6% por passo), a ausência de automação no encerramento faz com que pequenas falhas humanas se acumulem. Isso significa que, em cerca de 7 semanas, praticamente todo o histórico do projeto corre risco de se perder ou ficar inconsistente.
+
+&emsp; Na prática, a organização perde a trilha de auditoria, não se sabe quem teve acesso, quando e o que foi encerrado de fato. Esse comportamento reforça a urgência de automatizar o encerramento e o arquivamento.
 
 ---
 
@@ -2834,7 +2837,11 @@ _(Apresente a simulação do sistema novo)_
 </div>
 
 **Interpretação (AS-IS)**  
-&emsp; Alterações manuais geram degradação gradual: a maioria das trajetórias (≈96,5%) apresenta comprometimento em horizonte estimado (~98 dias). Isso dificulta auditoria e traz risco às decisões baseadas em cronogramas divergentes.
+&emsp; Alterações manuais e falta de versionamento geram uma degradação silenciosa: os cronogramas “órfãos” passam a divergir entre si e o histórico é perdido.
+
+&emsp; Em cerca de 3 meses, 96% das execuções simuladas chegam a um ponto em que não é mais possível rastrear quem alterou o quê, nem qual versão é a correta.
+
+&emsp;Isso representa um risco direto para a tomada de decisão gerencial e compromete a governança dos projetos.
 
 ---
 
@@ -2878,7 +2885,11 @@ _(Apresente a simulação do sistema novo)_
 </div>
 
 **Interpretação (AS-IS)**  
-&emsp; É o pior caso: perda de rastreabilidade consolida muito rápido (≈37 dias) em praticamente todas as simulações. Isso evidencia a criticidade de forçar registro/justificativa antes de aplicar mudanças.
+&emsp; Este é o cenário mais crítico: sem obrigatoriedade de registro, mudanças de alto impacto ocorrem sem rastreamento, levando à perda quase total da trilha de auditoria em pouco mais de um mês.
+
+&emsp; O modelo mostra que, mesmo pequenas taxas de omissão (~8%) já bastam para que todo o histórico fique comprometido.
+
+&emsp; Em termos de controle interno, significa que decisões baseadas em registros podem ser invalidadas por falta de comprovação.
 
 ---
 
@@ -2926,7 +2937,11 @@ _(Apresente a simulação do sistema novo)_
 
 **Interpretação (TO-BE)**
 
-&emsp; Automatizar encerramento reduz drasticamente o risco empírico (≈3,7%) e aumenta o tempo médio até falha para ≈186 dias. Em prática: automatização mitiga quase todas as causas operacionais de perda de rastreabilidade no encerramento.
+&emsp; A automação do encerramento passa a garantir que, ao final do ciclo, todos os artefatos sejam arquivados, os acessos sejam removidos e o histórico fique preservado de forma padronizada. Isso elimina o principal ponto de falha humano no encerramento e transforma o processo em transacional e auditável.
+
+&emsp; Resultados práticos: a probabilidade empírica de perda de rastreabilidade cai para cerca de 3,7% (0.03675) e o tempo médio até falha sobe para aproximadamente 186 dias (185.83).
+
+&emsp; Impacto operacional: na prática, isso significa que casos de perda de trilha tornam-se raros e que, quando ocorrem, há muito mais tempo (janela operacional) para detectar e corrigir antes que a falha se consolide. O ganho direto é conformidade reforçada, redução de risco legal/contratual e menor custo de auditoria forense.
 
 ---
 
@@ -2968,7 +2983,11 @@ _(Apresente a simulação do sistema novo)_
 
 **Interpretação (TO-BE)**
 
-&emsp; Versionamento e bloqueios reduzem a probabilidade empírica para ~5,16% e aumentam muito o tempo médio até falha. O sistema torna-se auditável e permite reconstruir a linhagem dos dados.
+&emsp; Com versionamento automático e logs por alteração (autor, timestamp, justificativa), o sistema elimina a ocorrência de versões órfãs e garante que qualquer alteração seja reaproveitável e auditável. O versionamento centralizado também facilita replays e comparações entre versões.
+
+&emsp; Resultados práticos: a probabilidade empírica de perda de rastreabilidade reduz para cerca de 5.16% (0.051583) e o tempo médio até falha aumenta para cerca de 182 dias (182.28).
+
+&emsp; Impacto operacional: decisões baseadas em cronogramas passam a ter respaldo verificável, há menos retrabalho e menos disputas sobre “qual é a versão correta”. A governança melhora porque o PMO consegue rastrear quem mudou o quê e quando, reduzindo riscos de planejamento e execução.
 
 ---
 
@@ -3011,7 +3030,11 @@ _(Apresente a simulação do sistema novo)_
 
 **Interpretação (TO-BE)**
 
-&emsp; Forçar registro antes de alterar reduz a probabilidade empírica de perda para ~8,9% e aumenta o tempo médio até falha para ≈183 dias. Resultado: histórico preservado e conformidade reforçada.
+&emsp; Ao exigir registro e justificativa antes de permitir a execução de mudanças, o sistema transforma cada alteração em uma transação com prova e responsabilidade. O bloqueio pró-ativo impede que mudanças de impacto aconteçam sem trilha documental.
+
+&emsp; Resultados práticos: forçar o registro antes de alterar reduz a probabilidade empírica de perda para aproximadamente 8.9% (0.0890) e aumenta o tempo médio até falha para cerca de 183 dias (183.21).
+
+&emsp; Impacto operacional: o histórico fica preservado e a conformidade é reforçada, auditorias tornam-se diretas, não forenses. Além disso, essa política melhora a cultura de governança: equipes passam a justificar decisões e a cadeia de responsabilidade fica clara, reduzindo litígios e retrabalhos.
 
 ---
 
@@ -3029,7 +3052,7 @@ _(Apresente a simulação do sistema novo)_
 
 - As automações propostas (ingestão controlada, correlationId, validação de hash, versionamento e bloqueios) **reduzem dramaticamente** a probabilidade de perda de rastreabilidade em todos os cenários.
 - O **tempo médio até comprometimento** aumenta de dezenas de dias para centenas ou milhares (analítico), o que significa janela maior para detecção e remediação.
-- Apesar de o modelo analítico apresentar B=1 em horizonte infinito (por modelagem do estado absorvente), as métricas empíricas sobre o horizonte simulado (1000 passos) são as mais relevantes para priorização operacional.
+- Embora o modelo analítico mostre probabilidade igual a 1 no longo prazo, pois o estado “Comprometido” é absorvente e, com tempo infinito, todo sistema acabaria chegando nele, esse resultado é apenas teórico. Na prática, o que realmente interessa é o que acontece em um período limitado, como o que foi simulado (1000 passos). Essas métricas empíricas representam melhor o comportamento real do sistema e servem como base mais confiável para decisões e melhorias operacionais.
 
 ---
 
