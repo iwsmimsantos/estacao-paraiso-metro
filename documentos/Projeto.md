@@ -90,9 +90,9 @@
       - [**4. Escalabilidade e Performance**](#4-escalabilidade-e-performance)
 - [4. Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
   - [4.1 Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
-    - [**RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**](#rnf-01-rastreabilidade--prioridade-alta)
-    - [**RNF-02: Segurança**  **PRIORIDADE ALTA**](#rnf-02-segurança--prioridade-alta)
-    - [**RNF-03: Escalabilidade**  **PRIORIDADE ALTA**](#rnf-03-escalabilidade--prioridade-alta)
+    - [**RNF-01: Rastreabilidade** **PRIORIDADE ALTA**](#rnf-01-rastreabilidade-prioridade-alta)
+    - [**RNF-02: Segurança** **PRIORIDADE ALTA**](#rnf-02-segurança-prioridade-alta)
+    - [**RNF-03: Escalabilidade** **PRIORIDADE ALTA**](#rnf-03-escalabilidade-prioridade-alta)
   - [4.2 Justificativas para RNFs](#42-justificativas-para-rnfs)
     - [4.2.1 Controle de Riscos e Mitigação](#421-controle-de-riscos-e-mitigação)
     - [4.2.2 Argumentação por RNF](#422-argumentação-por-rnf)
@@ -197,10 +197,13 @@
       - [A. Entrada](#a-entrada-2)
       - [B. Saída](#b-saída-2)
       - [C. Controle do RNF](#c-controle-do-rnf-2)
-    - [6.2.3 RNF-03 — ](#623-rnf-03--)
-      - [A. Entrada](#a-entrada-3)
-      - [B. Saída](#b-saída-3)
-      - [C. Controle do RNF](#c-controle-do-rnf-3)
+    - [6.2.3 RNF-03 — Rastreabilidade](#623-rnf-03--rastreabilidade)
+      - [A. Entrada — Dados e Transações de Entrada](#a-entrada--dados-e-transações-de-entrada)
+        - [Descrição das Entradas](#descrição-das-entradas)
+      - [B. Saída — Registros de Transações Corretas e Inadequadas](#b-saída--registros-de-transações-corretas-e-inadequadas-1)
+        - [Descrição das Saídas](#descrição-das-saídas)
+      - [C. Controle do RNF — Mecanismos e Táticas de Controle](#c-controle-do-rnf--mecanismos-e-táticas-de-controle)
+        - [Descrição dos Controles](#descrição-dos-controles)
   - [6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)](#63-táticas-arquiteturais-e-componentes-adotados-sistema-novo)
     - [6.3.1 RNF-01 — ](#631-rnf-01--)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-3)
@@ -210,22 +213,28 @@
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-4)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-4)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-5)
-    - [6.3.3 RNF-03 — ](#633-rnf-03--)
+    - [6.3.3 RNF-03 — Rastreabilidade](#633-rnf-03--rastreabilidade)
       - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-5)
       - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-5)
       - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-6)
   - [6.4 Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
- - [7. Simulação do Sistema](#7-simulação-do-sistema)
-   - [7.1 Simulação RNF - 01](#71-simulação-rnf---01)
-     - [7.1.1 Simulação Sistema: Atual](#711-simulação-sistema-atual)
-     - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
-   - [7.2 Simulação RNF - 02](#72-simulação-rnf---02)
-     - [7.2.1 Simulação Sistema: Atual](#721-simulação-sistema-atual)
-     - [7.2.2 Simulação Sistema: Novo](#722-simulação-sistema-novo)
-   - [7.3 Simulação RNF - 03](#73-simulação-rnf---03)
-     - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
-     - [7.3.2 Simulação Sistema: Novo](#732-simulação-sistema-novo)
-   - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
+- [7. Simulação do Sistema](#7-simulação-do-sistema)
+  - [7.1 Simulação RNF - 01](#71-simulação-rnf---01)
+    - [7.1.1 Simulação Sistema: Atual](#711-simulação-sistema-atual)
+    - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
+  - [7.2 Simulação RNF - 02](#72-simulação-rnf---02)
+    - [7.2.1 Simulação Sistema: Atual](#721-simulação-sistema-atual)
+    - [7.2.2 Simulação Sistema: Novo](#722-simulação-sistema-novo)
+  - [7.3 Simulação RNF - 03 (Rastreabilidade)](#73-simulação-rnf---03-rastreabilidade)
+    - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
+      - [7.3.1.1 Cenário 10 - Encerramento manual de projeto (AS-IS)](#7311-cenário-10---encerramento-manual-de-projeto-as-is)
+      - [7.3.1.2 Cenário 11 - Alterações sem controle de cronograma (AS-IS)](#7312-cenário-11---alterações-sem-controle-de-cronograma-as-is)
+      - [7.3.1.3 Cenário 14 - Registro de mudança manual (AS-IS)](#7313-cenário-14---registro-de-mudança-manual-as-is)
+    - [7.3.2 Simulação Sistema: Novo](#732-simulação-sistema-novo)
+      - [7.3.2.1 Cenário 10 - Encerramento automático do projeto (TO-BE)](#7321-cenário-10---encerramento-automático-do-projeto-to-be)
+      - [7.3.2.2 Cenário 11 - Controle automatizado de cronograma (TO-BE)](#7322-cenário-11---controle-automatizado-de-cronograma-to-be)
+      - [7.3.2.3 Cenário 14 - Registro obrigatório / bloqueio (TO-BE)](#7323-cenário-14---registro-obrigatório--bloqueio-to-be)
+  - [7.4 Tabela de Comparação Consolidada](#74-tabela-de-comparação-consolidada)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
   - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
 - [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
@@ -924,7 +933,7 @@ Com base na análise da Seção 3.1, o sistema atual apresenta **ausência crít
 
 Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram selecionados **3 RNFs críticos**:
 
-#### **RNF-01: Rastreabilidade**  **PRIORIDADE ALTA**
+#### **RNF-01: Rastreabilidade** **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -941,7 +950,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Integridade**    | 0%        | 100% (hash) | Não repúdio          |
 | **Compliance**     | Violado   | Atendido    | Requisito legal      |
 
-#### **RNF-02: Segurança**  **PRIORIDADE ALTA**
+#### **RNF-02: Segurança** **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -958,7 +967,7 @@ Com base nos **business drivers** (Seção 2.1.5) e na análise de riscos, foram
 | **Criptografia**     | Básica       | End-to-end      | Proteção integral |
 | **LGPD**             | Não atendida | Atendida        | Conformidade      |
 
-#### **RNF-03: Escalabilidade**  **PRIORIDADE ALTA**
+#### **RNF-03: Escalabilidade** **PRIORIDADE ALTA**
 
 **Justificativa:**
 
@@ -1294,12 +1303,12 @@ A tabela a seguir resume as principais vulnerabilidades identificadas no sistema
 
 **Tabela — Entradas que exigem rastreabilidade (RNF-03)**
 
-| Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
-| :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
-| Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
-| Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
-| Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
-| Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
+| Entrada/Dado                                              | Origem/Ferramenta        | Sentido (por que importa)                                                                                | Estado atual | Campos mínimos de log                                                                                                                                                                   | Observações/Risco                                                                                |
+| :-------------------------------------------------------- | :----------------------- | :------------------------------------------------------------------------------------------------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas) | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação`                                      | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência. |
+| Brainstorming e mapa de benefícios                        | Miro (Boards)            | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                               | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`                                           | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.            |
+| Designação/atribuição de responsável de projeto           | SharePoint/Processo PMO  | Define responsabilidades e autoridade; impacto em accountability e não repúdio                           | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                                                            | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.              |
+| Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint  | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                 |
 
 #### B. Saída
 
@@ -2288,27 +2297,30 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 #### A. Entrada
 
 **Tipos de entrada**:
-  - Ações de usuário vindas de UI (SharePoint forms, Miro hooks): criação/atualização de itens, anexos, solicitações de workflow.
-  - Jobs/integrações programadas (sincronizações Power BI, exportações, ingestões de planilhas).
-  - Webhooks/automations vindos de Miro ou de ferramentas externas.
+
+- Ações de usuário vindas de UI (SharePoint forms, Miro hooks): criação/atualização de itens, anexos, solicitações de workflow.
+- Jobs/integrações programadas (sincronizações Power BI, exportações, ingestões de planilhas).
+- Webhooks/automations vindos de Miro ou de ferramentas externas.
 
 **Origens**:
-  - Sharepoint 
-  - PowerBI (refresh requests / queries read-only)
-  - Miro (webhooks)
-  - Integradores externos
 
-**Frequência/Volumetria**: 
-  - Usuários ativos: 40–60 em ciclos mensais.
-  - Padrão operacional: até 5–10 _requests_ por usuário/hora durante pico de atividade colaborativa.
-  - Pico aceitável: 200–300 reqs/min (~3–5 req/s) para garantir margem; dimensionamento automático lidará com variações. 
-  - Picos curtos de até 60s a 5 min com ampliação automática (_auto-scale_) para o dobro da taxa média esperada.
-  - Se necessário, modo _burst_: filas absorvem _bursts_ maiores sem perda de dados.
+- Sharepoint
+- PowerBI (refresh requests / queries read-only)
+- Miro (webhooks)
+- Integradores externos
+
+**Frequência/Volumetria**:
+
+- Usuários ativos: 40–60 em ciclos mensais.
+- Padrão operacional: até 5–10 _requests_ por usuário/hora durante pico de atividade colaborativa.
+- Pico aceitável: 200–300 reqs/min (~3–5 req/s) para garantir margem; dimensionamento automático lidará com variações.
+- Picos curtos de até 60s a 5 min com ampliação automática (_auto-scale_) para o dobro da taxa média esperada.
+- Se necessário, modo _burst_: filas absorvem _bursts_ maiores sem perda de dados.
 
 #### B. Saída
 
 **Registros (persistidos em DB de auditoria)**:
-  
+
 - **Transação bem-sucedida (SUCCESS)**: `tx_id`, `origem`, `endpoint`, `payload_ref`, `status=SUCCESS`, `timestamp_in`, `timestamp_out`, `latency_ms`, `worker_id`, `retries`, `output_ref`.
 - **Transação reprocessada com sucesso (RETRIED_SUCCESS)**: Mesmos campos + `retry_count`, `first_failure_timestamp`, `recovery_path (auto/manual)`.
 - **Transação pendente/na fila (PENDING)**: `tx_id`, `origin`, `queue_name`, `enqueue_time`, `priority`.
@@ -2316,39 +2328,41 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 - **Transação movida para Dead Letter Queue (DLQ/POISON)**: `tx_id`, `origin`, `failure_reason`, `attempts`, `dlq_timestamp`, `sample_payload_ref`.
 
 **Melhorias propostas**:
-  - **Rastreabilidade completa**: cada transação fica identificável (`tx_id`) e com histórico de tentativas. Hoje, fluxos falhos “desaparecem” ou ficam sem rastreio; no novo sistema tudo fica auditado.
-  - **Detecção de padrão de falhas**: logs estruturados permitem agrupar por reason_code (ex.: SharePoint Throttling) e tomar medidas (caching, backoff).
-  - **Métricas acionáveis**: taxas de REJECTED por reason_code = indicador direto de gargalo ou política inadequada.
-  - **Sem perda de dados**: mensagens rejeitadas por rate limiting ficam registradas e reprocessáveis — hoje muitas dependem de intervenção manual.
+
+- **Rastreabilidade completa**: cada transação fica identificável (`tx_id`) e com histórico de tentativas. Hoje, fluxos falhos “desaparecem” ou ficam sem rastreio; no novo sistema tudo fica auditado.
+- **Detecção de padrão de falhas**: logs estruturados permitem agrupar por reason_code (ex.: SharePoint Throttling) e tomar medidas (caching, backoff).
+- **Métricas acionáveis**: taxas de REJECTED por reason_code = indicador direto de gargalo ou política inadequada.
+- **Sem perda de dados**: mensagens rejeitadas por rate limiting ficam registradas e reprocessáveis — hoje muitas dependem de intervenção manual.
 
 #### C. Controle do RNF
 
 **Camadas e táticas envolvidas**:
 
-1. **_API Gateway_ / _Azure API Management_**: 
-    - Centraliza todas as chamadas externas - autenticação (_Azure AD_), _rate limiting_ por _subscription/key / caller_, _quotas_ por cliente, _policies_ de _transformation_.
-    - Rejeição por excesso é registrada com `reason_code RATE_LIMIT` e métricas incrementadas.
+1. **_API Gateway_ / _Azure API Management_**:
+   - Centraliza todas as chamadas externas - autenticação (_Azure AD_), _rate limiting_ por _subscription/key / caller_, _quotas_ por cliente, _policies_ de _transformation_.
+   - Rejeição por excesso é registrada com `reason_code RATE_LIMIT` e métricas incrementadas.
 2. **_Queueing_ (_Azure Service Bus_)** — desacoplamento:
-    - Todas as transações que exigem integração com _SharePoint/Power BI_ são enqueueadas. _Workers_ consomem a fila com _backoff_ e _concurrency control_.
-    - _Rate Limiting_ e _Throttling_ do SharePoint são mitigados: fila controla taxa de saída.
+   - Todas as transações que exigem integração com _SharePoint/Power BI_ são enqueueadas. _Workers_ consomem a fila com _backoff_ e _concurrency control_.
+   - _Rate Limiting_ e _Throttling_ do SharePoint são mitigados: fila controla taxa de saída.
 3. **_Workers_ (_Azure Functions_)**:
-    - Processamento assíncrono com _retry_ automático (exponencial + _jitter_) e _circuit-breaker logic_.
-    - _Retries_ limitados; mensagens que excedem attempts vão para DLQ.
+   - Processamento assíncrono com _retry_ automático (exponencial + _jitter_) e _circuit-breaker logic_.
+   - _Retries_ limitados; mensagens que excedem attempts vão para DLQ.
 4. **_Retries_ e _Dead-Letter Queues_**:
-    - Retry automático parametrizado (ex.: 3 tentativas com _backoff_) e DLQs para tratamento manual ou _reprocessing_.
+   - Retry automático parametrizado (ex.: 3 tentativas com _backoff_) e DLQs para tratamento manual ou _reprocessing_.
 5. **Persistência de eventos + _transaction log_ (Azure SQL + Blob)**
-    - Log central com status e _payload refs_.
+   - Log central com status e _payload refs_.
 6. **Operações/Interface manual**:
-    - Painel de reprocessamento: mostra DLQ, permite _requeue_ com correção, priorização manual e export de incidentes.
+   - Painel de reprocessamento: mostra DLQ, permite _requeue_ com correção, priorização manual e export de incidentes.
 7. **Políticas de _shedding_ e _circuit breaker_**:
-    - Em caso de sobrecarga persistente, o _gateway_ devolve errors controlados (HTTP 429) e ativa _shedding_ para preservar disponibilidade.
+   - Em caso de sobrecarga persistente, o _gateway_ devolve errors controlados (HTTP 429) e ativa _shedding_ para preservar disponibilidade.
 8. **Cache**:
-    - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
+   - Cache (Redis) para leituras frequentes / idempotência e reduzir chamadas ao SharePoint.
 
 **Eliminação das vulnerabilidades anteriores**:
-  - **Dependência de _UI/Power Automate_**: agora as integrações passam por APIs controladas; o uso direto e massivo da _UI/Power Automate_ para integrações críticas é reduzido.
-  - **Sem retry/sem fila antes**: agora existe fila + _retries_ + DLQ → elimina perda de transações por _throttling_.
-  - **Controle de tráfego**: _API Management_ + _Service Bus_ + _Workers_ permitem aplicar _Rate Limiting_ e balanceamento do processamento, reduzindo _Throttling_ do SharePoint.
+
+- **Dependência de _UI/Power Automate_**: agora as integrações passam por APIs controladas; o uso direto e massivo da _UI/Power Automate_ para integrações críticas é reduzido.
+- **Sem retry/sem fila antes**: agora existe fila + _retries_ + DLQ → elimina perda de transações por _throttling_.
+- **Controle de tráfego**: _API Management_ + _Service Bus_ + _Workers_ permitem aplicar _Rate Limiting_ e balanceamento do processamento, reduzindo _Throttling_ do SharePoint.
 
 ---
 
@@ -2359,62 +2373,62 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 &nbsp; O sistema novo de gerenciamento de projetos do Metrô de São Paulo deve controlar rigorosamente os dados e transações de entrada, assegurando confiabilidade, confidencialidade e integridade desde o ponto inicial de acesso. Detalhes importantes incluem:
 
 - Tentativas de Login:
-&nbsp;Todas as tentativas de autenticação, incluindo sucesso, falhas, bloqueios temporários e uso de MFA, serão registradas. O sistema preverá limites máximos para tentativas mal-sucedidas para mitigar ataques de força bruta e evitar bloqueios indevidos. Controles adaptativos poderão bloquear acessos de localizações ou dispositivos suspeitos.
+  &nbsp;Todas as tentativas de autenticação, incluindo sucesso, falhas, bloqueios temporários e uso de MFA, serão registradas. O sistema preverá limites máximos para tentativas mal-sucedidas para mitigar ataques de força bruta e evitar bloqueios indevidos. Controles adaptativos poderão bloquear acessos de localizações ou dispositivos suspeitos.
 
 - Chamadas Autenticadas:
-&nbsp;APIs do sistema aceitarão somente chamadas autenticadas com tokens válidos emitidos após autorização adequada. Tokens terão validade limitada e sofrerão renovação e revogação automatizadas em caso de anomalias.
+  &nbsp;APIs do sistema aceitarão somente chamadas autenticadas com tokens válidos emitidos após autorização adequada. Tokens terão validade limitada e sofrerão renovação e revogação automatizadas em caso de anomalias.
 
 - Volume de Queries e Usuários:
-&nbsp;O sistema é dimensionado para suportar, com baixa latência, um volume médio de 40 a 60 usuários simultâneos em operação contínua e picos até 100 simultâneos, sem perda de desempenho ou degradação dos controles de segurança. As consultas são sujeitas a limites para evitar negação de serviço por abuso.
+  &nbsp;O sistema é dimensionado para suportar, com baixa latência, um volume médio de 40 a 60 usuários simultâneos em operação contínua e picos até 100 simultâneos, sem perda de desempenho ou degradação dos controles de segurança. As consultas são sujeitas a limites para evitar negação de serviço por abuso.
 
 - Validação e Verificação de Dados:
-&nbsp;Toda inserção ou modificação em documentos, cronogramas e formulários passa por validações automáticas para garantir formatos corretos, integridade semântica e ausência de alterações não autorizadas, incluindo identificação e bloqueio de transações suspeitas.
+  &nbsp;Toda inserção ou modificação em documentos, cronogramas e formulários passa por validações automáticas para garantir formatos corretos, integridade semântica e ausência de alterações não autorizadas, incluindo identificação e bloqueio de transações suspeitas.
 
 - Detecção Precoce e Bloqueio de Acessos Indevidos:
-&nbsp;Mecanismos proativos atuarão para identificar padrões de comportamento anômalo já nas fases iniciais (ex.: tentativas sequenciais de acesso a recursos não autorizados), garantindo medidas instantâneas de bloqueio, isolamento e alerta.
+  &nbsp;Mecanismos proativos atuarão para identificar padrões de comportamento anômalo já nas fases iniciais (ex.: tentativas sequenciais de acesso a recursos não autorizados), garantindo medidas instantâneas de bloqueio, isolamento e alerta.
 
 #### B. Saída
 
 &nbsp;A saída do sistema novo demonstra ganhos significativos em segurança e rastreabilidade, visíveis por meio dos registros produzidos:
 
 - Logs Detalhados e Imutáveis:
-&nbsp;Todas as ações realizadas dentro do sistema, desde autenticações até modificações em documentos e uso de agentes de IA, geram entradas de log criptografadas, armazenadas em local seguro e protegido contra adulterações. Estes logs suportam auditorias internas e externas com total transparência.
+  &nbsp;Todas as ações realizadas dentro do sistema, desde autenticações até modificações em documentos e uso de agentes de IA, geram entradas de log criptografadas, armazenadas em local seguro e protegido contra adulterações. Estes logs suportam auditorias internas e externas com total transparência.
 
 - Transações Fraudulentas/Bloqueadas:
-&nbsp;Eventos como tentativas de login não autorizadas, ataques de negação de serviço, uso de credenciais inválidas e acessos a áreas restritas são categorizados com detalhamento suficiente para investigação posterior e possibilitam bloqueio automático e revogação imediata de sessões ou permissões.
+  &nbsp;Eventos como tentativas de login não autorizadas, ataques de negação de serviço, uso de credenciais inválidas e acessos a áreas restritas são categorizados com detalhamento suficiente para investigação posterior e possibilitam bloqueio automático e revogação imediata de sessões ou permissões.
 
 - Correlação e Contextualização de Eventos:
-&nbsp;O sistema integra dados de múltiplos módulos (portal usuário, agentes de IA, base documental) permitindo cruzar eventos para identificar tentativas multifacetadas de comprometimento, reforçando a segurança por meio da análise combinada.
+  &nbsp;O sistema integra dados de múltiplos módulos (portal usuário, agentes de IA, base documental) permitindo cruzar eventos para identificar tentativas multifacetadas de comprometimento, reforçando a segurança por meio da análise combinada.
 
 - Indicadores de Segurança:
-&nbsp;Relatórios e dashboards em tempo real exibem métricas sobre volumes de acesso, tentativas bloqueadas, status das sessões e padrões de uso, permitindo que equipes de segurança ajustem políticas e verifiquem a eficácia dos controles implantados.
+  &nbsp;Relatórios e dashboards em tempo real exibem métricas sobre volumes de acesso, tentativas bloqueadas, status das sessões e padrões de uso, permitindo que equipes de segurança ajustem políticas e verifiquem a eficácia dos controles implantados.
+
 #### C. Controle do RNF
 
 &nbsp;O controle do requisito RNF-02 assegura a robustez da segurança por meio de um ecossistema integrado de políticas, mecanismos técnicos e procedimentos operacionalizados:
 
 - Políticas de Controle de Acesso:
-&nbsp;Estabelecem regras claras para concessão, revisão e revogação de acessos, com segregação de funções e perímetros definidos, compatíveis com a criticidade dos dados e operações. Revisões periódicas garantem alinhamento atempado às mudanças organizacionais e de perfil.
+  &nbsp;Estabelecem regras claras para concessão, revisão e revogação de acessos, com segregação de funções e perímetros definidos, compatíveis com a criticidade dos dados e operações. Revisões periódicas garantem alinhamento atempado às mudanças organizacionais e de perfil.
 
 - Autenticação Robusta e Autorização Dinâmica:
-&nbsp;Implementação obrigatória de MFA para acessos sensíveis, aplicação rigorosa de RBAC e ABAC, com adaptações contextuais em tempo real para ajuste fino das permissões.
+  &nbsp;Implementação obrigatória de MFA para acessos sensíveis, aplicação rigorosa de RBAC e ABAC, com adaptações contextuais em tempo real para ajuste fino das permissões.
 
 - Criptografia End-to-End:
-&nbsp;Dados são protegidos durante todo o ciclo - desde a transmissão via canais TLS até o armazenamento com chaves gerenciadas, neutralizando riscos de interceptação, acesso físico indevido e vazamento.
+  &nbsp;Dados são protegidos durante todo o ciclo - desde a transmissão via canais TLS até o armazenamento com chaves gerenciadas, neutralizando riscos de interceptação, acesso físico indevido e vazamento.
 
 - Monitoramento Contínuo e Alarmes:
-&nbsp;Sistemas de SIEM recebem inputs contínuos dos módulos de registro, análise e alerta, assegurando resposta rápida a incidentes, com workflows automatizados para investigação, bloqueio e mitigação.
+  &nbsp;Sistemas de SIEM recebem inputs contínuos dos módulos de registro, análise e alerta, assegurando resposta rápida a incidentes, com workflows automatizados para investigação, bloqueio e mitigação.
 
 - Processos e Workflows de Aprovação:
-&nbsp;Implementação de procedimentos sistêmicos para validação formal de alterações em documentos e dados sensíveis, garantindo que somente ações aprovadas sejam efetivadas no sistema.
+  &nbsp;Implementação de procedimentos sistêmicos para validação formal de alterações em documentos e dados sensíveis, garantindo que somente ações aprovadas sejam efetivadas no sistema.
 
 - Capacitação e Sensibilização:
-&nbsp;Incluem treinamentos periódicos aos usuários para reforçar boas práticas, reconhecer tentativas de fraude e incentivar o reporte imediato de incidentes, fechando o ciclo de governança com foco no fator humano.
+  &nbsp;Incluem treinamentos periódicos aos usuários para reforçar boas práticas, reconhecer tentativas de fraude e incentivar o reporte imediato de incidentes, fechando o ciclo de governança com foco no fator humano.
 
 - Auditorias Regulares e Testes de Segurança:
-&nbsp;Revisões de conformidade e testes periódicos (pentests e monitoramento de vulnerabilidades) garantem a manutenção dos níveis de segurança conforme requisitos legais e técnicos.
+  &nbsp;Revisões de conformidade e testes periódicos (pentests e monitoramento de vulnerabilidades) garantem a manutenção dos níveis de segurança conforme requisitos legais e técnicos.
 
 &nbsp;Dessa maneira, o sistema novo supera as fragilidades de segurança do modelo atual, oferecendo um ambiente confiável, auditável e resiliente, fundamental para a governança eficaz dos projetos do Metrô de São Paulo.
-
 
 ### 6.2.3 RNF-03 — Rastreabilidade
 
@@ -2434,18 +2448,18 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 &emsp; A ausência de ponto único de entrada e a dependência de inserções manuais, principais vulnerabilidades do AS-IS, são eliminadas. Agora, toda transação é auditável e validada sistemicamente, permitindo contabilizar tanto transações corretas quanto tentativas de inserção não conformes.
 
- - **Transações de Entrada:** Toda criação/edição/aprovação passa pela borda controlada (API de Ingestão/Portal autenticado), com autenticação, validação de contrato e geração de trilha no momento da entrada.
- - **Transação Crítica para Auditoria:** A primeira gravação do evento de negócio no `audit log` imutável, com `correlationId` e `payloadHash`, é o ponto de verdade para toda a trilha subsequente. (Termos podem ser alterados).
- - **Vulnerabilidade:** Em cenários excepcionais de importação de legado, falhas temporárias de conectores podem exigir reprocesso; o evento é colocado em quarentena com justificativa e não altera o dado de negócio até regularização.
+- **Transações de Entrada:** Toda criação/edição/aprovação passa pela borda controlada (API de Ingestão/Portal autenticado), com autenticação, validação de contrato e geração de trilha no momento da entrada.
+- **Transação Crítica para Auditoria:** A primeira gravação do evento de negócio no `audit log` imutável, com `correlationId` e `payloadHash`, é o ponto de verdade para toda a trilha subsequente. (Termos podem ser alterados).
+- **Vulnerabilidade:** Em cenários excepcionais de importação de legado, falhas temporárias de conectores podem exigir reprocesso; o evento é colocado em quarentena com justificativa e não altera o dado de negócio até regularização.
 
 **Tabela — Entradas que exigem rastreabilidade (RNF-03) — Itens numerados**
 
-| Nº | Entrada/Dado                                              | Origem/Ferramenta          | Sentido (por que importa)                                                                                 | Estado atual | Campos mínimos de log                                                                                                 | Observações/Risco                                                                                  |
-| :-- | :-------------------------------------------------------- | :------------------------- | :-------------------------------------------------------------------------------------------------------- | :----------- | :--------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
-| 1  | Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas)   | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação` | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência.    |
-| 2  | Brainstorming e mapa de benefícios                         | Miro (Boards)              | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                                | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`       | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.              |
-| 3  | Designação/atribuição de responsável de projeto            | SharePoint/Processo PMO    | Define responsabilidades e autoridade; impacto em accountability e não repúdio                            | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                        | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.                |
-| 4  | Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint    | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                   |
+| Nº  | Entrada/Dado                                              | Origem/Ferramenta        | Sentido (por que importa)                                                                                | Estado atual | Campos mínimos de log                                                                                                                                                                   | Observações/Risco                                                                                |
+| :-- | :-------------------------------------------------------- | :----------------------- | :------------------------------------------------------------------------------------------------------- | :----------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------- |
+| 1   | Documentos assinados por projeto (~10.000/projeto)        | SharePoint (Bibliotecas) | Prova de criação, assinatura e versionamento de artefatos críticos (TAP, cronograma, atas, riscos etc.)  | Sem log      | `projetoId`, `documentoId`, `título`, `tipo`, `ação` (criar/assinar/atualizar), `usuárioId`, `timestamp`, `versão`, `hashConteúdo`, `idCorrelação`                                      | Não há vínculo com a fonte original (Miro/Excel); impossível validar integridade e proveniência. |
+| 2   | Brainstorming e mapa de benefícios                        | Miro (Boards)            | Origem ideacional dos requisitos/benefícios que alimenta artefatos formais                               | Sem log      | `projetoId`, `miroBoardId`, `itemId`, `ação` (criar/editar/exportar), `usuárioId`, `timestamp`, `snapshotHash`, `exportJobId`, `idCorrelação`                                           | Sem trilha integrada; exportações não são correlacionadas ao que chega ao SharePoint.            |
+| 3   | Designação/atribuição de responsável de projeto           | SharePoint/Processo PMO  | Define responsabilidades e autoridade; impacto em accountability e não repúdio                           | Sem log      | `projetoId`, `responsávelId`, `atribuídoPorId`, `ação` (designar/redistribuir), `timestamp`, `justificativa`, `idCorrelação`                                                            | Mudanças ficam como edição de lista; sem trilha imutável de quem, quando e por quê.              |
+| 4   | Transferência Miro/Excel → SharePoint (transação crítica) | Miro/Excel → SharePoint  | Ponto de entrada oficial no sistema de registro; precisa garantir integridade e proveniência do conteúdo | Sem log      | `projetoId`, `fonte` (Miro/Excel), `origemItemId`, `destinoListaId`, `destinoItemId`, `ação` (inserir/atualizar), `usuárioId`, `timestamp`, `hashOrigem`, `hashDestino`, `idCorrelação` | Hoje é "caixa‑preta"; ausência de `idCorrelação` impede auditoria ponta a ponta.                 |
 
 #### B. Saída — Registros de Transações Corretas e Inadequadas
 
@@ -2453,17 +2467,17 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 ##### Descrição das Saídas
 
-| Tipo de Transação     | Critério de Classificação                                 | Evidência de Rastreabilidade                    | Destino / Registro                          | Observações                      |
-| :-------------------- | :-------------------------------------------------------- | :---------------------------------------------- | :------------------------------------------ | :------------------------------- |
-| Transação Correta     | ID de correlação válido e ciclo de vida completo          | Log completo da ingestão, transformação e saída | Data Lake / SharePoint com versão auditável | Dado confiável e rastreável      |
-| Transação Inadequada  | Ausência de ID de correlação ou divergência de hash       | Alerta de inconsistência no monitoramento       | Registro marcado como “não rastreável”      | Requer validação manual pelo PMO |
-| Transação Fraudulenta | Alteração não autorizada / fonte desconhecida             | Alerta crítico e bloqueio automático            | Log imutável e notificação a segurança       | Ação investigativa obrigatória   |
+| Tipo de Transação     | Critério de Classificação                           | Evidência de Rastreabilidade                    | Destino / Registro                          | Observações                      |
+| :-------------------- | :-------------------------------------------------- | :---------------------------------------------- | :------------------------------------------ | :------------------------------- |
+| Transação Correta     | ID de correlação válido e ciclo de vida completo    | Log completo da ingestão, transformação e saída | Data Lake / SharePoint com versão auditável | Dado confiável e rastreável      |
+| Transação Inadequada  | Ausência de ID de correlação ou divergência de hash | Alerta de inconsistência no monitoramento       | Registro marcado como “não rastreável”      | Requer validação manual pelo PMO |
+| Transação Fraudulenta | Alteração não autorizada / fonte desconhecida       | Alerta crítico e bloqueio automático            | Log imutável e notificação a segurança      | Ação investigativa obrigatória   |
 
 &emsp; Como benefício, passa a ser possível demonstrar, de forma objetiva, a melhoria de rastreabilidade em relação ao sistema anterior, onde não havia diferenciação entre dados válidos e dados sem origem conhecida.
 
- - **Transações Corretas (Nominais):** A saída traz vínculo explícito ao evento de origem, versão do registro e histórico de transformações, permitindo navegação de linhagem até o relatório.
- - **Transação Crítica para Auditoria:** A publicação da mudança no repositório de domínio com versionamento e a propagação do `correlationId` aos artefatos analíticos consolidam a trilha ponta a ponta.
- - **Vulnerabilidade:** Possíveis perdas de correlação em integrações de terceiros são tratadas por detecção e enriquecimento posterior; enquanto não resolvidas, as saídas são marcadas como não rastreáveis.
+- **Transações Corretas (Nominais):** A saída traz vínculo explícito ao evento de origem, versão do registro e histórico de transformações, permitindo navegação de linhagem até o relatório.
+- **Transação Crítica para Auditoria:** A publicação da mudança no repositório de domínio com versionamento e a propagação do `correlationId` aos artefatos analíticos consolidam a trilha ponta a ponta.
+- **Vulnerabilidade:** Possíveis perdas de correlação em integrações de terceiros são tratadas por detecção e enriquecimento posterior; enquanto não resolvidas, as saídas são marcadas como não rastreáveis.
 
 #### C. Controle do RNF — Mecanismos e Táticas de Controle
 
@@ -2471,13 +2485,13 @@ _(Para cada RNF priorizado do sistema novo, detalhar entradas, saídas e control
 
 ##### Descrição dos Controles
 
-| Tipo de Controle                  | Mecanismo / Componente                                | Natureza              | Função                                                                    | Vulnerabilidade Corrigida               |
-| :-------------------------------- | :----------------------------------------------------- | :-------------------- | :------------------------------------------------------------------------ | :-------------------------------------- |
-| Controle Sistêmico de Ingestão    | API Gateway + Ingestion API com autenticação e logs    | Sistêmica             | Valida e registra cada transação de entrada com ID único                  | Elimina inserções manuais não auditadas |
-| Controle de Correlação de Dados   | ID de correlação global em todo o fluxo                | Sistêmica             | Rastreia o dado desde a origem até os relatórios finais                   | Elimina dados “órfãos”                  |
-| Agregação e Monitoramento de Logs | SIEM corporativo integrado: Microsoft Sentinel   | Sistêmica             | Consolida logs de SharePoint, Power Automate e APIs; detecta anomalias    | Elimina monitoramento em silos          |
-| Indicadores de Rastreabilidade    | Painel operacional no Power BI                         | Sistêmica             | Acompanha percentual de dados rastreáveis e incidentes                     | Introduz gestão contínua do RNF         |
-| Revisão de Auditoria              | Processo periódico conduzido pelo PMO                  | Manual (complementar) | Confirma registros críticos e justifica correções de dados                | Substitui investigações ad hoc          |
+| Tipo de Controle                  | Mecanismo / Componente                              | Natureza              | Função                                                                 | Vulnerabilidade Corrigida               |
+| :-------------------------------- | :-------------------------------------------------- | :-------------------- | :--------------------------------------------------------------------- | :-------------------------------------- |
+| Controle Sistêmico de Ingestão    | API Gateway + Ingestion API com autenticação e logs | Sistêmica             | Valida e registra cada transação de entrada com ID único               | Elimina inserções manuais não auditadas |
+| Controle de Correlação de Dados   | ID de correlação global em todo o fluxo             | Sistêmica             | Rastreia o dado desde a origem até os relatórios finais                | Elimina dados “órfãos”                  |
+| Agregação e Monitoramento de Logs | SIEM corporativo integrado: Microsoft Sentinel      | Sistêmica             | Consolida logs de SharePoint, Power Automate e APIs; detecta anomalias | Elimina monitoramento em silos          |
+| Indicadores de Rastreabilidade    | Painel operacional no Power BI                      | Sistêmica             | Acompanha percentual de dados rastreáveis e incidentes                 | Introduz gestão contínua do RNF         |
+| Revisão de Auditoria              | Processo periódico conduzido pelo PMO               | Manual (complementar) | Confirma registros críticos e justifica correções de dados             | Substitui investigações ad hoc          |
 
 &emsp; A única dependência manual residual é a validação de exceções detectadas automaticamente. Essa ação é auditada e registrada, para que nenhuma intervenção humana ocorra fora do escopo controlado do sistema.
 
@@ -2496,28 +2510,32 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 #### A. Como monitorar o RNF
 
 **Componentes de Observalidade**:
-  - _Azure Monitor_ + _Log Analytics_: centraliza logs, métricas e alertas.
-  - _Application Insights_: traces distribuídos, dependências, custom events.
-  - _Dashboards_ (Power BI ou Grafana conectado ao Log Analytics): visibilidade operacional.
-  - _Alerting_: _action groups_ (email, Teams, runbook, PagerDuty).
-  - _Health endpoints & exporter_: cada _worker_ expõe `/health` e métricas _Prometheus-compatible_ (se AKS).
+
+- _Azure Monitor_ + _Log Analytics_: centraliza logs, métricas e alertas.
+- _Application Insights_: traces distribuídos, dependências, custom events.
+- _Dashboards_ (Power BI ou Grafana conectado ao Log Analytics): visibilidade operacional.
+- _Alerting_: _action groups_ (email, Teams, runbook, PagerDuty).
+- _Health endpoints & exporter_: cada _worker_ expõe `/health` e métricas _Prometheus-compatible_ (se AKS).
 
 **SLIs (_Service Level Indicators_)**:
-  - **_Success rate_**: % de transações processadas com status SUCCESS em intervalo.
-  - **_Latency_**: p50/p95/p99 da latência de resposta (API ingress) e tempo de processamento na fila.
-  - **Queue depth**: número de messages na fila por nome (Service Bus).
-  - **Retry rate**: % de mensagens que passaram por retry.
-  - **DLQ rate**: mensagens/dia que vão para DLQ.
-  - **Throttling events**: contagem de erros 429/requests limit hits por origem.
+
+- **_Success rate_**: % de transações processadas com status SUCCESS em intervalo.
+- **_Latency_**: p50/p95/p99 da latência de resposta (API ingress) e tempo de processamento na fila.
+- **Queue depth**: número de messages na fila por nome (Service Bus).
+- **Retry rate**: % de mensagens que passaram por retry.
+- **DLQ rate**: mensagens/dia que vão para DLQ.
+- **Throttling events**: contagem de erros 429/requests limit hits por origem.
 
 **_SLOs (Service Level Objectives)_**:
-  - **Disponibilidade API**: 99.9% (mensal).
-  - **Success Rate**: ≥ 99.5% transações concluídas sem intervenção manual.
-  - **Latency**: p95 < 2s para chamadas de API de controle; tempo de processamento assíncrono PROCESS_COMPLETE p95 ≤ 2 min (depende de integração).
-  - **Queue Depth**: alertar se mensagens por fila > 1.000 (ou 10× média normal).
-  - **DLQ rate**: < 0.1% das mensagens (meta operacional). 
+
+- **Disponibilidade API**: 99.9% (mensal).
+- **Success Rate**: ≥ 99.5% transações concluídas sem intervenção manual.
+- **Latency**: p95 < 2s para chamadas de API de controle; tempo de processamento assíncrono PROCESS_COMPLETE p95 ≤ 2 min (depende de integração).
+- **Queue Depth**: alertar se mensagens por fila > 1.000 (ou 10× média normal).
+- **DLQ rate**: < 0.1% das mensagens (meta operacional).
 
 **SLAs operacionais**:
+
 - Métricas automatizadas (queue depth, throttling events) substituem monitoramento manual; correlação logs-traces facilita identificação de gargalos.
 - Dashboards e alertas automáticos permitem ação preventiva (_scale out_) antes de degradação.
 
@@ -2544,33 +2562,36 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 | **Reativa**    | **Fallbacks** — Utiliza cópias read-only ou dados cacheados quando o SharePoint está indisponível ou lento.                                                               | Arquitetural               | Dados podem estar desatualizados; nem sempre aplicável a fluxos de escrita.                                          |
 
 <sup>Fonte: material elaborado pelos autores (2025).</sup>
+
 </div>
 
 #### C. Como recuperar/subsidiar o tratamento de impactos
 
 **Componentes-chave**:
-  - _Dead Letter Queue_ (DLQ) por fila — armazena mensagens não processáveis.
-  - Reprocessamento com prioridade — UI para requeue com ajuste de prioridade.
-  - _Audit store_ (transaction log) — fonte de verdade para reprocessamentos e forensics.
-  - _Runbooks_ e _playbooks_ operacionais — procedimentos documentados para incidentes.
-  - _Snapshots_ / Backups dos dados críticos — para rollback se uma integração aplicar mudanças incorretas.
-  - Jobs de reprocessamento (_batch workers_) — workers específicos para DLQ que rodam em horário de menor tráfego.
+
+- _Dead Letter Queue_ (DLQ) por fila — armazena mensagens não processáveis.
+- Reprocessamento com prioridade — UI para requeue com ajuste de prioridade.
+- _Audit store_ (transaction log) — fonte de verdade para reprocessamentos e forensics.
+- _Runbooks_ e _playbooks_ operacionais — procedimentos documentados para incidentes.
+- _Snapshots_ / Backups dos dados críticos — para rollback se uma integração aplicar mudanças incorretas.
+- Jobs de reprocessamento (_batch workers_) — workers específicos para DLQ que rodam em horário de menor tráfego.
 
 **Passos e justificativa para recuperação**:
+
 1. Detecção e triagem automática
-    - Alerta automático por threshold (queue depth, 429 rate) aciona runbook de contenção.
+   - Alerta automático por threshold (queue depth, 429 rate) aciona runbook de contenção.
 2. Mitigação imediata (automática)
-    - Auto-scale de workers; circuit breaker abre para reduzir chamadas; shedding para tarefas não críticas.
-    - Resultado: preserva capacidade para fluxos críticos e evita colapso total.
+   - Auto-scale de workers; circuit breaker abre para reduzir chamadas; shedding para tarefas não críticas.
+   - Resultado: preserva capacidade para fluxos críticos e evita colapso total.
 3. Isolamento e investigação
-    - Ver logs e traces (Application Insights) para localizar origem (um job em loop? um connector mal configurado?).
+   - Ver logs e traces (Application Insights) para localizar origem (um job em loop? um connector mal configurado?).
 4. Reprocessamento controlado
-    - Mensagens em DLQ analisadas via UI: operador corrige payload (se necessário) e requeue selecionando prioridade.
-    - Reprocessamento em batch com rate control para evitar novo pico.
+   - Mensagens em DLQ analisadas via UI: operador corrige payload (se necessário) e requeue selecionando prioridade.
+   - Reprocessamento em batch com rate control para evitar novo pico.
 5. Rollback (se aplicável)
-    - Se integração escreveu dados incorretos em massa (ex.: atualizações erradas no SharePoint), usar backups/versions do SharePoint ou scripts idempotentes para restaurar.
+   - Se integração escreveu dados incorretos em massa (ex.: atualizações erradas no SharePoint), usar backups/versions do SharePoint ou scripts idempotentes para restaurar.
 6. Post-mortem e ajustes
-    - Após recuperação, gerar relatório: root cause, ações corretivas (ex.: aumentar cache TTL, reduzir batch size, ajustar SLOs) e fechar ações pendentes.
+   - Após recuperação, gerar relatório: root cause, ações corretivas (ex.: aumentar cache TTL, reduzir batch size, ajustar SLOs) e fechar ações pendentes.
 
 ---
 
@@ -2589,6 +2610,7 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 - Monitoramento Comportamental por IA: Módulos inteligentes monitoram padrões de acesso e uso, identificando variações atípicas relacionadas a usuários e agentes, como acessos em horários incomuns, volumes anormais de dados e sequências fora do padrão, aumentando a precisão da detecção.
 
 &nbsp;Essa arquitetura conjunta supera as limitações do sistema atual, que carece de componentes integrados de monitoramento, dificultando a identificação eficiente e o bloqueio de ameaças.
+
 #### B. Como resolver o RNF (Preventivo e Reativo)
 
 &nbsp;Para mitigar riscos e responder a incidentes, o sistema novo integra um conjunto robusto de componentes e estratégias:
@@ -2629,7 +2651,6 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 
 - Testes periódicos: Exercícios simulados e testes de restauração são realizados para garantir que os planos de recuperação funcionem efetivamente, reduzindo o tempo de indisponibilidade.
 
-
 &nbsp;A seção 6.3.2 RNF-02 reforça que a segurança do sistema novo será garantida por monitoramento integrado e contínuo, controles preventivos rigorosos e respostas rápidas a incidentes. Com o uso de SIEM, IAM, WAF e IA para análise comportamental, o sistema elimina as vulnerabilidades atuais, assegurando proteção, rastreabilidade e resiliência. O foco na recuperação ágil pós-incidente fecha o ciclo de segurança, garantindo governança eficaz e continuidade para os projetos do Metrô de São Paulo.
 
 ### 6.3.3 RNF-03 — Rastreabilidade
@@ -2638,11 +2659,11 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 
 &emsp; O monitoramento passa a ser simples de entender e de acessar: toda mudança relevante fica registrada automaticamente e é possível seguir o caminho do dado desde a origem até o relatório. Isso resolve os pontos levantados em 5.4.3 (processo manual, silos e falta de correlação) sem depender de varreduras manuais.
 
-| Causa do AS-IS (5.4.3)                | Resposta no sistema novo (TO-BE)                                                                       |
-| :------------------------------------ | :----------------------------------------------------------------------------------------------------- |
-| Processo Manual Não Auditado          | Entradas apenas por pontos controlados, com registro automático e trilha de auditoria                 |
-| Arquitetura de Dados Fragmentada      | Consolidação de registros e eventos em um repositório de auditoria consultável em um único lugar     |
-| Ausência de ID de Correlação          | Identificador único por transação propagado ao longo do fluxo e visível nos relatórios e consultas   |
+| Causa do AS-IS (5.4.3)           | Resposta no sistema novo (TO-BE)                                                                   |
+| :------------------------------- | :------------------------------------------------------------------------------------------------- |
+| Processo Manual Não Auditado     | Entradas apenas por pontos controlados, com registro automático e trilha de auditoria              |
+| Arquitetura de Dados Fragmentada | Consolidação de registros e eventos em um repositório de auditoria consultável em um único lugar   |
+| Ausência de ID de Correlação     | Identificador único por transação propagado ao longo do fluxo e visível nos relatórios e consultas |
 
 &emsp; Na prática, isso significa que qualquer pessoa autorizada consegue verificar, sem esforço técnico, a origem de um dado apresentado em um relatório e o caminho que ele percorreu dentro do sistema. O time de auditoria não precisa mais juntar evidências manualmente: a trilha está disponível em um único lugar e em linguagem compreensível.
 
@@ -2663,8 +2684,8 @@ _(Descrever táticas e componentes que viabilizam a execução e o controle dos 
 
 &emsp; Quando houver um problema, a equipe encontra rapidamente o que aconteceu e corrige com segurança, sem perder a trilha:
 
-| O que é usado                          | Para que serve                                                                 |
-| :------------------------------------- | :------------------------------------------------------------------------------ |
+| O que é usado                          | Para que serve                                                                |
+| :------------------------------------- | :---------------------------------------------------------------------------- |
 | Registro de auditoria consolidado      | Ver o histórico exato de quem fez o quê e quando, sem depender de entrevistas |
 | Consulta simples da linhagem           | Navegar do relatório até a origem do dado                                     |
 | Reprocessamento ou desfazer uma versão | Corrigir o estado atual sem esconder o histórico e com justificativa          |
@@ -2717,19 +2738,301 @@ _(Apresente a simulação do sistema novo)_
 
 ---
 
-## 7.3 Simulação RNF - 03
+## 7.3 Simulação RNF - 03 (Rastreabilidade)
 
-_(Introduza seção para RNF02)_
+&emsp; As simulações do requisito não funcional **rastreabilidade** foram realizadas com base em **Cadeias de Markov de tempo discreto**, permitindo representar o fluxo de estados de integridade e perda de rastreabilidade do sistema de forma probabilística.
+
+&emsp; Essa abordagem foi escolhida por permitir a análise da **probabilidade de perda de rastreabilidade** e do **tempo médio até o comprometimento**, comparando o desempenho entre o sistema atual (AS-IS) e o sistema proposto (TO-BE).
+
+---
 
 ### 7.3.1 Simulação Sistema: Atual
 
-_(Apresente a simulação do sistema atual)_
+&emsp;Nesta seção são apresentados os resultados para o sistema atual (AS-IS). Cada cenário foi modelado com quatro estados: **Traceable (Normal)** → **ManualAction (Intervenção)** → **Orphan (Registro órfão)** → **Compromised (Absorvente — perda de rastreabilidade)**. As probabilidades de transição (p_traceable_manual, p_manual_orphan, p_orphan_comp) foram definidas a partir da análise qualitativa das práticas atuais descritas nos cenários.
+
+---
+
+#### 7.3.1.1 Cenário 10 - Encerramento manual de projeto (AS-IS)
+
+**Contexto**  
+Atualmente o encerramento de projeto é manual: inativação de elementos, remoção de acessos e arquivamento do histórico dependem de ações humanas, o que provoca risco de perda de rastreabilidade e acessos residuais.
+
+**Configuração do modelo (AS-IS)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction |  0.06 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.18 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.30 |
+
+**Resultados - Sistema Atual**
+
+| Métrica                            |         Valor |
+| ---------------------------------- | ------------: |
+| Probabilidade Analítica (∞)        |    **1.0000** |
+| Tempo Médio Analítico (dias)       | **52.962963** |
+| Probabilidade Empírica (simulação) |  **0.999750** |
+| Tempo Médio Empírico (dias)        | **53.503208** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) - AS-IS:
+<div align="center">
+<sub>Figura 7.3.1.1.1 - Cadeia de Markov As Is - Cenário 10</sub><br>
+<img src="img/section7/asis10.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento
+<div align="center">
+<sub>Figura 7.3.1.1.2 - Evolução da probabilidade - Cenário 10</sub><br>
+<img src="img/section7/evolucao10.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (AS-IS)**  
+&emsp; Mesmo com um p_traceable_manual relativamente baixo (6% por passo), a combinação das demais transições faz com que quase todas as trajetórias terminem em perda de rastreabilidade em prazo curto (~53 dias). Em termos operacionais: esquecer/desalocar incorretamente acessos ou não arquivar histórico gera falha de governança em semanas.
+
+---
+
+#### 7.3.1.2 Cenário 11 - Alterações sem controle de cronograma (AS-IS)
+
+**Contexto**  
+Cronogramas mantidos em arquivos anexos (Excel / Project) sem versionamento: alterações manuais provocam versões órfãs e perda de histórico.
+
+**Configuração do modelo (AS-IS)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction |  0.05 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.12 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.25 |
+
+**Resultados - Sistema Atual**
+
+| Métrica                            |          Valor |
+| ---------------------------------- | -------------: |
+| Probabilidade Analítica (∞)        |     **1.0000** |
+| Tempo Médio Analítico (dias)       | **110.000000** |
+| Probabilidade Empírica (simulação) |   **0.965000** |
+| Tempo Médio Empírico (dias)        |  **98.519859** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) — AS-IS:
+
+<div align="center">
+<sub>Figura 7.3.1.2.1 - Cadeia de Markov As Is - Cenário 11</sub><br>
+<img src="img/section7/asis11.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento:
+ <div align="center">
+<sub>Figura 7.3.1.2.2 - Evolução da probabilidade - Cenário 11</sub><br>
+<img src="img/section7/evolucao11.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (AS-IS)**  
+&emsp; Alterações manuais geram degradação gradual: a maioria das trajetórias (≈96,5%) apresenta comprometimento em horizonte estimado (~98 dias). Isso dificulta auditoria e traz risco às decisões baseadas em cronogramas divergentes.
+
+---
+
+#### 7.3.1.3 Cenário 14 - Registro de mudança manual (AS-IS)
+
+**Contexto**  
+O registro de mudanças é opcional/ manual. Mudanças de impacto podem ocorrer sem justificativa formal, o que quebra a trilha de auditoria.
+
+**Configuração do modelo (AS-IS)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction |  0.08 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.16 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.35 |
+
+**Resultados - Sistema Atual**
+
+| Métrica                            |         Valor |
+| ---------------------------------- | ------------: |
+| Probabilidade Analítica (∞)        |    **1.0000** |
+| Tempo Médio Analítico (dias)       | **36.792092** |
+| Probabilidade Empírica (simulação) |  **1.000000** |
+| Tempo Médio Empírico (dias)        | **36.679333** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) — AS-IS:
+ <div align="center">
+<sub>Figura 7.3.1.3.1 - Cadeia de Markov As Is - Cenário 14</sub><br>
+<img src="img/section7/asis14.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento — AS-IS:
+
+<div align="center">
+<sub>Figura 7.3.1.3.2 - Evolução de probabilidade de inconsistência</sub><br>
+<img src="img/section7/evolucao14.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (AS-IS)**  
+É o pior caso: perda de rastreabilidade consolida muito rápido (≈37 dias) em praticamente todas as simulações. Isso evidencia a criticidade de forçar registro/justificativa antes de aplicar mudanças.
+
+---
 
 ### 7.3.2 Simulação Sistema: Novo
 
-_(Apresente a simulação do sistema novo)_
+&emsp;Nesta seção são apresentados os resultados para a **nova arquitetura (TO-BE)**. A proposta inclui: ponto único de ingestão, `correlationId` para cada transação, validação por hash entre fonte e destino, versionamento automático, quarentena para integrações legadas e bloqueios que forçam registro antes de alterações críticas. As probabilidades TO-BE foram definidas para refletir ganhos esperados por essas medidas.
 
 ---
+
+#### 7.3.2.1 Cenário 10 - Encerramento automático do projeto (TO-BE)
+
+**Configuração do modelo (TO-BE)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction |  0.01 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.03 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.05 |
+
+**Resultados - Nova Arquitetura**
+
+| Métrica                            |           Valor |
+| ---------------------------------- | --------------: |
+| Probabilidade Analítica (∞)        |      **1.0000** |
+| Tempo Médio Analítico (dias)       | **9819.215686** |
+| Probabilidade Empírica (simulação) |    **0.036750** |
+| Tempo Médio Empírico (dias)        |  **185.827667** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) — TO-BE:
+ <div align="center">
+<sub>Figura 7.3.2.1.2 - Cadeia de Markov TO-BE - Cenário 10</sub><br>
+<img src="img/section7/tobe10.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento — TO-BE:
+
+<div align="center">
+<sub>Figura 7.3.2.1.2 - Evolução de probabilidade - Cenário 10</sub><br>
+<img src="img/section7/evolucao10.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (TO-BE)**
+
+&emsp; Automatizar encerramento reduz drasticamente o risco empírico (≈3,7%) e aumenta o tempo médio até falha para ≈186 dias. Em prática: automatização mitiga quase todas as causas operacionais de perda de rastreabilidade no encerramento.
+
+---
+
+#### 7.3.2.2 Cenário 11 - Controle automatizado de cronograma (TO-BE)
+
+**Configuração do modelo (TO-BE)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction |  0.01 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.04 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.06 |
+
+**Resultados - Nova Arquitetura**
+
+| Métrica                            |           Valor |
+| ---------------------------------- | --------------: |
+| Probabilidade Analítica (∞)        |      **1.0000** |
+| Tempo Médio Analítico (dias)       | **7194.444444** |
+| Probabilidade Empírica (simulação) |    **0.051583** |
+| Tempo Médio Empírico (dias)        |  **182.277863** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) - TO-BE:
+
+<div align="center">
+<sub>Figura 7.3.2.2.1 - Cadeia de Markov TO-BE - Cenário 11</sub><br>
+<img src="img/section7/tobe11.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento - TO-BE:
+ <div align="center">
+<sub>Figura 7.3.2.2.2 - Evolução de probabilidade - Cenário 11</sub><br>
+<img src="img/section7/evolucao11.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (TO-BE)**
+
+&emsp; Versionamento e bloqueios reduzem a probabilidade empírica para ~5,16% e aumentam muito o tempo médio até falha. O sistema torna-se auditável e permite reconstruir a linhagem dos dados.
+
+---
+
+#### 7.3.2.3 Cenário 14 - Registro obrigatório / bloqueio (TO-BE)
+
+**Configuração do modelo (TO-BE)**
+
+|            Parâmetro | Descrição                | Valor |
+| -------------------: | ------------------------ | ----: |
+| `p_traceable_manual` | Traceable → ManualAction | 0.015 |
+|    `p_manual_orphan` | ManualAction → Orphan    |  0.05 |
+|      `p_orphan_comp` | Orphan → Compromised     |  0.07 |
+
+**Resultados - Nova Arquitetura**
+
+| Métrica                            |           Valor |
+| ---------------------------------- | --------------: |
+| Probabilidade Analítica (∞)        |      **1.0000** |
+| Tempo Médio Analítico (dias)       | **3839.327731** |
+| Probabilidade Empírica (simulação) |    **0.089000** |
+| Tempo Médio Empírico (dias)        |  **183.208801** |
+
+**Gráficos:**
+
+- Cadeia de estados (Markov) - TO-BE:
+
+<div align="center">
+<sub>Figura 7.3.2.3.1 - Cadeia de Markov TO-BE - Cenário 14</sub><br>
+<img src="img/section7/tobe10.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+- Evolução da probabilidade de comprometimento - TO-BE:
+
+<div align="center">
+<sub>Figura 7.3.2.3.2 - Evolução da probabilidade - Cenário 14</sub><br>
+<img src="img/section7/evolucao14.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Interpretação (TO-BE)**  
+Forçar registro antes de alterar reduz a probabilidade empírica de perda para ~8,9% e aumenta o tempo médio até falha para ≈183 dias. Resultado: histórico preservado e conformidade reforçada.
+
+---
+
+&emsp;Comparando AS-IS → TO-BE (empírico):
+
+|                    Cenário | Probabilidade empírica AS-IS | Probabilidade empírica TO-BE | Redução (%) | Tempo médio AS-IS (dias) | Tempo médio TO-BE (dias) |
+| -------------------------: | ---------------------------: | ---------------------------: | ----------: | -----------------------: | -----------------------: |
+|   Encerramento manual (10) |                     0.999750 |                     0.036750 |  **−96.3%** |                    53.50 |                   185.83 |
+| Alterações cronograma (11) |                     0.965000 |                     0.051583 |  **−94.7%** |                    98.52 |                   182.28 |
+|   Registro de mudança (14) |                     1.000000 |                     0.089000 |  **−91.1%** |                    36.68 |                   183.21 |
+
+**Principais conclusões:**
+
+- As automações propostas (ingestão controlada, correlationId, validação de hash, versionamento e bloqueios) **reduzem dramaticamente** a probabilidade de perda de rastreabilidade em todos os cenários.
+- O **tempo médio até comprometimento** aumenta de dezenas de dias para centenas ou milhares (analítico), o que significa janela maior para detecção e remediação.
+- Apesar de o modelo analítico apresentar B=1 em horizonte infinito (por modelagem do estado absorvente), as métricas empíricas sobre o horizonte simulado (1000 passos) são as mais relevantes para priorização operacional.
+
+---
+
+**Notebook Colab:**  
+[Simulação RNF-03 – Rastreabilidade (Colab)](https://colab.research.google.com/drive/1tm95Ku1UB5PkfNQb6Vk5lEn-Uef4TX7D?usp=sharing)
 
 ## 7.4 Tabela de Comparação Consolidada
 
