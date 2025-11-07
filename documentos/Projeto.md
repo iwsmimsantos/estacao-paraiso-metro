@@ -2689,13 +2689,173 @@ _(Apresente a simulação comparativa entre o sistema atual e o sistema novo, ev
 
 ---
 
-## 7.1 Simulação RNF - 01
+## 7.1 Simulação RNF - 01: Escalabilidade
 
-_(Introduza seção para RNF01)_
+&emsp;A simulação do Requisito Não Funcional (RNF) de **Escalabilidade** teve como objetivo principal avaliar a capacidade do sistema de portfólios atual (AS-IS) de suportar um aumento na carga de usuários, identificando o ponto de saturação e os componentes que atuam como gargalos.
+
+A metodologia empregada foi a **Análise "What-If"** no JMT (Java Modeling Tools), que utiliza o modelo de **Redes de Filas (Queueing Networks)** para prever o desempenho. A simulação foi configurada como um modelo de **Classe Aberta** (Open Class) com variação do parâmetro **Arrival Rate** (Taxa de Chegada) em três cenários distintos:
+
+*   **Cenário x1:** 100% da carga base (100 usuários em 30 minutos).
+*   **Cenário x2:** 200% da carga base (200 usuários em 30 minutos).
+*   **Cenário x3:** 300% da carga base (300 usuários em 30 minutos).
 
 ### 7.1.1 Simulação Sistema: Atual
 
-_(Apresente a simulação do sistema atual)_
+&emsp;A simulação do sistema atual demonstrou uma **baixa capacidade de escalabilidade**, com o ponto de saturação sendo atingido no cenário de 200% da carga.
+
+#### 7.1.1.1 Modelo de Rede de Filas (JMT)
+
+&emsp;O sistema atual foi modelado no JMT como uma Rede de Filas, representando os principais componentes de processamento e o fluxo de requisições.
+
+<div align="center">
+<sub>Figura 7.1.1.1.1 - Modelo de Rede de Filas no JMT (Sistema AS-IS)</sub><br>
+<img src="img/section7/sistemaAtual/modelo_rede_filas.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+**Descrição dos Componentes do Modelo:**
+
+| Componente | Tipo de Nó | Função no Sistema |
+| :--- | :--- | :--- |
+| **Início (Source)** | Fonte de Clientes | Representa a chegada dos usuários/requisições ao sistema. |
+| **Router** | Roteador | Distribui as requisições para os diferentes serviços de processamento. |
+| **Acesso Projeto** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a projetos. |
+| **Acesso Contrato** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada a contratos. |
+| **Acesso Relatorio** | Servidor de Fila (M/M/1) | Componente responsável pelo processamento de dados e lógica de negócio relacionada à geração/acesso a relatórios. |
+| **Navegacao** | Servidor de Fila (M/M/m) | Componente que simula a camada de interface ou frontend, modelado com múltiplos servidores (m > 1) para representar a capacidade de paralelismo. |
+| **Fim / Fim_1 (Sink)** | Sumidouro | Representa a saída das requisições do sistema. |
+
+
+#### 7.1.1.2 Validação da Carga (Throughput de Entrada)
+
+&emsp;O gráfico de Vazão (Throughput) no nó `Início` é fundamental para validar se a carga de teste foi injetada corretamente. O gráfico demonstra uma relação linear perfeita entre o aumento da taxa de chegada assumida (eixo X) e a vazão de entrada (eixo Y), confirmando que a ferramenta JMT está injetando a carga de teste conforme o planejado.
+
+<div align="center">
+<sub>Figura 7.1.1.2.1 - Gráfico de Throughput (Início)</sub><br>
+<img src="img/section7/sistemaAtual/throughput_rnf01.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+| Carga | Vazão (J/s) |
+| :--- | :--- |
+| **100% (x1)** | $0.0554$ |
+| **200% (x2)** | $0.1114$ |
+| **300% (x3)** | $0.1687$ |
+
+#### 7.1.1.3 Identificação do Gargalo (Utilização)
+
+&emsp;A análise da Utilização (Utilization) dos nós de processamento é crucial para identificar o gargalo. Segundo a **Lei de Utilização de Recursos** em Redes de Filas, a utilização ($\rho$) de um servidor é dada pela razão entre a taxa de chegada ($\lambda$) e a taxa de serviço ($\mu$). Quando a utilização se aproxima de 100% (ou 1), o sistema se aproxima da saturação.
+
+Os resultados mostram que os componentes `Acesso Projeto` e `Acesso Relatorio` são os limitadores da escalabilidade.
+
+| Componente | Utilização em 100% (x1) | Utilização em 200% (x2) | Utilização em 300% (x3) |
+| :--- | :--- | :--- | :--- |
+| **Acesso Projeto** | $49.97\%$ | $98.38\%$ | $100.00\%$ |
+| **Acesso Relatorio** | $50.23\%$ | $100.00\%$ | $100.00\%$ |
+| **Acesso Contrato** | $24.92\%$ | $49.60\%$ | $74.66\%$ |
+| **Navegacao** | $24.78\%$ | $49.80\%$ | $75.86\%$ |
+
+##### Gráfico de Utilização - Acesso Projeto
+
+&emsp;O gráfico demonstra que a utilização do `Acesso Projeto` cresce linearmente até 200% da carga, onde atinge o limite de 100% e se estabiliza. Este comportamento prova que o componente é um recurso limitado e saturado, incapaz de processar o dobro da carga de forma eficiente.
+
+<div align="center">
+<sub>Figura 7.1.1.3.1 - Gráfico de Utilization (Acesso Projeto)</sub><br>
+<img src="img/section7/sistemaAtual/utilization_acesso_projeto.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Acesso Relatorio
+
+&emsp;De forma idêntica ao `Acesso Projeto`, o componente `Acesso Relatorio` também atinge 100% de utilização no cenário de 200% da carga. A saturação simultânea de ambos os componentes indica que a capacidade de serviço ($\mu$) é insuficiente para lidar com o aumento da taxa de chegada ($\lambda$), caracterizando-os como os **gargalos primários** do sistema.
+
+<div align="center">
+<sub>Figura 7.1.1.3.2 - Gráfico de Utilization (Acesso Relatorio)</sub><br>
+<img src="img/section7/sistemaAtual/utilization_acesso_relatorio.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Acesso Contrato
+
+&emsp;A utilização do `Acesso Contrato` cresce de forma linear e controlada, atingindo 74.66% no cenário de 300% da carga. Embora não seja o gargalo primário, este componente se tornará o próximo limitador de escalabilidade.
+
+<div align="center">
+<sub>Figura 7.1.1.3.3 - Gráfico de Utilization (Acesso Contrato)</sub><br>
+<img src="img/section7/sistemaAtual/utilization_acesso_contrato.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Utilização - Navegacao
+
+&emsp;O gráfico de Utilização do nó `Navegacao` demonstra um crescimento linear, atingindo **75.86%** no cenário de 300% da carga. Embora não atinja a saturação, uma utilização acima de 70% é considerada uma zona de risco. Este resultado eleva o `Navegacao` à categoria de **gargalo secundário**, que deve ser considerado na arquitetura TO-BE.
+
+<div align="center">
+<sub>Figura 7.1.1.3.4 - Gráfico de Utilization (Navegacao)</sub><br>
+<img src="img/section7/sistemaAtual/utilization_navegacao.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.1.4 Consequência da Saturação (Tempo de Fila)
+
+&emsp;A saturação dos componentes `Acesso Projeto` e `Acesso Relatorio` resulta em um crescimento exponencial do Tempo de Fila (Queue Time). Em Redes de Filas, o tempo de espera na fila ($W_q$) tende ao infinito quando a utilização se aproxima de 100%.
+
+| Componente | Tempo de Fila em 100% (x1) | Tempo de Fila em 200% (x2) | Tempo de Fila em 300% (x3) |
+| :--- | :--- | :--- | :--- |
+| **Acesso Projeto** | $75.95$ s | $12.100$ s | $12.000.000$ s |
+| **Acesso Relatorio** | $77.19$ s | $11.100$ s | $12.000.000$ s |
+| **Acesso Contrato** | $39.32$ s | $121.35$ s | $349.63$ s |
+
+##### Gráfico de Tempo de Fila - Acesso Projeto
+
+&emsp;O gráfico de Tempo de Fila para `Acesso Projeto` demonstra o comportamento clássico de um sistema saturado. O tempo de espera permanece relativamente baixo até o ponto de saturação (200% da carga), a partir do qual ele cresce de forma exponencial. No cenário **x3 (300% da carga)**, o Tempo de Fila atinge a marca de **12 milhões de segundos**, indicando que as requisições estão se acumulando indefinidamente e o sistema está indisponível.
+
+<div align="center">
+<sub>Figura 7.1.1.4.1 - Gráfico de Queue Time (Acesso Projeto)</sub><br>
+<img src="img/section7/sistemaAtual/queue_acesso_projeto.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Tempo de Fila - Acesso Relatorio
+
+&emsp;O comportamento do `Acesso Relatorio` é idêntico ao do `Acesso Projeto`, reforçando que a capacidade de processamento é o fator limitante. O tempo de espera no cenário x3 é totalmente inviável para qualquer aplicação em produção, provando a **Degradação Crítica de Performance** do sistema atual.
+
+<div align="center">
+<sub>Figura 7.1.1.4.2 - Gráfico de Queue Time (Acesso Relatorio)</sub><br>
+<img src="img/section7/sistemaAtual/queue_acesso_relatorio.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+##### Gráfico de Tempo de Fila - Acesso Contrato
+
+&emsp;O crescimento do Tempo de Fila para `Acesso Contrato` é linear e menos acentuado, pois o componente não está saturado. No entanto, o aumento de 39 segundos para 349 segundos já representa uma degradação de desempenho significativa para o usuário, mesmo neste componente.
+
+<div align="center">
+<sub>Figura 7.1.1.4.3 - Gráfico de Queue Time (Acesso Relatorio)</sub><br>
+<img src="img/section7/sistemaAtual/queue_acesso_contrato.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.1.5 Análise Adicional (Número de Clientes)
+
+&emsp;O gráfico de **Number of Customers** (Número de Clientes) no nó `Navegacao` mostra o número médio de requisições esperando ou sendo atendidas. O crescimento linear, atingindo **0.7586** no cenário x3, reforça a conclusão de que o `Navegacao` está operando em alta utilização.
+
+<div align="center">
+<sub>Figura 7.1.1.5.1 - Gráfico de Number of Customers (Navegacao)</sub><br>
+<img src="img/section7/sistemaAtual/number_of_customers.png" width="80%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+#### 7.1.1.6 Conclusão da Simulação AS-IS
+
+&emsp;A simulação confirma que o sistema atual falha categoricamente no Requisito Não Funcional (RNF) de Escalabilidade. A análise quantitativa dos resultados do JMT revela uma arquitetura com capacidade de crescimento extremamente limitada, culminando em uma degradação de desempenho catastrófica sob estresse.
+
+&emsp;O ponto de saturação é atingido de forma abrupta e prematura, entre 100% e 200% da carga base. Os componentes Acesso Projeto e Acesso Relatorio atingem 100% de Utilização no cenário de 200% da carga, caracterizando-se como os gargalos primários que limitam toda a capacidade do sistema.
+
+&emsp;A consequência direta desta saturação é o crescimento exponencial do Tempo de Fila (Queue Time). No cenário de 300% da carga, o tempo de espera nas filas dos gargalos atinge a marca de 12 milhões de segundos (aproximadamente 138 dias). Este valor não apenas inviabiliza o uso do sistema, mas também comprova que a taxa de chegada de requisições excede permanentemente a taxa de serviço, resultando em uma fila infinita.
+
+&emsp;Em termos práticos, a arquitetura atual não possui a robustez necessária para absorver qualquer crescimento futuro de usuários ou picos de demanda. A falha no RNF de Escalabilidade é inequívoca, e a manutenção da arquitetura AS-IS representa um risco operacional inaceitável para a continuidade e a qualidade do serviço.
+
+&emsp;A análise demonstra, portanto, a necessidade urgente de uma intervenção arquitetural para otimizar os gargalos identificados e garantir que o sistema possa operar com segurança e estabilidade sob cargas futuras.
 
 ### 7.1.2 Simulação Sistema: Novo
 
