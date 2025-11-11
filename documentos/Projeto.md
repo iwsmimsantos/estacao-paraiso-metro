@@ -23,82 +23,36 @@
 
 # Sumário
 
-- [Nome do Projeto: Estação Portuguesa Tietê Acesso ao Terminal Rodoviário](#nome-do-projeto-estação-portuguesa-tietê-acesso-ao-terminal-rodoviário)
-  - [Nome do Grupo: Estação Paraíso](#nome-do-grupo-estação-paraíso)
-  - [Integrantes:](#integrantes)
-- [Sumário](#sumário)
-- [Projeto · Módulo 08 – Arquitetura Digital Segura e Tolerante a Falhas](#projeto--módulo-08--arquitetura-digital-segura-e-tolerante-a-falhas)
 - [1. Introdução](#1-introdução)
   - [1.1 Termos e Abreviações](#11-termos-e-abreviações)
   - [1.2 Contexto e Motivação](#12-contexto-e-motivação)
   - [1.3 Objetivo](#13-objetivo)
-    - [Objetivo Geral](#objetivo-geral)
-    - [Objetivos Específicos](#objetivos-específicos)
 - [2. Descrição do Sistema Atual](#2-descrição-do-sistema-atual)
   - [2.1 Visão Geral e Contexto de Negócio](#21-visão-geral-e-contexto-de-negócio)
     - [2.1.1 Setor de Aplicação e Domínio](#211-setor-de-aplicação-e-domínio)
     - [2.1.2 Adição de Valor e Propósito](#212-adição-de-valor-e-propósito)
     - [2.1.3 Processos de Negócio e Fluxos Críticos](#213-processos-de-negócio-e-fluxos-críticos)
       - [2.1.3.1 Fluxo de Negócio Atual (AS-IS)](#2131-fluxo-de-negócio-atual-as-is)
-    - [Fluxo do Processo AS-IS:](#fluxo-do-processo-as-is)
-      - [Raia "Líder/Equipe do Projeto"](#raia-líderequipe-do-projeto)
-      - [Raia "Sistema PMO (SharePoint/Power BI)"](#raia-sistema-pmo-sharepointpower-bi)
       - [2.1.3.1 Fluxo de Negócio Futuro (TO-BE)](#2131-fluxo-de-negócio-futuro-to-be)
-    - [Fluxo do Processo TO-BE:](#fluxo-do-processo-to-be)
-      - [Raia "Líder/Equipe do Projeto"](#raia-líderequipe-do-projeto-1)
-      - [Raia "Agente de IA / Camada de Arquitetura"](#raia-agente-de-ia--camada-de-arquitetura)
-      - [Raia "Sistema PMO (Base Estruturada/Power BI)"](#raia-sistema-pmo-base-estruturadapower-bi)
       - [2.1.3.3 Requisitos Arquiteturais Chave](#2133-requisitos-arquiteturais-chave)
     - [2.1.4 Volumes Operacionais e Capacidade](#214-volumes-operacionais-e-capacidade)
     - [2.1.5 Estratégias de Crescimento e Evolução](#215-estratégias-de-crescimento-e-evolução)
-      - [Principais diretrizes e metas:](#principais-diretrizes-e-metas)
   - [2.2 Riscos e Oportunidades](#22-riscos-e-oportunidades)
     - [2.2.1 Matriz de Riscos](#221-matriz-de-riscos)
     - [2.2.2 Riscos ligados ao sistema](#222-riscos-ligados-ao-sistema)
     - [2.2.3 Oportunidades de melhoria dos SLAs](#223-oportunidades-de-melhoria-dos-slas)
 - [3. Visão de Modelo Comportamental (Simulação do Sistema Atual)](#3-visão-de-modelo-comportamental-simulação-do-sistema-atual)
   - [3.1 RNFs do Sistema Atual](#31-rnfs-do-sistema-atual)
-    - [**Principais Lacunas Identificadas no Sistema Atual:**](#principais-lacunas-identificadas-no-sistema-atual)
-    - [**Justificativa para Nova Arquitetura:**](#justificativa-para-nova-arquitetura)
   - [3.2 Estrutura Estática do Modelo](#32-estrutura-estática-do-modelo)
-    - [A. Elementos do Sistema Envolvidos nos RNFs Selecionados](#a-elementos-do-sistema-envolvidos-nos-rnfs-selecionados)
-    - [B. Estrutura e Conexão entre os Elementos (Modelo de Simulação)](#b-estrutura-e-conexão-entre-os-elementos-modelo-de-simulação)
-      - [Detalhamento do Modelo de Simulação de Cada RNF](#detalhamento-do-modelo-de-simulação-de-cada-rnf)
   - [3.3 Modelagem Comportamental e Simulação dos RNFs](#33-modelagem-comportamental-e-simulação-dos-rnfs)
     - [3.3.1 Modelagem Comportamental](#331-modelagem-comportamental)
-      - [**Cenário 1 – Escalabilidade e Acessos Simultâneos**](#cenário-1--escalabilidade-e-acessos-simultâneos)
-      - [**Cenário 2 – Disponibilidade e Recuperação de Falhas**](#cenário-2--disponibilidade-e-recuperação-de-falhas)
-      - [**Cenário 3 – Segurança e Controle de Acessos**](#cenário-3--segurança-e-controle-de-acessos)
-      - [**Cenário 4 – Rastreabilidade e Auditoria de Interações**](#cenário-4--rastreabilidade-e-auditoria-de-interações)
-      - [**Consolidação dos Cenários e Foco nas Melhorias de RNFs**](#consolidação-dos-cenários-e-foco-nas-melhorias-de-rnfs)
     - [3.3.2 Cenários Simulados](#332-cenários-simulados)
-      - [**Cenário 1 – Escalabilidade e Acessos Simultâneos (Hipotético)**](#cenário-1--escalabilidade-e-acessos-simultâneos-hipotético)
-      - [**Cenário 2 – Disponibilidade e Recuperação de Falhas (Hipotético)**](#cenário-2--disponibilidade-e-recuperação-de-falhas-hipotético)
-      - [**Cenário 3 – Segurança e Controle de Acessos (Hipotético)**](#cenário-3--segurança-e-controle-de-acessos-hipotético)
-      - [**Cenário 4 – Rastreabilidade e Auditoria (Hipotético)**](#cenário-4--rastreabilidade-e-auditoria-hipotético)
   - [3.4 Consolidação dos Resultados da Simulação](#34-consolidação-dos-resultados-da-simulação)
-    - [**Tabela de Resultados Esperados**](#tabela-de-resultados-esperados)
-    - [**Principais Falhas Esperadas**](#principais-falhas-esperadas)
-      - [**1. Degradação Crítica de Performance**](#1-degradação-crítica-de-performance)
-      - [**2. Vulnerabilidades de Segurança Críticas**](#2-vulnerabilidades-de-segurança-críticas)
-      - [**3. Indisponibilidade Operacional**](#3-indisponibilidade-operacional)
-      - [**4. Falhas de Compliance e Auditoria**](#4-falhas-de-compliance-e-auditoria)
-    - [**Recomendações Arquiteturais**](#recomendações-arquiteturais)
-      - [**1. Implementação de Nova Arquitetura**](#1-implementação-de-nova-arquitetura)
-      - [**2. Mecanismos de Tolerância a Falhas**](#2-mecanismos-de-tolerância-a-falhas)
-      - [**3. Segurança e Compliance**](#3-segurança-e-compliance)
-      - [**4. Escalabilidade e Performance**](#4-escalabilidade-e-performance)
 - [4. Arquitetura do Sistema Novo – Especificação de Requisitos](#4-arquitetura-do-sistema-novo--especificação-de-requisitos)
   - [4.1 Requisitos Não Funcionais do Sistema Novo](#41-requisitos-não-funcionais-do-sistema-novo)
-    - [**RNF-01: Rastreabilidade** **PRIORIDADE ALTA**](#rnf-01-rastreabilidade-prioridade-alta)
-    - [**RNF-02: Segurança** **PRIORIDADE ALTA**](#rnf-02-segurança-prioridade-alta)
-    - [**RNF-03: Escalabilidade** **PRIORIDADE ALTA**](#rnf-03-escalabilidade-prioridade-alta)
   - [4.2 Justificativas para RNFs](#42-justificativas-para-rnfs)
     - [4.2.1 Controle de Riscos e Mitigação](#421-controle-de-riscos-e-mitigação)
     - [4.2.2 Argumentação por RNF](#422-argumentação-por-rnf)
-      - [**Rastreabilidade**](#rastreabilidade)
-      - [**Segurança**](#segurança)
-      - [**Escalabilidade**](#escalabilidade)
   - [4.3 Melhorias Esperadas com Implementação de RNFs](#43-melhorias-esperadas-com-implementação-de-rnfs)
     - [4.3.1 Melhorias por RNF](#431-melhorias-por-rnf)
     - [4.3.2 Indicadores Consolidados](#432-indicadores-consolidados)
@@ -110,116 +64,28 @@
     - [4.4.4 Mapa de Rastreabilidade](#444-mapa-de-rastreabilidade)
 - [5. Avaliação dos Mecanismos Utilizados no Sistema Atual (Diagnóstico ATAM)](#5-avaliação-dos-mecanismos-utilizados-no-sistema-atual-diagnóstico-atam)
   - [5.1 Mapa de RNFs](#51-mapa-de-rnfs)
-    - [RNFs Priorizados](#rnfs-priorizados)
-    - [Matriz de Criticidade por Etapa](#matriz-de-criticidade-por-etapa)
-    - [Inter-Relação de RNFs](#inter-relação-de-rnfs)
   - [5.2 Revisão do Mapa de RNFs e Vulnerabilidades](#52-revisão-do-mapa-de-rnfs-e-vulnerabilidades)
-    - [**Fluxo de Trabalho do Sistema Atual (AS-IS)**](#fluxo-de-trabalho-do-sistema-atual-as-is)
-    - [**Consolidação dos RNFs e Vulnerabilidades Mapeadas**](#consolidação-dos-rnfs-e-vulnerabilidades-mapeadas)
     - [5.2.1 RNF-01 — Escalabilidade](#521-rnf-01--escalabilidade)
-      - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada)
-      - [B. Saída – Registros de Transações Corretas e Inadequadas](#b-saída--registros-de-transações-corretas-e-inadequadas)
-      - [C. Controle do RNF – Indicação de Controle](#c-controle-do-rnf--indicação-de-controle)
     - [5.2.2 RNF-02 — Segurança](#522-rnf-02--segurança)
-      - [A. Entrada - Dados e Transações de Entrada](#a-entrada---dados-e-transações-de-entrada-1)
-      - [B. Saída - Registros de Transações Corretas e Inadequadas](#b-saída---registros-de-transações-corretas-e-inadequadas)
-      - [C. Controle do RNF - Indicação de Controle](#c-controle-do-rnf---indicação-de-controle)
-      - [1ª Etapa (Elaboração de Cronograma) - Controle de Acesso ao SharePoint:](#1ª-etapa-elaboração-de-cronograma---controle-de-acesso-ao-sharepoint)
-      - [2ª Etapa (Documentação Miro/TAP) - Duplo Controle:](#2ª-etapa-documentação-mirotap---duplo-controle)
-      - [3ª Etapa (Reporte Mensal) - Controle de Atualização:](#3ª-etapa-reporte-mensal---controle-de-atualização)
-      - [4ª Etapa (Armazenamento de Dados) - Controle de Inserção/Alteração:](#4ª-etapa-armazenamento-de-dados---controle-de-inserçãoalteração)
-      - [5ª Etapa (Geração de Relatórios) - Controle de Acesso e Exportação:](#5ª-etapa-geração-de-relatórios---controle-de-acesso-e-exportação)
     - [5.2.3 RNF-03 — Rastreabilidade](#523-rnf-03--rastreabilidade)
-      - [A. Entrada](#a-entrada)
-      - [B. Saída](#b-saída)
-      - [C. Controle do RNF](#c-controle-do-rnf)
   - [5.3 Táticas Arquiteturais e Componentes Adotados](#53-táticas-arquiteturais-e-componentes-adotados)
     - [5.3.1 RNF-01 — Escalabilidade](#531-rnf-01--escalabilidade)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos)
     - [5.3.2 RNF-02 — Segurança](#532-rnf-02--segurança)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-1)
-        - [1ª Etapa (Elaboração de Cronograma) - SharePoint Audit Logs:](#1ª-etapa-elaboração-de-cronograma---sharepoint-audit-logs)
-        - [2ª Etapa (Documentação Miro/TAP):](#2ª-etapa-documentação-mirotap)
-        - [3ª Etapa (Reporte Mensal) - SharePoint Audit Logs:](#3ª-etapa-reporte-mensal---sharepoint-audit-logs)
-        - [4ª Etapa (Armazenamento de Dados) - SharePoint Audit Logs:](#4ª-etapa-armazenamento-de-dados---sharepoint-audit-logs)
-        - [5ª Etapa (Geração de Relatórios):](#5ª-etapa-geração-de-relatórios)
-        - [Componentes Transversais de Monitoramento de Segurança:](#componentes-transversais-de-monitoramento-de-segurança)
-        - [Indicadores de Nível de Serviço de Segurança (SLIs/SLOs):](#indicadores-de-nível-de-serviço-de-segurança-slisslos)
-        - [Tipo de Monitoramento:](#tipo-de-monitoramento)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-1)
-        - [Táticas Preventivas:](#táticas-preventivas)
-          - [1ª Etapa (Elaboração de Cronograma) - Controle de Acesso:](#1ª-etapa-elaboração-de-cronograma---controle-de-acesso)
-          - [2ª Etapa (Documentação Miro/TAP) - Rastreabilidade e Controle de Integridade:](#2ª-etapa-documentação-mirotap---rastreabilidade-e-controle-de-integridade)
-          - [3ª Etapa (Reporte Mensal) - Validação de Status:](#3ª-etapa-reporte-mensal---validação-de-status)
-          - [4ª Etapa (Armazenamento de Dados) - Controle de Alterações Críticas:](#4ª-etapa-armazenamento-de-dados---controle-de-alterações-críticas)
-          - [5ª Etapa (Geração de Relatórios) - Controle de Exportação:](#5ª-etapa-geração-de-relatórios---controle-de-exportação)
-          - [Táticas Preventivas Transversais (Microsoft 365):](#táticas-preventivas-transversais-microsoft-365)
-        - [Táticas Reativas:](#táticas-reativas)
-          - [Detecção de Violações:](#detecção-de-violações)
-          - [Contenção de Incidentes:](#contenção-de-incidentes)
-          - [Correção e Recuperação:](#correção-e-recuperação)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-1)
-        - [Componentes de Recuperação por Tipo de Incidente:](#componentes-de-recuperação-por-tipo-de-incidente)
-          - [1. Acesso Inadequado a Cronogramas/TAPs/Documentos (Violação de Segregação por Projeto):](#1-acesso-inadequado-a-cronogramastapsdocumentos-violação-de-segregação-por-projeto)
-          - [2. Manipulação de Dados em Transferência Manual (Miro → TAP no SharePoint):](#2-manipulação-de-dados-em-transferência-manual-miro--tap-no-sharepoint)
-          - [3. Alteração Não Autorizada de Documentos Críticos (TAP Aprovado, Cronograma Baseline):](#3-alteração-não-autorizada-de-documentos-críticos-tap-aprovado-cronograma-baseline)
-          - [4. Exclusão Acidental ou Maliciosa de Documentos:](#4-exclusão-acidental-ou-maliciosa-de-documentos)
-          - [5. Exportação Não Autorizada e Vazamento de Informações:](#5-exportação-não-autorizada-e-vazamento-de-informações)
-          - [6. Indisponibilidade por Falha da Microsoft 365:](#6-indisponibilidade-por-falha-da-microsoft-365)
     - [5.3.3 RNF-03 — Rastreabilidade](#533-rnf-03--rastreabilidade)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-2)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-2)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-2)
   - [5.4 Análise de Causas e Impactos](#54-análise-de-causas-e-impactos)
     - [5.4.1 RNF-01 — Escalabilidade](#541-rnf-01--escalabilidade)
-      - [Causas e Impactos da Quebra de Escalabilidade](#causas-e-impactos-da-quebra-de-escalabilidade)
-      - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço)
-      - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos)
     - [5.4.2 RNF-02 — Segurança](#542-rnf-02--segurança)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-3)
-        - [Matriz Consolidada de Recuperação por Tipo de Incidente:](#matriz-consolidada-de-recuperação-por-tipo-de-incidente)
-        - [Template de Relatório de Incidente para Gestão:](#template-de-relatório-de-incidente-para-gestão)
-        - [Documentação de Suporte para Justificativas (Anexos-Padrão):](#documentação-de-suporte-para-justificativas-anexos-padrão)
-        - [Critérios para Escalonamento de Incidentes:](#critérios-para-escalonamento-de-incidentes)
-        - [Exemplo de Justificativa Consolidada para Alta Gestão:](#exemplo-de-justificativa-consolidada-para-alta-gestão)
-        - [Vulnerabilidade Final de Recuperação:](#vulnerabilidade-final-de-recuperação)
     - [5.4.3 RNF-03 — Rastreabilidade](#543-rnf-03--rastreabilidade)
-      - [Causas e Impactos da Quebra de Rastreabilidade](#causas-e-impactos-da-quebra-de-rastreabilidade)
-      - [Detalhamento da Quebra de Nível de Serviço](#detalhamento-da-quebra-de-nível-de-serviço-1)
-      - [Como recuperar/subsidiar o tratamento de impactos](#como-recuperarsubsidiar-o-tratamento-de-impactos-1)
 - [6. Especificação da Solução Técnica do Sistema Novo](#6-especificação-da-solução-técnica-do-sistema-novo)
   - [6.1 Revisão do Mapa de RNFs do Sistema Novo](#61-revisão-do-mapa-de-rnfs-do-sistema-novo)
   - [6.2 Revisão do Mapa de RNFs do Sistema Novo e Vulnerabilidades Eliminadas](#62-revisão-do-mapa-de-rnfs-do-sistema-novo-e-vulnerabilidades-eliminadas)
     - [6.2.1 RNF-01 — Escalabilidade](#621-rnf-01--escalabilidade)
-      - [A. Entrada](#a-entrada-1)
-      - [B. Saída](#b-saída-1)
-      - [C. Controle do RNF](#c-controle-do-rnf-1)
     - [6.2.2 RNF-02 — Segurança](#622-rnf-02--segurança)
-      - [A. Entrada](#a-entrada-2)
-      - [B. Saída](#b-saída-2)
-      - [C. Controle do RNF](#c-controle-do-rnf-2)
     - [6.2.3 RNF-03 — Rastreabilidade](#623-rnf-03--rastreabilidade)
-      - [A. Entrada — Dados e Transações de Entrada](#a-entrada--dados-e-transações-de-entrada)
-        - [Descrição das Entradas](#descrição-das-entradas)
-      - [B. Saída — Registros de Transações Corretas e Inadequadas](#b-saída--registros-de-transações-corretas-e-inadequadas-1)
-        - [Descrição das Saídas](#descrição-das-saídas)
-      - [C. Controle do RNF — Mecanismos e Táticas de Controle](#c-controle-do-rnf--mecanismos-e-táticas-de-controle)
-        - [Descrição dos Controles](#descrição-dos-controles)
   - [6.3 Táticas Arquiteturais e Componentes Adotados (Sistema Novo)](#63-táticas-arquiteturais-e-componentes-adotados-sistema-novo)
     - [6.3.1 RNF-01 — Escalabilidade](#631-rnf-01--escalabilidade)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-3)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-3)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-4)
     - [6.3.2 RNF-02 — Segurança](#632-rnf-02--segurança)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-4)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-4)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-5)
     - [6.3.3 RNF-03 — Rastreabilidade](#633-rnf-03--rastreabilidade)
-      - [A. Como monitorar o RNF](#a-como-monitorar-o-rnf-5)
-      - [B. Como resolver o RNF (Preventivo e Reativo)](#b-como-resolver-o-rnf-preventivo-e-reativo-5)
-      - [C. Como recuperar/subsidiar o tratamento de impactos](#c-como-recuperarsubsidiar-o-tratamento-de-impactos-6)
   - [6.4 Consolidação Técnica da Solução](#64-consolidação-técnica-da-solução)
 - [7. Simulação do Sistema](#7-simulação-do-sistema)
   - [7.1 Simulação RNF - 01: Escalabilidade](#71-simulação-rnf---01-escalabilidade)
@@ -227,77 +93,26 @@
       - [7.1.1.1 Modelo de Rede de Filas (JMT)](#7111-modelo-de-rede-de-filas-jmt)
       - [7.1.1.2 Validação da Carga (Throughput de Entrada)](#7112-validação-da-carga-throughput-de-entrada)
       - [7.1.1.3 Identificação do Gargalo (Utilização)](#7113-identificação-do-gargalo-utilização)
-        - [Gráfico de Utilização - Acesso Projeto](#gráfico-de-utilização---acesso-projeto)
-        - [Gráfico de Utilização - Acesso Relatorio](#gráfico-de-utilização---acesso-relatorio)
-        - [Gráfico de Utilização - Acesso Contrato](#gráfico-de-utilização---acesso-contrato)
-        - [Gráfico de Utilização - Navegacao](#gráfico-de-utilização---navegacao)
       - [7.1.1.4 Consequência da Saturação (Tempo de Fila)](#7114-consequência-da-saturação-tempo-de-fila)
-        - [Gráfico de Tempo de Fila - Acesso Projeto](#gráfico-de-tempo-de-fila---acesso-projeto)
-        - [Gráfico de Tempo de Fila - Acesso Relatorio](#gráfico-de-tempo-de-fila---acesso-relatorio)
-        - [Gráfico de Tempo de Fila - Acesso Contrato](#gráfico-de-tempo-de-fila---acesso-contrato)
       - [7.1.1.5 Análise Adicional (Número de Clientes)](#7115-análise-adicional-número-de-clientes)
       - [7.1.1.6 Conclusão da Simulação AS-IS](#7116-conclusão-da-simulação-as-is)
     - [7.1.2 Simulação Sistema: Novo](#712-simulação-sistema-novo)
       - [7.1.2.1 Validação da Carga (Throughput de Entrada)](#7121-validação-da-carga-throughput-de-entrada)
       - [7.1.2.2 Identificação do Gargalo (Utilização)](#7122-identificação-do-gargalo-utilização)
-        - [Gráfico de Utilização - Acesso Contrato](#gráfico-de-utilização---acesso-contrato-1)
-        - [Gráfico de Utilização - Navegacao](#gráfico-de-utilização---navegacao-1)
-        - [Gráfico de Utilização - Acesso Projeto](#gráfico-de-utilização---acesso-projeto-1)
-        - [Gráfico de Utilização - Acesso Relatorio](#gráfico-de-utilização---acesso-relatorio-1)
       - [7.1.2.3 Consequência da Carga (Tempo de Fila)](#7123-consequência-da-carga-tempo-de-fila)
-        - [Gráfico de Tempo de Fila - Acesso Projeto](#gráfico-de-tempo-de-fila---acesso-projeto-1)
-        - [Gráfico de Tempo de Fila - Acesso Contrato](#gráfico-de-tempo-de-fila---acesso-contrato-1)
-        - [Gráfico de Tempo de Fila - Acesso Relatorio](#gráfico-de-tempo-de-fila---acesso-relatorio-1)
       - [7.1.2.4 Análise Adicional (Número de Clientes)](#7124-análise-adicional-número-de-clientes)
       - [7.1.2.5 Simulação TO-BE](#7125-simulação-to-be)
       - [7.1.2.6 Estratégias para Atingir a Melhoria de 150% no Service Time e Escalabilidade de 300%](#7126-estratégias-para-atingir-a-melhoria-de-150-no-service-time-e-escalabilidade-de-300)
-        - [Comparativo Sistema Novo vs Antigo e Estratégias](#comparativo-sistema-novo-vs-antigo-e-estratégias)
   - [7.2 Simulação RNF - 02 (Segurança)](#72-simulação-rnf---02-segurança)
-  - [7.2.1 Cenário de simulação – Cadastro errado de usuário](#721-cenário-de-simulação--cadastro-errado-de-usuário)
-    - [Contexto](#contexto)
+    - [7.2.1 Cenário de simulação – Cadastro errado de usuário](#721-cenário-de-simulação--cadastro-errado-de-usuário)
     - [7.2.1.1 Simulação Sistema: Atual](#7211-simulação-sistema-atual)
-      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual)
-      - [Resultados – Sistema Atual](#resultados--sistema-atual)
-      - [Interpretação](#interpretação)
-      - [Limitações](#limitações)
     - [7.2.2.2 Simulação Sistema: Novo](#7222-simulação-sistema-novo)
-      - [Contexto](#contexto-1)
-      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura)
-      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura)
-      - [Interpretação](#interpretação-1)
-      - [Justificativas das Melhorias](#justificativas-das-melhorias)
-      - [Limitações](#limitações-1)
-      - [Conclusão](#conclusão)
   - [7.2.2 Simulação RNF-05 – Conflito de Edição](#722-simulação-rnf-05--conflito-de-edição)
     - [7.2.2.1 Simulação Sistema: Atual](#7221-simulação-sistema-atual)
-      - [Contexto](#contexto-2)
-      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual-1)
-      - [Resultados – Sistema Atual](#resultados--sistema-atual-1)
-      - [Interpretação](#interpretação-2)
-      - [Limitações](#limitações-2)
     - [7.2.2.2 Simulação Sistema: Novo](#7222-simulação-sistema-novo-1)
-      - [Contexto](#contexto-3)
-      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura-1)
-      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura-1)
-      - [Interpretação](#interpretação-3)
-      - [Justificativa das Melhorias](#justificativa-das-melhorias)
-      - [Limitações](#limitações-3)
-      - [Conclusão](#conclusão-1)
   - [7.2.3 Simulação RNF-12 – Execução sem TAP aprovado](#723-simulação-rnf-12--execução-sem-tap-aprovado)
     - [7.2.3.1 Simulação Sistema: Atual](#7231-simulação-sistema-atual)
-      - [Contexto](#contexto-4)
-      - [Configuração do modelo (Sistema Atual)](#configuração-do-modelo-sistema-atual-2)
-      - [Resultados – Sistema Atual](#resultados--sistema-atual-2)
-      - [Interpretação](#interpretação-4)
-      - [Limitações](#limitações-4)
     - [7.2.3.1 Simulação Sistema: Novo](#7231-simulação-sistema-novo)
-      - [Contexto](#contexto-5)
-      - [Configuração do modelo (Nova Arquitetura)](#configuração-do-modelo-nova-arquitetura-2)
-      - [Resultados – Nova Arquitetura](#resultados--nova-arquitetura-2)
-      - [Interpretação](#interpretação-5)
-      - [Justificativa das Melhorias](#justificativa-das-melhorias-1)
-      - [Limitações](#limitações-5)
-      - [Conclusão](#conclusão-2)
   - [7.3 Simulação RNF - 03 (Rastreabilidade)](#73-simulação-rnf---03-rastreabilidade)
     - [7.3.1 Simulação Sistema: Atual](#731-simulação-sistema-atual)
       - [7.3.1.1 Cenário 10 - Encerramento manual de projeto (AS-IS)](#7311-cenário-10---encerramento-manual-de-projeto-as-is)
@@ -307,15 +122,49 @@
       - [7.3.2.1 Cenário 10 - Encerramento automático do projeto (TO-BE)](#7321-cenário-10---encerramento-automático-do-projeto-to-be)
       - [7.3.2.2 Cenário 11 - Controle automatizado de cronograma (TO-BE)](#7322-cenário-11---controle-automatizado-de-cronograma-to-be)
       - [7.3.2.3 Cenário 14 - Registro obrigatório / bloqueio (TO-BE)](#7323-cenário-14---registro-obrigatório--bloqueio-to-be)
-  - [Conclusão final - RNF-03 (Rastreabilidade)](#conclusão-final---rnf-03-rastreabilidade)
 - [8. Implementação dos Mecanismos Arquiteturais](#8-implementação-dos-mecanismos-arquiteturais)
-  - [8.1 Testes e Validação dos Mecanismos](#81-testes-e-validação-dos-mecanismos)
+  - [8.1 RNF-01 Segurança](#81-rnf-01-segurança)
+    - [8.1.1 Definição do Cenário](#811-definição-do-cenário)
+    - [8.1.2 Especificação e Codificação dos Componentes Indicados na Tática](#812-especificação-e-codificação-dos-componentes-indicados-na-tática)
+  - [8.1 RNF-02 Escalabilidade](#81-rnf-02-escalabilidade)
+    - [8.2.1 Definição do Cenário](#821-definição-do-cenário)
+    - [8.2.2 Especificação e Codificação dos Componentes Indicados na Tática](#822-especificação-e-codificação-dos-componentes-indicados-na-tática)
+  - [8.1 RNF-03 Rastreabilidade](#81-rnf-03-rastreabilidade)
+    - [8.3.1 Definição do Cenário](#831-definição-do-cenário)
+    - [8.3.2 Especificação e Codificação dos Componentes Indicados na Tática](#832-especificação-e-codificação-dos-componentes-indicados-na-tática)
 - [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
-- [10. Ajustes na Implementação](#10-ajustes-na-implementação)
-- [11. Evidências de Testes Não Funcionais](#11-evidências-de-testes-não-funcionais)
-- [12. Medição e Avaliação do Sistema Novo](#12-medição-e-avaliação-do-sistema-novo)
-- [13. Tradeoffs Arquiteturais](#13-tradeoffs-arquiteturais)
-- [14. \[A construir\]](#14-a-construir)
+- [9 Testes e Validação dos Mecanismos](#9-testes-e-validação-dos-mecanismos)
+  - [9.1 RNF-01](#91-rnf-01)
+    - [9.1.1 Escalabilidade](#911-escalabilidade)
+    - [9.1.2 Registros de Testes Automatizados](#912-registros-de-testes-automatizados)
+    - [9.1.3 Avaliação dos Resultados e Limites do Sistema](#913-avaliação-dos-resultados-e-limites-do-sistema)
+    - [9.1.4 Avaliação dos Riscos Resultantes](#914-avaliação-dos-riscos-resultantes)
+  - [9.2 RNF-02 Segurança](#92-rnf-02-segurança)
+    - [9.2.2 Registros de Testes Automatizados](#922-registros-de-testes-automatizados)
+    - [9.2.3 Avaliação dos Resultados e Limites do Sistema](#923-avaliação-dos-resultados-e-limites-do-sistema)
+    - [9.2.4 Avaliação dos Riscos Resultantes](#924-avaliação-dos-riscos-resultantes)
+  - [9.3 RNF-03 Rastreabilidade](#93-rnf-03-rastreabilidade)
+    - [9.3.2 Registros de Testes Automatizados](#932-registros-de-testes-automatizados)
+    - [9.3.3 Avaliação dos Resultados e Limites do Sistema](#933-avaliação-dos-resultados-e-limites-do-sistema)
+    - [9.3.4 Avaliação dos Riscos Resultantes](#934-avaliação-dos-riscos-resultantes)
+- [10. Revisão do Modelo de Simulação do Sistema Novo](#10-revisão-do-modelo-de-simulação-do-sistema-novo)
+  - [10.1 RNF-01 Escalabilidade](#101-rnf-01-escalabilidade)
+    - [10.1.1 Simulação das Melhorias](#1011-simulação-das-melhorias)
+    - [10.1.2 Simulação das Condições de Exceção](#1012-simulação-das-condições-de-exceção)
+    - [10.1.3 Simulação das Condições Limites do Sistema com as Melhorias](#1013-simulação-das-condições-limites-do-sistema-com-as-melhorias)
+  - [10.1 RNF-02 Segurança](#101-rnf-02-segurança)
+    - [10.2.1 Simulação das Melhorias](#1021-simulação-das-melhorias)
+    - [10.2.2 Simulação das Condições de Exceção](#1022-simulação-das-condições-de-exceção)
+    - [10.2.3 Simulação das Condições Limites do Sistema com as Melhorias](#1023-simulação-das-condições-limites-do-sistema-com-as-melhorias)
+  - [10.3 RNF-03 Rastreabilidade](#103-rnf-03-rastreabilidade)
+    - [10.3.1 Simulação das Melhorias](#1031-simulação-das-melhorias)
+    - [10.3.2 Simulação das Condições de Exceção](#1032-simulação-das-condições-de-exceção)
+    - [10.3.3 Simulação das Condições Limites do Sistema com as Melhorias](#1033-simulação-das-condições-limites-do-sistema-com-as-melhorias)
+- [11. Ajustes na Implementação](#11-ajustes-na-implementação)
+- [12. Evidências de Testes Não Funcionais](#12-evidências-de-testes-não-funcionais)
+- [13. Medição e Avaliação do Sistema Novo](#13-medição-e-avaliação-do-sistema-novo)
+- [14. Tradeoffs Arquiteturais](#14-tradeoffs-arquiteturais)
+- [15. [A construir]](#15-a-construir)
 - [Referências](#referências)
 
 # Projeto · Módulo 08 – Arquitetura Digital Segura e Tolerante a Falhas
@@ -3954,50 +3803,176 @@ Para mais detalhes sobre os cálculos, gráficos e código de simulação, acess
 [Simulação RNF-03 – Rastreabilidade (Colab)](https://colab.research.google.com/drive/1tm95Ku1UB5PkfNQb6Vk5lEn-Uef4TX7D?usp=sharing)
 
 ---
+    *Importante: 
+    As seções 8, 9 e 10 funcionarão como um pipe, e tratarão de cada um dos três RNFs individualmente passando por diferentes etapas de teste e validação.
+---
 
 # 8. Implementação dos Mecanismos Arquiteturais
 
 _(Descreva brevemente a implementação prática das táticas e componentes arquiteturais definidos.)_
 
+## 8.1 RNF-01 Segurança
+_(Introduzir Seção)_
+
+### 8.1.1 Definição do Cenário
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+
+### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
+_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+
 ---
 
-## 8.1 Testes e Validação dos Mecanismos
+## 8.1 RNF-02 Escalabilidade
+_(Introduzir Seção)_
+
+### 8.2.1 Definição do Cenário
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+
+### 8.2.2 Especificação e Codificação dos Componentes Indicados na Tática
+_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+
+---
+
+## 8.1 RNF-03 Rastreabilidade
+_(Introduzir Seção)_
+
+### 8.3.1 Definição do Cenário
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+
+### 8.3.2 Especificação e Codificação dos Componentes Indicados na Tática
+_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+
+---
+
+# 9 Testes e Validação dos Mecanismos
 
 _(Resuma os testes automatizados criados para validar os mecanismos implementados e indique onde estão localizados no repositório.)_
 
+## 9.1 RNF-01
+_(Introduzir brevemente o requisito)_
+
+### 9.1.1 Escalabilidade
+_(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
+
+### 9.1.2 Registros de Testes Automatizados
+_(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
+
+### 9.1.3 Avaliação dos Resultados e Limites do Sistema
+_(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
+
+### 9.1.4 Avaliação dos Riscos Resultantes
+_(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
+
 ---
 
-# 9. Revisão do Modelo de Simulação do Sistema Novo
+## 9.2 RNF-02 Segurança
+_(Introduzir brevemente o requisito)_
+
+### 9.2.1 
+_(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
+
+### 9.2.2 Registros de Testes Automatizados
+_(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
+
+### 9.2.3 Avaliação dos Resultados e Limites do Sistema
+_(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
+
+### 9.2.4 Avaliação dos Riscos Resultantes
+_(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
+
+---
+
+## 9.3 RNF-03 Rastreabilidade
+_(Introduzir brevemente o requisito)_
+
+### 9.3.1 
+_(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
+
+### 9.3.2 Registros de Testes Automatizados
+_(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
+
+### 9.3.3 Avaliação dos Resultados e Limites do Sistema
+_(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
+
+### 9.3.4 Avaliação dos Riscos Resultantes
+_(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
+
+---
+
+# 10. Revisão do Modelo de Simulação do Sistema Novo
 
 _(Apresente a revisão do modelo de simulação e a comparação entre os resultados do sistema atual e do novo, incluindo condições normais, de exceção e de limite.)_
 
+## 10.1 RNF-01 Escalabilidade
+
+### 10.1.1 Simulação das Melhorias
+_(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
+
+### 10.1.2 Simulação das Condições de Exceção
+_(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
+
+### 10.1.3 Simulação das Condições Limites do Sistema com as Melhorias
+_(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
+
 ---
 
-# 10. Ajustes na Implementação
+## 10.1 RNF-02 Segurança
+
+### 10.2.1 Simulação das Melhorias
+_(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
+
+### 10.2.2 Simulação das Condições de Exceção
+_(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
+
+### 10.2.3 Simulação das Condições Limites do Sistema com as Melhorias
+_(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
+
+---
+
+## 10.3 RNF-03 Rastreabilidade
+
+### 10.3.1 Simulação das Melhorias
+_(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
+
+### 10.3.2 Simulação das Condições de Exceção
+_(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
+
+### 10.3.3 Simulação das Condições Limites do Sistema com as Melhorias
+_(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
+
+---
+
+# 11. Ajustes na Implementação
 
 _(Liste os ajustes realizados após os testes, indicando melhorias, critérios de aceitação e evidências no repositório.)_
 
 ---
 
-# 11. Evidências de Testes Não Funcionais
+# 12. Evidências de Testes Não Funcionais
 
 _(Apresente os resultados e análises dos testes automatizados não funcionais realizados após os ajustes de implementação.)_
 
 ---
 
-# 12. Medição e Avaliação do Sistema Novo
+# 13. Medição e Avaliação do Sistema Novo
 
 _(Descreva como as medições estruturais e comportamentais comprovam o aprimoramento arquitetural obtido.)_
 
 ---
 
-# 13. Tradeoffs Arquiteturais
+# 14. Tradeoffs Arquiteturais
 
 _(Analise os ganhos e perdas resultantes das decisões arquiteturais e o impacto sobre os requisitos não funcionais e o negócio.)_
 
 ---
 
-# 14. [A construir]
+# 15. [A construir]
 
 _(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 forem definidos.)_
 
