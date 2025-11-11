@@ -3815,7 +3815,7 @@ _(Descreva brevemente a implementação prática das táticas e componentes arqu
 _(Introduzir Seção)_
 
 ### 8.1.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
 _(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
@@ -3828,7 +3828,7 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 _(Introduzir Seção)_
 
 ### 8.2.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
 
 ### 8.2.2 Especificação e Codificação dos Componentes Indicados na Tática
 _(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
@@ -3841,7 +3841,7 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 _(Introduzir Seção)_
 
 ### 8.3.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes.)_
+_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
 
 ### 8.3.2 Especificação e Codificação dos Componentes Indicados na Tática
 _(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
@@ -3922,7 +3922,7 @@ _(A. Cenários Limites de Utilização: Identificação de cenários limites de 
 
 ---
 
-## 10.1 RNF-02 Segurança
+## 10.2 RNF-02 Segurança
 
 ### 10.2.1 Simulação das Melhorias
 _(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
