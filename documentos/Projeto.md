@@ -3812,10 +3812,11 @@ Para mais detalhes sobre os cálculos, gráficos e código de simulação, acess
 _(Descreva brevemente a implementação prática das táticas e componentes arquiteturais definidos.)_
 
 ## 8.1 RNF-01 Segurança
-_(Introduzir Seção)_
 
-### 8.1.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
+&emsp; Esta etapa descreve a especificação e codificação dos testes automatizados de segurança do sistema de Portfólio do Metrô, com base na abordagem Desenvolvimento Orientado a Testes (TDD).
+O foco é validar os mecanismos de autenticação, controle de acesso e integridade das informações trocadas entre as ferramentas Miro, SharePoint, Power Automate e Power BI, considerando tanto o sistema atual (fragmentado e manual) quanto o modelo proposto (integrado por middleware).
+
+
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
 _(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
@@ -3824,7 +3825,7 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 
 ---
 
-## 8.1 RNF-02 Escalabilidade
+## 8.2 RNF-02 Escalabilidade
 _(Introduzir Seção)_
 
 ### 8.2.1 Definição do Cenário
@@ -3837,7 +3838,7 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 
 ---
 
-## 8.1 RNF-03 Rastreabilidade
+## 8.3 RNF-03 Rastreabilidade
 _(Introduzir Seção)_
 
 ### 8.3.1 Definição do Cenário
