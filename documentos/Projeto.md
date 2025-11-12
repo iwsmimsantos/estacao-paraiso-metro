@@ -3824,18 +3824,152 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 
 ---
 
-## 8.1 RNF-02 Escalabilidade
-_(Introduzir Seção)_
+## 8.1 RNF-02 Escalabilidade  
+**Introdução**  
+A escalabilidade refere-se à capacidade dos mecanismos arquiteturais da solução — que integra agentes de IA ao processo de gestão de projetos do Metrô-SP (fluxo Miro → processamento/IA → SharePoint) — de manter desempenho, disponibilidade e integridade sob aumento de carga e picos de utilização.  
+Os testes de escalabilidade validam throughput, latência (p50/p95/p99), taxa de erro, comportamento sob degradação parcial e preservação de rastreabilidade (`trace_id`) e segurança durante estresse.
 
 ### 8.2.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
+
+#### A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes
+Serão executados cenários de carga, pico e degradação para os seguintes componentes:
+
+1. **Ingestor Miro — Pico de Submissões**
+   - **Descrição:** envio massivo de boards/artefatos ao endpoint de ingestão.  
+   - **Entrada:** 1.000 requisições simuladas (payload médio ~200 KB), ramp-up 0 → 1.000 em 5–10 min.  
+   - **Objetivo:** avaliar throughput, latência e perda de eventos.
+
+2. **Orquestrador de Agentes IA — Concurrency de Workflows**
+   - **Descrição:** execução simultânea de workflows que disparam múltiplas chamadas a modelos IA.  
+   - **Entrada:** 200 workflows paralelos (cada workflow = 5–10 chamadas IA).  
+   - **Objetivo:** medir latência por chamada IA, taxa de erros por sessão e comportamento de enfileiramento.
+
+3. **Sincronizador SharePoint — Upload Concomitante**
+   - **Descrição:** uploads concorrentes de artefatos aprovados para SharePoint.  
+   - **Entrada:** 500 uploads simultâneos (1–10 MB).  
+   - **Objetivo:** validar integridade de arquivos (hash) e retries em rede degradada.
+
+4. **Serviço de Auditoria / Logging — Burst de Eventos**
+   - **Descrição:** emissão massiva de eventos de auditoria.  
+   - **Entrada:** burst de 10.000 eventos/s por 2 minutos.  
+   - **Objetivo:** verificar ingestão, indexação e consulta por `trace_id`.
+
+5. **IAM (AuthN/AuthZ) — Sessões Ativas**
+   - **Descrição:** grande volume de autenticações/refresh tokens.  
+   - **Entrada:** 50.000 tokens ativos simulados.  
+   - **Objetivo:** avaliar performance de autenticação e latência de autorização.
+
+
+#### B. Especificação dos critérios de aceitação dos testes
+Métricas e limites (SLOs/SLA) a considerar:
+
+- **Taxa de sucesso:** ≥ 99.5% (2xx) durante execução controlada.  
+- **Latência (p95 / p99):**  
+  - Ingestor p95 < 800 ms; p99 < 1.5 s.  
+  - Orquestrador (chamada IA) p95 < 600 ms; p99 < 1.2 s.  
+  - SharePoint upload p95 < 2 s (para arquivos ≤ 5 MB).  
+  - Auditoria p95 ingest < 150 ms.  
+  - IAM p95 autenticação < 100 ms.  
+- **Taxa de erro:** < 1% (4xx/5xx) durante pico; exceções críticas (perda de dados/corrupção) = 0.  
+- **Rastreabilidade:** 100% dos eventos críticos com `trace_id`, timestamp e versão do componente/modelo.  
+- **Recuperação/resiliência:** MTTR < 2 minutos após falha simulada; ≥ 95% das requisições reprocessadas com retry/backoff dentro de 5 minutos.  
+- **Integridade:** hashes de arquivos pré e pós upload idênticos (0 corrupções).  
+- **Segurança (durante carga):** nenhum high-severity identificado por scans básicos; payloads maliciosos não são executados.
+
+
+#### C. Identificação dos cenários de teste relevantes para cada mecanismo/componente
+Mapeamento direto:
+
+- **Ingestor Miro**
+  - Cenários: Pico de Submissões; Worker failover.  
+  - Métricas: throughput, p95 latency, success rate, trace_id persistido.
+
+- **Orquestrador de Agentes IA**
+  - Cenários: Concurrency de Workflows; Rate limiting; Determinismo quando aplicável.  
+  - Métricas: p95/p99 por chamada IA, erro por sessão, logs com versão do modelo.
+
+- **Sincronizador SharePoint**
+  - Cenários: Upload Concomitante; Network Flapping; Permissões negadas.  
+  - Métricas: sucesso de upload, hash, retries bem-sucedidos.
+
+- **Serviço de Auditoria / Logging**
+  - Cenários: Burst de Eventos; Consulta por trace_id.  
+  - Métricas: perda de evento, ingest latency, tempo de consulta.
+
+- **IAM (AuthN/AuthZ)**
+  - Cenários: Sessões Ativas; Token Replay; Expired tokens.  
+  - Métricas: p95 autenticação, rejeição correta de tokens inválidos, logs de segurança.
+
+
+#### D. Alinhamento dos cenários de teste com os cenários de simulação
+Ambiente de staging com simulações controladas:
+
+- **Carga e ramp-up:** Locust ou k6 — executar ramp-up parametrizável (ex.: 0 → N usuários em T minutos) para cenários de pico.  
+- **Falhas parciais / Chaos:** scripts que escalam/reduzem réplicas (kubectl scale), ou Chaos Mesh para provocar queda de pod; medir MTTR e impacto no throughput.  
+- **Rede degradada:** `tc/netem` ou delays programados nos mocks para simular latência/packet loss durante uploads.  
+- **Burst de logs:** geradores de eventos (scripts Python) apontando para pipeline de logging (Fluentd/Logstash/mock) para medir perda e latência.  
+- **Autenticação massiva:** scripts de sessão (OAuth/OpenID flows simulados) para criar grande número de tokens ativos.  
+- **Segurança durante carga:** OWASP ZAP baseline scans e payloads de teste executados enquanto a carga está ativa para verificar comportamento sob estresse.
+
 
 ### 8.2.2 Especificação e Codificação dos Componentes Indicados na Tática
-_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+#### A. Implementação dos mecanismos/componentes de acordo com as especificações
+Para permitir testes de escalabilidade replicáveis, os componentes a implementar no repositório de testes devem incluir, no mínimo:
 
----
+- **Mocks controláveis** (para ambiente de teste):  
+  - `ingestor-mock` (endpoint `/api/ingest`): aceita payloads, gera `trace_id` e grava eventos em arquivo JSON ou DB leve.  
+  - `orchestrator-mock`: simula chamadas IA com delay configurável e registra versão/model prompt.  
+  - `sharepoint-mock`: endpoint de upload que calcula e retorna hash; suporta falhas simuladas.  
+  - `audit-mock`: endpoint de ingestão de eventos que grava e permite consulta por `trace_id`.  
+  - `iam-mock`: endpoints de login/refresh que emitem tokens simulados e validam RBAC.
+
+- **Scripts de carga e simulação:**  
+  - `locustfile.py` (ou `k6` scripts) para cada cenário (ingestor, orchestrator, upload, burst logs, auth).  
+  - Scripts para simulação de falhas (`kill_pod.sh` / `stop_service.sh`) ou toggles de delay (`toggle_network_delay.sh`).
+
+- **Métricas e coleta:**  
+  - Logging estruturado (JSON) contendo `trace_id`, `component`, `timestamp`, `latency`, `status`.  
+  - Exportadores simples (prometheus client) ou arquivos CSV/JSON para análise offline.
+
+- **Automação mínima (CI):**  
+  - Jobs headless para execução rápida de smoke tests (unit/integration).  
+  - Jobs agendados/nightly que executam scripts de carga em staging (se infra disponível).
+
+
+#### B. Garantia da funcionalidade e da aderência à arquitetura definida
+- **Validações automatizadas:**  
+  - Testes unitários (pytest) cobrindo geração de `trace_id`, formatação de logs e handlers de retry.  
+  - Testes de integração básicos para garantir que mocks respondem conforme especificado.
+
+- **Aderência arquitetural:**  
+  - Cada mock/component deve expor a mesma interface esperada na arquitetura (rotas, payloads, cabeçalhos de autenticação).  
+  - Logs e eventos devem conter metadados obrigatórios: `trace_id`, `component`, `version`, `env`, `timestamp`.
+
+- **Requisitos operacionais:**  
+  - Scripts de execução e troubleshooting documentados (ver README).  
+  - Instrumentação mínima (endpoints de health `/health` e métricas `/metrics`) para facilitar integrações com ferramentas de monitoramento.
+
+**Documentação**  
+- No repositório principal deve existir `README.md` com:  
+  - Lista dos componentes usados para os testes (mocks, scripts, ferramentas).  
+  - Instruções de instalação e execução passo a passo (ex.: como rodar Locust headless, comandos para simular rede degradada).  
+  - Exemplo de comando headless recomendado para execução de carga:
+
+```bash
+# Exemplo Locust headless (ingestor)
+locust -f tests/locust/locustfile_ingestor.py --headless -u 150 -r 10 -t 10m --csv=results/ingestor_run
+```
+
+Para cada componente, uma seção docs/<componente>-README.md contendo:
+
+- Dependências e instalação (ex.: pip install -r requirements.txt).
+
+- Comandos de execução local.
+
+- Como ajustar parâmetros de teste (nº de usuários, payload size, delays).
+
+- Como coletar e interpretar os artefatos gerados (logs, CSV, JSON).
 
 ## 8.1 RNF-03 Rastreabilidade
 _(Introduzir Seção)_
