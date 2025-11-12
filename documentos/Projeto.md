@@ -3816,6 +3816,93 @@ _(Descreva brevemente a implementação prática das táticas e componentes arqu
 &emsp; Esta etapa descreve a especificação e codificação dos testes automatizados de segurança do sistema de Portfólio do Metrô, com base na abordagem Desenvolvimento Orientado a Testes (TDD).
 O foco é validar os mecanismos de autenticação, controle de acesso e integridade das informações trocadas entre as ferramentas Miro, SharePoint, Power Automate e Power BI, considerando tanto o sistema atual (fragmentado e manual) quanto o modelo proposto (integrado por middleware).
 
+### 8.1.1 Definição do Cenário
+
+#### A. Definição dos Cenários de Teste de Segurança
+
+**Cenário 1 — Cadastro incorreto de usuário no projeto ou portfólio**
+- Problema identificado:
+
+No sistema atual, um erro no cadastro de usuários (como associar alguém ao projeto errado ou não removê-lo após o encerramento) pode conceder acesso indevido a informações restritas.
+
+- **Objetivo do teste:**
+
+Verificar se o sistema impede o acesso de usuários não vinculados ao projeto ou portfólio correto.
+
+- **Especificação técnica do teste:**
+1. Criar um usuário com permissão em um projeto “A” e tentar acessar documentos do projeto “B”.
+2. Middleware valida o token de autenticação (identificador único do usuário) e compara com as permissões registradas.
+3. Caso o usuário não pertença ao projeto solicitado, o sistema deve:
+    - Negar o acesso;
+    - Registrar o evento na incident queue (fila de incidentes para análise da equipe de segurança);
+    - Gerar log com data, hora, usuário e ação bloqueada.
+
+- **Critério de aceitação:**
+
+O acesso deve ser bloqueado automaticamente em 100% dos casos de permissão incorreta.
+Nenhum documento ou dado deve ser visualizável por usuários não cadastrados no projeto.
+
+*Incident Queue: é uma lista onde o sistema armazena automaticamente todos os alertas de segurança, como tentativas de acesso indevido ou falhas de validação. Isso permite auditoria e acompanhamento posterior pela equipe de segurança.*
+
+**Cenário 2 — Acesso indevido ao Miro antes do bloqueio**
+
+- **Problema identificado:**
+
+Enquanto o Miro permanece desbloqueado, qualquer pessoa com o link pode visualizar ou editar dados, o que representa uma vulnerabilidade grave de exposição de informações.
+
+- **Objetivo do teste:**
+
+Garantir que apenas usuários autenticados possam acessar os quadros do Miro relacionados aos projetos ativos.
+
+- **Especificação técnica do teste:**
+
+1. Simular tentativa de acesso ao link do Miro sem autenticação ou com credenciais incorretas.
+2. Middleware intercepta a requisição e verifica:
+    - Se o link está associado a um projeto ativo;
+    - Se o usuário possui autenticação válida (via Microsoft Entra ID ou token registrado).
+3. Caso contrário, a requisição é bloqueada e registrada como tentativa de violação.
+
+- **Critério de aceitação:**
+
+O sistema deve permitir acesso somente a usuários autenticados com permissões válidas.
+
+Tentativas de acesso anônimo ou não autorizado devem ser registradas em log e bloqueadas imediatamente.
+
+*Middleware: é uma camada de software intermediária que conecta ferramentas diferentes (Miro, SharePoint, Power Automate, etc.), controlando e verificando todas as transações.*
+*Ele funciona como um “filtro de segurança centralizado”, garantindo que as regras de acesso sejam respeitadas antes que qualquer dado seja transmitido.*
+
+**Cenário 3 — Inconsistências entre os dados do Miro e os dados do SharePoint**
+
+- **Problema identificado:**
+
+Atualmente, há um esforço manual para verificar se os dados de avanço do cronograma lançados no Miro estão iguais aos registrados no SharePoint. Isso pode gerar inconsistências, erros humanos e perda de tempo.
+
+- **Objetivo do teste:**
+
+Garantir que os dados transmitidos entre Miro e SharePoint permaneçam idênticos, evitando divergências e manipulações indevidas.
+
+- **Especificação técnica do teste:**
+
+1. Automatizar a comparação entre os dados exportados do Miro e os armazenados no SharePoint.
+2. Middleware executa uma função de checksum — um código numérico que representa o conteúdo do arquivo.
+3. Se o checksum do Miro e do SharePoint não forem iguais, é gerado um alerta de mismatch (diferença entre versões).
+4. O alerta é registrado na incident queue, e o sistema bloqueia a sincronização até correção.
+
+- Critério de aceitação:
+
+O sistema deve identificar e bloquear automaticamente qualquer diferença entre os dados enviados e recebidos.
+
+Pequenas variações irrelevantes (como espaços) não devem ser tratadas como falhas.
+
+*Checksum: é um código gerado a partir do conteúdo de um arquivo.*
+*Se o conteúdo mudar, o código também muda, permitindo detectar alterações.*
+
+*Teste de mismatch: verifica se existem diferenças entre duas versões de um mesmo dado.*
+*Isso garante que o documento transferido não foi alterado, corrompido ou salvo de forma diferente (mesmo por erro de formatação ou espaço em branco).*
+
+*Whitespace: são caracteres invisíveis, como espaços e quebras de linha.*
+*O middleware deve ignorar diferenças causadas apenas por whitespace, para não gerar falsos positivos.*
+
 
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
