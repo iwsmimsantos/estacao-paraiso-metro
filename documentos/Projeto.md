@@ -3913,6 +3913,15 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 - Registro de incidentes: caso algum teste falhe, o evento deve ser registrado na incident queue — uma “fila de incidentes”, ou seja, um painel que armazena todos os erros detectados para posterior análise e correção.
 - Auditoria automatizada: todos os testes devem gerar logs detalhados (data, usuário, tipo de falha e componente afetado).
 
+#### C. Identificação dos cenários de teste relevantes para cada mecanismo/componente
+
+| **Cenário de Simulação** | **Mecanismo/Componente Testado** | **Objetivo do Teste** | **Comportamento Esperado (Critério de Sucesso)** |
+|---------------------------|----------------------------------|------------------------|--------------------------------------------------|
+| **Cadastro incorreto de usuário no projeto ou portfólio** | Mecanismo de autenticação e controle de acesso | Validar se o sistema bloqueia tentativas de acesso com dados incorretos (e-mails inválidos, duplicados ou não registrados). | O sistema deve negar o acesso, registrar o evento na fila de incidentes (*incident queue*) e emitir log de falha. |
+| **Acesso público indevido ao Miro (link desbloqueado)** | Mecanismo de controle de acesso do Miro e middleware (Power Automate) | Garantir que o link público não permita visualização ou edição por pessoas não autenticadas. | O sistema deve bloquear o acesso, registrar o incidente e alertar o administrador responsável. |
+| **Inconsistência entre dados do Miro e SharePoint** | Middleware (camada de integração) e verificação de consistência | Detectar diferenças entre os dados de avanço do cronograma no Miro e no SharePoint. | O sistema deve identificar automaticamente diferenças (inclusive de *whitespace*), registrar o incidente e atualizar o SharePoint conforme o dado validado. |
+
+
 
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
