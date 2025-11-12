@@ -3903,6 +3903,16 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 *Whitespace: são caracteres invisíveis, como espaços e quebras de linha.*
 *O middleware deve ignorar diferenças causadas apenas por whitespace, para não gerar falsos positivos.*
 
+#### B. Critérios Gerais de Aceitação dos Testes
+
+&emsp;Cada cenário de teste possui critérios objetivos de aceitação:
+
+- Acesso seguro: o sistema deve permitir apenas usuários autenticados com permissões específicas de leitura ou edição.
+- Bloqueio de links públicos: qualquer tentativa de acessar o Miro por link público deve resultar em bloqueio imediato.
+- Consistência de dados: toda informação transferida do Miro para o SharePoint deve ser validada automaticamente. Diferenças por whitespace (espaços extras, que antes causavam divergência) devem ser ignoradas.
+- Registro de incidentes: caso algum teste falhe, o evento deve ser registrado na incident queue — uma “fila de incidentes”, ou seja, um painel que armazena todos os erros detectados para posterior análise e correção.
+- Auditoria automatizada: todos os testes devem gerar logs detalhados (data, usuário, tipo de falha e componente afetado).
+
 
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
