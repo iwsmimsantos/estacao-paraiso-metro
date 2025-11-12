@@ -3922,7 +3922,17 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 | **Inconsistência entre dados do Miro e SharePoint** | Middleware (camada de integração) e verificação de consistência | Detectar diferenças entre os dados de avanço do cronograma no Miro e no SharePoint. | O sistema deve identificar automaticamente diferenças (inclusive de *whitespace*), registrar o incidente e atualizar o SharePoint conforme o dado validado. |
 
 
+#### D. Alinhamento dos cenários de teste com os cenários de simulação
 
+&emsp; Os testes automatizados foram alinhados diretamente com os cenários de simulação prática conduzidos pela equipe.
+
+&emsp; Isso garante que os testes de segurança representem fielmente os problemas observados no sistema atual e as soluções esperadas no modelo idealizado:
+
+- O cenário de cadastro errado foi associado ao teste de autenticação e controle de acesso;
+- O cenário de acesso público foi vinculado ao teste de bloqueio e controle de links;
+- O cenário de inconsistência de dados foi mapeado para o teste de verificação de consistência e validação automática de sincronização entre Miro e SharePoint.
+
+&emsp; Dessa forma, a automação de testes cobre tanto a camada de acesso e permissão, quanto a de integridade e auditoria de dados, assegurando que o novo sistema (automatizado e integrado) elimine falhas manuais e reduza riscos de segurança.
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
 _(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
