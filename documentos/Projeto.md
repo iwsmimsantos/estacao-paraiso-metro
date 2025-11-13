@@ -3803,8 +3803,10 @@ Para mais detalhes sobre os cálculos, gráficos e código de simulação, acess
 [Simulação RNF-03 – Rastreabilidade (Colab)](https://colab.research.google.com/drive/1tm95Ku1UB5PkfNQb6Vk5lEn-Uef4TX7D?usp=sharing)
 
 ---
-    *Importante: 
+
+    *Importante:
     As seções 8, 9 e 10 funcionarão como um pipe, e tratarão de cada um dos três RNFs individualmente passando por diferentes etapas de teste e validação.
+
 ---
 
 # 8. Implementação dos Mecanismos Arquiteturais
@@ -3935,9 +3937,10 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 &emsp; Dessa forma, a automação de testes cobre tanto a camada de acesso e permissão, quanto a de integridade e auditoria de dados, assegurando que o novo sistema (automatizado e integrado) elimine falhas manuais e reduza riscos de segurança.
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
-_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+\_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)\_
 
 ---
 
@@ -3945,25 +3948,112 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 _(Introduzir Seção)_
 
 ### 8.2.1 Definição do Cenário
+
 _(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
 
 ### 8.2.2 Especificação e Codificação dos Componentes Indicados na Tática
-_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+\_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)\_
 
 ---
 
 ## 8.3 RNF-03 Rastreabilidade
-_(Introduzir Seção)_
+
+&emsp; Esta etapa se concentra na especificação e codificação dos testes automatizados dos componentes, seguindo a abordagem de Desenvolvimento Orientado a Testes (TDD).
+
+&emsp; O foco é o **requisito não funcional de rastreabilidade (RNF-03)**, aplicado ao **cenário 14**, que trata do controle e registro de mudanças em projetos no ambiente Microsoft 365 da Companhia do Metrô.
+
+---
+
+### **Contexto do Cenário 14**
+
+- **Situação AS-IS:**  
+  O registro de mudanças é manual e opcional nas listas do SharePoint, sem bloqueios que obriguem a análise e justificativa antes da execução.  
+  Alterações de impacto podem ocorrer sem registro formal, quebrando a trilha de auditoria e comprometendo a rastreabilidade dos projetos.
+
+- **Situação TO-BE:**  
+  O processo passa a contar com **automação via Power Automate**, integrando **SharePoint**, **Teams**, **Power BI** e o **Microsoft Sentinel (SIEM)**.  
+  Toda mudança é registrada automaticamente e validada por meio de logs centralizados no **Sentinel**, que atua como _middleware_ de auditoria e segurança, garantindo que:
+
+  - Nenhuma mudança seja efetivada sem justificativa prévia.
+  - Todos os registros passem por verificação de integridade (hash e correlationId).
+  - Logs de todas as ferramentas (SharePoint, Power Automate, Forms, Teams) sejam coletados e correlacionados no Sentinel para monitoramento contínuo.
+  - Alertas sejam emitidos automaticamente caso haja tentativa de alteração não rastreável.
+
+&emsp; O objetivo é transformar o processo de mudança em uma **transação auditável**, com **rastreabilidade ponta a ponta** e **integração direta ao SIEM corporativo**.
+
+---
 
 ### 8.3.1 Definição do Cenário
-_(A. Definição de cenários de teste para avaliar o comportamento dos mecanismos/componentes; B. Especificação dos critérios de aceitação dos testes; C. Identificação dos cenários de teste relevantes para cada mecanismo/componente; D. Alinhamento dos cenários de teste com os cenários de simulação.)_
+
+1. **Cenário 1 – Bloqueio de mudança sem justificativa:**
+
+   - Validar se o fluxo no Power Automate impede a atualização nas listas do SharePoint quando o campo “Justificativa da mudança” estiver vazio.
+   - Confirmar que o evento de bloqueio é registrado automaticamente no Sentinel.
+
+2. **Cenário 2 – Registro automático da mudança:**
+
+   - Verificar se cada alteração aprovada gera um registro na lista **“Histórico de Alterações”** no SharePoint e um evento correspondente no Sentinel com `correlationId`, `usuário`, `timestamp`, e `tipo de mudança`.
+
+3. **Cenário 3 – Validação de integridade e consistência dos logs:**
+
+   - Testar se o Sentinel consegue correlacionar os eventos de origem (SharePoint / Power Automate) com os registros do Log Analytics, garantindo integridade por meio de hash e identificação única.
+
+4. **Cenário 4 – Consulta e auditoria de mudanças:**
+
+   - Avaliar se as alterações podem ser rastreadas e auditadas no Sentinel, com trilha completa entre origem (Forms/SharePoint) e destino (Power BI).
+   - Confirmar se relatórios de auditoria são atualizados automaticamente.
+
+5. **Cenário 5 – Alerta de tentativas inválidas:**
+   - Confirmar que tentativas de alteração sem justificativa ou fora do fluxo geram alertas automáticos no Sentinel e notificações via Teams.
+
+---
+
+### **Especificação dos Critérios de Aceitação**
+
+- Toda mudança deve gerar automaticamente um registro no SharePoint e um evento correspondente no Sentinel.
+- Nenhuma alteração pode ocorrer sem justificativa aprovada.
+- Logs devem conter: `ID do projeto`, `usuário`, `timestamp`, `descrição da mudança`, `justificativa`, `status`, `correlationId` e `hash`.
+- Todos os eventos devem ser enviados ao Sentinel via conectores nativos do Microsoft 365 (OfficeActivity, Defender XDR, Power Automate logs).
+- Power BI deve refletir os dados de rastreabilidade sem divergências.
+- O Sentinel deve gerar alerta automático em caso de inconsistência ou ausência de registro.
+
+---
+
+### **Identificação dos Cenários de Teste Relevantes para Cada Componente**
+
+| Componente / Ferramenta             | Objetivo do Teste                                                                            | Tipo de Validação        |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------ |
+| **Microsoft Forms**                 | Captura de justificativa da mudança antes do envio                                           | Unitário                 |
+| **SharePoint (Listas de Projetos)** | Registro automático das alterações e bloqueio sem justificativa                              | Unitário e Integração    |
+| **Power Automate**                  | Fluxo de automação: bloqueio, log e envio de eventos ao Sentinel                             | Integração / End-to-end  |
+| **Microsoft Teams**                 | Recebimento de notificações de sucesso, bloqueio ou falha de alteração                       | Integração               |
+| **Microsoft Sentinel (Middleware)** | Coleta, correlação e análise dos logs do Microsoft 365; geração de alertas e dashboards SIEM | Integração / Segurança   |
+| **Power BI**                        | Consolidação de indicadores de rastreabilidade e auditoria visual                            | Relatório / Visualização |
+| **Excel / Project**                 | Verificação de consistência entre cronogramas e registros de mudança                         | Integração               |
+
+---
+
+### **Alinhamento dos Cenários de Teste com os Cenários de Simulação**
+
+&emsp; Os testes automatizados estão alinhados ao **cenário 14 TO-BE** e ao **requisito RNF-03 de rastreabilidade**.
+
+Durante a simulação, serão observados:
+
+- Bloqueio automático de mudanças sem justificativa;
+- Registro de logs nas listas SharePoint e ingestão automática pelo Sentinel;
+- Validação de integridade entre origem e middleware (hash/correlationId);
+- Geração de alertas no Sentinel em caso de falha de rastreabilidade;
+- Atualização dos dashboards de Power BI com dados validados;
+- Notificações via Teams para as equipes de projeto e auditoria.
 
 ### 8.3.2 Especificação e Codificação dos Componentes Indicados na Tática
-_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)_
+\_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+
+Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)\_
 
 ---
 
@@ -3972,52 +4062,67 @@ Documentação - Os componentes utilizados, seja em tempo de planejamento ou de 
 _(Resuma os testes automatizados criados para validar os mecanismos implementados e indique onde estão localizados no repositório.)_
 
 ## 9.1 RNF-01
+
 _(Introduzir brevemente o requisito)_
 
 ### 9.1.1 Escalabilidade
+
 _(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
 
 ### 9.1.2 Registros de Testes Automatizados
+
 _(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
 
 ### 9.1.3 Avaliação dos Resultados e Limites do Sistema
+
 _(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
 
 ### 9.1.4 Avaliação dos Riscos Resultantes
+
 _(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
 
 ---
 
 ## 9.2 RNF-02 Segurança
+
 _(Introduzir brevemente o requisito)_
 
-### 9.2.1 
+### 9.2.1
+
 _(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
 
 ### 9.2.2 Registros de Testes Automatizados
+
 _(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
 
 ### 9.2.3 Avaliação dos Resultados e Limites do Sistema
+
 _(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
 
 ### 9.2.4 Avaliação dos Riscos Resultantes
+
 _(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
 
 ---
 
 ## 9.3 RNF-03 Rastreabilidade
+
 _(Introduzir brevemente o requisito)_
 
-### 9.3.1 
+### 9.3.1
+
 _(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
 
 ### 9.3.2 Registros de Testes Automatizados
+
 _(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
 
 ### 9.3.3 Avaliação dos Resultados e Limites do Sistema
+
 _(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
 
 ### 9.3.4 Avaliação dos Riscos Resultantes
+
 _(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
 
 ---
@@ -4029,12 +4134,15 @@ _(Apresente a revisão do modelo de simulação e a comparação entre os result
 ## 10.1 RNF-01 Escalabilidade
 
 ### 10.1.1 Simulação das Melhorias
+
 _(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
 
 ### 10.1.2 Simulação das Condições de Exceção
+
 _(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
 
 ### 10.1.3 Simulação das Condições Limites do Sistema com as Melhorias
+
 _(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
 
 ---
@@ -4042,12 +4150,15 @@ _(A. Cenários Limites de Utilização: Identificação de cenários limites de 
 ## 10.2 RNF-02 Segurança
 
 ### 10.2.1 Simulação das Melhorias
+
 _(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
 
 ### 10.2.2 Simulação das Condições de Exceção
+
 _(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
 
 ### 10.2.3 Simulação das Condições Limites do Sistema com as Melhorias
+
 _(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
 
 ---
@@ -4055,12 +4166,15 @@ _(A. Cenários Limites de Utilização: Identificação de cenários limites de 
 ## 10.3 RNF-03 Rastreabilidade
 
 ### 10.3.1 Simulação das Melhorias
+
 _(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
 
 ### 10.3.2 Simulação das Condições de Exceção
+
 _(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
 
 ### 10.3.3 Simulação das Condições Limites do Sistema com as Melhorias
+
 _(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
 
 ---
