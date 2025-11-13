@@ -8,6 +8,10 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
+# Jsons
+*.json
+data/
+
 # Arquivos temporários
 *.tmp
 *.temp
