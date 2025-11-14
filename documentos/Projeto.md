@@ -4183,9 +4183,89 @@ Durante a simulação, serão observados:
 
 ### 8.3.2 Especificação e Codificação dos Componentes Indicados na Tática
 
-\_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+&emsp;A tática de rastreabilidade do **RNF-03** foi está disponível na pasta `src/RNF-03-Rastreabilidade/Sprint 3`. Utilizando uma aplicação FastAPI com serviços de correlação, armazenamento estruturado em JSON e geradores de dados. O desenho implementado mantém o acoplamento previsto na arquitetura lógica (camadas SharePoint → Middleware → Sentinel → Armazenamento), garantindo que cada interação passe pela camada de correlação antes de ser persistida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)\_
+#### A. Implementação dos mecanismos/componentes de acordo com as especificações
+
+- Os _routers_ expostos em `main.py` refletem o catálogo de cenários definido na tática, com documentação acessível via Swagger (requisito explícito nas especificações).
+- Os conectores `sharepoint_api.py` e `sentinel_api.py` reproduzem os fluxos descritos no cenário TO-BE (bloqueio, registro automático, auditoria e alertas), incluindo parâmetros obrigatórios como justificativa e `correlation_id`.
+- O `correlation_service.py` implementa as rotinas de normalização, geração de hash, persistência em camadas e criação de alertas, exatamente como previsto nos diagramas de arquitetura lógica.
+- A camada `storage/log_repository.py` persiste os artefatos em coleções separadas (`sharepoint_events.json`, `sentinel_logs.json`, etc.), conforme definido no modelo informacional da tática.
+- O `mock_data_generator.py` viabiliza a massa controlada exigida para simulação repetível, atendendo à especificação de cenários com dados realistas.
+- As instruções de instalação e execução foram documentadas em `README.md`/`QUICKSTART.md`, com `requirements.txt` centralizando as dependências (FastAPI, Uvicorn, Pydantic, Faker, etc.), conforme a diretriz de documentação.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    USUÁRIO / SISTEMA                            │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   API SHAREPOINT (Mockada)                      │
+│  • Eventos de mudança em listas                                 │
+│  • Captura de justificativas                                    │
+│  • Histórico de alterações                                      │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              MIDDLEWARE DE CORRELAÇÃO                           │
+│  • Normalização de dados                                        │
+│  • Geração de correlation_id e hash                             │
+│  • Validação de justificativas                                  │
+│  • Bloqueio de mudanças inválidas                               │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                  API SENTINEL (Mockada)                         │
+│  • Logs de segurança e auditoria                                │
+│  • Alertas automáticos                                          │
+│  • Correlação de eventos                                        │
+│  • Verificação de integridade                                   │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│               REPOSITÓRIO DE LOGS (JSON)                        │
+│  • sharepoint_events.json                                       │
+│  • sentinel_logs.json                                           │
+│  • correlated_logs.json                                         │
+│  • historico_alteracoes.json                                    │
+│  • alertas.json                                                 │
+│  • audit_trails.json                                            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### B. Garantia da funcionalidade e da aderência à arquitetura definida
+
+- Cada componente interage exclusivamente por meio do `correlation_service`, preservando a topologia SharePoint → Middleware → Sentinel → Armazenamento descrita na tática.
+- A execução dos cenários 1 a 5 gera evidências de ponta a ponta (IDs de eventos, hashes, alertas e trilhas), confirmando que o middleware controla o fluxo e aplica as regras de negócio arquitetadas.
+- Os endpoints de consulta (`/sentinel/dashboard/statistics`, `/sharepoint/historico-alteracoes`, `/sentinel/logs`) comprovam a visibilidade necessária para auditoria e dashboards, conforme os requisitos de aderência.
+- Os testes automatizados e o `demo.py` permitem revalidar rapidamente a orquestração de componentes, sustentando a aderência contínua quando novas iterações ocorrerem.
+- A separação entre camadas de API, serviços, modelos e armazenamento mantém o padrão arquitetural de baixa acoplagem e alta coesão previsto na tática.
+
+- **Middleware FastAPI (`main.py`)** – expõe o serviço central com documentação automática (`/docs`, `/redoc`), health check e inventário dos cinco cenários. Também registra os _routers_ dos componentes simulados, preservando a separação de responsabilidades.
+- **APIs simuladas (`api/sharepoint_api.py` e `api/sentinel_api.py`)** – conectores que reproduzem SharePoint e Sentinel. Cada endpoint aplica validações alinhadas à tática (bloqueio de mudanças sem justificativa, criação de trilhas de auditoria, verificação de hash) e interage exclusivamente via `correlation_service`.
+- **Serviço de correlação (`services/correlation_service.py`)** – núcleo da solução. Normaliza eventos, gera `correlation_id` e hashes SHA-256, cria logs correlacionados e decide quando um fluxo deve ser bloqueado ou gerar alertas críticos. Também encapsula rotinas de verificação de integridade e geração de _audit trails_.
+- **Gerador de massa controlada (`services/mock_data_generator.py`)** – fornece usuários, projetos, justificativas e alterações realistas, permitindo repetir os cenários TO-BE sem depender de dados externos.
+- **Repositório persistente (`storage/log_repository.py`)** – abstrai a gravação em `data/*.json`, viabilizando auditoria posterior e dashboards. Cada tipo de registro (eventos SharePoint, logs Sentinel, correlações, histórico, alertas, trilhas) possui arquivo dedicado, simplificando inspeções.
+- **Modelos Pydantic (`models/log_models.py`)** – padronizam contratos de dados com `id`, `timestamp` e `status`, assegurando compatibilidade entre os componentes.
+- **Material de apoio (`README.md`, `QUICKSTART.md`, `demo.py` e `tests/test_scenarios.py`)** – documentam arquitetura, pré-requisitos e fluxo de instalação (`pip install -r requirements.txt`), além de disponibilizar o _script_ interativo e os testes que validam os cinco cenários.
+
+A aderência funcional foi validada executando os cinco cenários diretamente sobre os serviços codificados:
+
+| Cenário | Endpoint principal | Evidência gerada (amostra real) | Componente predominante |
+| --- | --- | --- | --- |
+| 1. Bloqueio sem justificativa | `POST /sharepoint/events/simulate-change?with_justification=false&scenario=cenario_1` | Mudança bloqueada com `alert_id` `b7363f55-1228-4e90-aad2-6e1f4ddd2a92` e notificação Teams simulada (`success=false`, `blocked=true`). | `correlation_service._handle_blocked_change` + `services.mock_data_generator` |
+| 2. Registro automático | `POST /sharepoint/events/simulate-change?with_justification=true&scenario=cenario_2` | Log aprovado com `hash` `bebeee9e015a8781af66511eff6d6ab3e4368d7ce53285594bf217f70d26ef60` e `integrity_status=correlacionado`. | `correlation_service.process_sharepoint_event` |
+| 3. Verificação de integridade | `GET /sentinel/integrity/verify` | Hashes idênticos (`expected_hash` = `actual_hash`) para o par (`f31e7230-7017-47e6-9524-d26e3d29950c`, `9fd79c2f-51cc-4a72-b141-da8a954cb10b`) com `integrity_status=ok`. | `correlation_service.verify_integrity` |
+| 4. Trilha de auditoria | `POST /sentinel/audit-trail/create` | Trilha `315cec6d-601e-46e1-af22-7626c72c3a63` criada com origem `SharePoint/Forms`, destino `Sentinel/Power BI` e integridade verificada. | `correlation_service.create_audit_trail` + `storage.log_repository` |
+| 5. Tentativa inválida | `POST /sentinel/simulate-invalid-attempt` | Alerta crítico `f69ae7bf-3ef9-4077-9423-6ed58d295fa2`, severidade `critical`, recomendando “Investigar e bloquear acesso se necessário”. | `correlation_service.generate_alert_for_invalid_attempt` |
+
+&emsp;Os resultados foram obtidos via execução direta dos serviços com `python -c`, mantendo `PYTHONPATH` apontando para `Sprint 3`. Cada evento alimenta automaticamente os arquivos JSON de persistência, habilitando auditoria posterior por meio dos endpoints de consulta (`/sentinel/dashboard/statistics`, `/sharepoint/historico-alteracoes`, `/sentinel/logs`) ou leitura manual em `src/RNF-03-Rastreabilidade/Sprint 3/data`.
+
+&emsp;Todas as dependências utilizadas pelos componentes (FastAPI, Uvicorn, Pydantic, Faker, etc.) estão descritas em `requirements.txt`, e o procedimento de instalação está registrado no `README.md`/`QUICKSTART.md` com criação de ambiente virtual e comando `pip install -r requirements.txt`. Dessa forma, os mecanismos implementados cumprem a tática proposta, encontram-se documentados e podem ser reproduzidos ou estendidos conforme necessário.
 
 ---
 
