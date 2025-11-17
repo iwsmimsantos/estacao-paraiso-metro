@@ -4319,6 +4319,8 @@ _(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identi
 
 ## 9.3 RNF-03 Rastreabilidade
 
+### 9.3.1 Escalabilidade
+
 &emsp;O RNF-03 define os requisitos de **Rastreabilidade** para o sistema de gestão de projetos da Companhia do Metrô no ecossistema _Microsoft_. Este requisito é essencial para garantir que todas as alterações realizadas em projetos sejam registradas, auditadas e rastreáveis, cumprindo com políticas de governança corporativa e conformidade regulatória. Com o objetivo de criar um sistema robusto de rastreabilidade que:
 
 - Registre automaticamente todas as mudanças realizadas em projetos;
@@ -4334,10 +4336,6 @@ Foram desenvolvidos **5 cenários de teste** cobrindo os critérios de aceitaç�
 3. Validação de integridade e consistência dos logs
 4. Consulta e auditoria de mudanças
 5. Alerta de tentativas inválidas
-
-### 9.3.1
-
-_(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
 
 ### 9.3.2 Registros de Testes Automatizados
 
@@ -4510,68 +4508,68 @@ Cenário 5 (Alertas):   ██████████████████�
 #### Pontos fortes 
 
 1. **Bloqueio Efetivo sem Justificativa**
-- Sistema bloqueia automaticamente mudanças sem justificativa
-- Logs de bloqueio são criados imediatamente no Sentinel
-- Alertas são gerados e notificações Teams são enviadas
-- **Impacto**: Garante conformidade com políticas de governança
+    - Sistema bloqueia automaticamente mudanças sem justificativa
+    - Logs de bloqueio são criados imediatamente no Sentinel
+    - Alertas são gerados e notificações Teams são enviadas
+    - **Impacto**: Garante conformidade com políticas de governança
 
 2. **Registro Automático Completo**
-- Mudanças aprovadas são registradas automaticamente
-- Histórico de alterações mantém todos os detalhes
-- Justificativas são obrigatoriamente registradas
-- sTimestamps precisos em todos os registros
-- **Impacto**: Auditoria facilita rastreamento de responsabilidades
+    - Mudanças aprovadas são registradas automaticamente
+    - Histórico de alterações mantém todos os detalhes
+    - Justificativas são obrigatoriamente registradas
+    - sTimestamps precisos em todos os registros
+    - **Impacto**: Auditoria facilita rastreamento de responsabilidades
 
 3. **Integridade de Dados Robusta**
-- Hash SHA-256 presente em todos os logs
-- Validação de integridade funcionando corretamente
-- Correlação entre sistemas mantém consistência
-- **Impacto**: Detecta manipulações não autorizadas
+    - Hash SHA-256 presente em todos os logs
+    - Validação de integridade funcionando corretamente
+    - Correlação entre sistemas mantém consistência
+    - **Impacto**: Detecta manipulações não autorizadas
 
 4. **Trilha de Auditoria Completa**
-- Rastreamento de origem até destino
-- Correlação de todos os eventos relacionados (6 por ciclo)
-- Status final consistentemente registrado
-- **Impacto**: Permite investigações forenses completas
+    - Rastreamento de origem até destino
+    - Correlação de todos os eventos relacionados (6 por ciclo)
+    - Status final consistentemente registrado
+    - **Impacto**: Permite investigações forenses completas
 
 5. **Alertas de Segurança Proativos**
-- Tentativas inválidas geram alertas críticos
-- Severidade apropriada (critical)
-- Notificações Teams imediatas
-- Ações recomendadas incluídas
-- **Impacto**: Resposta rápida a anomalias
+    - Tentativas inválidas geram alertas críticos
+    - Severidade apropriada (critical)
+    - Notificações Teams imediatas
+    - Ações recomendadas incluídas
+    - **Impacto**: Resposta rápida a anomalias
 
 #### Oportunidades de melhoria
 
 1. **Correlação de Dados Estendida**
-- **Observação**: Atualmente correlacionando 3 logs de 6 totais por ciclo
-- **Recomendação**: Aumentar taxa de correlação automática para 100%
-- **Benefício**: Reduzir tempo de investigação de incidentes
-- **Ação**: Otimizar algoritmo de matching de eventos
+    - **Observação**: Atualmente correlacionando 3 logs de 6 totais por ciclo
+    - **Recomendação**: Aumentar taxa de correlação automática para 100%
+    - **Benefício**: Reduzir tempo de investigação de incidentes
+    - **Ação**: Otimizar algoritmo de matching de eventos
 
 2. **Análise Preditiva de Alertas**
-- **Observação**: Sistema gera alertas apenas para tentativas inválidas
-- **Recomendação**: Implementar machine learning para detectar padrões suspeitos
-- **Benefício**: Detecção proativa de anomalias
-- **Ação**: Integrar análise comportamental
+    - **Observação**: Sistema gera alertas apenas para tentativas inválidas
+    - **Recomendação**: Implementar machine learning para detectar padrões suspeitos
+    - **Benefício**: Detecção proativa de anomalias
+    - **Ação**: Integrar análise comportamental
 
 3. **Dashboard de Rastreabilidade**
-- **Observação**: Testes validam funcionalidades mas falta visualização em tempo real
-- **Recomendação**: Criar dashboard Power BI para visualização de trilhas
-- **Benefício**: Monitoramento visual simplificado
-- **Ação**: Conectar Power BI aos dados de Sentinel
+    - **Observação**: Testes validam funcionalidades mas falta visualização em tempo real
+    - **Recomendação**: Criar dashboard Power BI para visualização de trilhas
+    - **Benefício**: Monitoramento visual simplificado
+    - **Ação**: Conectar Power BI aos dados de Sentinel
 
 4. **Retenção de Logs Escalável**
-- **Observação**: Sistema armazenou 19 registros sem problemas
-- **Recomendação**: Validar escalabilidade para volumes maiores (1 milhão+ registros)
-- **Benefício**: Garantir sustentabilidade em longo prazo
-- **Ação**: Testes de carga com dados realistas
+    - **Observação**: Sistema armazenou 19 registros sem problemas
+    - **Recomendação**: Validar escalabilidade para volumes maiores (1 milhão+ registros)
+    - **Benefício**: Garantir sustentabilidade em longo prazo
+    - **Ação**: Testes de carga com dados realistas
 
 5. **Integração com Sistemas Legados**
-- **Observação**: Testes cobrem Microsoft 365 nativamente
-- **Recomendação**: Validar integração com sistemas legados da empresa
-- **Benefício**: Cobertura de rastreabilidade completa
-- **Ação**: Testes de integração com sistemas existentes
+    - **Observação**: Testes cobrem Microsoft 365 nativamente
+    - **Recomendação**: Validar integração com sistemas legados da empresa
+    - **Benefício**: Cobertura de rastreabilidade completa
+    - **Ação**: Testes de integração com sistemas existentes
 
 #### Próximos passos
 
@@ -4644,6 +4642,8 @@ Cenário 5 (Alertas):   ██████████████████�
   - Alerta para divergências detectadas
 
 **Nível de Risco Atual**: **BAIXO**
+
+---
 
 #### Risco 4: Alertas Não Gerados para Anomalias
 
@@ -4718,6 +4718,8 @@ Cenário 5 (Alertas):   ██████████████████�
 
 **Nível de Risco Atual**: **BAIXO**
 
+---
+
 #### Matriz de riscos
 
 | Risco | Antes | Depois | Mudança | Estratégia |
@@ -4728,6 +4730,8 @@ Cenário 5 (Alertas):   ██████████████████�
 | Alertas Não Gerados | Alto | Baixo | ↓ Reduzido | Detecção automática |
 | Falha na Correlação | Alto | Médio | ↓ Parcialmente | Otimização necessária |
 | Divergência Power BI | Alto | Baixo | ↓ Reduzido | Fluxo sincronizado |
+
+---
 
 #### Próximos passos
 
