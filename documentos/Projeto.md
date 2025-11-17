@@ -3938,9 +3938,68 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
 
-\_(A. Implementação dos mecanismos/componentes de acordo com as especificações; B. Garantia da funcionalidade e da aderência à arquitetura definida.
+&emsp;A tática de segurança do **RNF 01** foi implementada e está disponível na pasta `src/RNF-02-Segurança/Sprint 3` (referência ao código original). Utilizando uma aplicação FastAPI, o projeto simula um middleware de segurança que garante **controle de acesso granular**, **autenticação robusta** e **verificação de integridade de dados** entre as ferramentas Miro e SharePoint [1]. O desenho implementado mantém o acoplamento previsto na arquitetura lógica (camadas Miro/SharePoint → Middleware de Segurança → Repositório de Incidentes), garantindo que cada interação passe pela camada de segurança antes de ser processada ou persistida.
 
-Documentação - Os componentes utilizados, seja em tempo de planejamento ou de implementação, devem estar descritos no README. Além disso, para cada componente, deverá existir sua respectiva instrução de instalação no projeto.)\_
+#### A. Implementação dos mecanismos/componentes de acordo com as especificações
+
+- Os _routers_ expostos em `main.py` refletem os endpoints de segurança, com documentação acessível via Swagger (`http://localhost:8000/docs`), conforme o requisito de documentação explícita [2].
+- Os serviços `auth_service.py` e `access_control_service.py` reproduzem os fluxos de **autenticação** e **controle de acesso** descritos nos cenários TO-BE (bloqueio de acesso indevido, registro de incidentes), incluindo a simulação de integração com o Microsoft Entra ID [3].
+- O `integrity_service.py` implementa as rotinas de **verificação de integridade**, como a geração de checksums SHA-256 e a normalização de whitespace, exatamente como previsto nos diagramas de arquitetura lógica para comparação de dados Miro/SharePoint [4].
+- A camada `storage/incident_repository.py` persiste os artefatos de segurança em coleções separadas (`security_incidents.json`, `access_logs.json`, etc.), conforme definido no modelo informacional da tática [5].
+- O `mock_data_generator.py` viabiliza a massa controlada exigida para simulação repetível dos cenários de segurança, atendendo à especificação de cenários com dados realistas [6].
+- As instruções de instalação e execução foram documentadas em `README.md` (agora integrado aqui), com `requirements.txt` centralizando as dependências (FastAPI, Uvicorn, Pydantic, Faker, etc.), conforme a diretriz de documentação [7].
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    USUÁRIO / SISTEMA                            │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│              MIDDLEWARE DE SEGURANÇA (FastAPI)                  │
+│  • Autenticação (auth_service)                                  │
+│  • Controle de Acesso (access_control_service)                  │
+│  • Verificação de Integridade (integrity_service)               │
+│  • Registro de Incidentes                                       │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│               REPOSITÓRIO DE INCIDENTES (JSON)                  │
+│  • security_incidents.json                                      │
+│  • access_logs.json                                             │
+│  • checksum_validations.json                                    │
+│  • integrity_checks.json                                        │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### B. Garantia da funcionalidade e da aderência à arquitetura definida
+
+- Cada componente interage exclusivamente por meio do Middleware de Segurança, preservando a topologia Miro/SharePoint → Middleware → Repositório de Incidentes descrita na tática.
+- A execução dos cenários 1 a 3 gera evidências de ponta a ponta (logs de acesso, incidentes registrados, status de integridade), confirmando que o middleware controla o fluxo e aplica as regras de segurança arquitetadas.
+- Os endpoints de consulta (simulados) comprovam a visibilidade necessária para auditoria e dashboards, conforme os requisitos de aderência.
+- Os testes automatizados (`tests/test_scenarios.py`) permitem revalidar rapidamente a orquestração de componentes, sustentando a aderência contínua quando novas iterações ocorrerem.
+- A separação entre camadas de API, serviços, modelos e armazenamento mantém o padrão arquitetural de baixa acoplagem e alta coesão previsto na tática.
+
+- **Middleware FastAPI (`main.py`)** – expõe o serviço central com documentação automática (`/docs`, `/redoc`), health check e inventário dos três cenários. Também registra os _routers_ dos componentes simulados, preservando a separação de responsabilidades.
+- **Serviço de Autenticação (`services/auth_service.py`)** – responsável pela validação de tokens de autenticação e simulação de integração com Microsoft Entra ID.
+- **Serviço de Controle de Acesso (`services/access_control_service.py`)** – núcleo da solução para verificação de permissões por projeto e controle de acesso a recursos (Miro, SharePoint), registrando incidentes automaticamente.
+- **Serviço de Integridade (`services/integrity_service.py`)** – garante a consistência dos dados entre Miro e SharePoint através de checksums SHA-256 e detecção de inconsistências.
+- **Repositório de Incidentes (`storage/incident_repository.py`)** – abstrai a gravação em `data/*.json`, viabilizando auditoria posterior e estatísticas de segurança. Cada tipo de registro (incidentes, logs de acesso, validações) possui arquivo dedicado, simplificando inspeções.
+- **Modelos Pydantic (`models/security_models.py`)** – padronizam contratos de dados com `id`, `timestamp` e `status`, assegurando compatibilidade entre os componentes.
+- **Material de apoio (`Configuracao.md` e `tests/test_scenarios.py`)** – documentam arquitetura, pré-requisitos e fluxo de instalação (`pip install -r requirements.txt`), além de disponibilizar os testes que validam os três cenários.
+
+A aderência funcional foi validada executando os três cenários diretamente sobre os serviços codificados:
+
+| Cenário | Objetivo | Evidência gerada (Critério de Aceitação) | Componente predominante |
+| :--- | :--- | :--- | :--- |
+| **1. Cadastro Incorreto de Usuário** | Verificar bloqueio de acesso de usuários não vinculados ao projeto. | Acesso bloqueado em 100% dos casos de permissão incorreta. Incidente registrado na fila. | `access_control_service` |
+| **2. Acesso Indevido ao Miro** | Garantir que apenas usuários autenticados e autorizados acessem o Miro. | Acesso permitido somente a usuários autenticados com permissões válidas. Registro de todas as tentativas. | `auth_service` e `access_control_service` |
+| **3. Inconsistência de Dados Miro/SharePoint** | Detectar diferenças entre dados do Miro e SharePoint. | Inconsistências detectadas automaticamente. Sincronização bloqueada até correção. | `integrity_service` |
+
+&emsp;Os resultados foram obtidos via execução direta dos testes automatizados com `python tests/test_scenarios.py`. Cada evento alimenta automaticamente os arquivos JSON de persistência, habilitando auditoria posterior por meio da leitura manual em `src/RNF-02-Segurança/Sprint 3/data`.
+
+&emsp;Todas as dependências utilizadas pelos componentes (FastAPI, Uvicorn, Pydantic, Faker, etc.) estão descritas em `requirements.txt`, e o procedimento de instalação está registrado no `Configuracao.md` com criação de ambiente virtual e comando `pip install -r requirements.txt`. Dessa forma, os mecanismos implementados cumprem a tática proposta, encontram-se documentados e podem ser reproduzidos ou estendidos conforme necessário.
 
 ---
 
