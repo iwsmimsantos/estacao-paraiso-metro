@@ -1,0 +1,22 @@
+# Dependências do projeto - Sprint 3
+# Instalação: pip install -r requirements.txt
+
+# Framework Web
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+
+# Testes
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+httpx==0.26.0
+
+# Testes de Carga
+locust==2.20.0
+
+# Logging e Monitoramento
+python-json-logger==2.0.7
+
+# Utilitários
+python-multipart==0.0.6
