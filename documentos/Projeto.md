@@ -3938,16 +3938,16 @@ Pequenas variações irrelevantes (como espaços) não devem ser tratadas como f
 
 ### 8.1.2 Especificação e Codificação dos Componentes Indicados na Tática
 
-&emsp;A tática de segurança do **RNF 01** foi implementada e está disponível na pasta `src/RNF-02-Segurança/Sprint 3` (referência ao código original). Utilizando uma aplicação FastAPI, o projeto simula um middleware de segurança que garante **controle de acesso granular**, **autenticação robusta** e **verificação de integridade de dados** entre as ferramentas Miro e SharePoint [1]. O desenho implementado mantém o acoplamento previsto na arquitetura lógica (camadas Miro/SharePoint → Middleware de Segurança → Repositório de Incidentes), garantindo que cada interação passe pela camada de segurança antes de ser processada ou persistida.
+&emsp;A tática de segurança do **RNF 01** foi implementada e está disponível na pasta `src/RNF-02-Segurança/Sprint 3`. Utilizando uma aplicação FastAPI, o projeto simula um middleware de segurança que garante **controle de acesso granular**, **autenticação robusta** e **verificação de integridade de dados** entre as ferramentas Miro e SharePoint. O desenho implementado mantém o acoplamento previsto na arquitetura lógica (camadas Miro/SharePoint → Middleware de Segurança → Repositório de Incidentes), garantindo que cada interação passe pela camada de segurança antes de ser processada ou persistida.
 
 #### A. Implementação dos mecanismos/componentes de acordo com as especificações
 
-- Os _routers_ expostos em `main.py` refletem os endpoints de segurança, com documentação acessível via Swagger (`http://localhost:8000/docs`), conforme o requisito de documentação explícita [2].
-- Os serviços `auth_service.py` e `access_control_service.py` reproduzem os fluxos de **autenticação** e **controle de acesso** descritos nos cenários TO-BE (bloqueio de acesso indevido, registro de incidentes), incluindo a simulação de integração com o Microsoft Entra ID [3].
-- O `integrity_service.py` implementa as rotinas de **verificação de integridade**, como a geração de checksums SHA-256 e a normalização de whitespace, exatamente como previsto nos diagramas de arquitetura lógica para comparação de dados Miro/SharePoint [4].
-- A camada `storage/incident_repository.py` persiste os artefatos de segurança em coleções separadas (`security_incidents.json`, `access_logs.json`, etc.), conforme definido no modelo informacional da tática [5].
-- O `mock_data_generator.py` viabiliza a massa controlada exigida para simulação repetível dos cenários de segurança, atendendo à especificação de cenários com dados realistas [6].
-- As instruções de instalação e execução foram documentadas em `README.md` (agora integrado aqui), com `requirements.txt` centralizando as dependências (FastAPI, Uvicorn, Pydantic, Faker, etc.), conforme a diretriz de documentação [7].
+- Os _routers_ expostos em `main.py` refletem os endpoints de segurança, com documentação acessível via Swagger (`http://localhost:8000/docs`), conforme o requisito de documentação explícita.
+- Os serviços `auth_service.py` e `access_control_service.py` reproduzem os fluxos de **autenticação** e **controle de acesso** descritos nos cenários TO-BE (bloqueio de acesso indevido, registro de incidentes), incluindo a simulação de integração com o Microsoft Entra ID.
+- O `integrity_service.py` implementa as rotinas de **verificação de integridade**, como a geração de checksums SHA-256 e a normalização de whitespace, exatamente como previsto nos diagramas de arquitetura lógica para comparação de dados Miro/SharePoint.
+- A camada `storage/incident_repository.py` persiste os artefatos de segurança em coleções separadas (`security_incidents.json`, `access_logs.json`, etc.), conforme definido no modelo informacional da tática.
+- O `mock_data_generator.py` viabiliza a massa controlada exigida para simulação repetível dos cenários de segurança, atendendo à especificação de cenários com dados realistas.
+- As instruções de instalação e execução foram documentadas em `Configuracao.md`, com `requirements.txt` centralizando as dependências (FastAPI, Uvicorn, Pydantic, Faker, etc.), conforme a diretriz de documentação.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
