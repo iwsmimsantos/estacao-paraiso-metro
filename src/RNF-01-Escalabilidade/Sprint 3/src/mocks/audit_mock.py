@@ -4,10 +4,10 @@ from typing import Dict, Any, List
 import random
 import time
 
-from ..common.models import AuditLog, TransactionResponse
-from ..common.trace import get_trace_id, set_trace_id
-from ..common.logging_config import get_logger
-from ..common.metrics import metrics_collector
+from src.common.models import AuditLog, TransactionResponse
+from src.common.trace import get_trace_id, set_trace_id
+from src.common.logging_config import get_logger
+from src.common.metrics import metrics_collector
 
 logger = get_logger(__name__)
 app = FastAPI(title="Audit Service Mock")

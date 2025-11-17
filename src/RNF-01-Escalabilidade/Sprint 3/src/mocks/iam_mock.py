@@ -4,9 +4,9 @@ from typing import Dict, Any, Optional
 import random
 import time
 
-from ..common.trace import generate_trace_id, set_trace_id
-from ..common.logging_config import get_logger
-from ..common.metrics import metrics_collector
+from src.common.trace import generate_trace_id, set_trace_id
+from src.common.logging_config import get_logger
+from src.common.metrics import metrics_collector
 
 logger = get_logger(__name__)
 app = FastAPI(title="IAM Mock")

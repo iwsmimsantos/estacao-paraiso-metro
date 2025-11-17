@@ -61,6 +61,11 @@ if ($LASTEXITCODE -eq 0 -or $env:VIRTUAL_ENV) {
 }
 
 Write-Host ""
+Write-Host "Configurando PYTHONPATH..." -ForegroundColor Yellow
+$env:PYTHONPATH = $PROJECT_ROOT
+Write-Host "PYTHONPATH: $PROJECT_ROOT" -ForegroundColor Green
+
+Write-Host ""
 Write-Host "==================================" -ForegroundColor Cyan
 Write-Host "  Ambiente Pronto!" -ForegroundColor Green
 Write-Host "==================================" -ForegroundColor Cyan
