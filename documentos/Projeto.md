@@ -5036,6 +5036,78 @@ A simulação calcula **tempo médio até falha (MTTF = 487 dias)**, prevendo a 
 
 **Contexto:** A simulação atual demonstrou **excelente capacidade preditiva** para operações nominais (100% de sucesso). A inclusão de métricas de recuperação complementaria o modelo, transformando-o de "tempo até falhar" para "ciclo completo de falha e recuperação".
 
+#### B. Simulação dos Cenários de Exceção
+
+**Cenário de Exceção 1: Acesso Não Autorizado em Massa**
+
+**Escopo da Simulação Atual:**
+- A Cadeia de Markov modela **uma tentativa de acesso por vez** (`p_normal_issue` = 0.02 por passo)
+- Foco em **operações sequenciais** de usuários individuais
+
+**Cenário Prospectivo (Para Validação Futura):**
+
+| Métrica | Resultado Esperado | Status Atual | Próximo Passo |
+|---------|-------------------|--------------|---------------|
+| **Taxa de Bloqueio sob Ataque** | ≥99.5% | A validar | Implementar testes de carga |
+| **Degradação de Performance** | Latência <2s | A medir | Adicionar monitoramento |
+| **Saturação de Logs** | Sem perda de eventos | A validar | Testar buffer de logs |
+
+**Contexto:** Os testes atuais em `test_scenarios.py` validam com sucesso tentativas **sequenciais** (100% de bloqueio). A expansão para cenários de ataque coordenado representa oportunidade de fortalecer ainda mais a validação.
+
+**Cenário de Exceção 2: Indisponibilidade de Serviço Externo (Microsoft Entra ID)**
+
+**Escopo da Simulação Atual:**
+- A Cadeia de Markov modela **falhas funcionais** (credenciais erradas, permissões inadequadas)
+- Foco em **comportamento do sistema quando serviços estão disponíveis**
+
+**Cenário Prospectivo (Para Validação Futura):**
+
+| Métrica | Resultado Esperado | Status Atual | Próximo Passo |
+|---------|-------------------|--------------|---------------|
+| **Operações em Cache** | Leitura mantida | A implementar | Adicionar cache local |
+| **MTTR Automático** | <5 min | A definir | Implementar retry automático |
+| **Graceful Degradation** | Operações críticas mantidas | A validar | Definir modo degradado |
+
+**Contexto:** A implementação atual em `auth_service.py` valida tokens com sucesso em condições normais (100% de eficácia nos testes). A adição de mecanismos de resiliência (cache, fallback) complementaria o sistema para cenários de exceção.
+
+```python
+# Implementação atual (validada com sucesso):
+def validate_token(self, token: str) -> Dict[str, Any]:
+    token_data = self.tokens.get(token)
+    # Oportunidade: adicionar cache local para tokens recentes
+```
+
+**Cenário de Exceção 3: Verificação de Integridade Durante Transação Ativa**
+
+**Escopo da Simulação Atual:**
+- O Cenário 3 (seção 7.2.3) simula verificações de integridade em operações completas
+- Foco em **detecção de inconsistências após conclusão de operações**
+
+**Validação Atual:**
+
+| Métrica | Resultado Obtido | Próximo Passo |
+|---------|------------------|---------------|
+| **Bloqueio de Sincronização** |  100% quando mismatch | Validado com sucesso |
+| **Detecção de Inconsistência** |  100% (3/3 casos) | Validado com sucesso |
+| **Notificação via Status** |  JSON estruturado | Validado com sucesso |
+| **Rollback de Transação** | A implementar | Adicionar controle transacional ACID |
+
+**Contexto:** A implementação atual detecta e bloqueia inconsistências com **100% de precisão** nos testes. Uma evolução natural seria adicionar **rollback automático** para operações parcialmente concluídas.
+
+**Cenário de Exceção 4: Validação de Status de TAP**
+- O Cenário 3 (seção 7.2.3) simula isso, mas com estados genéricos (Normal → Issue → Remediation)
+- Não modela **estados intermediários** do workflow de aprovação (Rascunho → Em Revisão → Aprovado → Rejeitado)
+
+**Teste Real Hipotetizado (Não Executado):**
+
+| Métrica | Resultado Esperado | Evidência Disponível | Status |
+|---------|-------------------|----------------------|--------|
+| **Bloqueio de Execução** | 100% sem TAP aprovado |  Não testado (fora do escopo implementado) |  **FALTANDO** |
+| **Integração com Power Automate** | Workflow automático |  Não implementado |  **FALTANDO** |
+| **Alertas a Gestores** | 100% das tentativas |  Não implementado |  **FALTANDO** |
+
+ A implementação de segurança **não cobre** o controle de TAP. O sistema valida permissões de acesso por projeto, mas **não valida** se o projeto está em estado aprovado para execução.
+
 
 
 ## 10.3 RNF-03 Rastreabilidade
