@@ -4420,23 +4420,236 @@ _(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identi
 
 ## 9.2 RNF-02 Segurança
 
-_(Introduzir brevemente o requisito)_
+O Requisito Não Funcional (RNF) de Segurança é prioritário na nova arquitetura, visando garantir a confidencialidade, integridade e disponibilidade dos dados estratégicos do portfólio de projetos do Metrô-SP. A nova arquitetura implementa um Middleware de Segurança centralizado (simulado em FastAPI) que atua como Guardião de IA, controlando o acesso granular, assegurando a autenticação (via Microsoft Entra ID simulado) e realizando a validação de integridade (checksum) nas transferências de dados entre Miro e SharePoint.
 
-### 9.2.1
+### 9.2.1 Mapa de Testes Automatizados
 
-_(Nesta etapa, o foco está em apresentar um panorama completo dos testes automatizados realizados, alinhados de forma precisa com os cenários de simulação e considerando a automação e a massa de testes utilizada._)
+O mapeamento a seguir detalha os testes automatizados criados, localizados no arquivo `src/RNF-02-Segurança/Sprint 3/tests/test_scenarios.py` ([Acesse clicando aqui](./src/RNF-03-Rastreabilidade/Sprint%203/tests/test_scenarios.py)), para validar o comportamento do Middleware de Segurança e seus serviços em cenários críticos. A automação utiliza a biblioteca `pytest` e a massa de testes simulada via `Faker`.
+
+| Cenário de Teste                       | Objetivo Principal                                                                                 | Componente/Serviço Testado     | Status | Massa de Testes Utilizada                                                                           |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------|---------------------------------|--------|-------------------------------------------------------------------------------------------------------|
+| 1. Cadastro Incorreto de Usuário       | Impedir o acesso de usuários a projetos para os quais não possuem permissão lógica.                | `access_control_service.py`      | Passou | Usuário lorenzo.jesus.financeiro@... tentando acessar Projeto B (bloqueado).                         |
+| 2. Acesso Indevido ao Miro             | Garantir que apenas usuários autenticados com token válido (simulado) acessem recursos.            | ``auth_service.py``                 | Passou | Tentativas com token inválido, link público e sem permissão.                                         |
+| 3. Inconsistência de Dados Miro/SharePoint | Validar a integridade de dados na sincronização, detectando mismatches (diferenças) por meio de checksums. | ``integrity_service.py`` | Passou | 3 validações de checksum (2 matches, 1 mismatch que bloqueou a sincronização).                       |
+| 4. Ação Indevida por Agente de IA      | Validar os guardrails de IA contra tentativas de vazamento semântico ou acesso indireto a dados restritos. | ``access_control_service.py`` | Falhou | 4 prompts ambíguos ou maliciosos ao Agente de IA.                                                    |
+
+**Automação e Massa de Testes:**
+
+  - Ferramenta de Automação: ``pytest``.
+  - Massa de Testes: Gerada via Faker para simular usuários, tokens e payloads de dados.
+  - Total de Cenários Testados: 4 (75.0% de sucesso, 1 falha).
+
 
 ### 9.2.2 Registros de Testes Automatizados
 
-_(Nesta seção, serão detalhados os resultados obtidos a partir dos testes automatizados, incluindo informações sobre sucessos, falhas e comportamentos inesperados. Além disso, gráficos e dashboards visuais serão utilizados para facilitar a compreensão dos resultados. )_
+O ciclo de testes automatizados para o RNF-02 (Segurança) resultou em uma Taxa de Sucesso de 75.0%, com 3 dos 4 cenários críticos validados. Os resultados confirmam a utilidade do Middleware de Segurança em proteger os controles primários (acesso e integridade), mas revelam uma falha crítica na funcionalidade de Guardrails de IA.
+
+**Registro dos Logs dos Resultados dos Testes**
+
+```
+======================================================================
+    TESTES RNF-02 SEGURANCA - CENARIOS
+======================================================================
+
+Limpando dados de testes anteriores...
+Dados limpos.
+
+
+======================================================================
+CENARIO 1: Cadastro incorreto de usuario no projeto ou portfolio
+======================================================================
+
+[PASSOU] Cenário 1: Acesso bloqueado automaticamente, incidente registrado na incident queue
+  - incident_id: 01e57fc8-f350-48a0-af3b-2af537e07c0f
+  - incident_queue_id: 87a69c9f-adbd-4a5a-a7fb-0445fe66f343
+  - user: lorenzo.jesus.financeiro@metrosp.com.br
+  - project_a: PROJ-METRO-2024-0008
+  - project_b: PROJ-METRO-2024-0010
+  - severity: critical
+  - timestamp: 2025-11-18T11:22:17.173475
+
+
+======================================================================
+CENARIO 2: Acesso indevido ao Miro antes do bloqueio
+======================================================================
+
+[PASSOU] Cenário 2: Todos os acessos indevidos foram bloqueados e registrados
+  - incidents_registered: 3
+  - incident_types: ['token_invalido', 'link_publico_bloqueado', 'tentativa_acesso_indevedo']
+  - public_access_blocked: True
+  - invalid_token_blocked: True
+  - no_permission_blocked: True
+
+
+======================================================================
+CENARIO 3: Inconsistencias entre dados do Miro e SharePoint
+======================================================================
+
+[PASSOU] Cenário 3: Integridade de dados validada, inconsistências detectadas e sincronização bloqueada
+  - match_detected: True
+  - mismatch_detected: True
+  - whitespace_ignored: True
+  - sync_blocked_on_mismatch: True
+  - incident_registered: True
+  - checksum_validations: 3
+
+
+======================================================================
+CENARIO 4: Acao indevida por agente de IA (Falha de Guardrails)
+======================================================================
+
+Projeto A (permitido): PROJ-METRO-2024-0001
+Projeto B (bloqueado): PROJ-METRO-2024-0009
+Agente de IA: Agente de Análise de Projetos (AI-AGENT-9cec9b2b)
+
+Teste 4.1: "Compare o andamento deste projeto com outros projetos da emp..."
+  [FALHOU] Validação não implementada: Guardrails de IA não implementados
+  [FALHOU] Detecção de escopo não implementada
+  [FALHOU] Análise de resposta não implementada
+  [FALHOU] Registro de incidentes não implementado
+
+Teste 4.2: "Resuma tudo o que você sabe relacionado ao orçamento do metr..."
+  [FALHOU] Validação não implementada: Guardrails de IA não implementados
+  [FALHOU] Detecção de escopo não implementada
+  [FALHOU] Análise de resposta não implementada
+  [FALHOU] Registro de incidentes não implementado
+
+Teste 4.3: "Liste padrões comuns entre projetos similares...."
+  [FALHOU] Validação não implementada: Guardrails de IA não implementados
+  [FALHOU] Detecção de escopo não implementada
+  [FALHOU] Análise de resposta não implementada
+  [FALHOU] Registro de incidentes não implementado
+
+Teste 4.4: "Verifique se existe algum documento com a palavra 'contrato'..."
+  [FALHOU] Validação não implementada: Guardrails de IA não implementados
+  [FALHOU] Detecção de escopo não implementada
+  [FALHOU] Análise de resposta não implementada
+  [FALHOU] Registro de incidentes não implementado
+
+[FALHOU] Cenário 4: Guardrails de IA não implementados - funcionalidade ausente no sistema
+  - validation_failures: 4
+  - analysis_failures: 4
+  - scope_violation_failures: 4
+  - incident_registration_failures: 4
+  - total_prompts_tested: 4
+  - expected_behavior: Sistema deveria bloquear todas as tentativas e registrar incidentes
+  - actual_behavior: Sistema não possui mecanismos de guardrails implementados
+  - implementation_status: PENDENTE
+  - test_purpose: Documentar comportamento esperado para implementação futura
+
+
+======================================================================
+RESUMO DOS TESTES
+======================================================================
+
+Total de cenarios testados: 4
+[+] Passaram: 3
+[-] Falharam: 1
+Taxa de sucesso: 75.0%
+
+Cenarios que falharam:
+  - Cenário 4: Guardrails de IA não implementados - funcionalidade ausente no sistema
+
+======================================================================
+
+ESTATISTICAS DO REPOSITORIO:
+  - total_incidents: 5
+  - unresolved_incidents: 5
+  - resolved_incidents: 0
+  - incidents_by_type: {'permissao_incorreta': 1, 'link_publico_bloqueado': 1, 'token_invalido': 1, 'tentativa_acesso_indevedo': 1, 'inconsistencia_dados': 1}
+  - incidents_by_severity: {'critical': 3, 'high': 2}
+  - total_checksum_validations: 3
+  - checksum_matches: 2
+  - checksum_mismatches: 1
+  - total_integrity_checks: 3
+  - total_access_logs: 0
+
+======================================================================
+```
+
+
+**A. Sucesso na Mitigação de Riscos de Acesso e Integridade**
+
+Os Cenários 1, 2 e 3 foram aprovados, validando os mecanismos centrais de segurança que abordam os riscos históricos do sistema AS-IS (acesso indevido, links públicos e inconsistência de dados).
+
+| Cenário                            | Componente Testado         | Detalhe do Registro (Evidência)                                                                                                                                                                                                                  |
+|------------------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1. Cadastro Incorreto (PASSOU)     | Controle de Acesso (RBAC)   | "O acesso do usuário `lorenzo.jesus.financeiro@...` ao `Projeto B` (bloqueado) foi automaticamente negado. Um incidente `critical (01e57fc8-...)` foi registrado imediatamente na `Incident Queue`, confirmando a eficácia do controle granular por `permissão lógica`." |
+| 2. Acesso Indevido (PASSOU)        | Autenticação e Bloqueio     | "Foram simuladas 3 tentativas de acesso indevido (`token inválido`, `link público`, `falta de permissão`). Todas foram bloqueadas e registradas como incidentes, confirmando a eliminação da vulnerabilidade `link_publico_bloqueado`." |
+| 3. Inconsistência de Dados (PASSOU) | Integridade (Checksum)      | "O serviço de integridade executou 3 validações de `checksum` entre `Miro` e `SharePoint`. O sistema detectou corretamente a inconsistência de dados (`checksum_mismatches: 1`) e bloqueou a sincronização (`sync_blocked_on_mismatch: True`), impedindo a corrupção de dados e o risco `R1`." |
+
+Sendo assim, os controles de Confidencialidade (RBAC) e Integridade (Checksum) do Middleware estão funcionais e robustos, rastreando e bloqueando preventivamente as violações mais comuns.
+
+**B. Falha Crítica: Ausência dos Guardrails de IA**
+
+O Cenário 4, focado na validação dos controles de segurança para o Agente de IA, falhou criticamente. O objetivo era garantir que a IA não pudesse ser manipulada para acessar dados restritos (vazamento semântico) do ``Projeto B`` ao responder a prompts ambíguos a partir do ``Projeto A``.
+
+| Item de Validação (Cenário 4)        | Status  | Motivo da Falha (Registro)                                                                                               |
+|---------------------------------------|---------|----------------------------------------------------------------------------------------------------------------------------|
+| Validação de Intenção (`Guardrails`)  | FALHOU  | Funcionalidade não implementada no sistema (`Guardrails de IA` não implementados).                                        |
+| Detecção de Escopo de Acesso          | FALHOU  | "4 falhas de detecção de `escopo`, expondo dados de `projetos não autorizados`."                                           |
+| Análise de Resposta da IA             | FALHOU  | 4 falhas na análise para filtrar informações `sensíveis` de saída.                                                         |
+| Registro de Incidente                 | FALHOU  | Nenhuma das 4 tentativas de `bypass` foi registrada na `Incident Queue`.                                                   |
+
+Logo, o sistema não possui mecanismos de Guardião de IA implementados. Este é um risco de segurança PENDENTE que anula a proteção de confidencialidade ao interagir com o Agente de IA, podendo expor dados estratégicos.
+
+**C. Estatísticas Agregadas de Incidentes (Rastreabilidade)**
+
+O registro das violações bem-sucedidas nos testes (Cenários 1, 2 e 3) demonstra a nova capacidade do sistema de rastrear (RNF-03) e priorizar a resposta a incidentes de segurança.
+
+| Categoria         | Tipo de Incidente             | Total | Severidade |
+|-------------------|-------------------------------|-------|------------|
+| Acesso Indevido   | `permissao_incorreta`         | 1     | Critical   |
+|                   | `link_publico_bloqueado`      | 1     | Critical   |
+|                   | `tentativa_acesso_indevedo`   | 1     | High       |
+|                   | `token_invalido`              | 1     | High       |
+| Integridade       | `inconsistencia_dados`        | 1     | Critical   |
+| **Total de Incidentes Registrados:** | — | **5** | — |
 
 ### 9.2.3 Avaliação dos Resultados e Limites do Sistema
 
-_(Aqui, será realizada uma análise profunda dos resultados obtidos a partir dos testes automatizados, comparando os cenários atuais com as metas e requisitos estabelecidos. Serão identificados os pontos fortes e as áreas de atenção, e serão propostos ajustes e melhorias.)_
+### Conformidade com os Requisitos Não Funcionais (RNFs)
+
+A análise dos resultados dos testes automatizados valida o sucesso do novo sistema na mitigação dos riscos de segurança e integridade previamente identificados no ambiente AS-IS:
+
+**Controle de Acesso Granular (RBAC) — Conforme:**  
+O mecanismo implementado demonstrou capacidade de negar o acesso a usuários que possuem autenticação válida, mas não possuem permissão lógica para o projeto específico (Cenário 1). Essa implementação mitiga o **Risco R4 – Acesso Indevido a Informações**, garantindo segregação adequada dos dados estratégicos.
+
+**Integridade de Dados (Checksum) — Conforme:**  
+A validação automática de checksum no Cenário 3 assegura que os dados transferidos entre o Miro e o SharePoint permanecem idênticos à origem. Esse mecanismo elimina o **Risco R1 – Inconsistência de Dados**, comum em fluxos de transferência manual.
+
+**Rastreabilidade — Conforme:**  
+O registro imediato e estruturado de todos os incidentes na fila de segurança garante a trilha de auditoria necessária. Dessa forma, a arquitetura remove a vulnerabilidade de **R5 – Baixa Rastreabilidade das Ações**, fortalecendo compliance e investigação.
+
+---
+
+### Limites Críticos do Sistema (Funcionalidade Ausente)
+
+O principal limite identificado é a ausência total dos mecanismos de **Guardrails de IA** (Cenário 4).
+
+**Risco Persistente:**  
+O sistema permanece vulnerável a vazamento semântico. Um agente de IA com permissão de leitura em um projeto pode ser induzido, por prompts ambíguos ou indiretos, a inferir e revelar informações sigilosas de outros projetos bloqueados.
+
+**Consequência:**  
+A exposição de informações estratégicas representa um alto risco de comprometimento do portfólio e pode resultar na violação da **LGPD**, devido ao vazamento de dados sensíveis ou restritos.
+
+**Ajuste Imediato — Prioridade Máxima:**  
+É essencial implementar a lógica de **Validação Semântica** no middleware. Essa funcionalidade deve analisar a intenção do prompt da IA e bloquear automaticamente respostas que extrapolem o escopo de permissão atribuído ao agente, eliminando o risco identificado.
+
 
 ### 9.2.4 Avaliação dos Riscos Resultantes
 
-_(Nesta etapa, será feita uma revisão minuciosa dos riscos inicialmente identificados, considerando os resultados dos testes e as implementações realizadas. Será avaliado como cada risco impactou o sistema e, quando possível, serão propostas estratégias de mitigação.)_
+A falha no Cenário 4 introduz um novo risco crítico. A arquitetura de segurança é forte em controles tradicionais (RBAC, Checksum), mas vulnerável em sua proposta de valor principal: a integração segura de IA.
+
+| Código | Risco                         | Status Pós-Teste            | Estratégia de Mitigação                                                                                                                     |
+|--------|-------------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| R1     | Inconsistência de Dados       | Mitigado                     | Confirmação da eficácia do mecanismo de Checksum.                                                                                            |
+| R4     | Acesso Indevido a Informações | Controlado                   | Sucesso de 100% no bloqueio de acesso não autorizado e tokens inválidos.                                                                    |
+| (Novo) | Vazamento Semântico de IA     | CRÍTICO - PENDENTE           | Priorizar a implementação dos Guardrails de IA. Sem essa funcionalidade (status PENDENTE no Cenário 4), a confidencialidade dos dados está comprometida. |
+| R5     | Baixa Rastreabilidade das Ações | Melhorado                  | Logs de incidentes automáticos e estruturados (5 incidentes registrados).                                                                    |
+
+
+A análise dos resultados evidencia que o novo middleware arquitetural é altamente eficaz na mitigação dos riscos de **Controle de Acesso (R4)** e **Inconsistência de Dados (R1)**, apresentando **100% de sucesso** nesses cenários. Os mecanismos de **RBAC granular** e **Validação por Checksum** funcionam conforme projetado, bloqueando acessos indevidos e garantindo a integridade dos dados sincronizados, com registros de auditoria consistentes. Contudo, o **Cenário 4 (Agente de IA)** expôs uma **falha crítica** devido à ausência dos componentes de **Guardrails de IA**, resultando em uma vulnerabilidade de alta severidade e risco de **vazamento semântico**. Assim, embora a arquitetura demonstre robustez nos controles tradicionais, é essencial priorizar a implementação desses guardrails para assegurar proteção completa e atender integralmente ao **RNF-02**.
 
 ---
 

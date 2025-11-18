@@ -125,7 +125,11 @@ class SecurityIncident(BaseModel):
         "inconsistencia_dados",
         "link_publico_bloqueado",
         "token_invalido",
-        "permissao_incorreta"
+        "permissao_incorreta",
+        "ia_vazamento_semantico",
+        "ia_acesso_fora_escopo",
+        "ia_inferencia_indevida",
+        "ia_bypass_guardrails"
     ]
     severity: Literal["low", "medium", "high", "critical"]
     user_email: Optional[str] = None
@@ -146,3 +150,40 @@ class SecurityIncident(BaseModel):
         }
 
 
+
+
+class AIAgentRequest(BaseModel):
+    """Requisição feita por um agente de IA"""
+    request_id: str = Field(default_factory=lambda: str(uuid4()))
+    timestamp: datetime = Field(default_factory=datetime.now)
+    agent_id: str
+    agent_name: str
+    user_prompt: str  # Comando/pergunta do usuário
+    allowed_project_id: str  # Projeto que o agente tem permissão
+    blocked_project_ids: List[str] = []  # Projetos bloqueados
+    permission_level: Literal["leitura", "escrita", "admin"]
+    source: str = "AI Middleware"
+    
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
+
+
+class AIAgentResponse(BaseModel):
+    """Resposta gerada por um agente de IA"""
+    response_id: str = Field(default_factory=lambda: str(uuid4()))
+    request_id: str
+    timestamp: datetime = Field(default_factory=datetime.now)
+    agent_id: str
+    response_content: str
+    projects_accessed: List[str] = []  # Projetos acessados na resposta
+    sensitive_data_detected: bool = False
+    guardrail_violations: List[str] = []
+    blocked: bool = False
+    block_reason: Optional[str] = None
+    
+    class Config:
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
