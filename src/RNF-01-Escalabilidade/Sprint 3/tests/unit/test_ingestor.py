@@ -26,7 +26,7 @@ def test_ingest_success():
         user_id="user1",
         action="ingest",
         payload={"data": "test"}
-    ).dict()
+    ).model_dump(mode='json')
     
     response = client.post("/ingest", json=request_data)
     assert response.status_code == 200
@@ -56,7 +56,7 @@ def test_multiple_ingestions(iteration):
         user_id=f"user{iteration}",
         action="ingest",
         payload={"iteration": iteration}
-    ).dict()
+    ).model_dump(mode='json')
     
     response = client.post("/ingest", json=request_data)
     assert response.status_code in [200, 429, 500]  # Pode ter throttling ou erro simulado

@@ -28,7 +28,7 @@ def test_create_audit_log():
         resource="document1",
         action="read",
         status="success"
-    ).dict()
+    ).model_dump(mode='json')
     
     response = client.post("/log", json=log_data)
     assert response.status_code == 200
@@ -50,7 +50,7 @@ def test_get_logs_by_trace():
         resource="document1",
         action="read",
         status="success"
-    ).dict()
+    ).model_dump(mode='json')
     client.post("/log", json=log_data)
     
     # Recupera logs

@@ -26,7 +26,7 @@ def test_upload_success():
         user_id="user1",
         action="upload",
         payload={"filename": "test.pdf", "size": 1024}
-    ).dict()
+    ).model_dump(mode='json')
     
     response = client.post("/upload", json=request_data)
     assert response.status_code == 200

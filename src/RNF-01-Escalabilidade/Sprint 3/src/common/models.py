@@ -1,7 +1,7 @@
 """Modelos Pydantic compartilhados"""
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class TransactionRequest(BaseModel):
@@ -10,7 +10,7 @@ class TransactionRequest(BaseModel):
     user_id: str = Field(..., description="ID do usuário")
     action: str = Field(..., description="Ação a ser executada")
     payload: Dict[str, Any] = Field(default_factory=dict, description="Dados da requisição")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp da requisição")
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Timestamp da requisição")
 
 
 class TransactionResponse(BaseModel):
@@ -19,7 +19,7 @@ class TransactionResponse(BaseModel):
     status: str = Field(..., description="Status da transação (SUCCESS, FAILED, PENDING)")
     message: Optional[str] = Field(None, description="Mensagem descritiva")
     data: Optional[Dict[str, Any]] = Field(None, description="Dados de resposta")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp da resposta")
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Timestamp da resposta")
 
 
 class AuditLog(BaseModel):
@@ -30,5 +30,5 @@ class AuditLog(BaseModel):
     resource: str = Field(..., description="Recurso acessado")
     action: str = Field(..., description="Ação realizada")
     status: str = Field(..., description="Status da operação")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Timestamp do evento")
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Timestamp do evento")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Metadados adicionais")

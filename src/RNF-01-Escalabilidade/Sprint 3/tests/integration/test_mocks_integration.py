@@ -50,7 +50,7 @@ def test_full_workflow():
         user_id="user1",
         action="ingest",
         payload={"data": "workflow_test"}
-    ).dict()
+    ).model_dump(mode='json')
     
     ingest_response = ingestor_client.post("/ingest", json=ingest_data)
     
@@ -62,7 +62,7 @@ def test_full_workflow():
         resource="proj1",
         action="ingest",
         status="success" if ingest_response.status_code == 200 else "failed"
-    ).dict()
+    ).model_dump(mode='json')
     
     audit_response = audit_client.post("/log", json=audit_log)
     assert audit_response.status_code == 200
@@ -85,7 +85,7 @@ def test_concurrent_requests():
             user_id="user1",
             action="test",
             payload={}
-        ).dict()
+        ).model_dump(mode='json')
         
         response = ingestor_client.post("/ingest", json=request_data)
         responses.append(response)
