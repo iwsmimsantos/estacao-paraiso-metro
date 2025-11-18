@@ -4990,6 +4990,53 @@ A simulação demonstrou **excelente capacidade preditiva para melhorias increme
 - **100% de sucesso em controles tradicionais** (RBAC, autenticação, integridade)
 - **Lacuna identificada em inovação** (Guardrails de IA - funcionalidade nova)
 
+### 10.2.2 Simulação das Condições de Exceção
+
+#### A. Cenários de Exceção
+
+**Objetivo desta Seção:**
+
+Esta seção identifica **cenários de exceção hipotetizados** (situações adversas como falha de serviços, ataques coordenados) e avalia se foram **simulados na seção 7.2** ou **testados na seção 9.2**. O objetivo é identificar **gaps de validação** onde o sistema pode apresentar comportamento desconhecido sob condições anormais.
+
+**Importante:** Os cenários listados abaixo **NÃO foram testados na prática** - são **análises prospectivas** para identificar áreas que requerem validação futura.
+
+**Análise Geral:**
+
+&emsp;A análise revela que a simulação teórica (7.2) e os testes automatizados (9.2) focaram em **cenários nominais** (usuário único, operações sequenciais), obtendo **100% de sucesso**. Os **cenários de exceção** (falhas de infraestrutura, ataques coordenados) representam **oportunidades de expansão** do escopo de validação.
+
+**Observação 1: Escopo da Simulação Focado em Operações Nominais**
+
+As Cadeias de Markov (seção 7.2) modelam falhas como **transições probabilísticas** dentro de um fluxo de operação normal (Normal → Issue → Remediation → Compromised). Este escopo **não incluiu** modelagem de:
+
+1. **Indisponibilidade de serviços externos** (Microsoft Entra ID, SharePoint, Miro)
+2. **Ataques coordenados de larga escala** (DDoS, credential stuffing)
+3. **Falhas de rede** durante verificação de checksum
+4. **Corrupção de logs** de auditoria
+
+**Observação 2: Testes Validaram Cenários Funcionais**
+
+Os testes da seção 9.2 executam em **ambiente controlado**, validando com sucesso o comportamento funcional:
+
+| Tipo de Cenário | Simulado (7.2)? | Testado (9.2)? | Status Atual | Recomendação |
+|-----------------|-----------------|----------------|--------------|--------------|
+| **Falha do Microsoft Entra ID** | Não | Não | A validar | Incluir em testes de resiliência |
+| **Ataque coordenado (1000 req/s)** | Não | Não | A validar | Incluir em testes de carga |
+| **Checksum durante falha de rede** | Não | Não | A validar | Implementar retry automático |
+| **Rollback de transação inconsistente** | Não | Não | A validar | Adicionar transações ACID |
+
+**Observação 3: Oportunidade de Expansão - Métricas de Recuperação**
+
+A simulação calcula **tempo médio até falha (MTTF = 487 dias)**, prevendo a confiabilidade do sistema. Uma **expansão natural** seria incluir métricas de recuperação:
+
+| Métrica de Resiliência | Status Atual | Próximo Passo Sugerido |
+|------------------------|--------------|------------------------|
+| **MTTR** (Mean Time To Recovery) | A definir | Simular tempo de recuperação após falhas |
+| **RTO** (Recovery Time Objective) | A definir | Estabelecer SLA de disponibilidade |
+| **RPO** (Recovery Point Objective) | A definir | Definir política de backup/restore |
+
+**Contexto:** A simulação atual demonstrou **excelente capacidade preditiva** para operações nominais (100% de sucesso). A inclusão de métricas de recuperação complementaria o modelo, transformando-o de "tempo até falhar" para "ciclo completo de falha e recuperação".
+
+
 
 ## 10.3 RNF-03 Rastreabilidade
 
