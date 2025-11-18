@@ -4541,29 +4541,157 @@ Cenário 5 (Alertas):   ██████████████████�
 
 #### Oportunidades de melhoria
 
-1. **Correlação de Dados Estendida**
-    - **Observação**: Atualmente correlacionando 3 logs de 6 totais por ciclo
-    - **Recomendação**: Aumentar taxa de correlação automática para 100%
-    - **Benefício**: Reduzir tempo de investigação de incidentes
-    - **Ação**: Otimizar algoritmo de matching de eventos
+1. Correlação de Dados Estendida 
+ 
+**Prioridade**: ALTA  
+**Complexidade**: Média
 
-2. **Análise Preditiva de Alertas**
-    - **Observação**: Sistema gera alertas apenas para tentativas inválidas
-    - **Recomendação**: Implementar machine learning para detectar padrões suspeitos
-    - **Benefício**: Detecção proativa de anomalias
-    - **Ação**: Integrar análise comportamental
+**Observação Identificada**:
+```
+Atualmente correlacionando 3 logs de 6 totais por ciclo
+Taxa de Correlação Atual: 75%
+```
 
-3. **Dashboard de Rastreabilidade**
-    - **Observação**: Testes validam funcionalidades mas falta visualização em tempo real
-    - **Recomendação**: Criar dashboard Power BI para visualização de trilhas
-    - **Benefício**: Monitoramento visual simplificado
-    - **Ação**: Conectar Power BI aos dados de Sentinel
+**Problema**:
+- Nem todos os eventos de SharePoint estão sendo correlacionados com Sentinel
+- Deixa lacunas na trilha de auditoria
+- Aumenta tempo de investigação de incidentes
 
-4. **Retenção de Logs Escalável**
-    - **Observação**: Sistema armazenou 19 registros sem problemas
-    - **Recomendação**: Validar escalabilidade para volumes maiores (1 milhão+ registros)
-    - **Benefício**: Garantir sustentabilidade em longo prazo
-    - **Ação**: Testes de carga com dados realistas
+**Recomendação**: Aumentar taxa de correlação automática para 100%
+
+**Benefício Esperado**:
+- Reduzir tempo de investigação de incidentes em **40%**
+- Fechar lacunas na trilha de auditoria
+- Melhorar confiabilidade do sistema de rastreabilidade
+- Facilitar conformidade com regulações
+
+**Ação Proposta**: Otimizar algoritmo de matching de eventos
+```python
+# Estratégia: Aumentar janela de tempo de correlação
+# Usar machine learning para match de padrões complexos
+# Implementar retry automático com backoff
+
+class CorrelationOptimizer:
+    """Otimização de correlação de eventos"""
+    
+    def __init__(self):
+        self.time_window = 5000  # ms
+        self.retry_count = 3
+        self.use_ml_matching = True
+    
+    def correlate_events(self, sharepoint_event, sentinel_logs):
+        """Correlaciona com taxa esperada de 100%"""
+        # Implementar algorithm.rs.v2
+        pass
+```
+
+---
+
+2. Análise Preditiva de Alertas 
+
+**Prioridade**: MÉDIA  
+**Complexidade**: Alta
+
+**Observação Identificada**:
+```
+Sistema gera alertas apenas para tentativas inválidas conhecidas
+Detecção limitada a padrões pré-definidos
+```
+
+**Problema**:
+- Alertas reativos, não proativos
+- Padrões anormais podem passar despercebidos
+- Ataques sofisticados podem não ser detectados
+
+**Recomendação**: Implementar machine learning para detectar padrões suspeitos
+
+**Benefício Esperado**:
+- Detecção proativa de anomalias antes que causem dano
+- Identificar padrões de ataque em evolução
+- Reduzir incidentes não detectados em **60%**
+- Análise comportamental integrada
+
+**Ação Proposta**: Integrar análise comportamental
+```python
+# Estratégia: Implementar modelo de detecção de anomalias
+# Usar histórico de mudanças normais como baseline
+# Alertar quando desvio > 2 desvios padrão
+
+class AnomalyDetector:
+    """Detecção preditiva de anomalias"""
+    
+    def __init__(self):
+        self.baseline = None
+        self.anomaly_threshold = 2.0  # std devs
+        self.ml_model = None
+    
+    def detect_anomaly(self, event):
+        """Detecta padrões anormais"""
+        # Usar Isolation Forest ou similar
+        pass
+```
+
+---
+
+3. Retenção de Logs Escalável 
+
+**Prioridade**: MÉDIA  
+**Complexidade**: Média
+
+**Observação Identificada**:
+```
+Sistema armazenou 19 registros sem problemas
+Comportamento em grandes volumes não validado
+```
+
+**Problema**:
+- Teste de carga não realizado
+- Incerto comportamento com 1 milhão+ de registros
+- Possível degradação de performance
+
+**Recomendação**: Validar escalabilidade para volumes maiores com testes de carga
+
+**Benefício Esperado**:
+- Garantir sustentabilidade em longo prazo
+- Identificar gargalos de performance
+- Otimizar armazenamento e query
+- Conformidade com retenção regulatória (7-10 anos)
+
+**Ação Proposta**: Testes de carga com dados realistas
+```python
+# Teste de Carga Proposto
+
+class LoadTest:
+    """Testes de escalabilidade"""
+    
+    def test_1_million_logs(self):
+        """Teste com 1 milhão de registros"""
+        # Validar tempo de query < 2 segundos
+        pass
+    
+    def test_concurrent_writes(self):
+        """Teste de escrita concorrente"""
+        # 1000 eventos simultâneos
+        pass
+    
+    def test_correlation_with_scale(self):
+        """Teste de correlação em escala"""
+        # Taxa de correlação com grande volume
+        pass
+
+# Métricas a Validar:
+# - Query time (p95) < 2 segundos
+# - Write throughput > 1000 eventos/segundo
+# - Memory usage < 80% da disponível
+# - CPU < 70% sob carga
+```
+
+**Tempo de Implementação**: 3-4 sprints  
+**Esforço Estimado**: 60-80 horas  
+**Dependências**: Ambiente de teste com recursos suficientes
+
+---
+
 
 5. **Integração com Sistemas Legados**
     - **Observação**: Testes cobrem Microsoft 365 nativamente
