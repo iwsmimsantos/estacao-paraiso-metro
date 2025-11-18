@@ -30,13 +30,16 @@
   - [2.3 Sprint 3](#21-sprint-3)
   - [2.4 Sprint 4](#21-sprint-4)
   - [2.5 Sprint 5](#21-sprint-5)
-- [3. Análise de Riscos](#3-análise-de-riscos)
-  - [3.1 Riscos identificados](#31-riscos-identificados)
-  - [3.2 Mitigação de Riscos](#32-mitigação-de-riscos)
-- [4. Análise Post Mortem](#4-análise-post-mortem)
-  - [4.1 Sucessos do Projeto](#41-sucessos-do-projeto)
-  - [4.2 Oportunidades de Melhoria](#42-oportunidades-de-melhoria)
-  - [4.3 Lições Aprendidas](#43-lições-aprendidas)
+- [3. Tabelas de Acompanhamento](#3-tabelas-de-acompanhamento)
+  - [Acompanhamento de Progresso](#acompanhamento-de-progresso---sprints-1234-e-5)
+  - [Acompanhamento de Riscos](#acompanhamento-de-riscos---sprints-1234-e-5)
+- [4. Análise de Riscos](#4-análise-de-riscos)
+  - [4.1 Riscos identificados](#41-riscos-identificados)
+  - [4.2 Mitigação de Riscos](#42-mitigação-de-riscos)
+- [5. Análise Post Mortem](#5-análise-post-mortem)
+  - [5.1 Sucessos do Projeto](#51-sucessos-do-projeto)
+  - [5.2 Oportunidades de Melhoria](#52-oportunidades-de-melhoria)
+  - [5.3 Lições Aprendidas](#53-lições-aprendidas)
 
 # 1. Introdução
 
@@ -141,29 +144,6 @@
 
 ---
 
-### Matriz de Risco do Projeto - Sprint 2
-
-| ID | Risco                                              | Probabilidade | Impacto   | Severidade | Estratégia de Mitigação                                    | Responsável  | Status       |
-|----|---------------------------------------------------|---------------|-----------|------------|------------------------------------------------------------|--------------|--------------|
-| 1  | Atraso na entrega de tarefas                      | Média         | Alto      | Alto       | Revisão semanal do cronograma e dailys                     | Scrum Master | Mitigado     |
-| 2  | Falha na comunicação entre membros                | Baixa         | Médio     | Moderado   | Reuniões regulares e uso de canais oficiais                | Todos        | Controlado   |
-| 3  | Problemas técnicos com ferramentas                | Média         | Alto      | Alto       | Treinamento e suporte técnico                              | DevOps       | Ativo        |
-| 4  | Escopo mal definido                               | Baixa         | Médio     | Moderado   | Revisão do escopo com o cliente                            | PO           | Mitigado     |
-| 5  | Falta de engajamento dos integrantes              | Baixa         | Médio     | Moderado   | Feedbacks constantes e acompanhamento                      | Scrum Master | Controlado   |
-| 6  | Mudanças de requisitos do cliente                 | Média         | Alto      | Alto       | Documentação de mudanças e validação contínua              | PO           | Ativo        |
-| 7  | Dificuldade de acesso às APIs do SharePoint       | Alta          | Alto      | Crítico    | Sessões técnicas com TI do Metrô e documentação Microsoft  | Tech Lead    | Novo         |
-| 8  | Incompatibilidade entre requisitos de segurança   | Média         | Crítico   | Crítico    | Workshop com equipe de compliance e segurança da informação| Arquiteto    | Novo         |
-| 9  | Complexidade dos fluxos do Power Automate         | Média         | Médio     | Moderado   | Mapeamento detalhado e sessões com usuários-chave          | Analista     | Novo         |
-| 10 | Limitações técnicas do ambiente Microsoft         | Baixa         | Alto      | Alto       | POCs antecipados e consulta com especialistas Microsoft    | Tech Lead    | Novo         |
-| 11 | Dependência de disponibilidade da equipe do Metrô | Média         | Médio     | Moderado   | Agendamento antecipado de reuniões e canais assíncronos    | PO           | Novo         |
-| 12 | Integração com sistemas legados não documentados  | Alta          | Alto      | Crítico    | Reverse engineering e documentação progressiva             | Arquiteto    | Novo         |
-
-#### Legenda de Status:
-- **Novo**: Risco identificado na Sprint 2
-- **Ativo**: Risco ainda presente e sendo monitorado
-- **Controlado**: Risco com mitigação parcial implementada
-- **Mitigado**: Risco com baixa probabilidade após ações de mitigação
-
 #### Resumo de Mudanças da Matriz de Risco para Sprint 2:
 - **Risco 1** (Atraso nas entregas): Probabilidade reduzida de Alta para Média devido ao SLA de 24h para revisões
 - **Risco 2** (Comunicação): Probabilidade reduzida de Média para Baixa devido às dailys consistentes
@@ -205,7 +185,7 @@
 - Garantir que todas as tasks estejam claras e detalhadas no Trello antes da execução.
 
 ### Ações de Melhoria Verificáveis
-- Estabelecido prazo de 24h para revisão de PRs, com notificações automáticas via Teams.
+- Estabelecido prazo de 24h para revisão de PRs.
 - Discussões semanais de 30 minutos com o grupo para validação continua de entendimento do projeto.
 - 100% das tarefas no trello devem estar com DOR e DOD, além de uma descrição detalhada.
 
@@ -214,8 +194,44 @@
 &emsp;Na Sprint 2 houve avanço significativo no entendimento técnico do ambiente atual e na definição de fundamentos arquiteturais. O engajamento com stakeholders técnicos do Metrô foi fundamental para qualidade das entregas. E para a Sprint 3, iremos focar em implementar e validar os mecanismos arquiteturais através de: codificação de testes automatizados com TDD, implementação dos componentes com documentação completa, execução e registro de testes não funcionais, avaliação de desempenho e riscos, e simulação do sistema em cenários normais, de exceção e limites para validar as melhorias.
 
 ## 2.3 Sprint 3
-_conteúdo_
- **Nota:** Insira informações sobre mudanças realizadas.
+
+&emsp;A Sprint 3 foi mais curta e concentrou um volume maior de artefatos. A equipe reforçou o pareamento, replanejou o quadro do Trello diariamente e concentrou esforços nas histórias com maior dependência técnica para garantir que os componentes críticos e seus registros de teste fossem entregues dentro do ciclo.
+
+#### Resumo de Mudanças da Matriz de Risco para Sprint 3:
+- **Risco 1** voltou a ficar em evidência devido ao encurtamento da janela de entrega.
+- **Risco 3** aumentou de Severidade Moderada para Alta após problemas no pipeline de automação.
+- **Risco 7** manteve-se crítico e ganhou plano de contingência offline para testes.
+
+_Por recomendação do último feedback, passamos a tabela de acompanhamento para uma nova seção:  [Acompanhamento de Progresso](#acompanhamento-de-progresso---sprints-1234-e-5), e para os riscos: [Acompanhamento de Riscos](#acompanhamento-de-riscos---sprints-1234-e-5), evitando replicação de conteúdo_
+
+---
+
+### Pontos Fortes da Sprint
+- Capacidade da equipe em absorver o escopo adicional mesmo com menos tempo, mantendo as entregas priorizadas.
+- Integração contínua entre código, documentação e roteiros de teste, com atualizações simultâneas no repositório e no plano de evidências.
+- Revisões assíncronas mais rápidas, permitindo feedback quase imediato e facilitando ajustes incrementais.
+- Monitoramento diário do burn-down no Trello, reduzindo surpresas de última hora.
+
+### Pontos Fracos
+- Sobrecarga em membros durante a reta final da sprint, especialmente nas histórias com maior complexidade técnica.
+- Dependência de dados e cenários de teste ainda incompletos, o que atrasou a confirmação de algumas hipóteses.
+- Ajustes de escopo de última hora geraram retrabalho em tarefas de documentação e testes.
+- Pouca folga para revisitar artefatos anteriores e garantir consistência narrativa entre as seções do relatório.
+
+---
+
+### Propostas de Melhoria para a Sprint 4
+- Balancear alocação da equipe, distribuindo histórias críticas entre mais integrantes e prevendo pares alternados.
+- Validar escopo detalhado de cada artefato antes do início da sprint, com checklist simples de critérios de aceite e dependências.
+- Garantir que cada história tenha estimativa revisada e apontamento claro de quem revisa o quê, evitando gargalos no fim da semana.
+
+### Ações de Melhorias
+- Checkpoints de meio de sprint com checklist de completude (documentação + código + testes).
+- Registro diário de impedimentos no Trello para facilitar acompanhamento pelo time.
+- Revisão rápida de lições aprendidas ao término de cada história para alimentar o relatório da sprint.
+---
+
+&emsp;A Sprint 3 marcou a transição do foco analítico para um ciclo de entrega acelerada de artefatos. Apesar do tempo reduzido, priorizamos riscos críticos, mantivemos o controle do quadro e validamos a baseline arquitetural necessária para evoluir as implementações da próxima sprint.
 
 ## 2.4 Sprint 4
 _conteúdo_
@@ -225,23 +241,62 @@ _conteúdo_
 _conteúdo_
  **Nota:** Insira informações sobre mudanças realizadas.
 
-# 3. Análise de Riscos
+# 3. Tabelas de Acompanhamento:
+
+## Acompanhamento de Progresso - Sprints 1,2,3,4 e 5
+Tabela para acompanhamento dos pontos de melhora e estresse.
+
+| Aspecto                        | Sprint 1                                | Sprint 2                   | Sprint 3                                    |
+| :----------------------------- | :-------------------------------------- | :-------------------------- | :------------------------------------------ |
+| **Pontualidade**               | Ponto de melhora (demora nas revisões)  | Melhorou, prazos cumpridos  | Pressionada: ajustes diários para caber no tempo reduzido |
+| **Priorização das tasks**      | Funcionou bem                           | Mantido o padrão            | Replanejada diariamente para focar artefatos críticos     |
+| **Divisão de tarefas**         | Livre e incentivou autonomia            | Mais estruturada            | Pareamento intenso para acelerar entregas                 |
+| **Dailys**                     | Produtivas e bem aproveitadas           | Consistentes                | Curtas e objetivas, focadas em bloqueios                  |
+| **Revisões (PRs)**             | Demora nas revisões                     | Agilizadas com limite de 24h| Realizadas em até 12h com revisão cruzada                  |
+| **Apresentação Sprint Review** | Bem planejada e estruturada             | Técnica e objetiva          | Centrada no protótipo funcional e evidências de testes     |
+| **Validação com professores**  | Ótimo, ponto a ser mantido              | Feedbacks incorporados      | Sessões rápidas para validar entregáveis                   |
+| **Documentação**               | Bem elaborada                           | Diagramas adicionados       | Atualizada em paralelo ao desenvolvimento                 |
+| **Sugestões implementadas**    | Identificadas                           | 80% implementadas           | 100% das críticas aplicadas antes da review final          |
+| **Riscos**                     | Definidos na Matriz de Risco            | Atualizados e monitorados   | Repriorizados com foco nos riscos 7, 8 e 12              |
+
+## Acompanhamento de Riscos - Sprints 1,2,3,4 e 5
+Tabela para acompanhamento do desenvolvimento dos riscos.
+
+| ID | Risco | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
+|----|-------|----------|----------|----------|----------|----------|
+| 1 | Atraso na entrega de tarefas | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Revisão semanal do cronograma e dailys | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão semanal do cronograma e dailys · **Status:** Mitigado | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Replanejamento diário focado em dependências críticas · **Status:** Ativo |  |  |
+| 2 | Falha na comunicação entre membros | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Quadros digitais e checkpoints assíncronos · **Status:** Controlado |  |  |
+| 3 | Problemas técnicos com ferramentas | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Ambiente replicado em containers e playbooks rápidos · **Status:** Ativo |  |  |
+| 4 | Escopo mal definido | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão do escopo com o cliente | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Revisão do escopo com o cliente · **Status:** Mitigado | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Moderado · **Estratégia:** Refinamento conjunto PO + Professores antes de cada artefato · **Status:** Controlado |  |  |
+| 5 | Falta de engajamento dos integrantes | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Rotação de papéis críticos e lições por responsável · **Status:** Controlado |  |  |
+| 6 | Mudanças de requisitos do cliente | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Registro de hipóteses e confirmação rápida · **Status:** Ativo |  |  |
+| 7 | Dificuldade de acesso às APIs do SharePoint |  | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Sessões de entendimento com equipe do Metrô e documentação Microsoft · **Status:** Novo | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Cache de testes offline · **Status:** Ativo |  |  |
+| 8 | Incompatibilidade entre requisitos de segurança |  | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Workshop com equipe de compliance e segurança da informação · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Checklist atualizado e apoio do compliance · **Status:** Ativo |  |  |
+| 9 | Complexidade dos fluxos do Power Automate |  | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Mapeamento detalhado e sessões com usuários-chave · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação lado a lado (AS-IS x TO-BE) e playback com usuários · **Status:** Ativo |  |  |
+| 10 | Limitações técnicas do ambiente Microsoft |  | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** POCs antecipados e consulta com especialistas Microsoft · **Status:** Novo | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Testes em ambientes espelho · **Status:** Controlado |  |  |
+| 11 | Dependência de disponibilidade da equipe do Metrô |  | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Agendamento antecipado · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Plano alternativo · **Status:** Ativo |  |  |
+| 12 | Integração com sistemas legados não documentados |  | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Documentação progressiva · **Status:** Novo | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** - Automação de coleta de logs · **Status:** Ativo |  |  |
+
+
+---
+
+# 4. Análise de Riscos
 _conteúdo_
 
-## 3.1 Riscos identificados
+## 4.1 Riscos identificados
 _conteúdo_
 
-## 3.2 Mitigação de Riscos
+## 4.2 Mitigação de Riscos
 _conteúdo_
 
-# 4. Análise Post Mortem
+# 5. Análise Post Mortem
 _conteúdo_
 
-## 4.1 Sucessos do Projeto
+## 5.1 Sucessos do Projeto
 _conteúdo_
 
-## 4.2 Oportunidades de Melhoria
+## 5.2 Oportunidades de Melhoria
 _conteúdo_
 
-## 4.3 Lições Aprendidas
+## 5.3 Lições Aprendidas
 

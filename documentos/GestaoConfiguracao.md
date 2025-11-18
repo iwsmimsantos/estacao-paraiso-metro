@@ -39,16 +39,28 @@
 - [Referências](#referências)
 
 # 1. Introdução
-_conteúdo_
+
+Este documento define as políticas e práticas de gestão de configuração para o projeto **Estação Portuguesa Tietê Acesso ao Terminal Rodoviário**, desenvolvido em parceria com o Metrô de São Paulo. A gestão de configuração é essencial para garantir a rastreabilidade (RNF-03), segurança (RNF-02) e escalabilidade (RNF-01) do sistema, permitindo que a equipe trabalhe de forma colaborativa e organizada, mantendo o controle sobre versões, branches, commits e deploy do código.
+
+As práticas definidas neste documento seguem padrões da indústria, como GitFlow e Conventional Commits, adaptados às necessidades específicas do projeto, que integra múltiplas tecnologias (Node.js/TypeScript, Python/FastAPI, Angular) e sistemas externos (SharePoint, Power Automate, Microsoft Sentinel).
 
 ## 1.1 Objetivo do Documento
 Este documento estabelece diretrizes claras para a utilização de boas práticas no desenvolvimento de software, visando a organização e a qualidade do código. Todos os membros da equipe devem seguir as instruções definidas.
 
 # 2. Política de Branches
-_conteúdo_
+
+A política de branches estabelece como o código será organizado e versionado durante o desenvolvimento. Esta organização é fundamental para permitir trabalho paralelo em diferentes funcionalidades, facilitar a integração contínua e garantir que o código em produção esteja sempre estável. A estrutura de branches também suporta a rastreabilidade (RNF-03), permitindo identificar quando e em qual branch cada funcionalidade foi desenvolvida.
 
 ## 2.1 Visão Geral do Gitflow
-Nota: Fornecer uma breve explicação sobre o Gitflow e sua importância para o gerenciamento eficiente do código fonte.
+
+O Gitflow é um modelo de branching que organiza o desenvolvimento em branches específicas para diferentes propósitos, facilitando o gerenciamento de releases, features e correções. Este modelo é especialmente importante para projetos que precisam manter múltiplas versões em produção e desenvolver novas funcionalidades em paralelo.
+
+No contexto deste projeto, o Gitflow ajuda a:
+- **Isolar funcionalidades**: Cada RNF (Escalabilidade, Segurança, Rastreabilidade) pode ser desenvolvido em branches separadas
+- **Garantir estabilidade**: A branch `main` sempre contém código testado e estável
+- **Facilitar colaboração**: Múltiplos desenvolvedores podem trabalhar simultaneamente sem conflitos
+- **Rastreabilidade**: Histórico claro de quando e como cada funcionalidade foi implementada (RNF-03)
+- **Rollback seguro**: Facilita a reversão para versões anteriores em caso de problemas
 
 ## 2.2 Estrutura de Branches
 Padrão de Nomenclatura das Branches:
