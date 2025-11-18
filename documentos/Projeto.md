@@ -4541,7 +4541,7 @@ Cenário 5 (Alertas):   ██████████████████�
 
 #### Oportunidades de melhoria
 
-1. Correlação de Dados Estendida 
+1. **Correlação de Dados Estendida**
  
 **Prioridade**: ALTA  
 **Complexidade**: Média
@@ -4587,7 +4587,7 @@ class CorrelationOptimizer:
 
 ---
 
-2. Análise Preditiva de Alertas 
+2. **Análise Preditiva de Alertas** 
 
 **Prioridade**: MÉDIA  
 **Complexidade**: Alta
@@ -4633,7 +4633,7 @@ class AnomalyDetector:
 
 ---
 
-3. Retenção de Logs Escalável 
+3. **Retenção de Logs Escalável**
 
 **Prioridade**: MÉDIA  
 **Complexidade**: Média
@@ -4685,19 +4685,6 @@ class LoadTest:
 # - Memory usage < 80% da disponível
 # - CPU < 70% sob carga
 ```
-
-**Tempo de Implementação**: 3-4 sprints  
-**Esforço Estimado**: 60-80 horas  
-**Dependências**: Ambiente de teste com recursos suficientes
-
----
-
-
-5. **Integração com Sistemas Legados**
-    - **Observação**: Testes cobrem Microsoft 365 nativamente
-    - **Recomendação**: Validar integração com sistemas legados da empresa
-    - **Benefício**: Cobertura de rastreabilidade completa
-    - **Ação**: Testes de integração com sistemas existentes
 
 #### Próximos passos
 
