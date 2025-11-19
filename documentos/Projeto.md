@@ -4877,6 +4877,161 @@ O Cenário 4 (Guardrails de IA) representa uma **capacidade NOVA** que **não ex
 
 &emsp;A análise dos cenários normais demonstra **alta eficácia** dos controles implementados, com a implementação **superando consistentemente** as previsões da simulação nos três primeiros cenários.
 
+**Código de Simulação:**
+
+**Exemplo 1: Simulação de Controle de Acesso (Cenário 1 - Cadastro Incorreto)**
+
+```python
+# Teste automatizado que valida o bloqueio de acesso indevido
+# Arquivo: src/RNF-02-Segurança/Sprint 3/tests/test_scenarios.py
+
+def cenario_1_cadastro_incorreto_usuario(self):
+    """
+    Cenário 1: Cadastro incorreto de usuário no projeto ou portfólio
+    
+    Objetivo do teste:
+    Verificar se o sistema impede o acesso de usuários não vinculados ao projeto correto.
+    """
+    # 1. Cria usuário e registra token
+    user = mock_generator.generate_user()
+    token_result = auth_service.register_token(
+        user_id=user["user_id"],
+        user_email=user["email"]
+    )
+    token = token_result["token_value"]
+    
+    # 2. Registra permissão no projeto A
+    project_a = mock_generator.generate_project_id()
+    permission_a = ProjectPermission(
+        user_email=user["email"],
+        user_id=user["user_id"],
+        project_id=project_a,
+        permission_level="Colaborador"
+    )
+    access_control_service.register_permission(permission_a)
+    
+    # 3. Tenta acessar projeto B (diferente)
+    project_b = mock_generator.generate_project_id()
+    access_request = AccessRequest(
+        user_email=user["email"],
+        user_id=user["user_id"],
+        token=token,
+        requested_project_id=project_b,  # Projeto diferente!
+        requested_resource="documentos",
+        action="read"
+    )
+    
+    # 4. Verifica acesso - DEVE SER NEGADO
+    result = access_control_service.check_access(access_request)
+    
+    # Validações
+    assert not result.get("allowed", False), "Acesso deveria ser negado"
+    assert result.get("incident_id"), "Incidente deve ser registrado"
+    
+    # Resultado esperado: 100% de bloqueio
+```
+
+**Exemplo 2: Implementação do Serviço de Controle de Acesso**
+
+```python
+# Serviço que valida permissões de acesso a projetos
+# Arquivo: src/RNF-02-Segurança/Sprint 3/services/access_control_service.py
+
+def check_access(self, access_request: AccessRequest) -> Dict[str, Any]:
+    """
+    Verifica se um usuário tem permissão para acessar um projeto
+    """
+    # 1. Valida token
+    token_validation = auth_service.validate_token(access_request.token)
+    
+    if not token_validation["valid"]:
+        return self._deny_access(
+            access_request,
+            "token_invalido",
+            f"Token inválido: {token_validation.get('error')}",
+            severity="high"
+        )
+    
+    # 2. Verifica se usuário tem permissão no projeto
+    project_id = access_request.requested_project_id
+    permissions = self.project_permissions.get(project_id, [])
+    
+    user_permission = next(
+        (p for p in permissions 
+         if p.user_id == user_id and p.is_active and not p.revoked_at),
+        None
+    )
+    
+    if not user_permission:
+        return self._deny_access(
+            access_request,
+            "permissao_incorreta",
+            f"Usuário {user_email} não possui permissão no projeto {project_id}",
+            severity="critical",
+            user_id=user_id,
+            user_email=user_email
+        )
+    
+    # 3. Acesso permitido
+    return {"allowed": True, "permission_level": user_permission.permission_level}
+```
+
+**Exemplo 3: Simulação de Validação de Integridade (Cenário 3)**
+
+```python
+# Serviço que valida integridade entre Miro e SharePoint
+# Arquivo: src/RNF-02-Segurança/Sprint 3/services/integrity_service.py
+
+def validate_data_integrity(
+    self,
+    project_id: str,
+    miro_data: str,
+    sharepoint_data: str,
+    data_type: str = "cronograma"
+) -> Dict[str, Any]:
+    """
+    Valida integridade entre dados do Miro e SharePoint usando checksum SHA-256
+    """
+    # Gera checksums normalizados (ignorando whitespace)
+    miro_hash = self.generate_checksum(miro_data, normalize=True)
+    sharepoint_hash = self.generate_checksum(sharepoint_data, normalize=True)
+    
+    # Compara checksums
+    match_status = "match" if miro_hash == sharepoint_hash else "mismatch"
+    
+    # Se houver mismatch, registra incidente e bloqueia sincronização
+    if match_status == "mismatch":
+        incident = SecurityIncident(
+            incident_type="inconsistencia_dados",
+            severity="high",
+            project_id=project_id,
+            description=f"Inconsistência detectada entre Miro e SharePoint",
+            action_blocked="Sincronização bloqueada até correção",
+            metadata={
+                "miro_hash": miro_hash[:16] + "...",
+                "sharepoint_hash": sharepoint_hash[:16] + "..."
+            }
+        )
+        self.repository.add_incident(incident.model_dump(mode='json'))
+    
+    return {
+        "integrity_status": "ok" if match_status == "match" else "mismatch",
+        "sync_blocked": match_status == "mismatch",
+        "miro_hash": miro_hash,
+        "sharepoint_hash": sharepoint_hash
+    }
+
+def generate_checksum(self, data: str, normalize: bool = True) -> str:
+    """
+    Gera checksum SHA-256 do conteúdo
+    """
+    if normalize:
+        data = self.normalize_whitespace(data)
+    return hashlib.sha256(data.encode('utf-8')).hexdigest()
+```
+
+---
+
 **Sucessos Validados pelos Testes:**
 
 **Sucesso 1: RBAC Granular Superou Expectativas (Cenário 1)**
@@ -5038,6 +5193,189 @@ A simulação calcula **tempo médio até falha (MTTF = 487 dias)**, prevendo a 
 
 #### B. Simulação dos Cenários de Exceção
 
+**Código de Simulação para Cenários de Exceção:**
+
+**Exemplo 1: Teste de Múltiplas Tentativas de Acesso (Cenário de Exceção)**
+
+```python
+# Simulação de tentativas sequenciais de acesso indevido ao Miro
+# Arquivo: src/RNF-02-Segurança/Sprint 3/tests/test_scenarios.py
+
+def cenario_2_acesso_indevedo_miro(self):
+    """
+    Cenário 2: Acesso indevido ao Miro antes do bloqueio
+    
+    Objetivo: Garantir que apenas usuários autenticados acessem quadros do Miro
+    """
+    project_id = mock_generator.generate_project_id()
+    miro_board = mock_generator.generate_miro_board(project_id)
+    
+    # Teste 2.1: Acesso sem autenticação (link público)
+    miro_request_public = MiroAccessRequest(
+        user_email=None,
+        user_id=None,
+        token=None,
+        miro_board_id=miro_board["board_id"],
+        miro_link=miro_board["link"],
+        project_id=project_id,
+        is_authenticated=False
+    )
+    
+    result_public = access_control_service.check_miro_access(miro_request_public)
+    assert not result_public.get("allowed", False), "Acesso público deve ser bloqueado"
+    
+    # Teste 2.2: Acesso com token inválido
+    user = mock_generator.generate_user()
+    invalid_token = "TOKEN-INVALIDO-12345"
+    
+    miro_request_invalid = MiroAccessRequest(
+        user_email=user["email"],
+        user_id=user["user_id"],
+        token=invalid_token,
+        miro_board_id=miro_board["board_id"],
+        miro_link=miro_board["link"],
+        project_id=project_id,
+        is_authenticated=True
+    )
+    
+    result_invalid = access_control_service.check_miro_access(miro_request_invalid)
+    assert not result_invalid.get("allowed", False), "Token inválido deve ser rejeitado"
+    
+    # Teste 2.3: Acesso com usuário sem permissão no projeto
+    valid_token_result = auth_service.register_token(
+        user_id=user["user_id"],
+        user_email=user["email"]
+    )
+    valid_token = valid_token_result["token_value"]
+    
+    # NÃO registra permissão no projeto
+    miro_request_no_permission = MiroAccessRequest(
+        user_email=user["email"],
+        user_id=user["user_id"],
+        token=valid_token,
+        miro_board_id=miro_board["board_id"],
+        miro_link=miro_board["link"],
+        project_id=project_id,
+        is_authenticated=True
+    )
+    
+    result_no_permission = access_control_service.check_miro_access(miro_request_no_permission)
+    assert not result_no_permission.get("allowed", False), "Sem permissão deve ser bloqueado"
+    
+    # Verifica que todos os 3 incidentes foram registrados
+    incidents = incident_repository.get_incidents({"project_id": project_id})
+    assert len(incidents) >= 3, "Deve registrar todos os incidentes"
+    
+    # Resultado esperado: 100% de bloqueio em todas as tentativas
+```
+
+**Exemplo 2: Implementação de Negação de Acesso com Registro de Incidente**
+
+```python
+# Método que bloqueia acesso e registra incidente de segurança
+# Arquivo: src/RNF-02-Segurança/Sprint 3/services/access_control_service.py
+
+def _deny_access(
+    self,
+    access_request: AccessRequest,
+    incident_type: str,
+    description: str,
+    severity: str = "medium",
+    user_id: str = None,
+    user_email: str = None
+) -> Dict[str, Any]:
+    """
+    Nega acesso e registra incidente na incident queue
+    """
+    incident = SecurityIncident(
+        incident_type=incident_type,
+        severity=severity,
+        user_email=user_email or access_request.user_email,
+        user_id=user_id or access_request.user_id,
+        project_id=access_request.requested_project_id,
+        resource=access_request.requested_resource,
+        action_blocked=access_request.action,
+        description=description,
+        source="Middleware de Controle de Acesso",
+        metadata={
+            "token_provided": access_request.token[:10] + "..." if access_request.token else None,
+            "requested_resource": access_request.requested_resource,
+            "requested_action": access_request.action
+        }
+    )
+    
+    # Adiciona incidente ao repositório
+    incident_dict = incident.model_dump(mode='json')
+    self.repository.add_incident(incident_dict)
+    
+    return {
+        "allowed": False,
+        "reason": description,
+        "incident_id": incident.incident_id,
+        "severity": severity,
+        "timestamp": incident.timestamp
+    }
+```
+
+**Exemplo 3: Detecção de Inconsistências com Detalhamento**
+
+```python
+# Teste que valida detecção de inconsistências entre sistemas
+# Arquivo: src/RNF-02-Segurança/Sprint 3/tests/test_scenarios.py
+
+def cenario_3_inconsistencia_dados_miro_sharepoint(self):
+    """
+    Cenário 3: Inconsistências entre dados do Miro e SharePoint
+    
+    Objetivo: Garantir que dados entre sistemas permaneçam idênticos
+    """
+    project_id = mock_generator.generate_project_id()
+    
+    # Teste 3.1: Dados idênticos (deve passar)
+    miro_data_match = """
+    Cronograma do Projeto
+    Tarefa 1: 01/01/2024 - 15/01/2024
+    Tarefa 2: 16/01/2024 - 31/01/2024
+    Tarefa 3: 01/02/2024 - 15/02/2024
+    """
+    
+    sharepoint_data_match = """
+    Cronograma do Projeto
+    Tarefa 1: 01/01/2024 - 15/01/2024
+    Tarefa 2: 16/01/2024 - 31/01/2024
+    Tarefa 3: 01/02/2024 - 15/02/2024
+    """
+    
+    result_match = integrity_service.validate_data_integrity(
+        project_id=project_id,
+        miro_data=miro_data_match,
+        sharepoint_data=sharepoint_data_match,
+        data_type="cronograma"
+    )
+    
+    assert result_match.get("integrity_status") == "ok", "Dados idênticos devem passar"
+    assert not result_match.get("sync_blocked", False), "Sincronização não deve ser bloqueada"
+    
+    # Teste 3.2: Dados diferentes (deve detectar mismatch)
+    miro_data_mismatch = "Tarefa 1: 01/01/2024"
+    sharepoint_data_mismatch = "Tarefa 1: 02/01/2024"  # Data diferente!
+    
+    result_mismatch = integrity_service.validate_data_integrity(
+        project_id=project_id,
+        miro_data=miro_data_mismatch,
+        sharepoint_data=sharepoint_data_mismatch,
+        data_type="cronograma"
+    )
+    
+    assert result_mismatch.get("integrity_status") == "mismatch", "Deve detectar diferença"
+    assert result_mismatch.get("sync_blocked") == True, "Deve bloquear sincronização"
+    assert result_mismatch.get("incident_id"), "Deve registrar incidente"
+    
+    # Resultado esperado: 100% de precisão na detecção
+```
+
+---
+
 **Cenário de Exceção 1: Acesso Não Autorizado em Massa**
 
 **Escopo da Simulação Atual:**
@@ -5141,6 +5479,249 @@ result = access_control_service.check_access(access_request)
 ```
 
 #### B. Simulação dos Cenários Limites
+
+**Código para Análise de Cenários Limites:**
+
+**Exemplo 1: Estrutura de Dados do Serviço de Controle de Acesso**
+
+```python
+# Implementação atual que pode ser expandida para cenários de alta carga
+# Arquivo: src/RNF-02-Segurança/Sprint 3/services/access_control_service.py
+
+class AccessControlService:
+    """Middleware de controle de acesso a projetos e recursos"""
+    
+    def __init__(self):
+        self.repository = incident_repository
+        # Dicionário em memória - oportunidade de adicionar cache distribuído
+        self.project_permissions: Dict[str, List[ProjectPermission]] = {}
+    
+    def register_permission(self, permission: ProjectPermission) -> ProjectPermission:
+        """
+        Registra uma permissão de usuário em um projeto
+        
+        Nota: Implementação atual é síncrona
+        Oportunidade: Adicionar cache Redis para alta concorrência
+        """
+        project_id = permission.project_id
+        
+        if project_id not in self.project_permissions:
+            self.project_permissions[project_id] = []
+        
+        # Remove permissões antigas do mesmo usuário no projeto
+        self.project_permissions[project_id] = [
+            p for p in self.project_permissions[project_id]
+            if p.user_id != permission.user_id
+        ]
+        
+        self.project_permissions[project_id].append(permission)
+        return permission
+    
+    def check_access(self, access_request: AccessRequest) -> Dict[str, Any]:
+        """
+        Verifica permissões - executado para cada requisição
+        
+        Performance atual: O(n) onde n = número de permissões no projeto
+        Oportunidade: Adicionar índice por user_id para O(1)
+        """
+        project_id = access_request.requested_project_id
+        permissions = self.project_permissions.get(project_id, [])
+        
+        # Busca linear - pode ser otimizada para cenários de alta carga
+        user_permission = next(
+            (p for p in permissions 
+             if p.user_id == user_id and p.is_active and not p.revoked_at),
+            None
+        )
+        
+        if not user_permission:
+            return self._deny_access(access_request, "permissao_incorreta", ...)
+        
+        return {"allowed": True}
+```
+
+**Exemplo 2: Processamento Síncrono de Checksums (Ponto de Otimização)**
+
+```python
+# Implementação atual - processamento síncrono
+# Arquivo: src/RNF-02-Segurança/Sprint 3/services/integrity_service.py
+
+class IntegrityService:
+    """Serviço de verificação de integridade e consistência de dados"""
+    
+    def normalize_whitespace(self, text: str) -> str:
+        """
+        Normaliza whitespace (espaços, quebras de linha, tabs)
+        Remove espaços extras e normaliza quebras de linha
+        """
+        # Remove espaços múltiplos
+        text = re.sub(r' +', ' ', text)
+        # Remove quebras de linha múltiplas
+        text = re.sub(r'\n+', '\n', text)
+        # Remove tabs
+        text = text.replace('\t', ' ')
+        # Remove espaços no início e fim de linhas
+        lines = [line.strip() for line in text.split('\n')]
+        # Remove linhas vazias
+        lines = [line for line in lines if line]
+        return '\n'.join(lines)
+    
+    def validate_data_integrity(
+        self,
+        project_id: str,
+        miro_data: str,
+        sharepoint_data: str,
+        data_type: str = "cronograma"
+    ) -> Dict[str, Any]:
+        """
+        Valida integridade entre dados do Miro e SharePoint
+        
+        Nota: Processamento síncrono - bloqueia thread até conclusão
+        Oportunidade para cenários de alta carga:
+        - Implementar processamento assíncrono com asyncio
+        - Usar worker pool para paralelizar checksums
+        - Adicionar fila de processamento (Celery/RQ)
+        """
+        # Calcula checksums de forma síncrona
+        miro_hash = self.generate_checksum(miro_data, normalize=True)
+        sharepoint_hash = self.generate_checksum(sharepoint_data, normalize=True)
+        
+        # Com 5.000 requisições simultâneas, cada uma espera a anterior terminar
+        match_status = "match" if miro_hash == sharepoint_hash else "mismatch"
+        
+        return {
+            "integrity_status": "ok" if match_status == "match" else "mismatch",
+            "sync_blocked": match_status == "mismatch",
+            "miro_hash": miro_hash,
+            "sharepoint_hash": sharepoint_hash
+        }
+```
+
+**Exemplo 3: Persistência de Incidentes (Ponto de Otimização para Alta Carga)**
+
+```python
+# Implementação atual - escrita síncrona em arquivo JSON
+# Arquivo: src/RNF-02-Segurança/Sprint 3/storage/incident_repository.py
+
+class IncidentRepository:
+    """Repositório de incidentes de segurança"""
+    
+    def __init__(self):
+        self.storage_dir = Path("storage")
+        self.storage_dir.mkdir(exist_ok=True)
+        self.incidents_file = self.storage_dir / "incidents.json"
+        self.incidents = self._load_incidents()
+    
+    def add_incident(self, incident: dict):
+        """
+        Adiciona incidente ao repositório
+        
+        Nota: Escrita síncrona - grava TODO o arquivo a cada incidente
+        Limitação em cenários de alta carga:
+        - Com 50.000 eventos/5min (~167/segundo), I/O se torna gargalo
+        - Escritas concorrentes podem corromper JSON
+        - Não há buffer ou batch de escritas
+        
+        Oportunidades de otimização:
+        1. Implementar buffer em memória com flush periódico
+        2. Usar banco de dados real (PostgreSQL/MongoDB)
+        3. Adicionar fila de escritas assíncrona
+        4. Implementar append-only log em vez de reescrever arquivo completo
+        """
+        self.incidents.append(incident)
+        
+        # PROBLEMA: Reescreve arquivo inteiro a cada incidente
+        with open(self.incidents_file, 'w') as f:
+            json.dump(self.incidents, f, indent=2)
+        
+        # Com burst de 167 eventos/segundo:
+        # - Latência de I/O se acumula exponencialmente
+        # - Risco de perda de eventos (buffer overflow)
+        # - Possível corrupção de arquivo
+    
+    def get_incidents(self, filters: dict = None) -> List[dict]:
+        """
+        Busca incidentes com filtros opcionais
+        
+        Nota: Busca linear em todos os incidentes
+        Limitação em cenários de alta volume:
+        - Com 50.000 incidentes, consulta por trace_id leva O(n)
+        - Não há índice por timestamp, user_id, ou project_id
+        - Performance degrada linearmente com volume
+        
+        Oportunidades de otimização:
+        1. Adicionar índices em memória (Dict[campo, List[incident]])
+        2. Usar banco de dados com índices reais
+        3. Implementar paginação para limitar resultados
+        """
+        if not filters:
+            return self.incidents
+        
+        results = []
+        # Busca linear - O(n)
+        for incident in self.incidents:
+            if self._matches_filters(incident, filters):
+                results.append(incident)
+        
+        return results
+```
+
+**Exemplo 4: Análise de Complexidade Computacional**
+
+```python
+# Análise de performance dos componentes principais
+# (Documentação para planejamento de otimizações futuras)
+
+"""
+ANÁLISE DE COMPLEXIDADE - CENÁRIOS LIMITES
+
+1. AccessControlService.check_access()
+   - Complexidade: O(n) onde n = número de permissões no projeto
+   - Cenário normal: ~10 usuários/projeto → ~10 iterações
+   - Cenário limite: ~1000 usuários/projeto → ~1000 iterações
+   - Impacto: Latência aumenta linearmente
+   - Solução: Índice Dict[user_id, Permission] → O(1)
+
+2. IntegrityService.validate_data_integrity()
+   - Complexidade: O(m) onde m = tamanho dos dados
+   - Cenário normal: ~10KB de dados → ~100ms
+   - Cenário limite: ~10MB de dados → ~10 segundos
+   - Impacto: Processamento síncrono bloqueia thread
+   - Solução: Worker pool assíncrono com asyncio
+
+3. IncidentRepository.add_incident()
+   - Complexidade: O(t) onde t = total de incidentes
+   - Cenário normal: ~100 incidentes → ~50ms I/O
+   - Cenário limite: ~50.000 incidentes → ~25 segundos I/O
+   - Impacto: Escrita completa do arquivo a cada evento
+   - Solução: Append-only log + batch flush periódico
+
+4. IncidentRepository.get_incidents(filters)
+   - Complexidade: O(t) onde t = total de incidentes
+   - Cenário normal: ~100 incidentes → ~10ms
+   - Cenário limite: ~50.000 incidentes → ~5 segundos
+   - Impacto: Busca linear sem índices
+   - Solução: Índices secundários por campos frequentes
+
+ROADMAP DE OTIMIZAÇÃO:
+
+Curto Prazo (Sprint 4):
+- Adicionar cache de permissões em access_control_service
+- Implementar testes de carga para medir baseline
+
+Médio Prazo (Sprint 5):
+- Migrar IncidentRepository para PostgreSQL
+- Adicionar índices: (project_id, timestamp), (user_id, timestamp)
+- Implementar processamento assíncrono de checksums
+
+Longo Prazo (Sprint 6):
+- Implementar rate limiting (Redis + sliding window)
+- Adicionar circuit breaker para serviços externos
+- Implementar auto-scaling baseado em métricas
+"""
+```
+
+---
 
 **Cenário Limite 1: Alta Demanda de Autenticação**
 
