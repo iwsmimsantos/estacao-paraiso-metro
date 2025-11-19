@@ -5964,15 +5964,751 @@ _(Apresente a revisão do modelo de simulação e a comparação entre os result
 
 ### 10.1.1 Simulação das Melhorias
 
-_(A. Revisão do Modelo de Simulação em Relação à Implementação: Garantir que o modelo de simulação reflita as alterações feitas na implementação das melhorias; B. Simulação dos Cenários Normais: Realização da simulação dos cenários de uso normais, considerando as melhorias implementadas.)_
+#### A. Revisão do Modelo de Simulação em Relação à Implementação
+
+**Contexto da Simulação Realizada:**
+
+Na **Sprint 3 de RNF-01 (Escalabilidade)**, foi desenvolvida uma **arquitetura de microserviços em FastAPI** para substituir o sistema monolítico atual, com o objetivo de alcançar escalabilidade horizontal. A implementação incluiu:
+
+- **5 Serviços Independentes**: Ingestor (8001), Orchestrator (8002), SharePoint (8003), Audit (8004), IAM (8005)
+- **Padrão de Comunicação Assíncrona**: Cada serviço pode processar requisições independentemente
+- **Modelo de Carga Simulada**: Testes com 100 usuários simultâneos, ramp-up de 10 usuários/segundo, duração de 60 segundos
+- **Infraestrutura de Monitoramento**: Endpoints de /health, /metrics para observabilidade
+
+**Objetivo desta Seção:**
+
+Esta seção documenta o **mapeamento de exceções esperadas** identificadas a partir dos testes de carga (Sprint 3) e estabelece as **limitações de capacidade** do sistema sob condições de sobrecarga, fornecendo a base para simulações completas de exceção e limites na **próxima sprint**.
+
+#### B. Simulação dos Cenários Normais: Análise Baseada em Testes de Carga
+
+**Resumo Executivo dos Testes de Carga - Condições Normais (100 usuários simultâneos, 60 segundos):**
+
+| Serviço | Requisições Total | Taxa de Sucesso | Taxa de Falha | Throughput (req/s) | Tempo Médio (ms) | Tempo Máximo (ms) | Status |
+|---------|-------------------|-----------------|----------------|-------------------|------------------|------------------|--------|
+| **Audit** | 1.920 | 99.64% | **0.36%** ✅ | **32.19** (MELHOR) | **1.648** (MELHOR) | 17.507 | Excelente |
+| **Ingestor** | 448 | 95.76% | **4.24%** ✅ | 8.94 | 4.929 | 44.078 | Bom |
+| **SharePoint** | 323 | 86.38% | **13.62%** ⚠️ | 5.53 | 6.745 | 53.411 | Preocupante |
+| **Orchestrator** | 221 | 85.52% | **14.48%** ⚠️ | 3.76 (MENOR) | 8.031 (MAIOR) | 54.738 | Preocupante |
+| **IAM** | 1.017 | 0.00% | **100.00%** ❌ | 17.09 | 4.093 | 4.128 | Crítico |
+
+**Interpretação dos Cenários Normais:**
+
+1. **Serviços de Alto Desempenho** (Audit, Ingestor): Conseguem manter taxa de falha <5% sob carga normal, indicando que a arquitetura de microserviços funciona bem para esses workloads
+2. **Serviços de Desempenho Degradado** (SharePoint, Orchestrator): Mostram degradação acima de 13%, indicando gargalos de processamento
+3. **Serviço Crítico** (IAM): Falha completa sob carga (100%), indicando criticalidade máxima para correção
+
+**Baseline de Capacidade Estabelecido:**
+
+- **Capacidade Confirmada**: Sistema consegue processar até ~3.900 requisições em 60 segundos (soma de Audit + Ingestor + SharePoint + Orchestrator) com 4 serviços funcionando
+- **Taxa de Throughput Máxima Observada**: 32.19 req/s (serviço Audit)
+- **Degradação Progressiva**: A cada 100 usuários adicionais além do baseline, espera-se degradação de ~2-5% na taxa de sucesso (baseado em observações comparativas)
+
+---
 
 ### 10.1.2 Simulação das Condições de Exceção
 
-_(A. Cenários de Exceção: Identificação de cenários de exceção, como quebras ou quedas de serviços internos: B. Simulação dos Cenários de Exceção: Realização da simulação desses cenários de exceção para avaliar a resposta do sistema.)_
+#### A. Cenários de Exceção Identificados: Mapeamento de Falhas Observadas
+
+**Contexto:**
+
+Baseado nos resultados dos testes de carga (Sprint 3), foram identificados os seguintes tipos de exceção durante operação sob carga de 100 usuários:
+
+#### 1. **Exceção: Timeout de Conexão (Status 0)**
+
+**Definição:** Requisição não consegue estabelecer conexão com o serviço ou conexão é interrompida antes da resposta ser enviada
+
+**Serviços Afetados:**
+- **IAM (CRÍTICO)**: 100% das requisições retornam status 0
+  - POST /authenticate: 601/601 requisições com timeout (100%)
+  - POST /authorize: 382/382 requisições com timeout (100%)
+  - GET /health: 34/34 requisições com timeout (100%)
+- **Orchestrator (ALTO)**: 22 requisições de 221 com status 0 (9.95%)
+  - POST /orchestrate: ~20 requisições com timeout
+  - GET /health: ~2 requisições com timeout
+- **SharePoint (MODERADO)**: 13 requisições de 323 com status 0 (4.02%)
+  - POST /upload: ~10 requisições com timeout
+  - GET /health: ~3 requisições com timeout
+- **Ingestor (BAIXO)**: 2 requisições de 448 com status 0 (0.45%)
+
+**Padrão Identificado:**
+
+```
+Requisições com Timeout (Status 0) por Serviço:
+IAM:         1.017 (100.00%) ████████████████████
+Orchestrator:   22 (9.95%)   █
+SharePoint:     13 (4.02%)   
+Ingestor:        2 (0.45%)   
+Audit:           0 (0.00%)   
+```
+
+**Causa Raiz Preliminar:**
+
+- **IAM**: Serviço pode estar crashando após inicialização ou ter limite de conexões simultâneas muito baixo
+- **Orchestrator/SharePoint**: Possível fila de processamento saturada, threads insuficientes ou memory leak gradual
+- **Ingestor/Audit**: Gerenciamento de conexão adequado com pool de threads suficiente
+
+**Cenários que Causam Esta Exceção:**
+
+1. **Sobrecarga de CPU do Serviço**: Quando o processamento é tão intenso que o serviço não consegue aceitar novas conexões
+2. **Memória Insuficiente**: Quando o serviço fica sem memória disponível para alocar novo contexto de requisição
+3. **Pool de Conexões Saturado**: Quando todas as conexões disponíveis estão ocupadas
+4. **Processo do Serviço Crashou**: Quando o serviço para de responder (especialmente observado em IAM)
+
+**Ações do Sistema Esperadas:**
+
+- Retry automático (implementar circuit breaker)
+- Fallback para cache local se disponível
+- Logging de exceção para análise posterior
+- Alertas para operadores
+
+**Impacto no Usuário:**
+
+- Operação não completada
+- Mensagem de erro genérica ("Serviço indisponível")
+- Necessidade de retry manual
+
+---
+
+#### 2. **Exceção: Erro HTTP 500 (Internal Server Error)**
+
+**Definição:** Serviço recebe a requisição mas falha durante processamento devido a erro não tratado na lógica de negócio
+
+**Serviços Afetados:**
+- **Orchestrator (CRÍTICO)**: 8 requisições de 221 com status 500 (3.62%)
+  - POST /orchestrate: ~7 erros de processamento
+  - Correlação com timeouts: Possível que após timeout alguns reprocessamentos causem erro
+- **SharePoint (ALTO)**: 10 requisições de 323 com status 500 (3.09%)
+  - POST /upload: ~8 erros
+  - GET /health: ~2 erros (inesperado em health check)
+- **Ingestor (MODERADO)**: 9 requisições de 448 com status 500 (2.01%)
+  - POST /ingest: ~7 erros
+  - Relacionado a dados malformados ou processamento complexo
+- **Audit (BAIXO)**: 7 requisições de 1.920 com status 500 (0.36%)
+  - POST /log: ~6 erros
+  - Padrão mais saudável
+
+**Padrão Identificado:**
+
+```
+Erros HTTP 500 por Serviço:
+Orchestrator:   8 (3.62%) ██
+SharePoint:    10 (3.09%) ██
+Ingestor:       9 (2.01%) █
+Audit:          7 (0.36%) 
+```
+
+**Causa Raiz Preliminar:**
+
+- **Orchestrator**: Lógica de orquestração pode estar falhando ao coordenar múltiplas operações sob carga
+- **SharePoint**: Integração com SharePoint pode estar retornando erros de conexão, timeout ou quota
+- **Ingestor**: Validação de dados pode estar rejeitando requisições legais sob certas condições
+- **Audit**: Falhas isoladas em logging, possível race condition em escrita de banco
+
+**Cenários que Causam Esta Exceção:**
+
+1. **Violação de Constraint de Banco de Dados**: Duplicação de chave primária, constraint violada
+2. **Timeout de Integração Externa**: SharePoint, IAM, ou outros serviços levam muito tempo a responder
+3. **Validação Falha**: Dados recebidos violam regras de negócio
+4. **Condição de Corrida**: Múltiplas threads acessando mesmo recurso simultaneamente sem lock
+5. **Memory Leak Progressivo**: Após N requisições, serviço fica sem memória e começa a falhar
+
+**Ações do Sistema Esperadas:**
+
+- Stack trace completo com contexto do erro deve ser armazenado
+- Incidente de erro crítico deve ser registrado com timestamp, usuário, dados da requisição
+- Retry automático pode ser tentado para certos tipos de erro (retry-able errors)
+- Isolamento de usuário problemático se responsável por padrão de erros
+
+**Impacto no Usuário:**
+
+- Operação falhou
+- Mensagem de erro específica (sem expor detalhes técnicos)
+- Pode ter deixado dados em estado inconsistente
+
+---
+
+#### 3. **Exceção: Rate Limiting (HTTP 429 ou Simulado)**
+
+**Definição:** Serviço rejeita requisição porque limite de taxa foi excedido
+
+**Serviços Afetados:**
+- **Ingestor (ÚNICO)**: 5 requisições de 448 rejeitadas por rate limit (1.12%)
+  - POST /ingest: ~4 requisições rate-limited
+  - Implementação: Provavelmente limita 50-100 requisições/segundo por cliente
+
+**Padrão Identificado:**
+
+```
+Rate Limiting (HTTP 429) por Serviço:
+Ingestor:    5 (1.12%) █
+Todos outros:  0        
+```
+
+**Causa Raiz:**
+
+- **Ingestor**: Implementa proteção contra abuso limitando taxa de ingestão
+- Sob carga de 100 usuários com ramp-up de 10/segundo, alguns usuários podem concentrar muitas requisições rapidamente
+- Limite configurado: Possivelmente ~5-10 requisições por cliente/segundo
+
+**Cenários que Causam Esta Exceção:**
+
+1. **Comportamento Abusivo Detectado**: Cliente enviando requisições demais em curto espaço de tempo
+2. **Burst de Tráfego**: Múltiplos usuários sincronizados enviando requisições simultâneas
+3. **Falta de Throttling no Cliente**: Cliente não respeitando backoff entre requisições
+
+**Ações do Sistema Esperadas:**
+
+- Resposta HTTP 429 com header `Retry-After: <segundos>`
+- Cliente deve esperar antes de retentar
+- Logging de evento para análise de padrões abusivos
+- Se padrão persistir: blocklist temporária do cliente
+
+**Impacto no Usuário:**
+
+- Requisição rejeitada com mensagem clara: "Muitas requisições. Tente novamente em X segundos"
+- Excelente para proteção de sistema mas frustrante para usuário legítimo sob carga
+
+---
+
+#### 4. **Exceção: Health Check Falho (Diagnóstico)**
+
+**Definição:** Endpoint GET /health retorna erro ou HTTP 500, indicando serviço degradado ou com falha interna
+
+**Serviços Afetados:**
+- **Orchestrator**: 2 health checks falharam durante testes (de 14 requisições de health = 14.29%)
+  - Indicador: Serviço estava operacional mas em estado degradado
+- **SharePoint**: 3 health checks falharam (de 33 requisições de health = 9.09%)
+- **Ingestor, Audit, IAM**: Não temos dados específicos de health check falhos, mas IAM 100% das requisições falharam incluindo health
+
+**Padrão Identificado:**
+
+```
+Falhas de Health Check:
+Orchestrator: 2/14 (14.29%) 
+SharePoint:   3/33 (9.09%)  
+```
+
+**Significado:**
+
+Health check falhando é MAIS crítico que endpoints de negócio falhando, pois:
+- Sistema de monitoramento detectará falha e pode remover instância do load balancer
+- Outros serviços podem considerar este serviço como "down" e não tentar se comunicar
+- Cascata de falhas pode ocorrer
+
+**Causa Raiz:**
+
+- Verificação de saúde provavelmente testa: memória disponível, conexão com BD, acesso a endpoints críticos
+- Quando carga aumenta, uma dessas dependências falha (ex: BD sobrecarregado)
+
+**Ações do Sistema Esperadas:**
+
+- Alert imediato para ops team
+- Possível fallback automático para standby instance
+- Bloqueio de novas requisições até serviço recuperar
+
+---
+
+#### 5. **Exceção: Falha de Sincronização Entre Serviços**
+
+**Contexto:** Aplicável quando há dependência entre serviços (ex: Orchestrator chama Ingestor e SharePoint)
+
+**Padrão Esperado em Exceção:**
+
+1. Orchestrator recebe requisição de cliente
+2. Orchestrator chama POST /ingest no Ingestor (pode falhar - timeout ou 500)
+3. Se Ingestor falhar, Orchestrator não consegue completar sua operação
+4. Resultado: Taxa de falha do Orchestrator pode ser PIOR que componentes individuais
+
+**Análise dos Dados:**
+
+- **Orchestrator falha (14.48%)** > Ingestor falha (4.24%)
+- Isso é **consistente com padrão de propagação de falha**
+- Possivelmente: `FailaOrchestratorTotal = FailaOrchestradorLocal + FailasIngestor + FailasOutros`
+
+**Cenários que Causam Esta Exceção:**
+
+1. **One Service Down**: Se IAM está 100% falhando e Orchestrator chama IAM, então Orchestrator falha
+2. **Cascata de Timeouts**: Se Ingestor está lento (4929ms), Orchestrator aguarda Ingestor, Orchestrator fica lento também (8031ms)
+3. **Circuit Breaker Aberto**: Se serviço A falha N vezes, circuit breaker no serviço B abre e rejeita requisições
+
+---
+
+#### B. Simulação dos Cenários de Exceção: Comportamento Esperado
+
+**Cenário 1: Falha Total do Serviço IAM**
+
+**Condição:** IAM torna-se completamente indisponível (100% timeout)
+
+**Sequência Esperada:**
+1. Usuário tenta autenticar via POST /authenticate no IAM
+2. Requisição fica aguardando resposta por ~4 segundos (timeout padrão)
+3. Conexão encerra com "Connection Reset" (status 0)
+4. Mensagem de erro: "Falha de autenticação. Serviço de identidade indisponível"
+5. Sistema deve usar token em cache se disponível, ou bloquear acesso
+6. Alert de severidade CRÍTICA gerado para ops team
+
+**Cenários de Exceção Documentados:**
+
+```
+Quando IAM está fora:
+├── Orchestrator tenta chamar IAM para autorização
+├── Timeout após 4 segundos
+├── Orchestrator marca sua própria requisição como falhada
+├── Cliente recebe erro 500 ou timeout do Orchestrator
+└── Cascata de falhas: IAM → Orchestrator → Cliente
+```
+
+---
+
+**Cenário 2: Degradação de Orchestrator (14.48% falha)**
+
+**Condição:** Orchestrator com capacidade reduzida (rejeitando 14.48% de requisições)
+
+**Padrão Observado:**
+
+```
+Load Balancer distribui para Orchestrator
+├── Requisição 1-14: OK (14% de chance de falha)
+├── Requisição 15: FALHA (timeout ou 500)
+├── Requisição 16-20: OK
+├── Requisição 21: FALHA
+└── Resultado: ~14% das requisições não passam
+```
+
+**Ações do Sistema:**
+
+- Cliente recebe alguns erros, precisa implementar retry
+- Sistema de monitoramento detecta taxa de erro acima de threshold
+- Possível escala automática (adicionar mais instâncias de Orchestrator)
+- Se persistir >30 segundos: remover instância degradada do load balancer
+
+---
+
+**Cenário 3: Sobrecarga de SharePoint (13.62% falha + 18 throttled)**
+
+**Condição:** Integração com SharePoint está sobrecarregada
+
+**Sinais:**
+- POST /upload tem 14.14% de falha
+- 18 requisições sofreram throttling (HTTP 429 do SharePoint)
+- Tempo máximo alcançou 53.411 segundos (muito alto!)
+
+**Padrão Esperado:**
+
+```
+Sistema tenta fazer upload em massa para SharePoint
+├── Primeiros uploads OK
+├── SharePoint começa a retornar 429 (throttle)
+├── Sistema aguarda 30-60 segundos per HTTP header Retry-After
+├── Reprocessamento após espera
+├── Se pico continuar: alguns uploads são descartados ou fila
+└── Resultado: 13.62% dos uploads não são concluídos na janela de 60s
+```
+
+---
+
+**Cenário 4: Falha em Cascata (Múltiplos Serviços)**
+
+**Condição:** Mais de um serviço falhando simultaneamente
+
+**Exemplo Real Dos Dados:**
+
+```
+Snapshot do problema observado:
+- IAM: 100% falhando (bloqueador para tudo)
+- Orchestrator: 14.48% falhando (porque chama IAM)
+- SharePoint: 13.62% falhando (sobrecarga ou dependência)
+- Ingestor: 4.24% falhando (mais resiliente)
+- Audit: 0.36% falhando (melhor isolamento)
+```
+
+**Propagação:**
+
+```
+Operação do Usuário
+├── Requer autenticação → IAM (FALHA 100%)
+├── Requer orquestração → Orchestrator (FALHA 14.48%)
+│   ├── Orchestrator tenta chamar Ingestor (4.24% chance de sucesso)
+│   └── Orchestrator tenta chamar SharePoint (86.38% chance)
+├── Requer persistência → Audit (99.64% chance)
+└── RESULTADO: Probabilidade de sucesso end-to-end = 0% (por causa IAM 100% falha)
+```
+
+**Ações do Sistema:**
+
+- Detectar dependência crítica falhando (IAM)
+- Entrar em "modo degradado": bloquear operações que precisam de autenticação
+- Permitir apenas operações anônimas / cache
+- Aguardar IAM recuperar
+- Após IAM recuperar: reprocessar fila de requisições pendentes
+
+---
 
 ### 10.1.3 Simulação das Condições Limites do Sistema com as Melhorias
 
-_(A. Cenários Limites de Utilização: Identificação de cenários limites de utilização, considerados potenciais riscos; B. Simulação dos Cenários Limites: Realização da simulação desses cenários para verificar o desempenho e a capacidade de resposta do sistema.)_
+#### A. Cenários Limites de Utilização Identificados
+
+**Definição de "Limite de Utilização":** O ponto em que o sistema começa a exibir degradação significativa (taxa de erro >5%) ou falha catastrófica (taxa de erro >50%).
+
+**Baseado nos Testes Executados (100 usuários, 60 segundos):**
+
+#### Limite 1: **Capacidade Máxima de Throughput por Serviço**
+
+**Audit Service (Melhor Caso):**
+- Throughput alcançado: **32.19 req/s**
+- Requisições totais em 60s: **1.920**
+- Taxa de erro: **0.36%** (aceitável)
+- **Limite Estimado**: ~35-40 req/s antes de degradação significativa
+- **Margem**: ~10% antes de falha observada
+
+**Ingestor Service (Bom Caso):**
+- Throughput alcançado: **8.94 req/s**
+- Requisições totais em 60s: **448**
+- Taxa de erro: **4.24%** (começando a degrade)
+- **Limite Estimado**: ~10-12 req/s antes de falha
+- **Margem**: ~15% antes de falha
+
+**Orchestrator Service (Caso Crítico):**
+- Throughput alcançado: **3.76 req/s**
+- Requisições totais em 60s: **221**
+- Taxa de erro: **14.48%** (degradação severa)
+- **Limite Estimado**: ~4-5 req/s antes de falha completa
+- **Margem**: ~20% antes de falha - **CRÍTICO, margem muito estreita**
+
+**SharePoint Service (Caso Crítico):**
+- Throughput alcançado: **5.53 req/s**
+- Requisições totais em 60s: **323**
+- Taxa de erro: **13.62%** (degradação severa)
+- **Limite Estimado**: ~6 req/s antes de falha
+- **Margem**: ~8% antes de falha - **CRÍTICO, MARGEM MUITO ESTREITA**
+
+**IAM Service (Falha Total):**
+- Throughput alcançado: **17.09 req/s** (mas 100% falha!)
+- Taxa de erro: **100%** (falha completa)
+- **Limite Estimado**: ~0 req/s (serviço não está operacional) **OU** ~50 req/s com timeout
+- **Margem**: **NEGATIVO - SERVIÇO ABAIXO DO LIMITE MÍNIMO**
+
+**Consolidação de Limites:**
+
+| Serviço | Throughput Max Observado | Limite Estimado | Taxa Erro @ Limite | Margem de Segurança | Status |
+|---------|--------------------------|-----------------|-------------------|---------------------|--------|
+| **Audit** | 32.19 req/s | 35-40 req/s | <1% | ~10-15% | ✅ Saudável |
+| **Ingestor** | 8.94 req/s | 10-12 req/s | <5% | ~10-15% | ✅ Aceitável |
+| **SharePoint** | 5.53 req/s | 6 req/s | 13-15% | ~8% | ⚠️ Crítico |
+| **Orchestrator** | 3.76 req/s | 4-5 req/s | 14-20% | ~10% | ⚠️ Crítico |
+| **IAM** | 17.09 req/s (100% erro) | ~0 req/s | 100% | Negativo | ❌ Não Operacional |
+
+---
+
+#### Limite 2: **Tempo de Resposta Máximo Aceitável**
+
+**Definição:** Tempo máximo de resposta que usuário consegue esperar sem experiência frustante
+
+**Padrão Observado:**
+
+| Serviço | Tempo Médio | Tempo P95 (estimado) | Tempo Máximo | Limite Recomendado | Status |
+|---------|------------|----------------------|--------------|-------------------|--------|
+| **Audit** | 1.648 ms | ~5.000 ms | 17.507 ms | 3.000 ms | ✅ Dentro |
+| **Ingestor** | 4.929 ms | ~15.000 ms | 44.078 ms | 5.000 ms | ⚠️ Limite Superior |
+| **SharePoint** | 6.745 ms | ~20.000 ms | 53.411 ms | 10.000 ms | ⚠️ Excedido |
+| **Orchestrator** | 8.031 ms | ~25.000 ms | 54.738 ms | 10.000 ms | ❌ Significativamente Excedido |
+
+**Interpretação:**
+
+- **Audit**: Consistentemente rápido, pode aceitar mais requisições antes de degradação
+- **Ingestor**: Começando a ficar lento, tempo máximo de 44s é inaceitável (usuário esperaria máximo 10-15s)
+- **SharePoint**: Tempo máximo de 53s é inaceitável, indica problema de integração ou fila
+- **Orchestrator**: Pior performer, 54s máximo sugere orquestração mal otimizada
+
+**Limite Identificado para Tempo de Resposta:**
+
+- **Aceitável**: < 2.000 ms (95% percentil)
+- **Marginal**: 2.000 - 5.000 ms (95% percentil)
+- **Degradado**: 5.000 - 10.000 ms (95% percentil) 
+- **Crítico**: > 10.000 ms (95% percentil) - usuários começam a perceber delay
+
+**Serviços em Estado de Risco:**
+- SharePoint e Orchestrator estão em estado **Crítico** para tempo de resposta
+
+---
+
+#### Limite 3: **Limite de Usuários Simultâneos (Equivalente de Carga)**
+
+**Baseado em Teste Atual: 100 usuários**
+
+**Extrapolação para Diferentes Cargas:**
+
+Assumindo **escala linear** de degradação (hipótese a validar em próxima sprint):
+
+```
+Cenário: Aumentar usuários de 100 para 200 (2x carga)
+
+AUDIT (Melhor cenário):
+- Throughput: 32.19 × 2 = 64.38 req/s (POSSÍVEL)
+- Taxa erro: 0.36% → estimado ~1-2% (aceitável)
+- Tempo médio: 1.648 × 1.2 = 1.978 ms (razoável)
+- CONCLUSÃO: Audit pode suportar ~200+ usuários
+
+INGESTOR:
+- Throughput: 8.94 × 2 = 17.88 req/s (POSSÍVEL)
+- Taxa erro: 4.24% → estimado ~8-10% (degradação)
+- Tempo médio: 4.929 × 1.5 = 7.4 ms (razoável)
+- CONCLUSÃO: Ingestor pode suportar ~150-200 usuários
+
+SHAREPOINT:
+- Throughput: 5.53 × 2 = 11.06 req/s (POSSÍVEL)
+- Taxa erro: 13.62% → estimado ~25-35% (CRÍTICO)
+- Tempo médio: 6.745 × 2 = 13.49 ms (BAD)
+- CONCLUSÃO: SharePoint FALHA com 200 usuários
+
+ORCHESTRATOR:
+- Throughput: 3.76 × 2 = 7.52 req/s (POSSÍVEL)
+- Taxa erro: 14.48% → estimado ~30-40% (CRÍTICO)
+- Tempo médio: 8.031 × 2 = 16.062 ms (MUITO BAD)
+- CONCLUSÃO: Orchestrator FALHA com 200 usuários
+
+IAM:
+- Continuará em 100% de falha (não melhora com otimização)
+- CONCLUSÃO: IAM falha com qualquer número de usuários
+```
+
+**Limite de Carga Identificado:**
+
+| Serviço | Limite Atual Observado | Limite Próximo Nível (2x) | Recomendação |
+|---------|------------------------|---------------------------|--------------|
+| **Audit** | 100 usuários OK | 200 usuários possível | Aumentar para 150-200 |
+| **Ingestor** | 100 usuários OK | 150 usuários degradado | Aumentar para 150, depois otimizar |
+| **SharePoint** | 100 usuários DEGRADADO | 150+ impossível | Otimizar urgentemente |
+| **Orchestrator** | 100 usuários DEGRADADO | 150+ impossível | Otimizar urgentemente |
+| **IAM** | 100 usuários FALHA | N/A - crítico | Corrigir antes de próximo teste |
+
+**Limite de Capacidade Total do Sistema (Com Base em Sprint 3):**
+
+```
+Com 5 serviços funcionando:
+- Máximo observado: ~3.900 requisições/60s (448+221+323+1920 excluindo IAM)
+- Máximo teórico se todos funcionassem: ~4.900 requisições/60s
+- Throughput máximo teórico: ~81 req/s
+
+Com 4 serviços funcionando (excluindo IAM e Orchestrator):
+- Máximo observado: ~2.691 requisições/60s (Audit + Ingestor + SharePoint)
+- Throughput: ~44.85 req/s
+
+CONCLUSÃO: Sistema consegue processar ~80-90 req/s com TODOS os serviços saudáveis
+Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestrator degradado)
+```
+
+---
+
+#### B. Limitações do Sistema Identificadas Baseadas nas Simulações
+
+**Limitação 1: Serviço IAM Não Está Operacional (CRÍTICA)**
+
+**Descrição:** O serviço IAM apresenta 100% de taxa de falha durante testes de carga com 100 usuários simultâneos, tornando qualquer autenticação ou autorização impossível.
+
+**Evidência:**
+- 1.017 requisições testadas
+- 1.017 requisições falharam (100%)
+- Todos os endpoints retornam status 0 (timeout/connection error)
+- Health check: FALHA
+- GET /health: 34/34 requisições com falha
+
+**Impacto:**
+- **BLOQUEADOR CRÍTICO** para qualquer operação que requeira autenticação
+- Sistema inteiro fica indisponível (nenhum usuário consegue autenticar)
+- Cascata de falhas: Orchestrator falha porque chama IAM
+
+**Prioridade:** 🔴 **CRÍTICA - Corrigir antes da próxima sprint**
+
+**Ações Recomendadas:**
+1. Investigar se processo IAM está sendo iniciado corretamente
+2. Verificar se porta 8005 está sendo vinculada corretamente
+3. Testar com carga gradual (10, 20, 50 usuários) para identificar em que ponto falha
+4. Revisar código de IAM para infinite loops, memory leaks, ou deadlocks
+5. Considerar paralelização de processamento (múltiplas threads/processes)
+
+---
+
+**Limitação 2: Serviços SharePoint e Orchestrator Degradam com 100 Usuários (ALTA)**
+
+**Descrição:** SharePoint e Orchestrator mostram taxa de erro >13% com apenas 100 usuários simultâneos, indicando que a arquitetura não consegue escalar linearly.
+
+**Evidência - SharePoint:**
+- Taxa de falha: 13.62% (44 de 323 requisições)
+- 18 requisições throttled (HTTP 429)
+- Tempo máximo: 53.411 segundos (inaceitável)
+- Degradação: Tempo médio 6.745ms mas máximo 53s = 8x diferença
+
+**Evidência - Orchestrator:**
+- Taxa de falha: 14.48% (32 de 221 requisições)
+- Tempo máximo: 54.738 segundos
+- Throughput: 3.76 req/s (MENOR entre todos os serviços)
+- Tempo médio: 8.031ms (MAIOR entre os que funcionam)
+
+**Padrão Comum:** Ambos os serviços mostram:
+1. Variabilidade extrema de tempo de resposta (média 6-8ms mas máximo 53+ segundos)
+2. Taxa consistente de erro ~13-14%
+3. Possível comportamento de "thundering herd" ou fila saturada
+
+**Impacto:**
+- Usuários têm ~14% de chance de operação falhar
+- Algumas operações levam 50+ segundos (inaceitável para UX)
+- Sistema não consegue lidar com picos de tráfego
+
+**Prioridade:** 🟠 **ALTA - Otimizar antes de colocar em produção com carga real**
+
+**Possíveis Causas:**
+
+**SharePoint:**
+- Integração com SharePoint externo (fora do controle): API rate-limited, timeout, latência de rede
+- Solução: Implementar cache, retry com backoff exponencial, async processing
+
+**Orchestrator:**
+- Orquestração síncrona esperando múltiplos serviços: se um serviço é lento, todo o Orchestrator fica lento
+- Solução: Implementar async/await, circuit breaker, timeout com fallback
+
+**Ações Recomendadas:**
+
+**Para SharePoint:**
+1. Implementar retry com backoff exponencial
+2. Adicionar cache local de respostas anteriores
+3. Async processing em background (não bloquear usuário)
+4. Limitar paralelismo de requisições ao SharePoint
+
+**Para Orchestrator:**
+1. Paralelizar chamadas para Ingestor, SharePoint, Audit (usar async)
+2. Timeouts curtos para dependências (5-10s máximo)
+3. Circuit breaker: se SharePoint falha N vezes, pular SharePoint e usar cache
+4. Health checks mais frequentes para detectar degradação
+
+---
+
+**Limitação 3: Variabilidade Extrema de Tempo de Resposta (MÉDIA)**
+
+**Descrição:** Alguns serviços mostram variação EXTREMA entre tempo médio e tempo máximo:
+
+| Serviço | Tempo Médio | Tempo Max | Razão | Status |
+|---------|------------|-----------|-------|--------|
+| **Orchestrator** | 8.031 ms | 54.738 s | **6.800x** | Extremo |
+| **SharePoint** | 6.745 ms | 53.411 s | **7.900x** | Extremo |
+| **Ingestor** | 4.929 ms | 44.078 s | **8.900x** | Extremo |
+| **Audit** | 1.648 ms | 17.507 s | **10.600x** | Alto |
+
+**O que Significa:** 
+
+A grande diferença entre média e máximo sugere:
+- Fila de espera crescendo: requisições iniciais rápidas, requisições no pico muito lentas
+- Possível comportamento de "back-pressure": quando sistema fica saturado, fila bloqueia
+- Percentis altos (p95, p99) provavelmente >50% do máximo (ex: Audit p99 ~15s)
+
+**Impacto:**
+- Usuários que chegam no pico da carga levam 50+ segundos esperando resposta
+- Degradação não é linear, é exponencial em períodos de pico
+- Efeito cascata: mais usuários chegam, fila cresce ainda mais, tempo aumenta ainda mais
+
+**Prioridade:** 🟡 **MÉDIA - Documentar padrão para próxima otimização**
+
+**Ações Recomendadas:**
+1. Implantar observabilidade: coletar métricas de tamanho de fila, latência de fila
+2. Identificar ponto de "ruptura" onde sistema sai do regime linear
+3. Implementar autoscaling horizontal: quando fila > X, adicionar nova instância
+
+---
+
+**Limitação 4: Margem de Segurança Insuficiente (MÉDIA)**
+
+**Descrição:** A maioria dos serviços tem margem de segurança pequena (8-15%) antes de falha observada. Qualquer aumento modesto de carga causa degradação significativa.
+
+**Evidência:**
+
+```
+Margem até próxima falha observada (100 usuários → 120 usuários, +20%):
+
+AUDIT (Melhor caso):
+├─ Margem: ~15%
+├─ Cenário 120 usuários: Taxa erro ~0.5-1.5%
+└─ Ainda aceitável
+
+INGESTOR:
+├─ Margem: ~10-15%
+├─ Cenário 120 usuários: Taxa erro ~6-8%
+└─ Marginalmente aceitável
+
+SHAREPOINT:
+├─ Margem: ~8%
+├─ Cenário 120 usuários: Taxa erro ~18-22%
+└─ CRÍTICO, fora de SLA
+
+ORCHESTRATOR:
+├─ Margem: ~10%
+├─ Cenário 120 usuários: Taxa erro ~20-25%
+└─ CRÍTICO, fora de SLA
+
+IAM:
+├─ Margem: NEGATIVO
+└─ Qualquer cenário: Taxa erro = 100%
+```
+
+**Impacto:**
+- Sistema não tem elasticidade para picos sazonais
+- Pequenos aumentos de tráfego causam falhas em cascata
+- SLA ("uptime 99.9%") difícil de cumprir com margem tão fina
+
+**Prioridade:** 🟡 **MÉDIA - Planejamento de capacidade para produção**
+
+**Ações Recomendadas:**
+1. Aumentar capacidade base dos serviços (mais threads, mais memória, mais CPU)
+2. Implementar autoscaling baseado em carga (adicionar instâncias automaticamente)
+3. Implementar feature flags para desabilitar funcionalidades não críticas em pico
+4. Planejamento de capacidade: garantir headroom de 50% em relação ao pico esperado
+
+---
+
+**Limitação 5: Falta de Observabilidade de Fila (BAIXA)**
+
+**Descrição:** Dados coletados mostram throughput e erro, mas não mostram:
+- Tamanho de fila de processamento ao longo do tempo
+- Latência de enfileiramento (quanto tempo a requisição espera antes de começar a ser processada)
+- Distribuição de latência (percentis p50, p95, p99)
+
+**Impacto:**
+- Impossível identificar exatamente onde está o gargalo
+- Impossível otimizar sem mais dados
+
+**Prioridade:** 🔵 **BAIXA - Instrumentação para próximo teste**
+
+**Ações Recomendadas:**
+1. Adicionar observabilidade a cada serviço: coletar tamanho de fila, tempo de enfileiramento
+2. Usar Prometheus + Grafana para visualizar em tempo real
+3. Exportar percentis de latência (p50, p95, p99, p99.9)
+
+---
+
+**Consolidação de Limitações por Severidade:**
+
+| Limitação | Serviço | Severidade | Status Atual | Impacto | Próxima Sprint |
+|-----------|---------|-----------|--------------|---------|----------------|
+| **IAM não operacional** | IAM | 🔴 CRÍTICA | 100% falha | Bloqueador total | Corrigir obrigatoriamente |
+| **SharePoint/Orchestrator degradado** | SharePoint, Orchestrator | 🟠 ALTA | 13-14% falha | Fora de SLA | Otimizar obrigatoriamente |
+| **Variabilidade extrema** | Todos | 🟡 MÉDIA | p99 ~50s | UX ruim em picos | Investigar e documentar |
+| **Margem de segurança fina** | Todos | 🟡 MÉDIA | 8-15% antes de falha | Sem elasticidade | Planejamento de capacidade |
+| **Falta de observabilidade** | Todos | 🔵 BAIXA | Dados limitados | Impossível otimizar | Implementar métricas |
+
+---
+
+## Resumo da Sprint 3: Mapeamento de Exceções e Limitações
+
+**Status Geral:** 
+
+O sistema de microserviços implementado em Sprint 3 alcançou **arquitetura válida mas com capacidade limitada**. Dois serviços (Audit e Ingestor) demonstram boa escalabilidade até 100 usuários, enquanto três serviços (SharePoint, Orchestrator, IAM) mostram limitações significativas.
+
+**Recomendações para Sprint 4:**
+
+1. **Crítico**: Corrigir IAM (100% falha)
+2. **Crítico**: Otimizar SharePoint e Orchestrator (13-14% falha inaceitável)
+3. **Alto**: Documentar padrão de degradação (próximo teste com 150, 200, 500 usuários)
+4. **Alto**: Implementar autoscaling e circuit breaker
+5. **Médio**: Adicionar observabilidade (métricas de fila, latência, percentis)
 
 ---
 
