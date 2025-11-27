@@ -1,17 +1,3 @@
-"""
-Aplicação principal FastAPI com 5 APIs mockadas:
-- SharePoint
-- Miro
-- Microsoft 365 Copilot
-- Microsoft 365 Office (Word/Excel/Outlook)
-- Microsoft Sentinel
-
-Todas as APIs retornam respostas no envelope padrão com metadados de:
-- Segurança (contexto de autenticação e autorização)
-- Rastreabilidade (trace_id, span_id, correlation_id)
-- Performance (tempo de processamento, paginação)
-"""
-
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 
@@ -19,67 +5,55 @@ from routers import sharepoint, miro, copilot, office, sentinel
 
 # Inicializa aplicação FastAPI
 app = FastAPI(
-    title="APIs Mockadas - Microsoft 365 & Ferramentas Colaborativas",
+    title="APIs Unificadas - Simulação Ambiente Metrô",
     description="""
-    ## APIs Mockadas para Testes de RNF
+     APIs Mockadas 
     
-    Este projeto fornece **5 APIs mockadas** que simulam serviços Microsoft 365 e ferramentas colaborativas:
-    
-    ### 1. 📁 SharePoint
+     1. SharePoint
     - Sites, documentos e logs de auditoria
     - Políticas de retenção e sensibilidade
     - Rastreamento de acesso e modificações
     
-    ### 2. 🎨 Miro
+     2. Miro
     - Boards colaborativos
     - Atividades e histórico de edições
     - Compartilhamento e permissões
     
-    ### 3. 🤖 Microsoft 365 Copilot
+     3. Microsoft 365 Copilot
     - Sessões de IA
     - Mensagens e prompts
     - Contexto de sensibilidade e auditoria
     
-    ### 4. 📄 Microsoft 365 Office
+     4. Microsoft 365 Office
     - Documentos (Word, Excel, PowerPoint)
     - E-mails (Outlook)
     - Eventos de calendário
     
-    ### 5. 🛡️ Microsoft Sentinel
+     5. Microsoft Sentinel
     - Incidentes de segurança
     - Alertas agregados
     - Eventos normalizados de todos os serviços
     
-    ---
     
-    ### 🎯 Objetivo
     
-    Estas APIs são projetadas para testar **requisitos não funcionais (RNF)** através de um middleware:
+     Dados Mockados
     
-    - **Segurança**: Contexto de autenticação, MFA, scopes e permissões
-    - **Rastreabilidade**: Correlation IDs, trace IDs e spans distribuídos
-    - **Escalabilidade**: Paginação, volume de dados e performance
-    
-    ---
-    
-    ### 📊 Dados Mockados
-    
-    Todos os dados são gerados a partir de um **CSV compartilhado** (`data/users.csv`) contendo:
+    Todos os dados são gerados a partir de um CSV (`data/users.csv`) contendo:
     - Usuários de diferentes departamentos
     - Tenants múltiplos
     - Níveis de risco e configurações de MFA
     
-    ---
     
-    ### 🔗 Recursos
     
-    - **Documentação Interativa**: `/docs` (Swagger UI)
-    - **Esquema OpenAPI**: `/openapi.json`
-    - **Redirecionamento**: `/` → `/docs`
+     Recursos
     
-    ---
+    - Documentação Interativa: `/docs` (Swagger UI)
+    - Esquema OpenAPI: `/openapi.json`
+    - Redirecionamento: `/` → `/docs`
     
-    ### 📝 Envelope de Resposta Padrão
+    
+    
+     Resposta Padrão
     
     Todas as respostas seguem o formato:
     

@@ -1,6 +1,3 @@
-# Dependências do projeto de APIs Mockadas
-# Python 3.11+
-
 # Framework FastAPI
 fastapi==0.109.0
 

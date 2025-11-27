@@ -10,7 +10,6 @@ desktop.ini
 
 # Jsons
 *.json
-data/
 
 # Arquivos temporários
 *.tmp
