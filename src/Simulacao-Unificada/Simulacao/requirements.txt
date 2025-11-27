@@ -1,0 +1,16 @@
+# Dependências do projeto de APIs Mockadas
+# Python 3.11+
+
+# Framework FastAPI
+fastapi==0.109.0
+
+# Servidor ASGI para FastAPI
+uvicorn[standard]==0.27.0
+
+# Validação e serialização de dados
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Utilitários Python
+python-multipart==0.0.6
+
