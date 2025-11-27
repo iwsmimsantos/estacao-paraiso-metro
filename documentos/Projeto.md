@@ -132,7 +132,6 @@
   - [8.1 RNF-03 Rastreabilidade](#81-rnf-03-rastreabilidade)
     - [8.3.1 Definição do Cenário](#831-definição-do-cenário)
     - [8.3.2 Especificação e Codificação dos Componentes Indicados na Tática](#832-especificação-e-codificação-dos-componentes-indicados-na-tática)
-- [9. Revisão do Modelo de Simulação do Sistema Novo](#9-revisão-do-modelo-de-simulação-do-sistema-novo)
 - [9 Testes e Validação dos Mecanismos](#9-testes-e-validação-dos-mecanismos)
   - [9.1 RNF-01](#91-rnf-01)
     - [9.1.1 Escalabilidade](#911-escalabilidade)
@@ -161,9 +160,22 @@
     - [10.3.2 Simulação das Condições de Exceção](#1032-simulação-das-condições-de-exceção)
     - [10.3.3 Simulação das Condições Limites do Sistema com as Melhorias](#1033-simulação-das-condições-limites-do-sistema-com-as-melhorias)
 - [11. Ajustes na Implementação](#11-ajustes-na-implementação)
-- [12. Evidências de Testes Não Funcionais](#12-evidências-de-testes-não-funcionais)
+  - [11.1 Principais Pontos de Ajuste](#111-principais-pontos-de-ajuste)
+  - [11.2 Descrição Das Melhorias em Código](#112-descrição-das-melhorias-em-código)
+  - [11.3 Comparativo da Implementação](#113-comparativo-da-implementação)
+- [12. Implementação do Testes Automatizados](#12-implementação-do-testes-automatizados)
+  - [12.1 Como Foi Implementado](#121-como-foi-implementado)
+  - [12.2 Análise dos Resultados](#122-análise-dos-resultados)
+    - [12.2.1 RNF 1 - Escalabilidade](#1221-rnf-1---escalabilidade)
+    - [12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade](#1222-rnf-2-e-3---segurança-e-rastreabilidade)
 - [13. Medição e Avaliação do Sistema Novo](#13-medição-e-avaliação-do-sistema-novo)
+  - [13.1 Modelo de Medição](#131-modelo-de-medição)
+  - [13.2 Medição e Estática](#132-medição-e-estática)
+  - [13.3 Medição e Dinâmica](#133-medição-e-dinâmica)
+  - [13.4 Avaliação das Medições](#134-avaliação-das-medições)
 - [14. Tradeoffs Arquiteturais](#14-tradeoffs-arquiteturais)
+  - [14.1 Mapeamento de Tradeoffs](#141-mapeamento-de-tradeoffs)
+  - [14.2 Evidência dos Tradeoffs com Base em Medidas Realizadas](#142-evidência-dos-tradeoffs-com-base-em-medidas-realizadas)
 - [15. [A construir]](#15-a-construir)
 - [Referências](#referências)
 
@@ -8055,11 +8067,39 @@ Para **cenários além do escopo inicial** (funcionalidades inovadoras sem basel
 
 _(Liste os ajustes realizados após os testes, indicando melhorias, critérios de aceitação e evidências no repositório.)_
 
+## 11.1 Principais Pontos de Ajuste
+
+_(conteúdo.)_
+
+## 11.2 Descrição Das Melhorias em Código
+
+_(conteúdo.)_
+
+## 11.3 Comparativo da Implementação
+
+_(conteúdo.)_
+
 ---
 
-# 12. Evidências de Testes Não Funcionais
+# 12. Implementação do Testes Automatizados
 
 _(Apresente os resultados e análises dos testes automatizados não funcionais realizados após os ajustes de implementação.)_
+
+## 12.1 Como Foi Implementado:
+
+_(conteúdo.)_
+
+## 12.2 Análise dos Resultados:
+
+_(conteúdo.)_
+
+### 12.2.1 RNF 1 - Escalabilidade
+
+_(conteúdo.)_
+
+### 12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade
+
+_(conteúdo.)_
 
 ---
 
@@ -8067,11 +8107,35 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 _(Descreva como as medições estruturais e comportamentais comprovam o aprimoramento arquitetural obtido.)_
 
+# 13.1 Modelo de Medição
+
+_(conteúdo.)_
+
+# 13.2 Medição e Estática
+
+_(conteúdo.)_
+
+# 13.3 Medição e Dinâmica
+
+_(conteúdo.)_
+
+# 13.4 Avaliação das Medições
+
+_(conteúdo.)_
+
 ---
 
 # 14. Tradeoffs Arquiteturais
 
 _(Analise os ganhos e perdas resultantes das decisões arquiteturais e o impacto sobre os requisitos não funcionais e o negócio.)_
+
+# 14.1 Mapeamento de Tradeoffs
+
+_(conteúdo.)_
+
+# 14.2 Evidência dos Tradeoffs com Base em Medidas Realizadas
+
+_(conteúdo.)_
 
 ---
 
