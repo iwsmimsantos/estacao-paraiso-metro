@@ -77,11 +77,7 @@ app = FastAPI(
     """,
     version="1.0.0",
     contact={
-        "name": "Equipe de Desenvolvimento",
-        "email": "dev@empresa.com"
-    },
-    license_info={
-        "name": "MIT"
+        "name": "G1 Paraíso"
     },
     openapi_tags=[
         {
