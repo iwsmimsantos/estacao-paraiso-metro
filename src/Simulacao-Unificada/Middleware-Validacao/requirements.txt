@@ -1,0 +1,21 @@
+# Framework FastAPI
+fastapi>=0.100.0
+
+# Servidor ASGI
+uvicorn[standard]>=0.23.0
+
+# Validação de dados
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Cliente HTTP para integração com API mockada
+httpx>=0.24.0
+requests>=2.31.0
+
+# Utilitários
+python-multipart>=0.0.6
+python-jose[cryptography]>=3.3.0  # Para JWT
+passlib[bcrypt]>=1.7.4  # Para hash de senhas
+
+# Logging e monitoramento
+python-json-logger>=2.0.0
