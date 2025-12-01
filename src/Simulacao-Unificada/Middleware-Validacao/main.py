@@ -67,135 +67,239 @@ async def root():
     <html>
     <head>
         <title>Middleware de Validação - Metrô SP</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                color: #2c3e50;
             }
             .container {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                border-radius: 15px;
-                padding: 30px;
-                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                max-width: 1000px;
+                width: 100%;
+                background: white;
+                backdrop-filter: blur(20px);
+                border-radius: 24px;
+                padding: 50px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 50px;
+            }
+            .logo {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 3em;
+                margin: 0 auto 20px;
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
             }
             h1 {
-                text-align: center;
+                font-size: 2.5em;
                 margin-bottom: 10px;
+                font-weight: 700;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
             }
             .subtitle {
-                text-align: center;
-                opacity: 0.9;
-                margin-bottom: 30px;
+                font-size: 1.1em;
+                color: #6b7280;
+                font-weight: 400;
             }
-            .status {
+            .status-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
                 gap: 20px;
-                margin: 30px 0;
+                margin: 40px 0;
             }
             .status-card {
-                background: rgba(255, 255, 255, 0.2);
-                padding: 20px;
-                border-radius: 10px;
+                background: #f9fafb;
+                padding: 30px;
+                border-radius: 16px;
                 text-align: center;
+                transition: all 0.3s;
+                border: 1px solid rgba(0, 0, 0, 0.08);
+            }
+            .status-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+                background: white;
+                border-color: #667eea;
+            }
+            .status-icon {
+                font-size: 3em;
+                margin-bottom: 15px;
             }
             .status-card h3 {
-                margin: 0 0 10px 0;
-                font-size: 1.2em;
+                font-size: 1.3em;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: #1f2937;
             }
-            .status-indicator {
+            .status-card p {
+                color: #6b7280;
+                line-height: 1.5;
+            }
+            .features {
+                margin: 50px 0;
+            }
+            .features h2 {
+                text-align: center;
                 font-size: 2em;
-                margin: 10px 0;
+                margin-bottom: 30px;
+                font-weight: 600;
+            }
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+            }
+            .feature {
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 16px;
+                border-left: 4px solid #667eea;
+                transition: all 0.3s;
+            }
+            .feature:hover {
+                background: white;
+                transform: translateX(8px);
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+            }
+            .feature h4 {
+                font-size: 1.2em;
+                margin-bottom: 10px;
+                font-weight: 600;
+                color: #1f2937;
+            }
+            .feature p {
+                color: #6b7280;
+                line-height: 1.6;
             }
             .links {
                 display: flex;
-                gap: 15px;
+                gap: 20px;
                 justify-content: center;
                 flex-wrap: wrap;
-                margin-top: 30px;
+                margin-top: 50px;
             }
             .link-button {
-                background: rgba(255, 255, 255, 0.3);
-                padding: 12px 24px;
-                border-radius: 8px;
-                text-decoration: none;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 color: white;
-                font-weight: bold;
+                padding: 18px 36px;
+                border-radius: 12px;
+                text-decoration: none;
+                font-weight: 700;
+                font-size: 1.1em;
                 transition: all 0.3s;
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
             .link-button:hover {
-                background: rgba(255, 255, 255, 0.5);
-                transform: translateY(-2px);
+                transform: translateY(-4px);
+                box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
             }
-            .features {
-                margin-top: 30px;
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 15px;
+            .link-button.secondary {
+                background: white;
+                color: #667eea;
+                border: 2px solid #667eea;
             }
-            .feature {
-                background: rgba(255, 255, 255, 0.15);
-                padding: 15px;
-                border-radius: 8px;
-                border-left: 4px solid rgba(255, 255, 255, 0.5);
+            .link-button.secondary:hover {
+                background: #f9fafb;
             }
-            .feature h4 {
-                margin: 0 0 8px 0;
-            }
-            .feature p {
-                margin: 0;
-                opacity: 0.9;
+            .footer {
+                text-align: center;
+                margin-top: 50px;
+                padding-top: 30px;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+                color: #6b7280;
                 font-size: 0.9em;
             }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>🔒 Middleware de Validação</h1>
-            <p class="subtitle">Sistema de Gestão de Projetos - Metrô de São Paulo</p>
+            <div class="header">
+                <div class="logo">🔒</div>
+                <h1>Middleware de Validação</h1>
+                <p class="subtitle">Sistema de Gestão de Projetos - Metrô de São Paulo</p>
+            </div>
             
-            <div class="status">
+            <div class="status-grid">
                 <div class="status-card">
-                    <h3>Status do Sistema</h3>
-                    <div class="status-indicator">✅</div>
-                    <p>Operacional</p>
+                    <div class="status-icon">✅</div>
+                    <h3>Sistema Online</h3>
+                    <p>Todos os serviços operacionais</p>
                 </div>
                 <div class="status-card">
-                    <h3>API Mockada</h3>
-                    <div class="status-indicator">🔗</div>
-                    <p>Conectado</p>
+                    <div class="status-icon">🔗</div>
+                    <h3>APIs Integradas</h3>
+                    <p>Conectado a 5 serviços</p>
                 </div>
                 <div class="status-card">
-                    <h3>Rastreabilidade</h3>
-                    <div class="status-indicator">📊</div>
-                    <p>Ativa</p>
+                    <div class="status-icon">📊</div>
+                    <h3>Monitoramento Ativo</h3>
+                    <p>Rastreabilidade completa</p>
                 </div>
             </div>
 
             <div class="features">
-                <div class="feature">
-                    <h4>🔐 RNF-01: Segurança</h4>
-                    <p>Autenticação, controle de acesso, validação de integridade e guardrails de IA</p>
-                </div>
-                <div class="feature">
-                    <h4>📈 RNF-02: Escalabilidade</h4>
-                    <p>Rate limiting, circuit breaker e monitoramento de performance</p>
-                </div>
-                <div class="feature">
-                    <h4>🔍 RNF-03: Rastreabilidade</h4>
-                    <p>Logs estruturados, incident queue e auditoria completa</p>
+                <h2>Requisitos Não Funcionais Implementados</h2>
+                <div class="feature-grid">
+                    <div class="feature">
+                        <h4>🔐 RNF-01: Segurança</h4>
+                        <p>Autenticação SSO simulada, controle de acesso granular por projeto e role, validação de integridade de dados com checksum, e guardrails para agentes de IA.</p>
+                    </div>
+                    <div class="feature">
+                        <h4>📈 RNF-02: Escalabilidade</h4>
+                        <p>Rate limiting para prevenir sobrecarga, circuit breaker para integrações resilientes, cache de permissões e monitoramento de performance em tempo real.</p>
+                    </div>
+                    <div class="feature">
+                        <h4>🔍 RNF-03: Rastreabilidade</h4>
+                        <p>Sistema de logs estruturado em JSONL, incident queue para eventos de segurança, auditoria completa com trace_id e correlation_id.</p>
+                    </div>
                 </div>
             </div>
 
             <div class="links">
-                <a href="/docs" class="link-button">📚 Documentação da API</a>
-                <a href="/health" class="link-button">💚 Health Check</a>
-                <a href="/dashboard" class="link-button">📊 Dashboard</a>
+                <a href="/dashboard" class="link-button">
+                    <span>📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/docs" class="link-button secondary">
+                    <span>📚</span>
+                    <span>Documentação</span>
+                </a>
+                <a href="/health" class="link-button secondary">
+                    <span>💚</span>
+                    <span>Health Check</span>
+                </a>
+            </div>
+
+            <div class="footer">
+                <p><strong>Middleware de Validação v1.0.0</strong></p>
+                <p>Integrando Miro, SharePoint, Copilot, Office 365 e Sentinel</p>
             </div>
         </div>
     </body>
@@ -225,8 +329,10 @@ async def dashboard():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Dashboard - Middleware</title>
+        <title>Dashboard - Middleware de Validação</title>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <style>
             * {
                 box-sizing: border-box;
@@ -234,242 +340,985 @@ async def dashboard():
                 padding: 0;
             }
             body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                padding: 20px;
-                background: #0f0f23;
-                color: #eee;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #f8f9fa;
+                color: #212529;
+                min-height: 100vh;
+                padding: 0;
+                overflow-x: hidden;
+                line-height: 1.6;
             }
+            
+            /* Header */
             .header {
-                text-align: center;
-                margin-bottom: 30px;
+                background: #ffffff;
+                border-bottom: 1px solid #e9ecef;
+                padding: 16px 32px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             }
-            h1 {
-                color: #00d9ff;
-                margin-bottom: 10px;
-            }
-            .refresh-info {
-                color: #888;
-                font-size: 0.9em;
-            }
-            .refresh-btn {
-                background: #00d9ff;
-                color: #000;
-                border: none;
-                padding: 8px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: bold;
-                margin-left: 10px;
-            }
-            .refresh-btn:hover {
-                background: #00bfe6;
-            }
-            .dashboard {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-                gap: 20px;
-                margin-top: 20px;
-            }
-            .card {
-                background: #1a1a2e;
-                border-radius: 12px;
-                padding: 20px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-                border: 1px solid #2a2a4e;
-            }
-            .card.full-width {
-                grid-column: 1 / -1;
-            }
-            .card h2 {
-                margin: 0 0 15px 0;
-                color: #00d9ff;
-                font-size: 1.3em;
+            .header-left {
                 display: flex;
                 align-items: center;
-                gap: 10px;
-            }
-            .integration-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                 gap: 15px;
             }
-            .integration-card {
-                background: rgba(0, 217, 255, 0.05);
-                padding: 15px;
-                border-radius: 8px;
-                text-align: center;
-                border: 2px solid transparent;
-                transition: all 0.3s;
-            }
-            .integration-card.healthy {
-                border-color: #00ff88;
-            }
-            .integration-card.unhealthy {
-                border-color: #ff4444;
-            }
-            .integration-icon {
-                font-size: 2.5em;
-                margin-bottom: 8px;
-            }
-            .integration-name {
-                font-weight: bold;
-                margin-bottom: 5px;
-            }
-            .integration-status {
-                font-size: 0.85em;
-                padding: 4px 8px;
-                border-radius: 4px;
-                display: inline-block;
-            }
-            .status-healthy {
-                background: rgba(0, 255, 136, 0.2);
-                color: #00ff88;
-            }
-            .status-unhealthy {
-                background: rgba(255, 68, 68, 0.2);
-                color: #ff4444;
-            }
-            .log-container {
-                max-height: 400px;
-                overflow-y: auto;
-                background: #0a0a16;
-                padding: 15px;
-                border-radius: 8px;
-            }
-            .log-entry {
-                background: rgba(0, 217, 255, 0.08);
-                padding: 12px;
-                margin: 8px 0;
+            .logo {
+                width: 36px;
+                height: 36px;
+                background: #0d6efd;
                 border-radius: 6px;
-                border-left: 3px solid #00d9ff;
-                font-size: 0.9em;
-                font-family: 'Consolas', monospace;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.2em;
             }
-            .log-entry.incident {
-                border-left-color: #ff4444;
-                background: rgba(255, 68, 68, 0.1);
+            h1 {
+                font-size: 1.25em;
+                font-weight: 600;
+                color: #212529;
+                margin: 0;
             }
-            .log-timestamp {
-                color: #888;
+            .header-subtitle {
+                font-size: 0.75em;
+                color: #6c757d;
+                font-weight: 400;
+                margin-top: 2px;
+            }
+            .header-right {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+            .refresh-info {
+                color: rgba(0, 0, 0, 0.6);
                 font-size: 0.85em;
-                margin-bottom: 4px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
-            .log-event {
-                color: #00d9ff;
-                font-weight: bold;
-                margin-bottom: 4px;
+            .status-dot {
+                width: 8px;
+                height: 8px;
+                background: #10b981;
+                border-radius: 50%;
+                animation: pulse 2s infinite;
             }
-            .log-user {
-                color: #ffaa00;
+            @keyframes pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
             }
-            .log-details {
-                color: #aaa;
-                font-size: 0.85em;
-                margin-top: 6px;
+            .refresh-btn {
+                background: #0d6efd;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 0.875em;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 6px;
             }
+            .refresh-btn:hover {
+                background: #0b5ed7;
+            }
+            .refresh-btn:active {
+                background: #0a58ca;
+            }
+            
+            /* Container */
+            .container {
+                padding: 30px;
+                max-width: 1600px;
+                margin: 0 auto;
+            }
+            
+            /* Dashboard Grid */
+            .dashboard-grid {
+                display: grid;
+                gap: 24px;
+            }
+            
+            /* Layout de 2 colunas */
+            .two-column-layout {
+                display: grid;
+                grid-template-columns: 2fr 1fr;
+                gap: 24px;
+            }
+            
+            @media (max-width: 1200px) {
+                .two-column-layout {
+                    grid-template-columns: 1fr;
+                }
+            }
+            
+            /* Cards */
+            .card {
+                background: #ffffff;
+                border-radius: 8px;
+                padding: 24px;
+                border: 1px solid #dee2e6;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                transition: all 0.2s;
+            }
+            .card:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .card-title {
+                font-size: 0.95em;
+                font-weight: 600;
+                color: #495057;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .card-icon {
+                font-size: 1em;
+                color: #0d6efd;
+            }
+            
+            /* Stats Grid */
             .stats-grid {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 15px;
+                gap: 16px;
+                margin-bottom: 24px;
             }
-            .stat-box {
-                background: rgba(0, 217, 255, 0.05);
-                padding: 20px;
+            
+            @media (max-width: 768px) {
+                .stats-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            .stat-card {
+                background: white;
                 border-radius: 8px;
+                padding: 16px;
+                border: 1px solid #dee2e6;
                 text-align: center;
+                transition: all 0.2s;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: #0d6efd;
+            }
+            .stat-card:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            .stat-icon {
+                font-size: 1.2em;
+                margin-bottom: 6px;
+                color: #0d6efd;
             }
             .stat-value {
-                font-size: 2.5em;
-                font-weight: bold;
-                color: #00d9ff;
-                margin: 10px 0;
+                font-size: 1.75em;
+                font-weight: 600;
+                margin: 6px 0;
+                color: #212529;
             }
             .stat-label {
-                color: #888;
-                font-size: 0.9em;
+                color: #6c757d;
+                font-size: 0.75em;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                font-weight: 500;
             }
-            .no-data {
+            .stat-change {
+                margin-top: 8px;
+                font-size: 0.85em;
+                padding: 4px 12px;
+                border-radius: 20px;
+                display: inline-block;
+            }
+            .stat-change.positive {
+                background: rgba(0, 255, 136, 0.2);
+                color: #00ff88;
+            }
+            .stat-change.negative {
+                background: rgba(255, 68, 68, 0.2);
+                color: #ff4444;
+            }
+            
+            /* Integrations */
+            .integrations-section {
+                grid-column: span 12;
+            }
+            .integration-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 16px;
+            }
+            .integration-card {
+                background: white;
+                padding: 16px;
+                border-radius: 8px;
                 text-align: center;
-                padding: 40px;
-                color: #666;
+                border: 1px solid #dee2e6;
+                transition: all 0.2s;
+                cursor: pointer;
             }
-            ::-webkit-scrollbar {
+            .integration-card.healthy {
+                border-left: 3px solid #198754;
+            }
+            .integration-card.unhealthy {
+                border-left: 3px solid #dc3545;
+            }
+            .integration-card:hover {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            .integration-icon {
+                font-size: 1.5em;
+                margin-bottom: 8px;
+                color: #495057;
+            }
+            .integration-name {
+                font-weight: 600;
+                margin-bottom: 6px;
+                font-size: 0.9em;
+                color: #212529;
+            }
+            .integration-status {
+                font-size: 0.75em;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+            .status-healthy {
+                background: #d1e7dd;
+                color: #0f5132;
+            }
+            .status-unhealthy {
+                background: #f8d7da;
+                color: #842029;
+            }
+            
+            /* Logs */
+            .logs-section {
+                height: 100%;
+            }
+            .log-controls {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 16px;
+                flex-wrap: wrap;
+            }
+            .filter-btn {
+                background: white;
+                border: 1px solid #dee2e6;
+                color: #495057;
+                padding: 6px 12px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 0.8em;
+                transition: all 0.2s;
+                font-weight: 500;
+            }
+            .filter-btn:hover {
+                background: #f8f9fa;
+                border-color: #0d6efd;
+            }
+            .filter-btn.active {
+                background: #0d6efd;
+                border-color: #0d6efd;
+                color: white;
+            }
+            .log-container {
+                max-height: 600px;
+                overflow-y: auto;
+                padding: 4px;
+            }
+            .log-entry {
+                background: white;
+                padding: 16px;
+                margin: 8px 0;
+                border-radius: 8px;
+                border-left: 4px solid #0d6efd;
+                transition: all 0.2s;
+                cursor: pointer;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+                border: 1px solid #e9ecef;
+                border-left: 4px solid #0d6efd;
+                display: grid;
+                grid-template-columns: auto 1fr auto;
+                gap: 16px;
+                align-items: center;
+            }
+            .log-entry:hover {
+                background: #f8f9fa;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+                transform: translateY(-1px);
+            }
+            .log-entry.incident {
+                border-left-color: #0dcaf0;
+                background: #f8fcff;
+            }
+            .log-entry.success {
+                border-left-color: #198754;
+            }
+            .log-entry.warning {
+                border-left-color: #ffc107;
+            }
+            .log-entry.failed {
+                border-left-color: #dc3545;
+            }
+            .log-left {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                min-width: 140px;
+            }
+            .log-center {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .log-right {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .log-timestamp {
+                color: #6c757d;
+                font-size: 0.8em;
+                font-family: 'Courier New', monospace;
+                font-weight: 500;
+            }
+            .log-status-indicator {
                 width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                display: inline-block;
             }
-            ::-webkit-scrollbar-track {
-                background: #0a0a16;
+            .log-status-indicator.success { background: #198754; }
+            .log-status-indicator.failed { background: #dc3545; }
+            .log-status-indicator.denied { background: #ffc107; }
+            .log-status-indicator.incident { background: #0dcaf0; }
+            .log-badge {
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 0.7em;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                white-space: nowrap;
             }
-            ::-webkit-scrollbar-thumb {
-                background: #00d9ff;
+            .badge-success {
+                background: #d1e7dd;
+                color: #0f5132;
+                border: 1px solid #a3cfbb;
+            }
+            .badge-failed {
+                background: #f8d7da;
+                color: #842029;
+                border: 1px solid #f1aeb5;
+            }
+            .badge-denied {
+                background: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffe69c;
+            }
+            .badge-incident {
+                background: #cfe2ff;
+                color: #084298;
+                border: 1px solid #9ec5fe;
+            }
+            .log-event {
+                font-weight: 600;
+                font-size: 0.95em;
+                color: #212529;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .log-user {
+                color: #6c757d;
+                font-size: 0.85em;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .log-meta {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                margin-top: 4px;
+            }
+            .log-meta-item {
+                color: #6c757d;
+                font-size: 0.75em;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                background: #f8f9fa;
+                padding: 2px 8px;
                 border-radius: 4px;
             }
+            .log-meta-item i {
+                font-size: 0.9em;
+                opacity: 0.7;
+            }
+            
+            /* Loading */
             .loading {
                 text-align: center;
+                padding: 40px;
+                color: rgba(0, 0, 0, 0.5);
+            }
+            .spinner {
+                border: 3px solid rgba(0, 0, 0, 0.1);
+                border-radius: 50%;
+                border-top: 3px solid #667eea;
+                width: 40px;
+                height: 40px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 16px;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            /* No Data */
+            .no-data {
+                text-align: center;
+                padding: 60px 20px;
+                color: rgba(0, 0, 0, 0.4);
+            }
+            .no-data-icon {
+                font-size: 4em;
+                margin-bottom: 16px;
+                opacity: 0.3;
+            }
+            
+            /* Modal */
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
                 padding: 20px;
-                color: #00d9ff;
+                overflow-y: auto;
+                animation: fadeIn 0.3s ease-out;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            .modal.active {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal-content {
+                background: white;
+                border-radius: 8px;
+                max-width: 800px;
+                width: 100%;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                animation: slideUp 0.3s ease-out;
+            }
+            @keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .modal-header {
+                padding: 24px;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .modal-title {
+                font-size: 1.5em;
+                font-weight: 600;
+                color: #1f2937;
+            }
+            .modal-close {
+                background: none;
+                border: none;
+                font-size: 1.3em;
+                cursor: pointer;
+                color: #6c757d;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+                transition: all 0.2s;
+            }
+            .modal-close:hover {
+                background: #e9ecef;
+                color: #212529;
+            }
+            .modal-body {
+                padding: 24px;
+            }
+            .detail-section {
+                margin-bottom: 24px;
+            }
+            .detail-section:last-child {
+                margin-bottom: 0;
+            }
+            .detail-label {
+                font-size: 0.75em;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                color: #6b7280;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+            .detail-value {
+                font-size: 1em;
+                color: #1f2937;
+                padding: 12px;
+                background: #f9fafb;
+                border-radius: 8px;
+                font-family: 'Courier New', monospace;
+                word-break: break-all;
+            }
+            .detail-value.large {
+                font-size: 1.1em;
+                font-weight: 600;
+                background: #e7f1ff;
+                color: #0d6efd;
+            }
+            .detail-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 16px;
+            }
+            .json-viewer {
+                background: #f8f9fa;
+                border: 1px solid #dee2e6;
+                padding: 20px;
+                border-radius: 8px;
+                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+                font-size: 0.875em;
+                overflow-x: auto;
+                max-height: 500px;
+                line-height: 1.6;
+                color: #212529;
+            }
+            .json-key {
+                color: #0550ae;
+                font-weight: 600;
+            }
+            .json-string {
+                color: #0a3069;
+            }
+            .json-number {
+                color: #0969da;
+            }
+            .json-boolean {
+                color: #8250df;
+                font-weight: 600;
+            }
+            .json-null {
+                color: #6e7781;
+                font-style: italic;
+            }
+            
+            /* Scrollbar */
+            ::-webkit-scrollbar {
+                width: 10px;
+                height: 10px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f3f4f6;
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #adb5bd;
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #6c757d;
+            }
+            
+            /* Responsive */
+            @media (max-width: 768px) {
+                .header {
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                .stats-grid {
+                    grid-template-columns: 1fr;
+                }
+                .charts-row {
+                    grid-template-columns: 1fr;
+                }
             }
         </style>
     </head>
     <body>
+        <!-- Header -->
         <div class="header">
-            <h1>📊 Dashboard de Monitoramento</h1>
-            <div class="refresh-info">
-                Última atualização: <span id="last-update">Carregando...</span>
-                <button class="refresh-btn" onclick="loadAllData()">🔄 Atualizar</button>
+            <div class="header-left">
+                <div class="logo"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                    <h1>Middleware de Validação</h1>
+                    <div style="font-size: 0.8em; color: rgba(255,255,255,0.6); margin-top: 2px;">
+                        Metrô de São Paulo - Sistema de Gestão de Projetos
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="refresh-info">
+                    <div class="status-dot"></div>
+                    <span id="last-update">Carregando...</span>
+                </div>
+                <button class="refresh-btn" onclick="loadAllData()">
+                    <span><i class="fas fa-sync-alt"></i></span>
+                    <span>Atualizar</span>
+                </button>
             </div>
         </div>
 
-        <div class="dashboard">
-            <!-- Integrações -->
-            <div class="card full-width">
-                <h2>🔗 Status das Integrações</h2>
-                <div id="integrations-container" class="integration-grid">
-                    <div class="loading">Carregando status das integrações...</div>
+        <!-- Container -->
+        <div class="container">
+            <div class="dashboard-grid">
+                
+                <!-- Estatísticas Principais -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="stat-value" id="stat-total-logs">0</div>
+                        <div class="stat-label">Total de Logs</div>
+                        <div class="stat-change positive" id="stat-logs-change" style="display:none;">+12% hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-value" id="stat-total-incidents">0</div>
+                        <div class="stat-label">Incidentes</div>
+                        <div class="stat-change negative" id="stat-incidents-change" style="display:none;">+3 hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-value" id="stat-unique-users">0</div>
+                        <div class="stat-label">Usuários Ativos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-bar"></i></div>
+                        <div class="stat-value" id="stat-error-rate">0%</div>
+                        <div class="stat-label">Taxa de Erro</div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Estatísticas -->
-            <div class="card full-width">
-                <h2>📈 Estatísticas Gerais</h2>
-                <div id="stats-container" class="stats-grid">
-                    <div class="loading">Carregando estatísticas...</div>
+                <!-- Integrações -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon"><i class="fas fa-plug"></i></span>
+                            <span>STATUS DAS INTEGRAÇÕES</span>
+                        </div>
+                    </div>
+                    <div id="integrations-container" class="integration-grid">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <div>Carregando integrações...</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Logs Recentes -->
-            <div class="card full-width">
-                <h2>📋 Logs Recentes</h2>
-                <div id="logs-container" class="log-container">
-                    <div class="loading">Carregando logs...</div>
+                <!-- Layout de 2 Colunas: Incidentes (maior, esquerda) + Logs (menor, direita) -->
+                <div class="two-column-layout">
+                    <!-- Incidentes (Esquerda - Maior com Destaque) -->
+                    <div class="card logs-section">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon"><i class="fas fa-bell"></i></span>
+                                <span>INCIDENT QUEUE</span>
+                            </div>
+                        </div>
+                        <div class="log-controls" id="incident-filters">
+                            <button class="filter-btn active" onclick="filterIncidents('all')">Todos</button>
+                            <button class="filter-btn" onclick="filterIncidents('critical')">Crítico</button>
+                            <button class="filter-btn" onclick="filterIncidents('high')">Alto</button>
+                            <button class="filter-btn" onclick="filterIncidents('medium')">Médio</button>
+                            <button class="filter-btn" onclick="filterIncidents('low')">Baixo</button>
+                        </div>
+                        <div id="incidents-container" class="log-container">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <div>Carregando incidentes...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Logs Recentes (Direita - Menor) -->
+                    <div class="card logs-section">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon"><i class="fas fa-clipboard-list"></i></span>
+                                <span>LOGS RECENTES</span>
+                            </div>
+                        </div>
+                        <div class="log-controls" id="log-filters">
+                            <button class="filter-btn active" onclick="filterLogs('all')">Todos</button>
+                            <button class="filter-btn" onclick="filterLogs('success')">Sucesso</button>
+                            <button class="filter-btn" onclick="filterLogs('failed')">Falha</button>
+                            <button class="filter-btn" onclick="filterLogs('denied')">Negado</button>
+                            <button class="filter-btn" onclick="filterLogs('incident')">Incidente</button>
+                        </div>
+                        <div id="logs-container" class="log-container">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                                <div>Carregando logs...</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Incidentes -->
-            <div class="card full-width">
-                <h2>⚠️ Incident Queue</h2>
-                <div id="incidents-container" class="log-container">
-                    <div class="loading">Carregando incidentes...</div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes do Log -->
+        <div id="logModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><i class="fas fa-info-circle"></i> Detalhes do Log</div>
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Conteúdo será inserido dinamicamente -->
                 </div>
             </div>
         </div>
 
         <script>
-            // Ícones para cada integração
+            // ========== CONFIGURAÇÕES ==========
             const integrationIcons = {
-                miro: '🎨',
-                sharepoint: '📁',
-                copilot: '🤖',
-                office: '📧',
-                sentinel: '🛡️'
+                miro: '<i class="fas fa-palette"></i>',
+                sharepoint: '<i class="fas fa-folder"></i>',
+                copilot: '<i class="fas fa-robot"></i>',
+                office: '<i class="fas fa-envelope"></i>',
+                sentinel: '<i class="fas fa-shield-alt"></i>'
             };
+            
+            let currentLogFilter = 'all';
+            let currentIncidentFilter = 'all';
+            let allLogs = [];
+            let allIncidents = [];
+            let allLogsWithIndex = []; // Para armazenar referência aos logs
+            let allIncidentsWithIndex = []; // Para armazenar referência aos incidentes
 
-            // Atualizar timestamp
-            function updateTimestamp() {
-                const now = new Date();
-                document.getElementById('last-update').textContent = now.toLocaleString('pt-BR');
+            // ========== FUNÇÕES AUXILIARES ==========
+            function syntaxHighlight(json) {
+                if (typeof json !== 'string') {
+                    json = JSON.stringify(json, null, 2);
+                }
+                
+                json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    let cls = 'json-number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'json-key';
+                        } else {
+                            cls = 'json-string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'json-boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'json-null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
             }
 
-            // Carregar status das integrações
+            // ========== MODAL ==========
+            function openModal(index, isIncident = false) {
+                const logData = isIncident ? allIncidentsWithIndex[index] : allLogsWithIndex[index];
+                if (!logData) {
+                    console.error('Log não encontrado:', index);
+                    return;
+                }
+                
+                const modal = document.getElementById('logModal');
+                const modalBody = document.getElementById('modalBody');
+                
+                // Determina status e cores
+                let statusBadge = '';
+                let statusColor = '#667eea';
+                
+                if (isIncident) {
+                    const severity = logData.details?.severity || 'medium';
+                    let severityIcon = '<i class="fas fa-circle" style="color: #ffc107;"></i>';
+                    let severityColor = '#ffc107';
+                    
+                    if (severity === 'critical') { severityIcon = '<i class="fas fa-circle" style="color: #dc3545;"></i>'; severityColor = '#dc3545'; }
+                    if (severity === 'high') { severityIcon = '<i class="fas fa-circle" style="color: #fd7e14;"></i>'; severityColor = '#fd7e14'; }
+                    if (severity === 'low') { severityIcon = '<i class="fas fa-circle" style="color: #198754;"></i>'; severityColor = '#198754'; }
+                    
+                    statusBadge = `<span style="background: ${severityColor}20; color: ${severityColor}; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 600;">${severityIcon} ${severity.toUpperCase()}</span>`;
+                } else {
+                    const status = logData.status || 'unknown';
+                    if (status === 'success') { statusColor = '#10b981'; }
+                    if (status === 'failed') { statusColor = '#ef4444'; }
+                    if (status === 'denied') { statusColor = '#f59e0b'; }
+                    
+                    statusBadge = `<span style="background: ${statusColor}20; color: ${statusColor}; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 600;">${status.toUpperCase()}</span>`;
+                }
+                
+                // Monta o conteúdo do modal
+                modalBody.innerHTML = `
+                    <div class="detail-section">
+                        <div class="detail-label">Status</div>
+                        <div>${statusBadge}</div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-label">Tipo de Evento</div>
+                        <div class="detail-value large">${logData.event_type || 'N/A'}</div>
+                    </div>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <div class="detail-label">Timestamp</div>
+                            <div class="detail-value">${logData.timestamp ? new Date(logData.timestamp).toLocaleString('pt-BR') : 'N/A'}</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">Usuário</div>
+                            <div class="detail-value"><i class="fas fa-user"></i> ${logData.user_id || 'N/A'}</div>
+                        </div>
+                    </div>
+                    
+                    ${logData.project_id ? `
+                    <div class="detail-section">
+                        <div class="detail-label">Projeto</div>
+                        <div class="detail-value"><i class="fas fa-folder"></i> ${logData.project_id}</div>
+                    </div>
+                    ` : ''}
+                    
+                    ${logData.resource_type ? `
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <div class="detail-label">Tipo de Recurso</div>
+                            <div class="detail-value">${logData.resource_type}</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-label">ID do Recurso</div>
+                            <div class="detail-value">${logData.resource_id || 'N/A'}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    ${logData.action ? `
+                    <div class="detail-section">
+                        <div class="detail-label">Ação</div>
+                        <div class="detail-value">${logData.action}</div>
+                    </div>
+                    ` : ''}
+                    
+                    ${logData.reason || logData.details?.reason ? `
+                    <div class="detail-section">
+                        <div class="detail-label">Motivo / Descrição</div>
+                        <div class="detail-value">${logData.reason || logData.details?.reason}</div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="detail-grid">
+                        ${logData.trace_id ? `
+                        <div class="detail-section">
+                            <div class="detail-label">Trace ID</div>
+                            <div class="detail-value" style="font-size: 0.8em;"><i class="fas fa-fingerprint"></i> ${logData.trace_id}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${logData.correlation_id ? `
+                        <div class="detail-section">
+                            <div class="detail-label">Correlation ID</div>
+                            <div class="detail-value" style="font-size: 0.8em;"><i class="fas fa-link"></i> ${logData.correlation_id}</div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${logData.ip_address ? `
+                    <div class="detail-section">
+                        <div class="detail-label">Endereço IP</div>
+                        <div class="detail-value"><i class="fas fa-globe"></i> ${logData.ip_address}</div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="detail-section">
+                        <div class="detail-label"><i class="fas fa-code"></i> Dados Completos (JSON)</div>
+                        <div class="json-viewer"><pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${syntaxHighlight(logData)}</pre></div>
+                    </div>
+                `;
+                
+                modal.classList.add('active');
+            }
+            
+            function closeModal() {
+                const modal = document.getElementById('logModal');
+                modal.classList.remove('active');
+            }
+            
+            // Fechar modal ao clicar fora
+            document.addEventListener('click', (e) => {
+                const modal = document.getElementById('logModal');
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Fechar modal com ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // ========== TIMESTAMP ==========
+            function updateTimestamp() {
+                const now = new Date();
+                document.getElementById('last-update').textContent = 
+                    now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+
+            // ========== INTEGRAÇÕES ==========
             async function loadIntegrations() {
                 try {
                     const response = await fetch('/workflows/integration/health');
@@ -494,11 +1343,11 @@ async def dashboard():
                 } catch (error) {
                     console.error('Erro ao carregar integrações:', error);
                     document.getElementById('integrations-container').innerHTML = 
-                        '<div class="no-data">Erro ao carregar status das integrações</div>';
+                        '<div class="no-data"><div class="no-data-icon"><i class="fas fa-exclamation-triangle"></i></div>Erro ao carregar integrações</div>';
                 }
             }
 
-            // Carregar estatísticas
+            // ========== ESTATÍSTICAS ==========
             async function loadStats() {
                 try {
                     const response = await fetch('/monitoring/stats');
@@ -507,134 +1356,260 @@ async def dashboard():
                     const summary = data.summary || {};
                     const topUsers = data.top_users || [];
                     
-                    const container = document.getElementById('stats-container');
-                    container.innerHTML = `
-                        <div class="stat-box">
-                            <div class="stat-label">Total de Logs</div>
-                            <div class="stat-value">${summary.total_logs || 0}</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Incidentes</div>
-                            <div class="stat-value" style="color: ${(summary.total_incidents || 0) > 0 ? '#ff4444' : '#00ff88'}">
-                                ${summary.total_incidents || 0}
-                            </div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Usuários Únicos</div>
-                            <div class="stat-value">${topUsers.length || 0}</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-label">Taxa de Erro</div>
-                            <div class="stat-value" style="color: ${(summary.error_rate_percent || 0) > 10 ? '#ff4444' : '#00ff88'}">
-                                ${summary.error_rate_percent || 0}%
-                            </div>
-                        </div>
-                    `;
+                    // Atualiza cards de estatísticas
+                    document.getElementById('stat-total-logs').textContent = summary.total_logs || 0;
+                    document.getElementById('stat-total-incidents').textContent = summary.total_incidents || 0;
+                    document.getElementById('stat-unique-users').textContent = topUsers.length || 0;
+                    
+                    const errorRate = summary.error_rate_percent || 0;
+                    const errorElement = document.getElementById('stat-error-rate');
+                    errorElement.textContent = errorRate.toFixed(1) + '%';
+                    
                 } catch (error) {
                     console.error('Erro ao carregar estatísticas:', error);
-                    document.getElementById('stats-container').innerHTML = 
-                        '<div class="no-data">Erro ao carregar estatísticas</div>';
                 }
             }
 
-            // Carregar logs recentes
+            // ========== LOGS ==========
             async function loadLogs() {
                 try {
-                    const response = await fetch('/monitoring/logs?limit=10');
+                    const response = await fetch('/monitoring/logs?limit=50');
                     const data = await response.json();
-                    const logs = data.logs || [];
-                    
-                    const container = document.getElementById('logs-container');
-                    
-                    if (logs.length === 0) {
-                        container.innerHTML = '<div class="no-data">Nenhum log registrado ainda</div>';
-                        return;
-                    }
-
-                    container.innerHTML = logs.map(log => {
-                        const timestamp = log.timestamp || 'N/A';
-                        const eventType = log.event_type || 'unknown';
-                        const userId = log.user_id || 'N/A';
-                        const status = log.status || 'unknown';
-                        const projectId = log.project_id || null;
-                        const traceId = log.trace_id || null;
-                        
-                        // Cor do status
-                        let statusColor = '#888';
-                        if (status === 'success') statusColor = '#00ff88';
-                        if (status === 'failed') statusColor = '#ff4444';
-                        if (status === 'denied') statusColor = '#ffaa00';
-                        
-                        return `
-                        <div class="log-entry">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <div class="log-timestamp">${new Date(timestamp).toLocaleString('pt-BR')}</div>
-                                <div style="background: ${statusColor}20; color: ${statusColor}; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold;">
-                                    ${status.toUpperCase()}
-                                </div>
-                            </div>
-                            <div class="log-event">${eventType}</div>
-                            <div class="log-user">👤 ${userId}</div>
-                            ${projectId ? `<div class="log-details">📁 Projeto: ${projectId}</div>` : ''}
-                            ${traceId ? `<div class="log-details">🔍 Trace: ${traceId.substring(0, 12)}...</div>` : ''}
-                        </div>
-                    `}).join('');
+                    allLogs = data.logs || [];
+                    allLogsWithIndex = [...allLogs]; // Cria cópia para indexação
+                    renderLogs();
                 } catch (error) {
                     console.error('Erro ao carregar logs:', error);
                     document.getElementById('logs-container').innerHTML = 
-                        '<div class="no-data">Erro ao carregar logs</div>';
+                        '<div class="no-data"><div class="no-data-icon"><i class="fas fa-exclamation-triangle"></i></div>Erro ao carregar logs</div>';
                 }
             }
+            
+            function filterLogs(filter) {
+                currentLogFilter = filter;
+                
+                // Atualiza botões
+                document.querySelectorAll('#log-filters .filter-btn').forEach((btn, idx) => {
+                    btn.classList.remove('active');
+                    if ((filter === 'all' && idx === 0) ||
+                        (filter === 'success' && idx === 1) ||
+                        (filter === 'failed' && idx === 2) ||
+                        (filter === 'denied' && idx === 3) ||
+                        (filter === 'incident' && idx === 4)) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                renderLogs();
+            }
+            
+            function renderLogs() {
+                const container = document.getElementById('logs-container');
+                
+                let filteredLogs = allLogs;
+                if (currentLogFilter !== 'all') {
+                    filteredLogs = allLogs.filter(log => log.status === currentLogFilter);
+                }
+                
+                if (filteredLogs.length === 0) {
+                    container.innerHTML = '<div class="no-data"><div class="no-data-icon"><i class="fas fa-inbox"></i></div>Nenhum log encontrado</div>';
+                    return;
+                }
 
-            // Carregar incidentes
+                // Atualiza o índice dos logs renderizados
+                allLogsWithIndex = [...filteredLogs.slice(0, 20)];
+
+                container.innerHTML = filteredLogs.slice(0, 20).map((log, index) => {
+                    const timestamp = log.timestamp || 'N/A';
+                    const eventType = log.event_type || 'unknown';
+                    const userId = log.user_id || 'N/A';
+                    const status = log.status || 'unknown';
+                    const projectId = log.project_id || null;
+                    const resourceId = log.resource_id || null;
+                    const traceId = log.trace_id || null;
+                    
+                    let statusClass = '';
+                    let statusBadgeClass = 'badge-success';
+                    let statusLabel = status;
+                    
+                    if (status === 'success') { 
+                        statusClass = 'success'; 
+                        statusBadgeClass = 'badge-success';
+                        statusLabel = 'Sucesso';
+                    }
+                    if (status === 'failed') { 
+                        statusClass = 'failed'; 
+                        statusBadgeClass = 'badge-failed';
+                        statusLabel = 'Falha';
+                    }
+                    if (status === 'denied') { 
+                        statusClass = 'warning'; 
+                        statusBadgeClass = 'badge-denied';
+                        statusLabel = 'Negado';
+                    }
+                    if (status === 'incident') { 
+                        statusClass = 'incident'; 
+                        statusBadgeClass = 'badge-incident';
+                        statusLabel = 'Incidente';
+                    }
+                    
+                    const metaItems = [];
+                    if (projectId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-folder"></i>${projectId}</span>`);
+                    if (resourceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-link"></i>${resourceId}</span>`);
+                    if (traceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-fingerprint"></i>${traceId.substring(0, 12)}...</span>`);
+                    
+                    return `
+                    <div class="log-entry ${statusClass}" onclick="openModal(${index}, false)">
+                        <div class="log-left">
+                            <div class="log-timestamp">${new Date(timestamp).toLocaleString('pt-BR', { 
+                                day: '2-digit', 
+                                month: '2-digit', 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                            })}</div>
+                            <div class="log-badge ${statusBadgeClass}">
+                                <span class="log-status-indicator ${status}"></span> ${statusLabel}
+                            </div>
+                        </div>
+                        <div class="log-center">
+                            <div class="log-event">${eventType}</div>
+                            <div class="log-user"><i class="fas fa-user"></i> ${userId}</div>
+                            ${metaItems.length > 0 ? `<div class="log-meta">${metaItems.join('')}</div>` : ''}
+                        </div>
+                        <div class="log-right">
+                            <i class="fas fa-chevron-right" style="color: #adb5bd; font-size: 0.9em;"></i>
+                        </div>
+                    </div>
+                `}).join('');
+            }
+
+            // ========== INCIDENTES ==========
             async function loadIncidents() {
                 try {
-                    const response = await fetch('/monitoring/incidents?limit=20');
+                    const response = await fetch('/monitoring/incidents?limit=50');
                     const data = await response.json();
-                    const incidents = data.incidents || [];
-                    
-                    const container = document.getElementById('incidents-container');
-                    
-                    if (incidents.length === 0) {
-                        container.innerHTML = '<div class="no-data">✅ Nenhum incidente registrado - Sistema operando normalmente</div>';
-                        return;
-                    }
-
-                    container.innerHTML = incidents.map(incident => {
-                        const timestamp = incident.timestamp || 'N/A';
-                        const eventType = incident.event_type || 'unknown';
-                        const userId = incident.user_id || 'N/A';
-                        const reason = incident.reason || incident.details?.reason || null;
-                        const severity = incident.details?.severity || 'medium';
-                        const traceId = incident.trace_id || null;
-                        
-                        // Cor por severidade
-                        let severityColor = '#ffaa00';
-                        if (severity === 'critical' || severity === 'high') severityColor = '#ff4444';
-                        if (severity === 'low') severityColor = '#00d9ff';
-                        
-                        return `
-                        <div class="log-entry incident">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <div class="log-timestamp">${new Date(timestamp).toLocaleString('pt-BR')}</div>
-                                <div style="background: ${severityColor}20; color: ${severityColor}; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold;">
-                                    ${severity.toUpperCase()}
-                                </div>
-                            </div>
-                            <div class="log-event">⚠️ ${eventType}</div>
-                            <div class="log-user">👤 ${userId}</div>
-                            ${reason ? `<div class="log-details">📝 ${reason}</div>` : ''}
-                            ${traceId ? `<div class="log-details">🔍 Trace: ${traceId.substring(0, 12)}...</div>` : ''}
-                        </div>
-                    `}).join('');
+                    allIncidents = data.incidents || [];
+                    allIncidentsWithIndex = [...allIncidents]; // Cria cópia para indexação
+                    renderIncidents();
                 } catch (error) {
                     console.error('Erro ao carregar incidentes:', error);
                     document.getElementById('incidents-container').innerHTML = 
-                        '<div class="no-data">Erro ao carregar incidentes</div>';
+                        '<div class="no-data"><div class="no-data-icon"><i class="fas fa-exclamation-triangle"></i></div>Erro ao carregar incidentes</div>';
                 }
             }
+            
+            function filterIncidents(filter) {
+                currentIncidentFilter = filter;
+                
+                // Atualiza botões
+                document.querySelectorAll('#incident-filters .filter-btn').forEach((btn, idx) => {
+                    btn.classList.remove('active');
+                    if ((filter === 'all' && idx === 0) ||
+                        (filter === 'critical' && idx === 1) ||
+                        (filter === 'high' && idx === 2) ||
+                        (filter === 'medium' && idx === 3) ||
+                        (filter === 'low' && idx === 4)) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                renderIncidents();
+            }
+            
+            function renderIncidents() {
+                const container = document.getElementById('incidents-container');
+                
+                let filteredIncidents = allIncidents;
+                if (currentIncidentFilter !== 'all') {
+                    filteredIncidents = allIncidents.filter(incident => {
+                        const severity = incident.details?.severity || 'medium';
+                        return severity === currentIncidentFilter;
+                    });
+                }
+                
+                if (filteredIncidents.length === 0) {
+                    container.innerHTML = '<div class="no-data"><div class="no-data-icon"><i class="fas fa-check-circle"></i></div>Nenhum incidente encontrado - Sistema operando normalmente</div>';
+                    return;
+                }
 
-            // Carregar todos os dados
+                // Atualiza o índice dos incidentes renderizados
+                allIncidentsWithIndex = [...filteredIncidents.slice(0, 20)];
+
+                container.innerHTML = filteredIncidents.slice(0, 20).map((incident, index) => {
+                    const timestamp = incident.timestamp || 'N/A';
+                    const eventType = incident.event_type || 'unknown';
+                    const userId = incident.user_id || 'N/A';
+                    
+                    // Busca a razão em diferentes campos possíveis
+                    let reason = incident.reason || 
+                                incident.details?.reason || 
+                                incident.details?.message || 
+                                incident.message ||
+                                (incident.details?.error ? `Erro: ${incident.details.error}` : null) ||
+                                'Incidente detectado - clique para mais detalhes';
+                    
+                    const severity = incident.details?.severity || 'medium';
+                    const resourceId = incident.resource_id || null;
+                    const traceId = incident.trace_id || null;
+                    
+                    let severityIcon = '<i class="fas fa-circle" style="color: #ffc107;"></i>';
+                    let badgeClass = 'badge-denied';
+                    let statusClass = 'warning';
+                    let severityLabel = 'Médio';
+                    
+                    if (severity === 'critical') { 
+                        severityIcon = '<i class="fas fa-circle" style="color: #dc3545;"></i>'; 
+                        badgeClass = 'badge-failed'; 
+                        statusClass = 'failed';
+                        severityLabel = 'Crítico';
+                    }
+                    if (severity === 'high') { 
+                        severityIcon = '<i class="fas fa-circle" style="color: #fd7e14;"></i>'; 
+                        badgeClass = 'badge-failed'; 
+                        statusClass = 'failed';
+                        severityLabel = 'Alto';
+                    }
+                    if (severity === 'medium') {
+                        severityLabel = 'Médio';
+                    }
+                    if (severity === 'low') { 
+                        severityIcon = '<i class="fas fa-circle" style="color: #198754;"></i>'; 
+                        badgeClass = 'badge-success'; 
+                        statusClass = 'success';
+                        severityLabel = 'Baixo';
+                    }
+                    
+                    const metaItems = [];
+                    if (resourceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-link"></i>${resourceId}</span>`);
+                    if (traceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-fingerprint"></i>${traceId.substring(0, 12)}...</span>`);
+                    
+                    return `
+                    <div class="log-entry ${statusClass}" onclick="openModal(${index}, true)">
+                        <div class="log-left">
+                            <div class="log-timestamp">${new Date(timestamp).toLocaleString('pt-BR', { 
+                                day: '2-digit', 
+                                month: '2-digit', 
+                                hour: '2-digit', 
+                                minute: '2-digit' 
+                            })}</div>
+                            <div class="log-badge ${badgeClass}">
+                                ${severityIcon} ${severityLabel}
+                            </div>
+                        </div>
+                        <div class="log-center">
+                            <div class="log-event"><i class="fas fa-exclamation-triangle"></i> ${eventType}</div>
+                            <div class="log-user"><i class="fas fa-user"></i> ${userId}</div>
+                            <div style="color: #6c757d; font-size: 0.85em; margin-top: 4px;">${reason}</div>
+                            ${metaItems.length > 0 ? `<div class="log-meta">${metaItems.join('')}</div>` : ''}
+                        </div>
+                        <div class="log-right">
+                            <i class="fas fa-chevron-right" style="color: #adb5bd; font-size: 0.9em;"></i>
+                        </div>
+                    </div>
+                `}).join('');
+            }
+
+            // ========== CARREGAR TUDO ==========
             async function loadAllData() {
                 updateTimestamp();
                 await Promise.all([
@@ -645,8 +1620,8 @@ async def dashboard():
                 ]);
             }
 
-            // Auto-refresh a cada 10 segundos
-            setInterval(loadAllData, 10000);
+            // Auto-refresh a cada 15 segundos
+            setInterval(loadAllData, 15000);
 
             // Carregar dados iniciais
             loadAllData();
