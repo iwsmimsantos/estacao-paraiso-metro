@@ -302,8 +302,18 @@ class Logger:
                 try:
                     incident = json.loads(line)
                     
+                    # Extrai campos importantes de details para o nível superior
+                    if 'details' in incident:
+                        details = incident['details']
+                        if 'severity' in details and 'severity' not in incident:
+                            incident['severity'] = details['severity']
+                        if 'incident_type' in details and 'incident_type' not in incident:
+                            incident['incident_type'] = details['incident_type']
+                        if 'event_type' in details and 'event_type' not in incident:
+                            incident['event_type'] = details['event_type']
+                    
                     # Filtra por severidade se especificado
-                    if severity and incident.get('details', {}).get('severity') != severity:
+                    if severity and incident.get('severity') != severity:
                         continue
                     
                     incidents.append(incident)

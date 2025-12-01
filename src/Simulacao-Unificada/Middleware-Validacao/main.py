@@ -7,6 +7,7 @@ from src.api import auth as auth_routes
 from src.api import monitoring as monitoring_routes
 from src.api import validation_simple as validation_simple_routes
 from src.api import workflows as workflow_routes
+from src.api import test_support as test_support_routes
 
 app = FastAPI(
     title="Middleware de Validação - Metrô SP",
@@ -57,6 +58,7 @@ app.include_router(auth_routes.router)
 app.include_router(monitoring_routes.router)
 app.include_router(validation_simple_routes.router)  # Validação simplificada (SSO simulado)
 app.include_router(workflow_routes.router)
+app.include_router(test_support_routes.router)  # Endpoints para testes unitários
 
 
 @app.get("/", response_class=HTMLResponse)

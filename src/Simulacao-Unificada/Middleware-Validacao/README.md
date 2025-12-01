@@ -12,6 +12,7 @@ Este middleware implementa os 3 requisitos não funcionais principais:
 - ✅ Controle de acesso por projeto
 - ✅ Validação de integridade de dados (checksum)
 - ✅ Guardrails para agentes de IA
+- ✅ **12 testes unitários automatizados**
 
 ### RNF-02: Escalabilidade
 
@@ -19,6 +20,7 @@ Este middleware implementa os 3 requisitos não funcionais principais:
 - ✅ Circuit breaker para integrações
 - ✅ Monitoramento de performance
 - ✅ Cache de permissões
+- ✅ **15 testes de performance automatizados**
 
 ### RNF-03: Rastreabilidade
 
@@ -26,6 +28,9 @@ Este middleware implementa os 3 requisitos não funcionais principais:
 - ✅ Incident queue
 - ✅ Auditoria completa de ações
 - ✅ Correlação de eventos (trace_id)
+- ✅ **18 testes de auditoria automatizados**
+
+---
 
 ## 🚀 Como Executar
 
@@ -45,10 +50,72 @@ O servidor estará disponível em: `http://localhost:8001`
 
 ### 3. Acessar a interface
 
-- **Página Inicial**: http://localhost:8001
+- **Página Inicial**: http://localhost:8001 (Interface redesenhada)
+- **Dashboard de Monitoramento**: http://localhost:8001/dashboard ⭐ **NOVO DESIGN!**
+- **Todos os Logs**: http://localhost:8001/logs ⭐ **NOVA PÁGINA!**
 - **Documentação da API**: http://localhost:8001/docs
-- **Dashboard de Monitoramento**: http://localhost:8001/dashboard
+
+---
+
+## 🧪 Testes Automatizados
+
+### Executar Todos os Testes
+
+```bash
+# Execução simples
+pytest -v
+
+# Com relatório de cobertura
+pytest --cov=src --cov-report=html
+
+# Scripts interativos
+python run_tests.py
+# ou
+.\run_tests.ps1
+```
+
+### Executar por RNF
+
+```bash
+# RNF-01: Segurança (12 testes)
+pytest tests/unit/test_rnf01_seguranca.py -v
+
+# RNF-02: Escalabilidade (15 testes)
+pytest tests/unit/test_rnf02_escalabilidade.py -v
+
+# RNF-03: Rastreabilidade (18 testes)
+pytest tests/unit/test_rnf03_rastreabilidade.py -v
+```
+
+### Documentação dos Testes
+
+- **Guia Completo**: `tests/README.md`
+- **Guia de Integração**: `tests/INTEGRATION_GUIDE.md`
+- **Exemplos de Implementação**: `tests/IMPLEMENTATION_EXAMPLES.md`
+- **Resumo Executivo**: `tests/SUMMARY.md`
+
+**Total: 45 testes unitários** cobrindo todos os cenários dos RNFs.
+
+---
+
 - **Health Check**: http://localhost:8001/health
+
+## 📊 Dashboard Melhorado
+
+O dashboard foi completamente redesenhado com interface moderna e profissional:
+
+### ✨ Novos Recursos:
+
+- 🎨 **Design moderno** com gradientes e glassmorphism
+- 📊 **Gráficos interativos** (Chart.js) - Eventos por tipo e Status das operações
+- 🔍 **Filtros dinâmicos** para logs e incidentes
+- 📱 **Responsivo** - Funciona em desktop, tablet e mobile
+- ⚡ **Auto-refresh** a cada 15 segundos
+- 🎯 **Animações suaves** e transições elegantes
+- 🎨 **Cards interativos** com hover effects
+- 📈 **Estatísticas em tempo real** com métricas visuais
+
+> 📄 Veja detalhes completos em [DASHBOARD.md](./DASHBOARD.md) e preview visual em [DASHBOARD_PREVIEW.md](./DASHBOARD_PREVIEW.md)
 
 ## 📁 Estrutura do Projeto
 
