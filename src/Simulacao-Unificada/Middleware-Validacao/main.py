@@ -322,6 +322,475 @@ async def health_check():
     }
 
 
+@app.get("/logs", response_class=HTMLResponse)
+async def all_logs_page():
+    """Página com todos os logs em formato de tabela"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Todos os Logs - Middleware de Validação</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: #f8f9fa;
+                color: #212529;
+            }
+            .header {
+                background: #ffffff;
+                border-bottom: 1px solid #e9ecef;
+                padding: 16px 32px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+            .header-left { display: flex; align-items: center; gap: 15px; }
+            .back-btn {
+                background: #6c757d;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 0.875em;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .back-btn:hover { background: #5c636a; }
+            .container { padding: 30px; max-width: 1800px; margin: 0 auto; }
+            h1 { font-size: 1.5em; font-weight: 600; color: #212529; }
+            .filters {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                border: 1px solid #dee2e6;
+            }
+            .filter-btn {
+                background: white;
+                border: 1px solid #dee2e6;
+                color: #495057;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.875em;
+                font-weight: 500;
+                transition: all 0.2s;
+            }
+            .filter-btn:hover { background: #f8f9fa; border-color: #0d6efd; }
+            .filter-btn.active { background: #0d6efd; border-color: #0d6efd; color: white; }
+            .table-container {
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #dee2e6;
+                overflow: hidden;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            thead {
+                background: #f8f9fa;
+                border-bottom: 2px solid #dee2e6;
+            }
+            th {
+                padding: 12px 16px;
+                text-align: left;
+                font-size: 0.75em;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #495057;
+            }
+            td {
+                padding: 12px 16px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 0.875em;
+            }
+            tr:hover { background: #f8f9fa; }
+            .badge {
+                padding: 4px 10px;
+                border-radius: 4px;
+                font-size: 0.75em;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+            .badge-success { background: #d1e7dd; color: #0f5132; }
+            .badge-failed { background: #f8d7da; color: #842029; }
+            .badge-denied { background: #fff3cd; color: #856404; }
+            .badge-incident { background: #cfe2ff; color: #084298; }
+            .loading {
+                text-align: center;
+                padding: 40px;
+                color: #6c757d;
+            }
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                margin-top: 20px;
+                border: 1px solid #dee2e6;
+            }
+            .page-btn {
+                background: white;
+                border: 1px solid #dee2e6;
+                color: #495057;
+                padding: 8px 12px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 0.875em;
+                font-weight: 500;
+                min-width: 40px;
+            }
+            .page-btn:hover:not(:disabled) { background: #f8f9fa; }
+            .page-btn.active { background: #0d6efd; border-color: #0d6efd; color: white; }
+            .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+            .page-info { color: #6c757d; font-size: 0.875em; }
+            tr { cursor: pointer; }
+            .modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                align-items: center;
+                justify-content: center;
+            }
+            .modal.active { display: flex; }
+            .modal-content {
+                background: white;
+                border-radius: 8px;
+                width: 90%;
+                max-width: 800px;
+                max-height: 80vh;
+                overflow-y: auto;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            }
+            .modal-header {
+                padding: 20px 24px;
+                border-bottom: 1px solid #dee2e6;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .modal-header h2 { font-size: 1.25em; font-weight: 600; }
+            .close-btn {
+                background: none;
+                border: none;
+                font-size: 1.5em;
+                color: #6c757d;
+                cursor: pointer;
+                padding: 0;
+                width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 4px;
+            }
+            .close-btn:hover { background: #f8f9fa; }
+            .modal-body { padding: 24px; }
+            .detail-row {
+                display: grid;
+                grid-template-columns: 150px 1fr;
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .detail-row:last-child { border-bottom: none; }
+            .detail-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.875em;
+            }
+            .detail-value {
+                color: #212529;
+                font-size: 0.875em;
+                word-break: break-word;
+            }
+            .json-viewer {
+                background: #f8f9fa;
+                padding: 12px;
+                border-radius: 6px;
+                font-family: 'Courier New', monospace;
+                font-size: 0.8em;
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header-left">
+                <a href="/dashboard" class="back-btn"><i class="fas fa-arrow-left"></i> Voltar ao Dashboard</a>
+                <h1>Todos os Logs</h1>
+            </div>
+            <div id="total-count" style="color: #6c757d; font-size: 0.9em;"></div>
+        </div>
+        
+        <div class="container">
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterTable('all')">Todos</button>
+                <button class="filter-btn" onclick="filterTable('success')">Sucesso</button>
+                <button class="filter-btn" onclick="filterTable('failed')">Falha</button>
+                <button class="filter-btn" onclick="filterTable('denied')">Negado</button>
+                <button class="filter-btn" onclick="filterTable('incident')">Incidente</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Status</th>
+                            <th>Evento</th>
+                            <th>Usuário</th>
+                            <th>Projeto</th>
+                            <th>Recurso</th>
+                            <th>Trace ID</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-tbody">
+                        <tr><td colspan="7" class="loading">Carregando logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination">
+                <button class="page-btn" onclick="changePage('first')" id="first-btn"><i class="fas fa-angle-double-left"></i></button>
+                <button class="page-btn" onclick="changePage('prev')" id="prev-btn"><i class="fas fa-angle-left"></i></button>
+                <span class="page-info" id="page-info">Página 1 de 1</span>
+                <button class="page-btn" onclick="changePage('next')" id="next-btn"><i class="fas fa-angle-right"></i></button>
+                <button class="page-btn" onclick="changePage('last')" id="last-btn"><i class="fas fa-angle-double-right"></i></button>
+            </div>
+        </div>
+        
+        <div class="modal" id="log-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Detalhes do Log</h2>
+                    <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            let allLogs = [];
+            let currentFilter = 'all';
+            let currentPage = 1;
+            const logsPerPage = 15;
+            
+            async function loadAllLogs() {
+                try {
+                    const response = await fetch('/monitoring/logs');
+                    const data = await response.json();
+                    allLogs = data.logs || [];
+                    renderTable();
+                } catch (error) {
+                    console.error('Erro ao carregar logs:', error);
+                    document.getElementById('logs-tbody').innerHTML = '<tr><td colspan="7" class="loading">Erro ao carregar logs</td></tr>';
+                }
+            }
+            
+            function filterTable(filter) {
+                currentFilter = filter;
+                currentPage = 1;
+                document.querySelectorAll('.filter-btn').forEach((btn, idx) => {
+                    btn.classList.remove('active');
+                    if ((filter === 'all' && idx === 0) ||
+                        (filter === 'success' && idx === 1) ||
+                        (filter === 'failed' && idx === 2) ||
+                        (filter === 'denied' && idx === 3) ||
+                        (filter === 'incident' && idx === 4)) {
+                        btn.classList.add('active');
+                    }
+                });
+                renderTable();
+            }
+            
+            function changePage(action) {
+                const filteredLogs = currentFilter === 'all' ? allLogs : allLogs.filter(log => log.status === currentFilter);
+                const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
+                
+                if (action === 'first') currentPage = 1;
+                if (action === 'prev' && currentPage > 1) currentPage--;
+                if (action === 'next' && currentPage < totalPages) currentPage++;
+                if (action === 'last') currentPage = totalPages;
+                
+                renderTable();
+            }
+            
+            function renderTable() {
+                let filteredLogs = allLogs;
+                if (currentFilter !== 'all') {
+                    filteredLogs = allLogs.filter(log => log.status === currentFilter);
+                }
+                
+                const totalPages = Math.ceil(filteredLogs.length / logsPerPage);
+                const startIdx = (currentPage - 1) * logsPerPage;
+                const endIdx = startIdx + logsPerPage;
+                const paginatedLogs = filteredLogs.slice(startIdx, endIdx);
+                
+                document.getElementById('total-count').textContent = `${filteredLogs.length} logs`;
+                document.getElementById('page-info').textContent = `Página ${currentPage} de ${totalPages || 1}`;
+                
+                document.getElementById('first-btn').disabled = currentPage === 1;
+                document.getElementById('prev-btn').disabled = currentPage === 1;
+                document.getElementById('next-btn').disabled = currentPage === totalPages || totalPages === 0;
+                document.getElementById('last-btn').disabled = currentPage === totalPages || totalPages === 0;
+                
+                if (paginatedLogs.length === 0) {
+                    document.getElementById('logs-tbody').innerHTML = '<tr><td colspan="7" class="loading">Nenhum log encontrado</td></tr>';
+                    return;
+                }
+                
+                const tbody = document.getElementById('logs-tbody');
+                tbody.innerHTML = paginatedLogs.map((log, idx) => {
+                    let badgeClass = 'badge-success';
+                    let statusLabel = log.status || 'unknown';
+                    
+                    if (log.status === 'success') { badgeClass = 'badge-success'; statusLabel = 'Sucesso'; }
+                    if (log.status === 'failed') { badgeClass = 'badge-failed'; statusLabel = 'Falha'; }
+                    if (log.status === 'denied') { badgeClass = 'badge-denied'; statusLabel = 'Negado'; }
+                    if (log.status === 'incident') { badgeClass = 'badge-incident'; statusLabel = 'Incidente'; }
+                    
+                    return `
+                        <tr onclick='showLogDetails(${JSON.stringify(log).replace(/'/g, "&apos;")})'>
+                            <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
+                            <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
+                            <td>${log.event_type || 'N/A'}</td>
+                            <td>${log.user_id || 'N/A'}</td>
+                            <td>${log.project_id || '-'}</td>
+                            <td>${log.resource_id || '-'}</td>
+                            <td style="font-family: monospace; font-size: 0.8em;">${log.trace_id ? log.trace_id.substring(0, 16) + '...' : '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            function showLogDetails(log) {
+                let badgeClass = 'badge-success';
+                let statusLabel = log.status || 'unknown';
+                
+                if (log.status === 'success') { badgeClass = 'badge-success'; statusLabel = 'Sucesso'; }
+                if (log.status === 'failed') { badgeClass = 'badge-failed'; statusLabel = 'Falha'; }
+                if (log.status === 'denied') { badgeClass = 'badge-denied'; statusLabel = 'Negado'; }
+                if (log.status === 'incident') { badgeClass = 'badge-incident'; statusLabel = 'Incidente'; }
+                
+                const modalBody = document.getElementById('modal-body');
+                modalBody.innerHTML = `
+                    <div class="detail-row">
+                        <div class="detail-label">Timestamp</div>
+                        <div class="detail-value">${new Date(log.timestamp).toLocaleString('pt-BR')}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value"><span class="badge ${badgeClass}">${statusLabel}</span></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tipo de Evento</div>
+                        <div class="detail-value">${log.event_type || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Usuário</div>
+                        <div class="detail-value">${log.user_id || 'N/A'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Projeto</div>
+                        <div class="detail-value">${log.project_id || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Recurso</div>
+                        <div class="detail-value">${log.resource_id || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Ação</div>
+                        <div class="detail-value">${log.action || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">IP de Origem</div>
+                        <div class="detail-value">${log.source_ip || '-'}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Trace ID</div>
+                        <div class="detail-value" style="font-family: monospace; font-size: 0.85em;">${log.trace_id || '-'}</div>
+                    </div>
+                    ${log.metadata ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Metadata</div>
+                        <div class="detail-value">
+                            <div class="json-viewer">${syntaxHighlight(JSON.stringify(log.metadata, null, 2))}</div>
+                        </div>
+                    </div>
+                    ` : ''}
+                    ${log.details ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Detalhes</div>
+                        <div class="detail-value">
+                            ${typeof log.details === 'object' ? `<div class="json-viewer">${syntaxHighlight(JSON.stringify(log.details, null, 2))}</div>` : log.details}
+                        </div>
+                    </div>
+                    ` : ''}
+                `;
+                
+                document.getElementById('log-modal').classList.add('active');
+            }
+            
+            function closeModal() {
+                document.getElementById('log-modal').classList.remove('active');
+            }
+            
+            function syntaxHighlight(json) {
+                return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                    let cls = 'json-number';
+                    if (/^"/.test(match)) {
+                        if (/:$/.test(match)) {
+                            cls = 'json-key';
+                        } else {
+                            cls = 'json-string';
+                        }
+                    } else if (/true|false/.test(match)) {
+                        cls = 'json-boolean';
+                    } else if (/null/.test(match)) {
+                        cls = 'json-null';
+                    }
+                    return '<span class="' + cls + '">' + match + '</span>';
+                });
+            }
+            
+            document.getElementById('log-modal').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            
+            loadAllLogs();
+        </script>
+    </body>
+    </html>
+    """
+
+
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard():
     """Dashboard de monitoramento em tempo real"""
@@ -1093,6 +1562,9 @@ async def dashboard():
                                 <span class="card-icon"><i class="fas fa-clipboard-list"></i></span>
                                 <span>LOGS RECENTES</span>
                             </div>
+                            <a href="/logs" style="background: #0d6efd; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.85em; font-weight: 500; display: flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='#0b5ed7'" onmouseout="this.style.background='#0d6efd'">
+                                <i class="fas fa-external-link-alt"></i> Ver Todos
+                            </a>
                         </div>
                         <div class="log-controls" id="log-filters">
                             <button class="filter-btn active" onclick="filterLogs('all')">Todos</button>
