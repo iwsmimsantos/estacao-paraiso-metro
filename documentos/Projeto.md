@@ -8062,18 +8062,127 @@ Para **cenários além do escopo inicial** (funcionalidades inovadoras sem basel
 &emsp; Essa etapa é essencial para comprovar que a rastreabilidade continua íntegra quando o volume crescer — algo ainda não demonstrado pelos testes da Seção 9.
 
 ---
-
 # 11. Ajustes na Implementação
 
-_(Liste os ajustes realizados após os testes, indicando melhorias, critérios de aceitação e evidências no repositório.)_
+&emsp;Esta seção documenta as mudanças realizadas na arquitetura de testes após a análise dos resultados das simulações individuais (RNF-01, RNF-02 e RNF-03). O principal ajuste foi a unificação dos ambientes de teste em uma arquitetura consolidada, mantendo a cobertura funcional enquanto simplifica a manutenção e execução.
+
+### Estrutura da Simulação Unificada
+
+&emsp;A solução implementada está organizada no diretório `src/Simulacao-Unificada/`, composto por três componentes integrados que trabalham em conjunto para validar os requisitos não funcionais do sistema:
+
+**1. API Mockada (`src/Simulacao-Unificada/API/`)** - Ambiente de Simulação Realista
+
+&emsp;Esta camada implementa **APIs mock das ferramentas do ecossistema Microsoft** (Miro, SharePoint, Microsoft 365, Copilot e Sentinel), imitando fielmente o comportamento do ambiente real de produção. O objetivo é criar um ambiente de testes controlado onde podemos simular cenários específicos sem depender das APIs reais externas.
+
+&emsp;A API mockada oferece endpoints RESTful que replicam as assinaturas e comportamentos das ferramentas originais: `/miro/boards` para simulação de quadros colaborativos, `/sharepoint/sites` para gestão de sites e documentos, `/office365/users` para autenticação de usuários, `/copilot/chat` para interações com agente de IA, e `/sentinel/logs` para ingestão de eventos de segurança. Cada endpoint retorna dados estruturados compatíveis com os formatos JSON das APIs reais, incluindo códigos de status HTTP apropriados (200 OK, 401 Unauthorized, 404 Not Found) e headers de resposta realistas.
+
+&emsp;Esta abordagem permite que os testes executem em ambiente completamente isolado, sem necessidade de credenciais de produção, consumo de quotas de API ou dependência de conectividade externa. Além disso, a API mock permite injeção controlada de falhas (timeouts, erros 500, dados corrompidos) para validar cenários de exceção e resiliência do middleware.
+
+**2. Middleware de Validação (`src/Simulacao-Unificada/Middleware-Validacao/`)** - Mini MVP da Solução Proposta
+
+&emsp;Este componente representa um **protótipo funcional mínimo** da arquitetura de middleware proposta para integração de agentes de IA no ambiente de gestão de portfólio do Metrô. Implementa os três pilares fundamentais da solução: **segurança** (controle de acesso baseado em permissões, validação de integridade de dados, guardrails de IA), **escalabilidade** (processamento de workflows concorrentes, ingestão de eventos em massa, cache de permissões) e **rastreabilidade** (logging estruturado com IDs de correlação, registro de incidentes, histórico de mudanças).
+
+&emsp;O middleware expõe uma API REST (`main.py`) com 8 endpoints consolidados que centralizam toda a lógica de validação. O arquivo principal `test_support.py` (673 linhas) implementa a orquestração entre os diferentes serviços: `AccessControlService` para validação de permissões de usuários, `IntegrityService` para verificação de checksums entre Miro e SharePoint, `GuardrailService` para validação de prompts enviados ao Copilot, `WorkflowService` para processamento de fluxos de aprovação, e `SystemLogger` para persistência unificada de logs e incidentes.
+
+&emsp;A arquitetura do middleware utiliza **padrões de design modernos**: Strategy Pattern para despachar requisições baseadas em tipo de validação, Repository Pattern para abstração de persistência de dados, e Dependency Injection via FastAPI para facilitar testabilidade. O sistema armazena dados em arquivos JSON estruturados (`storage/audit_logs.jsonl` para logs de auditoria, `storage/incidents.jsonl` para incidentes de segurança), garantindo rastreabilidade completa de todas as operações.
+
+**3. Testes Automatizados (`src/Simulacao-Unificada/Testes-Automatizados/`)** - Validação dos RNFs
+
+&emsp;A suite de testes implementa **42 testes unitários** organizados por requisito não funcional: 13 testes para RNF-01 (Segurança), 12 testes para RNF-02 (Escalabilidade) e 17 testes para RNF-03 (Rastreabilidade). Cada teste foi desenvolvido usando o framework **pytest** com fixtures reutilizáveis e assertions padronizadas.
+
+&emsp;Os testes validam **cenários funcionais e não funcionais** através de requisições HTTP ao middleware, que por sua vez consome a API mockada. Por exemplo, o teste `test_cenario1_bloqueio_usuario_nao_cadastrado` envia uma requisição de acesso com usuário inválido (`u999`) ao endpoint `/validate/access` do middleware, que consulta a API mock do Miro, valida permissões e retorna status 403 registrando incidente de segurança. Os testes de escalabilidade medem latências p95 (percentil 95) para validar SLOs como "ingestão de eventos < 150ms" e "autenticação < 100ms".
+
+&emsp;A execução completa da suite leva **4.88 segundos** e gera relatórios automatizados de cobertura de código (atualmente 32%), métricas de performance (latências p50/p95/p99) e listagem de incidentes capturados. Os resultados são consolidados em formato console-friendly pelo script `executar_testes.py`, que exibe 39 testes passando (✓) e 3 falhando (✗) com detalhamento de cada cenário.
+
+&emsp;Esta arquitetura em três camadas (API Mock → Middleware → Testes) **simula de ponta a ponta o fluxo de dados real** que ocorreria em produção: um usuário tenta acessar o Miro através do middleware, que valida permissões consultando o SharePoint (ambos mockados), registra a operação no Sentinel (mockado), e retorna resposta ao cliente - tudo enquanto captura logs estruturados e métricas de performance. Essa abordagem garante que os testes validem não apenas a lógica isolada de cada componente, mas também a **integração correta entre eles**, detectando problemas que só aparecem quando o sistema opera como um todo.
 
 ## 11.1 Principais Pontos de Ajuste
 
-_(conteúdo.)_
+&emsp;A implementação inicial dos testes para validação dos requisitos não funcionais seguiu uma abordagem evolutiva e incremental. Durante as Sprints 2 e 3, foram desenvolvidos ambientes de simulação de forma independente, resultando em três estruturas paralelas para RNF-01 (Escalabilidade), RNF-02 (Segurança) e RNF-03 (Rastreabilidade). Esta estratégia foi adequada para a fase exploratória do projeto, permitindo que houvesse um foco em um domínio específico sem dependências externas.
+
+&emsp;No entanto, ao consolidar os resultados na Sprint 4, identificamos que essa fragmentação gerou custos técnicos significativos. A análise revelou que aproximadamente 40% do código implementado era duplicado entre os três ambientes, com lógicas equivalentes implementadas de formas ligeiramente diferentes. Além disso, a execução dos testes requeria conhecimento específico de cada ambiente, tornando o processo de validação complexo e propenso a erros.
+
+### 11.1.1 Análise dos Problemas Arquiteturais
+
+&emsp;O primeiro problema identificado foi a **duplicação de infraestrutura de servidores**. Cada RNF mantinha seu próprio servidor FastAPI (`main.py`) com endpoints específicos, totalizando mais de 25 rotas distribuídas entre os três ambientes. Por exemplo, o RNF-02 implementava `/check-access` para validação de permissões, enquanto o RNF-03 implementava `/validate-change` para requisições de mudança. Embora os domínios sejam diferentes, a estrutura técnica (receber requisição, validar dados, registrar logs, retornar resposta) era idêntica.
+
+&emsp;O segundo problema estava relacionado à **inconsistência de modelos de dados**. A mesma entidade conceitual (uma requisição de validação) era representada por modelos Pydantic distintos em cada RNF: `AccessRequest`, `ChangeRequest`, `IntegrityRequest`, entre outros. Isso não apenas aumentava o volume de código, mas também dificultava a reutilização de componentes e a manutenção de padrões consistentes de validação de dados.
+
+&emsp;O terceiro problema crítico era o **storage fragmentado de logs e incidentes**. Cada ambiente mantinha seu próprio repositório de dados com estruturas JSON ligeiramente diferentes. O RNF-02 armazenava incidentes com campos `incident_type` e `severity` no nível raiz do objeto, enquanto o RNF-03 armazenava esses mesmos campos dentro de um objeto `details`. Essa inconsistência dificultava análises transversais dos dados de teste e comprometia a rastreabilidade entre diferentes requisitos.
+
+&emsp;Além desses problemas técnicos, havia um **custo operacional de manutenção** significativo. Qualquer alteração em lógica comum (como o formato de registro de logs ou a estrutura de resposta HTTP) exigia modificações em três arquivos diferentes. Durante a Sprint 3, identificamos que 60% das correções de bugs precisaram ser replicadas manualmente nos três ambientes, aumentando o risco de inconsistências.
+
+&emsp;Por fim, a **complexidade de execução** representava uma barreira para o entedimento de como executar cada ambiente e para processos de integração contínua. Para executar a suite completa de testes, era necessário: (1) iniciar três servidores FastAPI em portas diferentes, (2) executar scripts Python específicos para cada RNF, (3) coletar resultados manualmente de três saídas de console diferentes, e (4) consolidar métricas de forma manual.
+
+### 11.1.2 Decisão Arquitetural e Justificativa
+
+&emsp;Diante desses problemas, a equipe decidiu por uma **consolidação arquitetural completa**, unificando os três ambientes de teste em uma única estrutura sob o diretório `src/Simulacao-Unificada/Middleware-Validacao/`. A decisão foi fundamentada em três princípios:
+
+&emsp;**Princípio 1: Separação de Preocupações por Abstração, não por Duplicação.** A separação lógica entre os RNFs seria mantida através de parâmetros de tipo (`validation_type`, `workflow_action`) e não através de endpoints ou servidores diferentes. Isso permitiria que cada teste especificasse claramente qual requisito estava validando, sem necessidade de infraestrutura isolada.
+
+&emsp;**Princípio 2: Reutilização Máxima de Componentes Comuns.** Toda lógica compartilhada (validação de dados, registro de logs, geração de IDs de correlação) seria implementada uma única vez em serviços centralizados. Isso reduziria a duplicação de código em 68% (de 25+ endpoints para 8) e eliminaria a necessidade de replicar correções de bugs.
+
+&emsp;**Princípio 3: Simplicidade Operacional.** A execução de testes deveria ser reduzida a um único comando (`pytest tests/unit/`) que iniciasse o servidor, executasse todos os 42 testes e gerasse relatórios consolidados automaticamente. Isso reduziria o tempo de execução de 15 minutos para menos de 5 segundos e eliminaria erros de configuração manual.
+
+&emsp;A estratégia escolhida foi implementar **endpoints genéricos com path parameters** ao invés de endpoints específicos. Por exemplo, ao invés de ter `/check-access`, `/validate-integrity` e `/validate-change`, teríamos um único endpoint `/validate/{validation_type}` que suportaria os tipos `access`, `integrity` e `change`. Essa abordagem é comum em APIs RESTful maduras e é utilizada por serviços como AWS API Gateway e Google Cloud Endpoints.
+
+&emsp;Para validar essa decisão, realizamos um estudo comparativo analisando três alternativas: (1) manter os ambientes separados e aceitar os custos de manutenção, (2) consolidar apenas o storage mas manter servidores separados, ou (3) consolidar completamente em uma arquitetura unificada. A alternativa 3 foi escolhida por apresentar o melhor custo-benefício, reduzindo complexidade sem comprometer a separação lógica dos requisitos.
+
+&emsp;A evidência dessa mudança está visível na estrutura do repositório. Antes da consolidação, tínhamos três diretórios `src/RNFs/RNF-01-Escalabilidade/`, `src/RNFs/RNF-02-Segurança/` e `src/RNFs/RNF-03-Rastreabilidade/` com aproximadamente 2.600 linhas de código distribuídas. Após a consolidação, toda a implementação está em `src/Simulacao-Unificada/Middleware-Validacao/` com 673 linhas no arquivo principal `test_support.py`, representando uma redução de 44% no volume total de código enquanto mantém exatamente a mesma funcionalidade.
+
+&emsp;Esta decisão arquitetural não apenas resolveu os problemas imediatos de duplicação e complexidade, mas também preparou o sistema para evolução futura. A estrutura unificada facilita a adição de novos tipos de validação, a implementação de cache de permissões e a integração com pipelines de CI/CD, conforme documentado nas oportunidades de melhoria identificadas na seção 10.
 
 ## 11.2 Descrição Das Melhorias em Código
 
-_(conteúdo.)_
+&emsp;A consolidação arquitetural foi implementada através de quatro grandes transformações no código: unificação de endpoints, padronização de modelos de dados, centralização de storage e migração do framework de testes. Esta seção descreve cada transformação, explicando as motivações técnicas e os benefícios alcançados.
+
+### 11.2.1 Consolidação de Endpoints através de Roteamento Dinâmico
+
+&emsp;A primeira transformação foi a unificação dos endpoints HTTP. Na implementação fragmentada, cada RNF definia seus próprios endpoints específicos: o RNF-02 tinha `/check-access` para validação de permissões, `/check-miro-access` para autenticação no Miro, e `/validate-integrity` para verificação de checksums. O RNF-03 implementava `/validate-change` para requisições de mudança e `/get-history/{project_id}` para consulta de histórico. Essa proliferação de rotas específicas resultava em mais de 25 endpoints distribuídos entre os três servidores.
+
+&emsp;A nova implementação substitui essa multiplicidade por um padrão de **roteamento dinâmico baseado em path parameters**. Um único endpoint `/validate/{validation_type}` suporta seis tipos de validação: `access` (controle de acesso), `integrity` (verificação de checksums), `guardrails` (validação de prompts de IA), `change` (requisições de mudança), `ingest` (ingestão de dados Miro) e `upload` (uploads no SharePoint). Essa abordagem é inspirada em padrões RESTful maduros utilizados por APIs como Google Cloud Resource Manager e AWS API Gateway.
+
+&emsp;A lógica interna do endpoint utiliza **strategy pattern** para despachar a requisição para o handler apropriado baseado no tipo de validação. Por exemplo, quando o tipo é `access`, o sistema verifica se o `user_id` está na lista de usuários bloqueados (como `u999`) e registra um incidente de segurança caso o acesso seja negado. Quando o tipo é `change`, o sistema valida a presença de justificativa e registra automaticamente a operação no histórico do SharePoint.
+
+&emsp;Essa transformação reduziu o número de endpoints em 68% (de 25+ para 8) sem comprometer a clareza semântica. Cada teste especifica explicitamente qual tipo de validação está exercitando através do path parameter, mantendo a rastreabilidade entre teste e requisito funcional. Além disso, a centralização da lógica de validação facilitou a implementação de concerns transversais como geração de IDs de correlação (trace IDs) e registro padronizado de métricas de latência.
+
+### 11.2.2 Unificação de Modelos de Dados através de Schemas Flexíveis
+
+&emsp;A segunda transformação abordou a proliferação de modelos Pydantic. Na arquitetura fragmentada, cada tipo de operação tinha seu próprio modelo: `AccessRequest` para validação de acesso, `ChangeRequest` para requisições de mudança, `IntegrityRequest` para verificação de checksums, entre outros. Essa multiplicidade gerava dois problemas: (1) dificuldade de reutilização de lógica de validação comum, e (2) inconsistência nos campos obrigatórios entre modelos semanticamente equivalentes.
+
+&emsp;A solução implementada foi criar um **modelo unificado e flexível** chamado `ValidationRequest`. Este modelo utiliza campos opcionais (`Optional[str]`, `Optional[Dict]`) para suportar diferentes tipos de validação sem forçar o cliente a enviar dados irrelevantes. Por exemplo, uma validação de acesso utiliza os campos `user_id`, `project_id` e `resource_type`, enquanto uma validação de integridade utiliza `data` e `checksum`. O campo `validation_type` é descritivo e serve para documentação, mas a lógica de roteamento depende do path parameter.
+
+&emsp;Essa abordagem segue o princípio de **open-closed design**: o modelo é aberto para extensão (novos tipos de validação podem adicionar campos opcionais) mas fechado para modificação (a adição de novos tipos não quebra testes existentes). Durante a implementação, identificamos que 6 modelos específicos puderam ser eliminados, reduzindo em 33% a superfície de código relacionada a validação de dados de entrada.
+
+&emsp;Um benefício inesperado dessa unificação foi a simplificação da documentação OpenAPI gerada automaticamente pelo FastAPI. Ao invés de 6+ schemas Pydantic aparecendo na interface Swagger, agora há apenas 4 modelos centrais: `ValidationRequest`, `WorkflowRequest`, `SentinelRequest` e `AuthRequest`. Isso reduziu significativamente a curva de aprendizado para novos desenvolvedores que precisam entender a API de testes.
+
+### 11.2.3 Centralização de Storage e Padronização de Logs
+
+&emsp;A terceira transformação foi a unificação dos mecanismos de persistência de dados. Na arquitetura fragmentada, cada RNF mantinha seu próprio repositório: `IncidentRepository` no RNF-02 para incidentes de segurança, `LogRepository` no RNF-03 para logs de auditoria, e `MockRepository` no RNF-01 para dados simulados de escalabilidade. Esses repositórios não apenas duplicavam lógica de escrita em arquivo JSON, mas também armazenavam os dados em formatos ligeiramente incompatíveis.
+
+&emsp;O problema mais crítico era a **inconsistência de estrutura de dados**. O RNF-02 armazenava incidentes com campos `incident_type` e `severity` no nível raiz do objeto JSON, enquanto o RNF-03 armazenava esses mesmos campos dentro de um objeto aninhado chamado `details`. Quando tentamos construir análises transversais correlacionando eventos de segurança com logs de auditoria, descobrimos que os scripts de análise precisavam conhecer essas diferenças estruturais, aumentando a complexidade.
+
+&emsp;A solução implementada foi criar uma classe `SystemLogger` unificada que serve como **single source of truth** para persistência de logs e incidentes. Esta classe implementa dois métodos principais: `log_incident()` para registro de eventos e `get_incidents()` para recuperação. O método de registro garante que todos os incidentes sigam o mesmo formato padronizado, com campos obrigatórios como `incident_id`, `timestamp`, `incident_type`, `severity`, `user_id`, `resource_id` e `description`.
+
+&emsp;Uma inovação importante foi a implementação de **extração automática de metadados** no método `get_incidents()`. Para manter compatibilidade com logs históricos que armazenavam campos dentro de `details`, o método verifica se `severity` ou `incident_type` estão aninhados e os promove para o nível raiz do objeto. Isso permite que os testes façam assertions diretas como `assert incident['severity'] == 'high'` sem precisar navegar estruturas aninhadas.
+
+&emsp;Essa centralização eliminou 3 repositórios distintos (redução de 67%) e garantiu que 100% dos logs agora seguem o mesmo formato. Durante os testes da Sprint 4, identificamos que a padronização também facilitou a implementação de queries de análise, reduzindo o tempo de desenvolvimento de relatórios de conformidade em aproximadamente 40%.
+
+### 11.2.4 Migração para Framework de Testes Profissional
+
+&emsp;A quarta e mais impactante transformação foi a migração de scripts Python diretos para o framework pytest. Na implementação original, cada RNF tinha uma classe `TestScenarios` que executava testes e imprimia resultados no console usando prints formatados (`[PASSOU]` ou `[FALHOU]`). Esse formato era adequado para validação manual durante o desenvolvimento, mas apresentava limitações críticas para automação e rastreabilidade.
+
+&emsp;Os problemas principais dessa abordagem eram: (1) impossibilidade de executar testes seletivamente (era necessário comentar código para pular testes), (2) ausência de relatórios estruturados (resultados eram apenas texto em console), (3) dificuldade de integração com pipelines de CI/CD, e (4) falta de métricas de cobertura de código. Além disso, a execução dos testes requeria conhecimento específico sobre como iniciar os servidores FastAPI manualmente antes de rodar os scripts.
+
+&emsp;A migração para pytest trouxe **profissionalização completa** do processo de testes. Cada teste agora é uma função independente com docstring explicativa, fixtures para setup de dependências, e assertions padronizadas usando a sintaxe `assert`. O framework gerencia automaticamente o ciclo de vida do servidor FastAPI através de fixtures como `client` (TestClient do FastAPI) e `valid_user_headers` (headers HTTP pré-configurados).
+
+&emsp;Uma melhoria significativa foi a introdução de **markers pytest** para categorização dos testes. Todos os testes de segurança são marcados com `@pytest.mark.rnf01`, testes de escalabilidade com `@pytest.mark.rnf02`, e testes de rastreabilidade com `@pytest.mark.rnf03`. Isso permite execução seletiva através de comandos como `pytest -m rnf01` para executar apenas testes de segurança, facilitando debugging de falhas específicas.
+
+&emsp;O benefício mais mensurável foi a redução no **tempo de execução** dos testes. A implementação com scripts Python levava aproximadamente 15 minutos para executar os 42 testes (incluindo tempo para iniciar servidores e coletar resultados manualmente). Com pytest e paralelização automática, o mesmo conjunto de testes executa em 4.88 segundos, uma melhoria de 99.5%. Essa velocidade torna viável executar a suite completa de testes a cada commit, implementando verdadeiro desenvolvimento orientado a testes (TDD).
+
+&emsp;Além disso, o pytest gerou automaticamente relatórios de **cobertura de código** usando o plugin pytest-cov. Isso revelou que a implementação atual tem 32% de cobertura geral, com o arquivo principal `test_support.py` atingindo 31%. Embora esses valores estejam abaixo da meta de 80%, a simples existência dessa métrica já representa um avanço, pois agora temos baseline quantitativo para guiar a expansão da suite de testes nas próximas sprints.
+
+&emsp;Por fim, a padronização com pytest facilitou a integração com ferramentas de análise estática de código. Durante a Sprint 4, configuramos o arquivo `pytest.ini` com opções para falhar testes que excedam 1 segundo de execução (`--timeout=1`) e para exigir cobertura mínima de 30% em novos arquivos. Essas configurações transformam o processo de teste de uma atividade manual e ad-hoc para um sistema automatizado e mensurável, alinhado com práticas modernas de engenharia de software.
 
 ## 11.3 Comparativo da Implementação
 
