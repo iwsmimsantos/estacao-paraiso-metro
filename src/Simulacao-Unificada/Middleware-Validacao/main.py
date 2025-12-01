@@ -79,164 +79,162 @@ async def root():
             }
             body {
                 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: #f5f7fa;
                 min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 padding: 20px;
                 color: #2c3e50;
             }
             .container {
-                max-width: 1000px;
-                width: 100%;
-                background: white;
-                backdrop-filter: blur(20px);
-                border-radius: 24px;
-                padding: 50px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                border: 1px solid rgba(255, 255, 255, 0.5);
+                max-width: 1200px;
+                margin: 0 auto;
             }
             .header {
-                text-align: center;
-                margin-bottom: 50px;
+                background: white;
+                padding: 30px 40px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 24px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
             }
             .logo {
-                width: 80px;
-                height: 80px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                border-radius: 20px;
+                width: 50px;
+                height: 50px;
+                background: #3b82f6;
+                border-radius: 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 3em;
-                margin: 0 auto 20px;
-                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+                font-size: 1.8em;
             }
             h1 {
-                font-size: 2.5em;
-                margin-bottom: 10px;
-                font-weight: 700;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
+                font-size: 1.8em;
+                color: #1e293b;
+                font-weight: 600;
             }
             .subtitle {
-                font-size: 1.1em;
-                color: #6b7280;
-                font-weight: 400;
+                font-size: 0.95em;
+                color: #64748b;
+                margin-top: 4px;
             }
             .status-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 20px;
-                margin: 40px 0;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 16px;
+                margin-bottom: 24px;
             }
             .status-card {
-                background: #f9fafb;
-                padding: 30px;
-                border-radius: 16px;
-                text-align: center;
-                transition: all 0.3s;
-                border: 1px solid rgba(0, 0, 0, 0.08);
-            }
-            .status-card:hover {
-                transform: translateY(-8px);
-                box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
                 background: white;
-                border-color: #667eea;
+                padding: 24px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                display: flex;
+                align-items: center;
+                gap: 16px;
             }
             .status-icon {
-                font-size: 3em;
-                margin-bottom: 15px;
+                font-size: 2em;
+                width: 50px;
+                height: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #f1f5f9;
+                border-radius: 8px;
             }
-            .status-card h3 {
-                font-size: 1.3em;
-                margin-bottom: 10px;
+            .status-content h3 {
+                font-size: 1em;
+                margin-bottom: 4px;
                 font-weight: 600;
-                color: #1f2937;
+                color: #1e293b;
             }
-            .status-card p {
-                color: #6b7280;
-                line-height: 1.5;
+            .status-content p {
+                color: #64748b;
+                font-size: 0.875em;
             }
             .features {
-                margin: 50px 0;
+                background: white;
+                padding: 32px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 24px;
             }
             .features h2 {
-                text-align: center;
-                font-size: 2em;
-                margin-bottom: 30px;
+                font-size: 1.5em;
+                margin-bottom: 24px;
                 font-weight: 600;
+                color: #1e293b;
             }
             .feature-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 20px;
             }
             .feature {
-                background: #f9fafb;
-                padding: 25px;
-                border-radius: 16px;
-                border-left: 4px solid #667eea;
-                transition: all 0.3s;
-            }
-            .feature:hover {
-                background: white;
-                transform: translateX(8px);
-                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+                padding: 20px;
+                border-radius: 6px;
+                background: #f8fafc;
+                border-left: 3px solid #3b82f6;
             }
             .feature h4 {
-                font-size: 1.2em;
-                margin-bottom: 10px;
+                font-size: 1.1em;
+                margin-bottom: 8px;
                 font-weight: 600;
-                color: #1f2937;
+                color: #1e293b;
             }
             .feature p {
-                color: #6b7280;
+                color: #64748b;
                 line-height: 1.6;
+                font-size: 0.95em;
             }
             .links {
                 display: flex;
-                gap: 20px;
-                justify-content: center;
+                gap: 12px;
                 flex-wrap: wrap;
-                margin-top: 50px;
             }
             .link-button {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: #3b82f6;
                 color: white;
-                padding: 18px 36px;
-                border-radius: 12px;
+                padding: 12px 24px;
+                border-radius: 6px;
                 text-decoration: none;
-                font-weight: 700;
-                font-size: 1.1em;
-                transition: all 0.3s;
-                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-                display: flex;
+                font-weight: 500;
+                font-size: 0.95em;
+                transition: all 0.2s;
+                display: inline-flex;
                 align-items: center;
-                gap: 10px;
+                gap: 8px;
             }
             .link-button:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+                background: #2563eb;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             }
             .link-button.secondary {
                 background: white;
-                color: #667eea;
-                border: 2px solid #667eea;
+                color: #3b82f6;
+                border: 1px solid #e2e8f0;
             }
             .link-button.secondary:hover {
-                background: #f9fafb;
+                background: #f8fafc;
+                border-color: #cbd5e1;
             }
             .footer {
                 text-align: center;
-                margin-top: 50px;
-                padding-top: 30px;
-                border-top: 1px solid rgba(0, 0, 0, 0.1);
-                color: #6b7280;
-                font-size: 0.9em;
+                margin-top: 32px;
+                padding: 24px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .footer p {
+                color: #64748b;
+                font-size: 0.875em;
+            }
+            .footer p:first-child {
+                font-weight: 600;
+                color: #1e293b;
+                margin-bottom: 4px;
             }
         </style>
     </head>
@@ -244,25 +242,33 @@ async def root():
         <div class="container">
             <div class="header">
                 <div class="logo">🔒</div>
-                <h1>Middleware de Validação</h1>
-                <p class="subtitle">Sistema de Gestão de Projetos - Metrô de São Paulo</p>
+                <div>
+                    <h1>Middleware de Validação</h1>
+                    <p class="subtitle">Sistema de Gestão de Projetos - Metrô de São Paulo</p>
+                </div>
             </div>
             
             <div class="status-grid">
                 <div class="status-card">
-                    <div class="status-icon">✅</div>
-                    <h3>Sistema Online</h3>
-                    <p>Todos os serviços operacionais</p>
+                    <div class="status-icon">✓</div>
+                    <div class="status-content">
+                        <h3>Sistema Online</h3>
+                        <p>Todos os serviços operacionais</p>
+                    </div>
                 </div>
                 <div class="status-card">
                     <div class="status-icon">🔗</div>
-                    <h3>APIs Integradas</h3>
-                    <p>Conectado a 5 serviços</p>
+                    <div class="status-content">
+                        <h3>APIs Integradas</h3>
+                        <p>Conectado a 5 serviços</p>
+                    </div>
                 </div>
                 <div class="status-card">
                     <div class="status-icon">📊</div>
-                    <h3>Monitoramento Ativo</h3>
-                    <p>Rastreabilidade completa</p>
+                    <div class="status-content">
+                        <h3>Monitoramento Ativo</h3>
+                        <p>Rastreabilidade completa</p>
+                    </div>
                 </div>
             </div>
 
@@ -282,25 +288,27 @@ async def root():
                         <p>Sistema de logs estruturado em JSONL, incident queue para eventos de segurança, auditoria completa com trace_id e correlation_id.</p>
                     </div>
                 </div>
-            </div>
-
-            <div class="links">
-                <a href="/dashboard" class="link-button">
-                    <span>📊</span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/docs" class="link-button secondary">
-                    <span>📚</span>
-                    <span>Documentação</span>
-                </a>
-                <a href="/health" class="link-button secondary">
-                    <span>💚</span>
-                    <span>Health Check</span>
-                </a>
+                
+                <div style="margin-top: 24px;">
+                    <div class="links">
+                        <a href="/dashboard" class="link-button">
+                            <span>📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="/docs" class="link-button secondary">
+                            <span>📚</span>
+                            <span>Documentação</span>
+                        </a>
+                        <a href="/health" class="link-button secondary">
+                            <span>💚</span>
+                            <span>Health Check</span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <div class="footer">
-                <p><strong>Middleware de Validação v1.0.0</strong></p>
+                <p>Middleware de Validação v1.0.0</p>
                 <p>Integrando Miro, SharePoint, Copilot, Office 365 e Sentinel</p>
             </div>
         </div>

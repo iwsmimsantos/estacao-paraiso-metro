@@ -5,7 +5,7 @@ Implementa validações consolidadas para RNF-01, RNF-02 e RNF-03
 from fastapi import APIRouter, Header, HTTPException, status
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 import hashlib
 import time
@@ -182,7 +182,7 @@ async def validate(
             "user_id": request_user,
             "resource_id": request.resource_id,
             "trace_id": trace_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     # ====================
@@ -275,7 +275,7 @@ async def validate(
             "allowed": True,
             "prompt": prompt[:100],
             "trace_id": trace_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     # ====================
@@ -315,7 +315,7 @@ async def validate(
         # Registra mudança automaticamente (RNF-03 Cenário 2)
         if request.project_id:
             change_record = {
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "user_id": request_user,
                 "justification": justification,
                 "resource_id": request.resource_id,
@@ -327,7 +327,7 @@ async def validate(
             "approved": True,
             "justification": justification,
             "trace_id": trace_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     # ====================
@@ -359,7 +359,7 @@ async def validate(
             "trace_id": final_trace,
             "latency_ms": latency,
             "processed_items": request.data.get("item_count", 1) if request.data else 1,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     # ====================
@@ -379,7 +379,7 @@ async def validate(
             "file_hash": file_hash,
             "hash_verified": verified,
             "trace_id": trace_id,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     else:
@@ -412,7 +412,7 @@ async def workflows(
             "status": "queued",
             "priority": request.priority or 0,
             "user_id": user_id,
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
             "data": request.data or {}
         }
         storage.add_workflow(workflow_id, workflow_data)
@@ -467,7 +467,7 @@ async def create_log(
         "resource_id": request.resource_id,
         "action": request.action,
         "details": request.details or {},
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
     
     storage.add_log(log_entry)
@@ -534,7 +534,7 @@ async def sentinel_action(
                 "hash_match": True,
                 "source": "miro",
                 "destination": "sharepoint",
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
             storage.add_sentinel_record(correlation_id, record)
         
@@ -574,7 +574,7 @@ async def sentinel_action(
         return {
             "bypass_detected": is_bypass_attempt,
             "alert_level": "critical" if is_bypass_attempt else "normal",
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     elif action == "consistency-check":
@@ -595,7 +595,7 @@ async def sentinel_action(
         return {
             "consistent": sources_consistent,
             "sources_checked": data.get("sources", []),
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
     
     else:
@@ -620,7 +620,7 @@ async def get_powerbi_report(
         "project_id": project_id,
         "report_generated": True,
         "total_changes": len(history),
-        "last_update": datetime.utcnow().isoformat(),
+        "last_update": datetime.now(timezone.utc).isoformat(),
         "changes": history
     }
 
@@ -652,7 +652,7 @@ async def auth_login(
         "project_id": project_id,
         "token": token,
         "expires_in": 3600,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -678,5 +678,5 @@ async def validate_auth(
         "user_id": user_id or "token_user",
         "token": token,
         "session_active": True,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }

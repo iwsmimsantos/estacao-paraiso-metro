@@ -7,7 +7,7 @@ para garantir rastreabilidade completa de todas as ações no sistema.
 import json
 import hashlib
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from enum import Enum
@@ -80,7 +80,7 @@ class AuditLog:
     ):
         self.trace_id = trace_id or str(uuid.uuid4())
         self.correlation_id = correlation_id or str(uuid.uuid4())
-        self.timestamp = datetime.utcnow().isoformat() + "Z"
+        self.timestamp = datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
         self.event_type = event_type.value if isinstance(event_type, EventType) else event_type
         self.user_id = user_id
         self.resource_type = resource_type
