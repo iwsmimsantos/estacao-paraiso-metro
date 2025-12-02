@@ -33,13 +33,10 @@
 - [3. Tabelas de Acompanhamento](#3-tabelas-de-acompanhamento)
   - [Acompanhamento de Progresso](#acompanhamento-de-progresso---sprints-1234-e-5)
   - [Acompanhamento de Riscos](#acompanhamento-de-riscos---sprints-1234-e-5)
-- [4. Análise de Riscos](#4-análise-de-riscos)
-  - [4.1 Riscos identificados](#41-riscos-identificados)
-  - [4.2 Mitigação de Riscos](#42-mitigação-de-riscos)
-- [5. Análise Post Mortem](#5-análise-post-mortem)
-  - [5.1 Sucessos do Projeto](#51-sucessos-do-projeto)
-  - [5.2 Oportunidades de Melhoria](#52-oportunidades-de-melhoria)
-  - [5.3 Lições Aprendidas](#53-lições-aprendidas)
+- [4. Análise Post Mortem](#5-análise-post-mortem)
+  - [4.1 Sucessos do Projeto](#51-sucessos-do-projeto)
+  - [4.2 Oportunidades de Melhoria](#52-oportunidades-de-melhoria)
+  - [4.3 Lições Aprendidas](#53-lições-aprendidas)
 
 # 1. Introdução
 
@@ -93,24 +90,6 @@
 - Reforçar políticas de segurança e controle de acesso.
 - Estruturar a arquitetura para suportar crescimento e novas integrações.
 
-
-
-### **Acompanhamento de Progresso**
-
-| Aspecto                        | Sprint 1                                | Sprint 2                   | Sprint 3                   |
-| :----------------------------- | :-------------------------------------- | :-------------------------- | :-------------------------- |
-| **Pontualidade**               | Ponto de melhora (demora nas revisões)  | A ser avaliado              | A ser avaliado              |
-| **Priorização das tasks**      | Funcionou bem | A ser avaliado              | A ser avaliado              |
-| **Divisão de tarefas**         | Livre e incentivou autonomia            | A ser avaliado              | A ser avaliado              |
-| **Dailys**                     | Produtivas e bem aproveitadas           | A ser avaliado              | A ser avaliado              |
-| **Revisões (PRs)**             | Demora nas revisões                     | A ser avaliado              | A ser avaliado              |
-| **Apresentação Sprint Review** | Bem planejada e estruturada                          | A ser avaliado              | A ser avaliado              |
-| **Validação com professores**  | Ótimo, ponto a ser mantido                          | A ser avaliado              | A ser avaliado              |
-| **Documentação**               | Bem elaborada                          | A ser avaliado              | A ser avaliado              |
-| **Sugestões implementadas**    | Identificadas                            | A ser avaliado              | A ser avaliado              |
-| **Riscos**                     | Definidos na Matriz de Risco            | A ser avaliado              | A ser avaliado              |
-
-
 ### Ações de Melhoria Verificáveis
 - Documentar decisões técnicas e fluxos de integração em um documento compartilhada.
 - Estabelecer prazos curtos para revisão de código (PRs) e feedback.
@@ -125,20 +104,6 @@
 ## 2.2 Sprint 2
 
 ### **Acompanhamento de Progresso**
-
-| Aspecto                        | Sprint 1                                | Sprint 2                   | Sprint 3                   |
-| :----------------------------- | :-------------------------------------- | :-------------------------- | :-------------------------- |
-| **Pontualidade**               | Ponto de melhora (demora nas revisões)  | Melhorou, prazos cumpridos  | A ser avaliado              |
-| **Priorização das tasks**      | Funcionou bem                           | Mantido o padrão            | A ser avaliado              |
-| **Divisão de tarefas**         | Livre e incentivou autonomia            | Mais estruturada            | A ser avaliado              |
-| **Dailys**                     | Produtivas e bem aproveitadas           | Consistentes                | A ser avaliado              |
-| **Revisões (PRs)**             | Demora nas revisões                     | Agilizadas com limite de 24h| A ser avaliado              |
-| **Apresentação Sprint Review** | Bem planejada e estruturada             | Técnica e objetiva          | A ser avaliado              |
-| **Validação com professores**  | Ótimo, ponto a ser mantido              | Feedbacks incorporados      | A ser avaliado              |
-| **Documentação**               | Bem elaborada                           | Diagramas adicionados       | A ser avaliado              |
-| **Sugestões implementadas**    | Identificadas                           | 80% implementadas           | A ser avaliado              |
-| **Riscos**                     | Definidos na Matriz de Risco            | Atualizados e monitorados   | A ser avaliado              |
-
 
 &emsp;A Sprint 2 teve como foco o mapeamento detalhado da arquitetura do estado atual do sistema de gestão de portfólio do Metrô e o início da especificação da arquitetura futura, com ênfase na definição de padrões arquiteturais que suportem a integração de agentes de IA. Mas além disso, foi pensado em possíveis simulações do sistema antigo e do sistema atual para que fosse possível identificar possíveis pontos de melhoria e medir os principais impactos.
 
@@ -280,23 +245,14 @@ Tabela para acompanhamento do desenvolvimento dos riscos.
 
 ---
 
-# 4. Análise de Riscos
+# 4. Análise Post Mortem
 _conteúdo_
 
-## 4.1 Riscos identificados
+## 4.1 Sucessos do Projeto
 _conteúdo_
 
-## 4.2 Mitigação de Riscos
+## 4.2 Oportunidades de Melhoria
 _conteúdo_
 
-# 5. Análise Post Mortem
-_conteúdo_
-
-## 5.1 Sucessos do Projeto
-_conteúdo_
-
-## 5.2 Oportunidades de Melhoria
-_conteúdo_
-
-## 5.3 Lições Aprendidas
+## 4.3 Lições Aprendidas
 
