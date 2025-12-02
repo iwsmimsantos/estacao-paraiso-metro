@@ -3,8 +3,17 @@ Endpoints de Monitoramento e Logs
 
 Rotas para consultar logs, incident queue e métricas do sistema.
 """
-from fastapi import APIRouter, Query
+import csv
+import json
+import shutil
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+from fastapi import APIRouter, Query, HTTPException
 from typing import Optional, List, Dict, Any
+
+from fastapi import APIRouter, Query, HTTPException
 
 from ..monitoring.logger import logger, EventType
 
@@ -178,4 +187,198 @@ async def get_event_types():
             }
             for event in EventType
         ]
+    }
+
+
+@router.get("/compliance-results")
+async def get_compliance_results():
+    """
+    Retorna resultados dos testes automatizados de conformidade
+    
+    Lê o arquivo CSV gerado pelo script de teste e retorna os dados
+    para exibição no dashboard.
+    """
+    csv_path = Path(__file__).parent.parent.parent / "test_results.csv"
+    
+    if not csv_path.exists():
+        return {
+            "available": False,
+            "message": "Arquivo de resultados não encontrado. Execute o script de teste primeiro.",
+            "results": [],
+            "summary": {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "critical_failed": 0
+            }
+        }
+    
+    try:
+        results = []
+        with open(csv_path, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                results.append(row)
+        
+        # Calcula estatísticas
+        total = len(results)
+        passed = sum(1 for r in results if r.get("status") == "PASSED")
+        failed = sum(1 for r in results if r.get("status") == "FAILED")
+        critical_failed = sum(1 for r in results if r.get("status") == "FAILED" and r.get("severity") == "CRÍTICO")
+        
+        summary = {
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "critical_failed": critical_failed,
+            "pass_rate": round(passed / total * 100, 1) if total > 0 else 0,
+        }
+
+        # Tenta enriquecer com metadados da última execução, se existirem
+        meta_path = csv_path.parent / "test_results_meta.json"
+        if meta_path.exists():
+            try:
+                with open(meta_path, "r", encoding="utf-8") as meta_file:
+                    meta_data = json.load(meta_file)
+                summary.update(
+                    {
+                        "started_at_utc": meta_data.get("started_at_utc"),
+                        "finished_at_utc": meta_data.get("finished_at_utc"),
+                        "duration_seconds": meta_data.get("duration_seconds"),
+                    }
+                )
+            except Exception:
+                # Se não conseguir ler o meta, segue apenas com o resumo básico
+                pass
+
+        return {
+            "available": True,
+            "results": results,
+            "summary": summary,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao ler arquivo CSV: {str(e)}")
+
+
+@router.post("/run-compliance-tests")
+async def run_compliance_tests():
+    """
+    Executa o script de testes de conformidade e retorna o resumo da execução.
+
+    - Roda o script test_compliance_automated.py
+    - Atualiza o arquivo test_results.csv
+    - Salva uma cópia com timestamp em test_results_history/
+    - Atualiza o arquivo test_results_meta.json com metadados da execução
+    """
+    base_path = Path(__file__).parent.parent.parent
+    script_path = base_path / "test_compliance_automated.py"
+    csv_path = base_path / "test_results.csv"
+
+    if not script_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail="Script de testes automatizados não encontrado.",
+        )
+
+    started_dt = datetime.utcnow()
+    started_at_utc = started_dt.replace(microsecond=0).isoformat() + "Z"
+
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(script_path)],
+            cwd=str(base_path),
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao executar script de testes: {str(e)}",
+        )
+
+    finished_dt = datetime.utcnow()
+    finished_at_utc = finished_dt.replace(microsecond=0).isoformat() + "Z"
+    duration_seconds = (finished_dt - started_dt).total_seconds()
+
+    if completed.returncode != 0:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "message": "Script de testes retornou código de erro.",
+                "return_code": completed.returncode,
+                "stderr": completed.stderr,
+            },
+        )
+
+    if not csv_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail="Arquivo de resultados não encontrado após execução dos testes.",
+        )
+
+    # Lê o CSV gerado para montar o resumo
+    try:
+        results: List[Dict[str, Any]] = []
+        with open(csv_path, "r", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                results.append(row)
+
+        total = len(results)
+        passed = sum(1 for r in results if r.get("status") == "PASSED")
+        failed = sum(1 for r in results if r.get("status") == "FAILED")
+        critical_failed = sum(
+            1
+            for r in results
+            if r.get("status") == "FAILED" and r.get("severity") == "CRÍTICO"
+        )
+        pass_rate = round(passed / total * 100, 1) if total > 0 else 0.0
+
+        summary = {
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "critical_failed": critical_failed,
+            "pass_rate": pass_rate,
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao ler resultados de conformidade: {str(e)}",
+        )
+
+    # Salva histórico em CSV com timestamp seguro para nome de arquivo
+    try:
+        history_dir = base_path / "test_results_history"
+        history_dir.mkdir(parents=True, exist_ok=True)
+        timestamp_for_filename = started_dt.strftime("%Y%m%dT%H%M%S")
+        history_csv_path = history_dir / f"test_results_{timestamp_for_filename}.csv"
+        shutil.copy2(csv_path, history_csv_path)
+    except Exception:
+        # Se o histórico falhar, não impede a resposta principal
+        pass
+
+    # Salva metadados da última execução em JSON para uso pelo dashboard
+    try:
+        meta_path = base_path / "test_results_meta.json"
+        meta_data = {
+            "started_at_utc": started_at_utc,
+            "finished_at_utc": finished_at_utc,
+            "duration_seconds": duration_seconds,
+            "summary": summary,
+        }
+        with open(meta_path, "w", encoding="utf-8") as meta_file:
+            json.dump(meta_data, meta_file, ensure_ascii=False, indent=2)
+    except Exception:
+        # Falha ao salvar metadados não deve quebrar o endpoint
+        pass
+
+    return {
+        "status": "completed",
+        "started_at_utc": started_at_utc,
+        "finished_at_utc": finished_at_utc,
+        "duration_seconds": duration_seconds,
+        "summary": summary,
     }
