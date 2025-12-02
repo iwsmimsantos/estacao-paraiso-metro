@@ -8384,6 +8384,36 @@ _(conteúdo.)_
 
 &emsp; Os tempos de execução variaram entre **2.04s e 2.10s por teste**, com média de **2.07s**, indicando que as validações são executadas de forma eficiente sem impactar significativamente a performance das APIs.
 
+<div align="center">
+<sub>Figura 12.2.2.1 - Dashboard Atual com Testes de Segurança e Rastreabilidade</sub><br>
+<img src="img/section12/dashboard.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.2.2 - Dashboard e Cenários de Teste Escolhidos</sub><br>
+<img src="img/section12/dashboard1.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.2.3 - Dashboard com Detalhamento das APIs Testadas Junto com Histórico</sub><br>
+<img src="img/section12/dashboard2.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.2.4 - Dashboard com Dropdown Explicativo dos Cenários de Teste</sub><br>
+<img src="img/section12/dashboard3.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.2.5 - Dashboard com Detalhamento de Teste</sub><br>
+<img src="img/section12/dashboard4.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
 **Conclusão:**
 
 &emsp; A implementação dos testes automatizados de conformidade comprova que o sistema atende completamente aos requisitos não funcionais de Segurança (RNF-02) e Rastreabilidade (RNF-03), com **100% de taxa de conformidade** em todas as validações realizadas. A solução integrada ao dashboard permite monitoramento contínuo e execução sob demanda, facilitando a detecção precoce de regressões e garantindo que os padrões de segurança e rastreabilidade sejam mantidos ao longo do desenvolvimento.
