@@ -1549,7 +1549,7 @@ async def dashboard():
                             <span class="card-icon"><i class="fas fa-check-circle"></i></span>
                             <span>TESTES AUTOMATIZADOS DE SEGURANÇA</span>
                         </div>
-                        <button class="refresh-btn" onclick="if(typeof loadComplianceResults === 'function') loadComplianceResults();" style="padding: 6px 12px; font-size: 0.85em;">
+                        <button class="refresh-btn" onclick="if(typeof runComplianceTests === 'function') runComplianceTests();" style="padding: 6px 12px; font-size: 0.85em;">
                             <i class="fas fa-sync-alt"></i> Atualizar
                         </button>
                     </div>
@@ -2229,6 +2229,47 @@ async def dashboard():
             }
 
             // Testes Automatizados de Segurança
+            async function runComplianceTests() {
+                const button = document.querySelector('#compliance-dashboard-card .refresh-btn');
+                const originalText = button ? button.innerHTML : null;
+                
+                try {
+                    if (button) {
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Rodando...';
+                    }
+
+                    const response = await fetch('/monitoring/run-compliance-tests', {
+                        method: 'POST'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao executar testes: ${response.status} ${response.statusText}`);
+                    }
+
+                    // Dados da execução atual (horário início/fim, resumo)
+                    const executionData = await response.json();
+                    
+                    // Recarrega seções impactadas pelos testes
+                    await Promise.all([
+                        loadComplianceResults(),
+                        loadLogs(),
+                        loadStats()
+                    ]);
+
+                    // Opcional: exibir um resumo simples no console
+                    console.info('Execução dos testes de conformidade:', executionData);
+                } catch (error) {
+                    console.error(error);
+                    alert('Não foi possível executar os testes automatizados de segurança. Verifique o servidor do middleware.');
+                } finally {
+                    if (button && originalText !== null) {
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    }
+                }
+            }
+
             async function loadComplianceResults() {
                 const container = document.getElementById('compliance-container');
                 if (!container) {
@@ -2301,6 +2342,41 @@ async def dashboard():
                     const summary = data.summary || {};
                     const results = data.results || [];
                     
+                    // Prepara texto de última execução, se metadados estiverem disponíveis
+                    let lastExecutionText = '';
+                    if (summary.started_at_utc && summary.finished_at_utc) {
+                        try {
+                            const startDate = new Date(summary.started_at_utc);
+                            const endDate = new Date(summary.finished_at_utc);
+                            const durationSeconds = summary.duration_seconds || 0;
+                            
+                            const startedStr = startDate.toLocaleString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            const endedStr = endDate.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            lastExecutionText = `
+                                <div style="font-size: 0.85em; color: #495057; margin-top: 8px;">
+                                    <strong>Última execução:</strong> ${startedStr} – ${endedStr}
+                                    (${durationSeconds.toFixed ? durationSeconds.toFixed(1) : durationSeconds}s)
+                                </div>
+                            `;
+                        } catch (e) {
+                            // Se der erro ao formatar datas, simplesmente não mostra o texto
+                            console.warn('Não foi possível formatar metadados de execução dos testes.', e);
+                        }
+                    }
+                    
                     // Agrupa por cenário
                     const byScenario = {};
                     results.forEach(r => {
@@ -2326,6 +2402,7 @@ async def dashboard():
                                 <div style="font-size: 0.9em; color: #084298; line-height: 1.5;">
                                     Estes testes validam a conformidade das APIs Unificadas com os Requisitos Não Funcionais (RNF) de Segurança (RNF-02) e Rastreabilidade (RNF-03). Eles garantem que as APIs estão retornando os contextos de segurança e rastreabilidade esperados, e que a correlação de eventos funciona corretamente.
                                 </div>
+                                ${lastExecutionText}
                             </div>
                             
                             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">

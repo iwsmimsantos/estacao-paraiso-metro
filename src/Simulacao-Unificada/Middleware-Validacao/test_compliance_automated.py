@@ -456,17 +456,17 @@ def run_all_tests() -> List[ComplianceTestResult]:
         # Teste 1: Correlation ID (CRÍTICO)
         result1 = test_correlation_id(endpoint, service)
         results.append(result1)
-        print(f"  [{'✓' if result1.status == 'PASSED' else '✗'}] {result1.test_scenario}: {result1.status}")
+        print(f"  [{'OK' if result1.status == 'PASSED' else 'X'}] {result1.test_scenario}: {result1.status}")
         
         # Teste 2: Security Context (ALTO)
         result2 = test_security_context(endpoint, service)
         results.append(result2)
-        print(f"  [{'✓' if result2.status == 'PASSED' else '✗'}] {result2.test_scenario}: {result2.status}")
+        print(f"  [{'OK' if result2.status == 'PASSED' else 'X'}] {result2.test_scenario}: {result2.status}")
         
         # Teste 3: Traceability Context (ALTO)
         result3 = test_traceability_context(endpoint, service)
         results.append(result3)
-        print(f"  [{'✓' if result3.status == 'PASSED' else '✗'}] {result3.test_scenario}: {result3.status}")
+        print(f"  [{'OK' if result3.status == 'PASSED' else 'X'}] {result3.test_scenario}: {result3.status}")
         
         print()
     

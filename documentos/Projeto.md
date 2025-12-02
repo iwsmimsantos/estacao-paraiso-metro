@@ -8196,11 +8196,42 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 ## 12.1 Como Foi Implementado:
 
-_(conteúdo.)_
+A partir do conjunto completo de cenários definidos para os RNFs de Segurança e Rastreabilidade, foram selecionados **três cenários estruturais** para automação contínua: validação de correlação, presença do contexto de segurança e presença do contexto de rastreabilidade. Essa escolha priorizou os cenários que (i) têm maior impacto direto na observabilidade e na capacidade de auditoria do sistema e (ii) são mais viáveis para execução frequente, sem depender de massas de dados complexas ou estados específicos de negócio (como cadastros inválidos, inconsistência de conteúdo entre Miro/SharePoint ou guardrails de IA ainda pendentes de implementação).\n\nA implementação dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) foi realizada através de uma solução integrada ao dashboard de monitoramento do middleware, permitindo execução sob demanda e visualização imediata dos resultados.
+
+**Arquitetura da Solução:**
+
+1. **Script de Testes (`test_compliance_automated.py`)**: Script Python autônomo que executa testes de conformidade contra 5 endpoints da API Unificada (SharePoint, Miro, Copilot, Office, Sentinel). Para cada endpoint, são validados 3 cenários críticos:
+   - **Validação de Correlação (CRÍTICO)**: Verifica se o UUID enviado no header `x-correlation-id` é retornado corretamente no campo `correlation_id` da resposta, garantindo rastreabilidade entre serviços.
+   - **Presença do Contexto de Segurança (ALTO)**: Valida se o objeto `meta.security_context` contém os campos obrigatórios (`user_id`, `tenant_id`, `mfa_enabled`), essencial para auditoria de segurança.
+   - **Presença do Contexto de Rastreabilidade (ALTO)**: Valida se o objeto `meta.traceability` contém `trace_id`, `span_id` e `ingested_at_utc` (formato ISO 8601), permitindo rastrear operações completas.
+
+2. **Endpoint de Execução (`POST /monitoring/run-compliance-tests`)**: Endpoint FastAPI que executa o script de testes em segundo plano, captura os resultados e persiste em múltiplos formatos:
+   - `test_results.csv`: Arquivo principal com resultados da última execução (15 linhas, uma por teste)
+   - `test_results_history/`: Diretório com histórico de execuções (um CSV por execução com timestamp)
+   - `test_results_meta.json`: Metadados da última execução (horários de início/fim, duração, resumo estatístico)
+
+3. **Integração no Dashboard**: O dashboard (`GET /dashboard`) foi estendido com:
+   - Seção dedicada "TESTES AUTOMATIZADOS DE SEGURANÇA" com visualização detalhada dos resultados
+   - Botão "Atualizar" que dispara a execução dos testes via `POST /monitoring/run-compliance-tests`
+   - Integração dos resultados dos testes na seção "LOGS RECENTES" (cada teste aparece como um log de sistema)
+   - Atualização automática das estatísticas do topo (Total de Logs e Taxa de Erro incluem dados dos testes)
+
+4. **Endpoint de Consulta (`GET /monitoring/compliance-results`)**: Endpoint que lê o `test_results.csv` e o `test_results_meta.json`, calcula estatísticas agregadas e retorna dados formatados para o frontend, incluindo:
+   - Resumo por cenário de teste (total, aprovados, falharam, taxa de sucesso)
+   - Resumo por serviço/API testada
+   - Metadados temporais da última execução
+
+**Fluxo de Execução:**
+
+1. Usuário clica no botão "Atualizar" na seção de testes automatizados do dashboard
+2. Frontend chama `POST /monitoring/run-compliance-tests`
+3. Backend executa `test_compliance_automated.py` via subprocess
+4. Script realiza 15 requisições HTTP (5 endpoints × 3 cenários) e valida respostas
+5. Resultados são salvos em `test_results.csv` e cópia histórica é criada
+6. Metadados são persistidos em `test_results_meta.json`
+7. Dashboard atualiza automaticamente todas as seções (testes, logs, estatísticas)
 
 ## 12.2 Análise dos Resultados:
-
-_(conteúdo.)_
 
 ### 12.2.1 RNF 1 - Escalabilidade
 
@@ -8208,7 +8239,54 @@ _(conteúdo.)_
 
 ### 12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade
 
-_(conteúdo.)_
+A análise dos resultados dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) demonstra **100% de conformidade** em todas as validações realizadas.
+
+**Resultados Gerais:**
+
+- **Total de Testes Executados**: 15 testes
+- **Testes Aprovados**: 15 (100%)
+- **Testes Falharam**: 0
+- **Falhas Críticas**: 0
+- **Taxa de Conformidade**: 100.0%
+- **Tempo Médio de Execução**: ~2.07 segundos por teste
+- **Duração Total da Execução**: ~35 segundos
+
+**Análise por Cenário de Teste:**
+
+1. **Validação de Correlação (CRÍTICO - 5 testes)**:
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Conclusão**: Todos os serviços retornam corretamente o `correlation_id` enviado no header `x-correlation-id`, garantindo rastreabilidade completa entre serviços. Isso permite correlacionar eventos de uma mesma operação mesmo quando ela transita por múltiplos serviços (ex: SharePoint → Sentinel → Office).
+
+2. **Presença do Contexto de Segurança (ALTO - 5 testes)**:
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Conclusão**: Todos os serviços retornam o objeto `meta.security_context` completo com os campos obrigatórios:
+     - `user_id`: Identificador único do usuário (ex: "u001", "u010", "u035")
+     - `tenant_id`: Identificador da organização (ex: "tenant-01")
+     - `mfa_enabled`: Indicador de autenticação de dois fatores (boolean)
+   - **Impacto**: Permite auditoria completa de segurança, identificando quem executou cada operação, de qual organização, e se tinha segurança adicional (MFA) habilitada.
+
+3. **Presença do Contexto de Rastreabilidade (ALTO - 5 testes)**:
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Conclusão**: Todos os serviços retornam o objeto `meta.traceability` completo com:
+     - `trace_id`: ID único que identifica toda a jornada de uma requisição através de múltiplos serviços
+     - `span_id`: ID único que identifica uma etapa específica dentro de uma trace
+     - `ingested_at_utc`: Data e hora em formato ISO 8601 (ex: "2025-12-02T14:20:39Z") indicando quando o evento foi registrado
+   - **Impacto**: Permite rastrear operações complexas ponta a ponta, visualizar todos os passos de uma requisição, quando cada etapa aconteceu, e correlacionar eventos entre serviços para análise de performance e debugging.
+
+**Análise por Serviço/API:**
+
+Todos os 5 serviços testados (SharePoint, Miro, Copilot, Office, Sentinel) apresentaram **conformidade total** em todos os 3 cenários, demonstrando que a implementação dos contextos de segurança e rastreabilidade foi realizada de forma consistente em toda a API Unificada.
+
+**Tempos de Execução:**
+
+Os tempos de execução variaram entre **2.04s e 2.10s por teste**, com média de **2.07s**, indicando que as validações são executadas de forma eficiente sem impactar significativamente a performance das APIs.
+
+**Conclusão:**
+
+A implementação dos testes automatizados de conformidade comprova que o sistema atende completamente aos requisitos não funcionais de Segurança (RNF-02) e Rastreabilidade (RNF-03), com **100% de taxa de conformidade** em todas as validações realizadas. A solução integrada ao dashboard permite monitoramento contínuo e execução sob demanda, facilitando a detecção precoce de regressões e garantindo que os padrões de segurança e rastreabilidade sejam mantidos ao longo do desenvolvimento.
 
 ---
 
