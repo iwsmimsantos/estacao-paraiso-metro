@@ -23,8 +23,12 @@
 
 # Sumário
 
-
-
+- [1. Introdução](#1-introdução)
+- [2. Padrões de Codificação](#2-padrões-de-codificação)
+- [3. Padrões de Projeto](#3-padrões-de-projeto)
+- [4. Práticas de Desenvolvimento](#4-práticas-de-desenvolvimento)
+- [5. Ferramentas e Tecnologias](#5-ferramentas-e-tecnologias)
+- [6. Estrutura e Políticas Internas de Ritos](#6-estrutura-e-políticas-internas-de-cerimônias)
 # 1. Introdução
 
 Este documento estabelece os padrões de codificação e práticas de desenvolvimento para o projeto **Estação Portuguesa Tietê Acesso ao Terminal Rodoviário**, desenvolvido em parceria com o Metrô de São Paulo. O projeto visa modernizar a arquitetura tecnológica do ambiente de gestão de portfólio, integrando agentes de Inteligência Artificial para automatizar processos, melhorar a rastreabilidade e garantir segurança e escalabilidade.
@@ -585,3 +589,54 @@ Apenas código que passe em todas as etapas pode ser mergeado.
 - **Prometheus + Grafana** (opcional): Métricas e monitoramento
 - **Sentry** (opcional): Rastreamento de erros em produção
 
+# 6. Estrutura e Políticas Internas de Ritos
+
+Esta seção define como o time conduz os ritos de **planning**, **daily**, **review** e **retrospectiva**.
+
+## 6.1 Daily
+
+- **Horário e duração**: As dailys acontecem **sempre antes das aulas**, com duração máxima de **15 minutos**.
+- **Formato**:
+  - Não há ordem fixa de fala; qualquer integrante pode iniciar.
+  - Cada pessoa compartilha **o que fez desde a última daily**, o que pretende fazer a seguir e eventuais impedimentos.
+  - Caso surja um assunto considerado **mais importante ou mais urgente**, este tema ganha prioridade e é discutido primeiro, **mesmo que nem todos ainda tenham falado de todas as suas tarefas**.
+- **Foco**:
+  - Manter a conversa objetiva, evitando discussões longas de solução técnica (que devem ser aprofundadas em conversas paralelas após a daily).
+  - Dar visibilidade a riscos e dependências que impactem o cumprimento dos objetivos da sprint.
+
+## 6.2 Planning
+
+- **Periodicidade**: Realizada no início de cada sprint, conforme calendário do Inteli.
+- **Ferramenta de apoio**:
+  - Utiliza-se um **documento (docs) feito à mão por um dos membros do grupo** como fonte principal de planejamento.
+  - Este documento registra:
+    - As **principais atividades da sprint**;
+    - A **ordem de execução** sugerida;
+    - A **responsabilidade** (quem fará o quê);
+    - A **associação de cada atividade à parte exata da documentação oficial do projeto**.
+- **Associação com a documentação**:
+  - Para cada atividade planejada, deve ser indicado o **título e/ou o link da seção correspondente** na documentação (`Projeto.md`, guias específicos, etc.).
+  - Sempre que uma atividade não se encaixar em seções existentes, **novas seções devem ser criadas** na documentação.
+- **Resultado esperado**:
+  - Ao final da planning, o time deve ter uma **lista priorizada de atividades**, com responsáveis e referências claras na documentação.
+
+## 6.3 Review
+
+- **Objetivo**: Apresentar o que foi desenvolvido no ciclo, validar o resultado (quando aplicável) e verificar aderência aos objetivos definidos em planning.
+- **Escopo**:
+  - Demonstração de funcionalidades implementadas.
+  - Apresentação de evidências de testes (unitários, integração, E2E) e de como os RNFs (Escalabilidade, Segurança e Rastreabilidade) foram contemplados nas entregas.
+- **Rastreabilidade**:
+  - Cada item apresentado na review deve estar vinculado às **atividades registradas no documento de planning** e às respectivas seções da documentação oficial.
+
+## 6.4 Retrospectiva
+
+- **Periodicidade e horário**:
+  - As **retros** acontecem **todas as segundas-feiras**, **antes da planning**.
+- **Foco**:
+  - Refletir sobre **o que funcionou bem**, **o que não funcionou** e **o que pode ser melhorado** nos processos, comunicação, ferramentas e práticas técnicas.
+  - Identificar ações concretas de melhoria (por exemplo: ajustes no uso de testes, melhoria no uso de logs de rastreabilidade, organização de tarefas, etc.).
+- **Integração com a planning**:
+  - Os pontos de melhoria levantados na retro devem alimentar a **planning que acontece em seguida**, gerando:
+    - **Ações de melhoria** registradas no documento de planning;
+    - Atualizações na documentação (como este guia) quando mudanças de processo forem acordadas.
