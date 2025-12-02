@@ -3,7 +3,9 @@ Endpoints de Monitoramento e Logs
 
 Rotas para consultar logs, incident queue e métricas do sistema.
 """
-from fastapi import APIRouter, Query
+import csv
+from pathlib import Path
+from fastapi import APIRouter, Query, HTTPException
 from typing import Optional, List, Dict, Any
 
 from ..monitoring.logger import logger, EventType
@@ -179,3 +181,55 @@ async def get_event_types():
             for event in EventType
         ]
     }
+
+
+@router.get("/compliance-results")
+async def get_compliance_results():
+    """
+    Retorna resultados dos testes automatizados de conformidade
+    
+    Lê o arquivo CSV gerado pelo script de teste e retorna os dados
+    para exibição no dashboard.
+    """
+    csv_path = Path(__file__).parent.parent.parent / "test_results.csv"
+    
+    if not csv_path.exists():
+        return {
+            "available": False,
+            "message": "Arquivo de resultados não encontrado. Execute o script de teste primeiro.",
+            "results": [],
+            "summary": {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "critical_failed": 0
+            }
+        }
+    
+    try:
+        results = []
+        with open(csv_path, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                results.append(row)
+        
+        # Calcula estatísticas
+        total = len(results)
+        passed = sum(1 for r in results if r.get("status") == "PASSED")
+        failed = sum(1 for r in results if r.get("status") == "FAILED")
+        critical_failed = sum(1 for r in results if r.get("status") == "FAILED" and r.get("severity") == "CRÍTICO")
+        
+        return {
+            "available": True,
+            "results": results,
+            "summary": {
+                "total": total,
+                "passed": passed,
+                "failed": failed,
+                "critical_failed": critical_failed,
+                "pass_rate": round(passed / total * 100, 1) if total > 0 else 0
+            }
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao ler arquivo CSV: {str(e)}")

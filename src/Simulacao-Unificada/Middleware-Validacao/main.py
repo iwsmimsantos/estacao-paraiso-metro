@@ -931,6 +931,7 @@ async def dashboard():
                 display: grid;
                 grid-template-columns: 2fr 1fr;
                 gap: 24px;
+                margin-top: 24px;
             }
             
             @media (max-width: 1200px) {
@@ -1468,6 +1469,7 @@ async def dashboard():
                     grid-template-columns: 1fr;
                 }
             }
+            
         </style>
     </head>
     <body>
@@ -1540,8 +1542,50 @@ async def dashboard():
                     </div>
                 </div>
 
-                <!-- Layout de 2 Colunas: Incidentes (maior, esquerda) + Logs (menor, direita) -->
-                <div class="two-column-layout">
+                <!-- Testes Automatizados de Segurança -->
+                <div id="compliance-dashboard-card" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon"><i class="fas fa-check-circle"></i></span>
+                            <span>TESTES AUTOMATIZADOS DE SEGURANÇA</span>
+                        </div>
+                        <button class="refresh-btn" onclick="if(typeof loadComplianceResults === 'function') loadComplianceResults();" style="padding: 6px 12px; font-size: 0.85em;">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                    <div id="compliance-container" style="
+                        min-height: 300px; 
+                        padding: 24px;
+                    ">
+                        <div style="
+                            padding: 30px; 
+                            text-align: center; 
+                            background: linear-gradient(135deg, #e7f3ff 0%, #cfe2ff 100%); 
+                            border: 3px solid #0d6efd; 
+                            border-radius: 12px; 
+                            margin-bottom: 20px;
+                            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.2);
+                        ">
+                            <div style="font-size: 3em; margin-bottom: 16px;">📊</div>
+                            <div style="font-size: 1.4em; font-weight: 700; color: #084298; margin-bottom: 12px;">Dashboard de Testes Automatizados</div>
+                            <div style="color: #084298; margin-bottom: 20px; font-size: 1.05em;">Carregando resultados de conformidade...</div>
+                            <div style="background: white; padding: 16px; border-radius: 8px; color: #495057; font-size: 1em; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <strong>Esta seção exibe:</strong><br/>
+                                • Resultados dos testes automatizados de segurança (RNF-02)<br/>
+                                • Resultados dos testes de rastreabilidade (RNF-03)<br/>
+                                • Taxa de conformidade e estatísticas detalhadas
+                            </div>
+                        </div>
+                        <div class="loading" id="compliance-loading" style="display: none; text-align: center; padding: 20px;">
+                            <div class="spinner"></div>
+                            <div>Carregando resultados de conformidade...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Layout de 2 Colunas: Incidentes (maior, esquerda) + Logs (menor, direita) -->
+            <div class="two-column-layout">
                     <!-- Incidentes (Esquerda - Maior com Destaque) -->
                     <div class="card logs-section">
                         <div class="card-header">
@@ -1804,12 +1848,19 @@ async def dashboard():
             async function loadIntegrations() {
                 try {
                     const response = await fetch('/workflows/integration/health');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
                     const data = await response.json();
                     
                     const container = document.getElementById('integrations-container');
+                    if (!container) {
+                        console.error('Container integrations-container não encontrado');
+                        return;
+                    }
                     container.innerHTML = '';
 
-                    for (const [name, status] of Object.entries(data.integrations)) {
+                    for (const [name, status] of Object.entries(data.integrations || {})) {
                         const isHealthy = status === 'healthy';
                         const card = document.createElement('div');
                         card.className = `integration-card ${isHealthy ? 'healthy' : 'unhealthy'}`;
@@ -1824,8 +1875,11 @@ async def dashboard():
                     }
                 } catch (error) {
                     console.error('Erro ao carregar integrações:', error);
-                    document.getElementById('integrations-container').innerHTML = 
-                        '<div class="no-data"><div class="no-data-icon"><i class="fas fa-exclamation-triangle"></i></div>Erro ao carregar integrações</div>';
+                    const container = document.getElementById('integrations-container');
+                    if (container) {
+                        container.innerHTML = 
+                            '<div class="no-data"><div class="no-data-icon"><i class="fas fa-exclamation-triangle"></i></div>Erro ao carregar integrações: ' + error.message + '</div>';
+                    }
                 }
             }
 
@@ -1833,19 +1887,51 @@ async def dashboard():
             async function loadStats() {
                 try {
                     const response = await fetch('/monitoring/stats');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
                     const data = await response.json();
                     
                     const summary = data.summary || {};
                     const topUsers = data.top_users || [];
                     
-                    // Atualiza cards de estatísticas
-                    document.getElementById('stat-total-logs').textContent = summary.total_logs || 0;
-                    document.getElementById('stat-total-incidents').textContent = summary.total_incidents || 0;
-                    document.getElementById('stat-unique-users').textContent = topUsers.length || 0;
+                    // Busca resultados de testes automatizados para incluir nas estatísticas
+                    let testLogsCount = 0;
+                    let testFailedCount = 0;
+                    try {
+                        const complianceResponse = await fetch('/monitoring/compliance-results');
+                        const complianceData = await complianceResponse.json();
+                        if (complianceData.available && complianceData.results) {
+                            testLogsCount = complianceData.results.length;
+                            testFailedCount = complianceData.results.filter(r => r.status === 'FAILED').length;
+                        }
+                    } catch (complianceError) {
+                        // Ignora erro se compliance-results não estiver disponível
+                    }
                     
-                    const errorRate = summary.error_rate_percent || 0;
-                    const errorElement = document.getElementById('stat-error-rate');
-                    errorElement.textContent = errorRate.toFixed(1) + '%';
+                    // Atualiza cards de estatísticas
+                    const totalLogsEl = document.getElementById('stat-total-logs');
+                    const totalIncidentsEl = document.getElementById('stat-total-incidents');
+                    const uniqueUsersEl = document.getElementById('stat-unique-users');
+                    const errorRateEl = document.getElementById('stat-error-rate');
+                    
+                    // Total de logs inclui logs de auditoria + logs de testes
+                    const totalLogs = (summary.total_logs || 0) + testLogsCount;
+                    if (totalLogsEl) totalLogsEl.textContent = totalLogs;
+                    
+                    // Incidentes permanece o mesmo (não inclui testes)
+                    if (totalIncidentsEl) totalIncidentsEl.textContent = summary.total_incidents || 0;
+                    
+                    // Usuários ativos permanece o mesmo
+                    if (uniqueUsersEl) uniqueUsersEl.textContent = topUsers.length || 0;
+                    
+                    // Taxa de erro inclui falhas de testes
+                    const statusCounts = data.status_counts || {};
+                    const auditFailed = (statusCounts.failed || 0) + (statusCounts.denied || 0);
+                    const totalFailed = auditFailed + testFailedCount;
+                    const totalForErrorRate = totalLogs;
+                    const errorRate = totalForErrorRate > 0 ? (totalFailed / totalForErrorRate * 100) : 0;
+                    if (errorRateEl) errorRateEl.textContent = errorRate.toFixed(1) + '%';
                     
                 } catch (error) {
                     console.error('Erro ao carregar estatísticas:', error);
@@ -1857,8 +1943,46 @@ async def dashboard():
                 try {
                     const response = await fetch('/monitoring/logs?limit=50');
                     const data = await response.json();
-                    allLogs = data.logs || [];
-                    allLogsWithIndex = [...allLogs]; // Cria cópia para indexação
+                    let auditLogs = data.logs || [];
+                    
+                    // Busca resultados de testes automatizados e converte para formato de log
+                    try {
+                        const complianceResponse = await fetch('/monitoring/compliance-results');
+                        const complianceData = await complianceResponse.json();
+                        
+                        if (complianceData.available && complianceData.results) {
+                            const testLogs = complianceData.results.map(test => ({
+                                timestamp: test.timestamp_utc || new Date().toISOString(),
+                                event_type: `test.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'compliance'}`,
+                                user_id: 'system',
+                                resource_type: 'test',
+                                resource_id: test.service_tested || 'unknown',
+                                action: test.endpoint_tested || 'N/A',
+                                status: test.status === 'PASSED' ? 'success' : 'failed',
+                                details: {
+                                    test_scenario: test.test_scenario,
+                                    service: test.service_tested,
+                                    endpoint: test.endpoint_tested,
+                                    severity: test.severity,
+                                    execution_time_ms: test.execution_time_ms,
+                                    details: test.details
+                                },
+                                trace_id: null,
+                                correlation_id: null
+                            }));
+                            
+                            // Mescla logs de auditoria com logs de testes
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (complianceError) {
+                        // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    // Ordena por timestamp (mais recente primeiro)
+                    auditLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    allLogs = auditLogs;
+                    allLogsWithIndex = [...allLogs];
                     renderLogs();
                 } catch (error) {
                     console.error('Erro ao carregar logs:', error);
@@ -1903,12 +2027,22 @@ async def dashboard():
 
                 container.innerHTML = filteredLogs.slice(0, 20).map((log, index) => {
                     const timestamp = log.timestamp || 'N/A';
-                    const eventType = log.event_type || 'unknown';
+                    let eventType = log.event_type || 'unknown';
                     const userId = log.user_id || 'N/A';
                     const status = log.status || 'unknown';
                     const projectId = log.project_id || null;
-                    const resourceId = log.resource_id || null;
+                    let resourceId = log.resource_id || null;
                     const traceId = log.trace_id || null;
+                    
+                    // Formata event_type para logs de teste
+                    if (eventType.startsWith('test.')) {
+                        eventType = eventType.replace('test.', '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    }
+                    
+                    // Para logs de teste, usa o endpoint como resource_id se não houver
+                    if (!resourceId && log.details && log.details.endpoint) {
+                        resourceId = log.details.endpoint;
+                    }
                     
                     let statusClass = '';
                     let statusBadgeClass = 'badge-success';
@@ -1937,7 +2071,10 @@ async def dashboard():
                     
                     const metaItems = [];
                     if (projectId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-folder"></i>${projectId}</span>`);
-                    if (resourceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-link"></i>${resourceId}</span>`);
+                    if (resourceId) {
+                        const displayResourceId = resourceId.length > 20 ? resourceId.substring(0, 20) + '...' : resourceId;
+                        metaItems.push(`<span class="log-meta-item"><i class="fas fa-link"></i>${displayResourceId}</span>`);
+                    }
                     if (traceId) metaItems.push(`<span class="log-meta-item"><i class="fas fa-fingerprint"></i>${traceId.substring(0, 12)}...</span>`);
                     
                     return `
@@ -2091,22 +2228,668 @@ async def dashboard():
                 `}).join('');
             }
 
-            // ========== CARREGAR TUDO ==========
+            // Testes Automatizados de Segurança
+            async function loadComplianceResults() {
+                const container = document.getElementById('compliance-container');
+                if (!container) {
+                    return;
+                }
+                
+                // Preserva estado dos dropdowns antes de atualizar
+                if (window.complianceDropdownsState) {
+                    const allScenarios = document.querySelectorAll('[id^="scenario-"]');
+                    allScenarios.forEach(s => {
+                        const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                        window.complianceDropdownsState[s.id] = isVisible;
+                    });
+                }
+                
+                // Preserva estado dos dropdowns de serviço antes de atualizar
+                if (window.complianceServiceDropdownsState) {
+                    const allServices = document.querySelectorAll('[id^="service-tests-"]');
+                    allServices.forEach(s => {
+                        const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                        window.complianceServiceDropdownsState[s.id] = isVisible;
+                    });
+                }
+
+                // Preserva estado do dropdown "Todos os Testes Executados"
+                const allTestsContainer = document.getElementById('all-tests-container');
+                if (allTestsContainer) {
+                    window.complianceAllTestsExpanded = (allTestsContainer.style.display !== 'none' && window.getComputedStyle(allTestsContainer).display !== 'none');
+                }
+                
+                try {
+                    console.log('🔍 Carregando resultados de conformidade...');
+                    const response = await fetch('/monitoring/compliance-results');
+                    
+                    if (!response.ok) {
+                        container.innerHTML = `
+                            <div style="padding: 40px; text-align: center; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
+                                <div style="font-size: 3em; margin-bottom: 16px;">⚠️</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #856404; margin-bottom: 8px;">Erro ${response.status}: ${response.statusText}</div>
+                                <div style="color: #856404; margin-bottom: 16px;">O endpoint /monitoring/compliance-results não está disponível.</div>
+                                <div style="background: white; padding: 16px; border-radius: 8px; color: #495057;">
+                                    <strong>SOLUÇÃO:</strong><br/>
+                                    1. Pare o servidor (Ctrl+C)<br/>
+                                    2. Reinicie: <code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px;">python main.py</code><br/>
+                                    3. Recarregue esta página (Ctrl+Shift+R)
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const data = await response.json();
+                    console.log('✅ Dados recebidos:', data);
+                    
+                    if (!data.available) {
+                        container.innerHTML = `
+                            <div style="padding: 40px; text-align: center; background: #e7f3ff; border: 2px solid #0d6efd; border-radius: 8px;">
+                                <div style="font-size: 3em; margin-bottom: 16px;">📋</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #084298; margin-bottom: 8px;">Nenhum resultado disponível</div>
+                                <div style="color: #084298; margin-bottom: 16px;">${data.message || 'Execute o script de teste primeiro'}</div>
+                                <div style="background: white; padding: 16px; border-radius: 8px; color: #495057;">
+                                    <strong>Execute no terminal:</strong><br/>
+                                    <code style="background: #f8f9fa; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-size: 1.1em;">python test_compliance_automated.py</code>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    const summary = data.summary || {};
+                    const results = data.results || [];
+                    
+                    // Agrupa por cenário
+                    const byScenario = {};
+                    results.forEach(r => {
+                        const scenario = r.test_scenario || 'Unknown';
+                        if (!byScenario[scenario]) {
+                            byScenario[scenario] = { passed: 0, failed: 0, total: 0, severity: r.severity || 'ALTO' };
+                        }
+                        byScenario[scenario].total++;
+                        if (r.status === 'PASSED') {
+                            byScenario[scenario].passed++;
+                        } else {
+                            byScenario[scenario].failed++;
+                        }
+                    });
+                    
+                    // Renderiza resumo
+                    let html = `
+                        <div style="margin-bottom: 20px;">
+                            <div style="background: #e7f3ff; border: 2px solid #0d6efd; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                                <div style="font-size: 1em; font-weight: 600; color: #084298; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-info-circle"></i> Sobre os Testes Automatizados de Segurança
+                                </div>
+                                <div style="font-size: 0.9em; color: #084298; line-height: 1.5;">
+                                    Estes testes validam a conformidade das APIs Unificadas com os Requisitos Não Funcionais (RNF) de Segurança (RNF-02) e Rastreabilidade (RNF-03). Eles garantem que as APIs estão retornando os contextos de segurança e rastreabilidade esperados, e que a correlação de eventos funciona corretamente.
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+                                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #dee2e6;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #212529; margin-bottom: 4px;">${summary.total || 0}</div>
+                                    <div style="font-size: 0.8em; color: #6c757d; font-weight: 500;">Total de Testes Executados</div>
+                                </div>
+                                <div style="background: #d1e7dd; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #a3cfbb;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #0f5132; margin-bottom: 4px;">✓ ${summary.passed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #0f5132; font-weight: 500;">Testes Aprovados</div>
+                                </div>
+                                <div style="background: #f8d7da; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #f1aeb5;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #842029; margin-bottom: 4px;">✗ ${summary.failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #842029; font-weight: 500;">Testes Falharam</div>
+                                </div>
+                                <div style="background: ${summary.critical_failed > 0 ? '#f8d7da' : '#d1e7dd'}; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid ${summary.critical_failed > 0 ? '#f1aeb5' : '#a3cfbb'};">
+                                    <div style="font-size: 2em; font-weight: 700; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; margin-bottom: 4px;">${summary.critical_failed > 0 ? '⚠️' : '✓'} ${summary.critical_failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; font-weight: 500;">Falhas Críticas</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: ${summary.pass_rate >= 90 ? '#d1e7dd' : summary.pass_rate >= 70 ? '#fff3cd' : '#f8d7da'}; border: 2px solid ${summary.pass_rate >= 90 ? '#a3cfbb' : summary.pass_rate >= 70 ? '#ffc107' : '#f1aeb5'}; padding: 16px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.1em; font-weight: 600; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'}; margin-bottom: 4px;">
+                                    Taxa de Conformidade: <span style="font-size: 1.3em;">${summary.pass_rate || 0}%</span>
+                                </div>
+                                <div style="font-size: 0.85em; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'};">
+                                    ${summary.pass_rate >= 90 ? '✅ Sistema em conformidade' : summary.pass_rate >= 70 ? '⚠️ Atenção necessária' : '❌ Ação imediata requerida'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Renderiza resultados por cenário com dropdown e explicações
+                    html += `
+                        <div style="margin-top: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 1em; font-weight: 600; color: #212529; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-list-check"></i> Detalhamento por Cenário de Teste
+                                </h3>
+                                <button onclick="toggleAllScenarios()" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; font-weight: 500;">
+                                    <i class="fas fa-chevron-down" id="toggle-all-icon"></i> <span id="toggle-all-text">Expandir Todos</span>
+                                </button>
+                            </div>
+                    `;
+                    
+                    // Mapeia cenários para descrições claras com explicações técnicas
+                    const scenarioDescriptions = {
+                        'Validação de Correlação': {
+                            icon: '🔗',
+                            description: 'Verifica se o UUID enviado no header x-correlation-id é retornado corretamente no campo correlation_id da resposta. Garante rastreabilidade entre serviços.',
+                            rnf: 'Segurança',
+                            technicalDetails: {
+                                'x-correlation-id': 'Header HTTP enviado na requisição contendo um UUID único gerado dinamicamente',
+                                'correlation_id': 'Campo no corpo da resposta JSON que deve conter o mesmo UUID enviado no header. Permite rastrear uma operação através de múltiplos serviços.',
+                                'Por que é importante?': 'Garante que você pode rastrear uma operação completa mesmo quando ela passa por vários serviços (SharePoint → Sentinel → Office, etc.)'
+                            }
+                        },
+                        'Presença do Contexto de Segurança': {
+                            icon: '🔐',
+                            description: 'Valida se o objeto meta.security_context contém os campos obrigatórios: user_id, tenant_id e mfa_enabled. Essencial para auditoria de segurança.',
+                            rnf: 'Segurança',
+                            technicalDetails: {
+                                'meta.security_context': 'Objeto dentro da resposta JSON que contém informações sobre quem fez a requisição e como foi autenticado',
+                                'user_id': 'Identificador único do usuário que fez a requisição (ex: "u001", "u002")',
+                                'tenant_id': 'Identificador da organização/empresa (ex: "tenant-01"). Permite multi-tenancy (várias empresas no mesmo sistema)',
+                                'mfa_enabled': 'Indica se o usuário tem autenticação de dois fatores (MFA) habilitada. Valores: true ou false',
+                                'Por que é importante?': 'Permite auditoria completa: saber QUEM fez o quê, de QUAL organização, e se tinha segurança adicional (MFA)'
+                            }
+                        },
+                        'Presença do Contexto de Rastreabilidade': {
+                            icon: '📊',
+                            description: 'Valida se o objeto meta.traceability contém trace_id, span_id e ingested_at_utc (ISO 8601). Permite rastrear operações completas.',
+                            rnf: 'Segurança',
+                            technicalDetails: {
+                                'meta.traceability': 'Objeto dentro da resposta JSON que contém informações para rastrear a operação em sistemas de monitoramento',
+                                'trace_id': 'ID único que identifica toda a "jornada" de uma requisição através de múltiplos serviços. Permite ver todos os logs relacionados a uma operação',
+                                'span_id': 'ID único que identifica uma etapa específica dentro de uma trace. Uma trace pode ter vários spans (ex: chamada ao SharePoint, depois ao Sentinel)',
+                                'ingested_at_utc': 'Data e hora em formato ISO 8601 (ex: "2025-12-02T10:15:00Z") indicando quando o evento foi registrado no sistema. O "Z" significa UTC (horário universal)',
+                                'Por que é importante?': 'Permite rastrear operações complexas: ver todos os passos de uma requisição, quando cada etapa aconteceu, e correlacionar eventos entre serviços'
+                            }
+                        }
+                    };
+                    
+                    let scenarioIndex = 0;
+                    Object.entries(byScenario).forEach(([scenario, stats]) => {
+                        const passRate = stats.total > 0 ? Math.round(stats.passed / stats.total * 100) : 0;
+                        const severityColor = stats.severity === 'CRÍTICO' ? '#dc3545' : '#fd7e14';
+                        const scenarioInfo = scenarioDescriptions[scenario] || { icon: '📋', description: 'Teste de conformidade', rnf: 'RNF', technicalDetails: {} };
+                        const statusIcon = stats.failed === 0 ? '✅' : stats.failed < stats.total ? '⚠️' : '❌';
+                        const scenarioId = `scenario-${scenarioIndex++}`;
+                        
+                        html += `
+                            <div style="background: white; border: 2px solid ${stats.failed === 0 ? '#d1e7dd' : '#f8d7da'}; border-left: 5px solid ${severityColor}; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+                                <!-- Cabeçalho clicável -->
+                                <div onclick="toggleScenario('${scenarioId}', event)" style="padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: start; transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                            <span style="font-size: 1.5em;">${scenarioInfo.icon}</span>
+                                            <div>
+                                                <div style="font-weight: 700; color: #212529; font-size: 1.05em; margin-bottom: 2px;">${scenario}</div>
+                                                <div style="font-size: 0.8em; color: #6c757d;">${scenarioInfo.rnf}</div>
+                                            </div>
+                                        </div>
+                                        <div style="font-size: 0.9em; color: #495057; line-height: 1.5;">
+                                            ${scenarioInfo.description}
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right; margin-left: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                                        <div style="font-size: 0.85em; padding: 6px 14px; border-radius: 20px; background: ${severityColor}20; color: ${severityColor}; font-weight: 600;">
+                                            ${stats.severity}
+                                        </div>
+                                        <div style="font-size: 1.5em; font-weight: 700; color: ${stats.failed === 0 ? '#198754' : '#dc3545'};">
+                                            ${statusIcon} ${passRate}%
+                                        </div>
+                                        <div style="font-size: 1.2em; color: #6c757d; transition: transform 0.3s;" id="icon-${scenarioId}">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Conteúdo expansível -->
+                                <div id="${scenarioId}" onclick="event.stopPropagation();" style="display: none; padding: 0 20px 20px 20px; border-top: 1px solid #e9ecef;">
+                                    <!-- Estatísticas -->
+                                    <div style="display: flex; gap: 20px; font-size: 0.9em; margin-bottom: 20px; padding-top: 16px;">
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #198754; font-size: 1.3em; margin-bottom: 4px;">✓ ${stats.passed}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Aprovados</div>
+                                        </div>
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #dc3545; font-size: 1.3em; margin-bottom: 4px;">✗ ${stats.failed}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Falharam</div>
+                                        </div>
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #212529; font-size: 1.3em; margin-bottom: 4px;">${stats.total}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Total de Testes</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Explicações técnicas -->
+                                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                                        <div style="font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fas fa-question-circle"></i> O que significa cada campo técnico?
+                                        </div>
+                                        ${Object.entries(scenarioInfo.technicalDetails).map(([term, explanation]) => `
+                                            <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #dee2e6; ${Object.keys(scenarioInfo.technicalDetails).indexOf(term) === Object.keys(scenarioInfo.technicalDetails).length - 1 ? 'border-bottom: none; margin-bottom: 0; padding-bottom: 0;' : ''}">
+                                                <div style="font-weight: 600; color: #0d6efd; margin-bottom: 4px; font-family: monospace; font-size: 0.9em;">
+                                                    ${term}
+                                                </div>
+                                                <div style="color: #495057; font-size: 0.9em; line-height: 1.5;">
+                                                    ${explanation}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += '</div>';
+                    
+                    // Agrupa por serviço para mostrar quais APIs foram testadas
+                    const byService = {};
+                    results.forEach(r => {
+                        const service = r.service_tested || 'unknown';
+                        if (!byService[service]) {
+                            byService[service] = { passed: 0, failed: 0, total: 0, tests: [] };
+                        }
+                        byService[service].total++;
+                        if (r.status === 'PASSED') {
+                            byService[service].passed++;
+                        } else {
+                            byService[service].failed++;
+                        }
+                        byService[service].tests.push(r);
+                    });
+                    
+                    // Mostra APIs testadas
+                    html += `
+                        <div style="margin-top: 24px;">
+                            <h3 style="font-size: 1em; font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-cloud"></i> APIs Testadas
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                                ${Object.entries(byService).map(([service, stats]) => {
+                                    const servicePassRate = stats.total > 0 ? Math.round(stats.passed / stats.total * 100) : 0;
+                                    const serviceIcons = {
+                                        'sharepoint': '📁',
+                                        'miro': '🎨',
+                                        'copilot': '🤖',
+                                        'office': '📧',
+                                        'sentinel': '🛡️'
+                                    };
+                                    const serviceId = 'service-tests-' + service.replace(/\s+/g, '-').toLowerCase();
+                                    const serviceTests = stats.tests; // Todos os testes para este serviço
+                                    return `
+                                        <div style="background: white; border: 2px solid ${stats.failed === 0 ? '#d1e7dd' : '#f8d7da'}; padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s;" onclick="toggleServiceTests('${serviceId}', event)" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                                            <div style="font-size: 2em; margin-bottom: 8px;">${serviceIcons[service] || '🔌'}</div>
+                                            <div style="font-weight: 600; color: #212529; margin-bottom: 4px; text-transform: capitalize;">${service}</div>
+                                            <div style="font-size: 0.85em; color: #6c757d; margin-bottom: 8px;">${stats.total} testes</div>
+                                            <div style="font-size: 1.1em; font-weight: 700; color: ${stats.failed === 0 ? '#198754' : '#dc3545'}; margin-bottom: 8px;">
+                                                ${stats.failed === 0 ? '✅' : '⚠️'} ${servicePassRate}%
+                                            </div>
+                                            <div style="font-size: 0.75em; color: #0d6efd; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e9ecef;">
+                                                <i class="fas fa-chevron-down" id="icon-${serviceId}"></i> Ver testes
+                                            </div>
+                                            <div id="${serviceId}" onclick="event.stopPropagation();" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 2px solid #dee2e6; text-align: left;">
+                                                ${serviceTests.map(test => `
+                                                    <div style="padding: 10px; margin-bottom: 8px; background: ${test.status === 'PASSED' ? '#d1e7dd' : '#f8d7da'}; border-radius: 6px; border-left: 4px solid ${test.status === 'PASSED' ? '#198754' : '#dc3545'};">
+                                                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                                                            <div style="font-weight: 600; color: #212529; font-size: 0.9em;">${test.test_scenario || 'N/A'}</div>
+                                                            <span style="padding: 3px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 600; ${test.status === 'PASSED' ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;'}">
+                                                                ${test.status === 'PASSED' ? '✓' : '✗'} ${test.status || 'N/A'}
+                                                            </span>
+                                                        </div>
+                                                        <div style="font-size: 0.8em; color: #6c757d; margin-bottom: 4px; font-family: monospace;">
+                                                            ${test.endpoint_tested || 'N/A'}
+                                                        </div>
+                                                        <div style="font-size: 0.75em; color: #495057;">
+                                                            <strong>Severidade:</strong> ${test.severity || 'N/A'} | 
+                                                            <strong>Tempo:</strong> ${test.execution_time_ms || 'N/A'}ms
+                                                        </div>
+                                                        ${test.details ? `<div style="font-size: 0.75em; color: #6c757d; margin-top: 4px; font-style: italic;">${test.details}</div>` : ''}
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Seção de todos os testes executados (clicável)
+                    if (results.length > 0) {
+                        html += `
+                            <div style="margin-top: 24px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h3 style="font-size: 1em; font-weight: 600; color: #212529; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-list"></i> Todos os Testes Executados
+                                    </h3>
+                                    <button onclick="toggleAllTests()" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; font-weight: 500;">
+                                        <i class="fas fa-chevron-down" id="toggle-all-tests-icon"></i> <span id="toggle-all-tests-text">Expandir Todos</span>
+                                    </button>
+                                </div>
+                                <div id="all-tests-container" style="display: none; max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; background: white; padding: 12px;">
+                                    ${results.map((test, idx) => `
+                                        <div style="padding: 12px; margin-bottom: 8px; background: ${test.status === 'PASSED' ? '#d1e7dd' : '#f8d7da'}; border-radius: 6px; border-left: 4px solid ${test.status === 'PASSED' ? '#198754' : '#dc3545'};">
+                                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 6px;">
+                                                <div style="flex: 1;">
+                                                    <div style="font-weight: 700; color: #212529; font-size: 0.95em; margin-bottom: 4px;">
+                                                        ${test.test_scenario || 'N/A'}
+                                                    </div>
+                                                    <div style="font-size: 0.8em; color: #6c757d; margin-bottom: 4px;">
+                                                        <strong>API:</strong> <span style="text-transform: capitalize;">${test.service_tested || 'N/A'}</span> | 
+                                                        <strong>Endpoint:</strong> <span style="font-family: monospace;">${test.endpoint_tested || 'N/A'}</span>
+                                                    </div>
+                                                    <div style="font-size: 0.75em; color: #495057;">
+                                                        <strong>Severidade:</strong> ${test.severity || 'N/A'} | 
+                                                        <strong>Tempo:</strong> ${test.execution_time_ms || 'N/A'}ms | 
+                                                        <strong>Executado:</strong> ${test.timestamp_utc || 'N/A'}
+                                                    </div>
+                                                    ${test.details ? `<div style="font-size: 0.8em; color: #6c757d; margin-top: 6px; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 4px; font-style: italic;">${test.details}</div>` : ''}
+                                                </div>
+                                                <span style="padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 600; margin-left: 12px; ${test.status === 'PASSED' ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;'}">
+                                                    ${test.status === 'PASSED' ? '✓ PASSED' : '✗ FAILED'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Tabela de resultados recentes (simplificada)
+                    if (results.length > 0) {
+                        html += `
+                            <div style="margin-top: 24px;">
+                                <h3 style="font-size: 1em; font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-history"></i> Histórico Resumido (Últimos 15)
+                                </h3>
+                                <div style="max-height: 250px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; background: white;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead style="background: #f8f9fa; position: sticky; top: 0;">
+                                            <tr>
+                                                <th style="padding: 10px 12px; text-align: left; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">API</th>
+                                                <th style="padding: 10px 12px; text-align: left; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">Cenário</th>
+                                                <th style="padding: 10px 12px; text-align: center; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">Resultado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${results.slice(-15).reverse().map(r => `
+                                                <tr style="border-bottom: 1px solid #f0f0f0; ${r.status === 'FAILED' ? 'background: #fff5f5;' : ''}">
+                                                    <td style="padding: 10px 12px; font-size: 0.85em;">
+                                                        <div style="font-weight: 600; color: #212529; text-transform: capitalize;">${r.service_tested || 'N/A'}</div>
+                                                        <div style="color: #6c757d; font-size: 0.75em; margin-top: 2px; font-family: monospace;">${(r.endpoint_tested || '').substring(0, 35)}${(r.endpoint_tested || '').length > 35 ? '...' : ''}</div>
+                                                    </td>
+                                                    <td style="padding: 10px 12px; font-size: 0.85em; color: #495057;">${r.test_scenario || 'N/A'}</td>
+                                                    <td style="padding: 10px 12px; text-align: center;">
+                                                        <span style="padding: 4px 10px; border-radius: 4px; font-size: 0.75em; font-weight: 600; ${r.status === 'PASSED' ? 'background: #d1e7dd; color: #0f5132;' : 'background: #f8d7da; color: #842029;'}">
+                                                            ${r.status === 'PASSED' ? '✓' : '✗'} ${r.status || 'N/A'}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    container.innerHTML = html;
+                    
+                    setTimeout(() => {
+                        if (window.restoreComplianceDropdownsState) {
+                            window.restoreComplianceDropdownsState();
+                        }
+                    }, 200);
+                    
+                } catch (error) {
+                    const container = document.getElementById('compliance-container');
+                    if (container) {
+                        container.innerHTML = `
+                            <div style="padding: 40px; text-align: center; background: #f8d7da; border: 2px solid #dc3545; border-radius: 8px;">
+                                <div style="font-size: 3em; margin-bottom: 16px;">🚨</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #842029; margin-bottom: 8px;">Erro ao carregar resultados</div>
+                                <div style="color: #842029; margin-bottom: 16px;">${error.message || 'Erro desconhecido'}</div>
+                                <div style="background: white; padding: 16px; border-radius: 8px; color: #495057; text-align: left; max-width: 500px; margin: 0 auto;">
+                                    <strong>Verifique:</strong><br/>
+                                    1. O servidor está rodando?<br/>
+                                    2. O endpoint /monitoring/compliance-results existe?<br/>
+                                    3. O arquivo test_results.csv existe?<br/>
+                                    <br/>
+                                    <button onclick="loadComplianceResults()" style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 8px;">
+                                        🔄 Tentar Novamente
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+            }
+            
+            // Funções para dropdowns de cenários
+            window.complianceDropdownsState = window.complianceDropdownsState || {};
+            window.complianceServiceDropdownsState = window.complianceServiceDropdownsState || {};
+            window.complianceAllTestsExpanded = window.complianceAllTestsExpanded || false;
+            
+            // Função para salvar o estado dos dropdowns antes de um refresh
+            window.saveComplianceDropdownsState = function() {
+                const allScenarios = document.querySelectorAll('[id^="scenario-"]');
+                allScenarios.forEach(s => {
+                    const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                    window.complianceDropdownsState[s.id] = isVisible;
+                });
+                
+                const allServices = document.querySelectorAll('[id^="service-tests-"]');
+                allServices.forEach(s => {
+                    const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                    window.complianceServiceDropdownsState[s.id] = isVisible;
+                });
+
+                const allTestsContainer = document.getElementById('all-tests-container');
+                if (allTestsContainer) {
+                    window.complianceAllTestsExpanded = (allTestsContainer.style.display !== 'none' && window.getComputedStyle(allTestsContainer).display !== 'none');
+                }
+            };
+            
+            window.toggleScenario = function(scenarioId, event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const content = document.getElementById(scenarioId);
+                const icon = document.getElementById('icon-' + scenarioId);
+                if (!content || !icon) return;
+                
+                const isHidden = content.style.display === 'none' || !content.style.display || window.getComputedStyle(content).display === 'none';
+                
+                if (isHidden) {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                    window.complianceDropdownsState[scenarioId] = true;
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                    window.complianceDropdownsState[scenarioId] = false;
+                }
+            };
+            
+            window.toggleAllScenarios = function(event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const allScenarios = document.querySelectorAll('[id^="scenario-"]');
+                const toggleBtn = document.getElementById('toggle-all-text');
+                const toggleIcon = document.getElementById('toggle-all-icon');
+                
+                if (allScenarios.length === 0) return;
+                
+                let allExpanded = true;
+                allScenarios.forEach(s => {
+                    if (s.style.display === 'none' || !s.style.display) {
+                        allExpanded = false;
+                    }
+                });
+                
+                allScenarios.forEach((s, idx) => {
+                    const scenarioId = s.id;
+                    const icon = document.getElementById('icon-' + scenarioId);
+                    if (allExpanded) {
+                        s.style.display = 'none';
+                        if (icon) icon.style.transform = 'rotate(0deg)';
+                        window.complianceDropdownsState[scenarioId] = false;
+                    } else {
+                        s.style.display = 'block';
+                        if (icon) icon.style.transform = 'rotate(180deg)';
+                        window.complianceDropdownsState[scenarioId] = true;
+                    }
+                });
+                
+                if (toggleBtn) {
+                    toggleBtn.textContent = allExpanded ? 'Expandir Todos' : 'Recolher Todos';
+                }
+                if (toggleIcon) {
+                    toggleIcon.style.transform = allExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            };
+            
+            // Função para restaurar o estado dos dropdowns após um refresh
+            window.restoreComplianceDropdownsState = function() {
+                let restoredScenarios = 0;
+                for (const id in window.complianceDropdownsState) {
+                    const content = document.getElementById(id);
+                    const icon = document.getElementById('icon-' + id);
+                    if (content && icon) {
+                        if (window.complianceDropdownsState[id]) {
+                            content.style.display = 'block';
+                            icon.style.transform = 'rotate(180deg)';
+                            restoredScenarios++;
+                        } else {
+                            content.style.display = 'none';
+                            icon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+                if (restoredScenarios > 0) {
+                    console.log(`✅ Restaurados ${restoredScenarios} dropdown(s) de cenário abertos`);
+                }
+
+                let restoredServices = 0;
+                for (const id in window.complianceServiceDropdownsState) {
+                    const content = document.getElementById(id);
+                    const icon = document.getElementById('icon-' + id);
+                    if (content && icon) {
+                        if (window.complianceServiceDropdownsState[id]) {
+                            content.style.display = 'block';
+                            icon.style.transform = 'rotate(180deg)';
+                            restoredServices++;
+                        } else {
+                            content.style.display = 'none';
+                            icon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+                if (restoredServices > 0) {
+                    console.log(`✅ Restaurados ${restoredServices} dropdown(s) de serviço abertos`);
+                }
+
+                const allTestsContainer = document.getElementById('all-tests-container');
+                const toggleAllTestsIcon = document.getElementById('toggle-all-tests-icon');
+                const toggleAllTestsText = document.getElementById('toggle-all-tests-text');
+                if (allTestsContainer && toggleAllTestsIcon && toggleAllTestsText) {
+                    if (window.complianceAllTestsExpanded) {
+                        allTestsContainer.style.display = 'block';
+                        toggleAllTestsIcon.style.transform = 'rotate(180deg)';
+                        toggleAllTestsText.textContent = 'Recolher Todos';
+                    } else {
+                        allTestsContainer.style.display = 'none';
+                        toggleAllTestsIcon.style.transform = 'rotate(0deg)';
+                        toggleAllTestsText.textContent = 'Expandir Todos';
+                    }
+                }
+            };
+            
+            // Função para expandir/recolher testes de um serviço específico
+            window.toggleServiceTests = function(serviceId, event) {
+                if (event) event.stopPropagation();
+                const content = document.getElementById(serviceId);
+                const icon = document.getElementById('icon-' + serviceId);
+                if (!content || !icon) return;
+
+                const isHidden = content.style.display === 'none' || !content.style.display || window.getComputedStyle(content).display === 'none';
+                
+                if (isHidden) {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                    window.complianceServiceDropdownsState[serviceId] = true;
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                    window.complianceServiceDropdownsState[serviceId] = false;
+                }
+            };
+            
+            // Função para expandir/recolher todos os testes
+            window.toggleAllTests = function(event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const container = document.getElementById('all-tests-container');
+                const toggleIcon = document.getElementById('toggle-all-tests-icon');
+                const toggleText = document.getElementById('toggle-all-tests-text');
+
+                if (!container || !toggleIcon || !toggleText) return;
+
+                const isHidden = container.style.display === 'none' || !container.style.display || window.getComputedStyle(container).display === 'none';
+
+                if (isHidden) {
+                    container.style.display = 'block';
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                    toggleText.textContent = 'Recolher Todos';
+                    window.complianceAllTestsExpanded = true;
+                } else {
+                    container.style.display = 'none';
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                    toggleText.textContent = 'Expandir Todos';
+                    window.complianceAllTestsExpanded = false;
+                }
+            };
+            
+
+            // Carregar todos os dados
             async function loadAllData() {
                 updateTimestamp();
+                // Salva o estado dos dropdowns de compliance antes de carregar outros dados
+                window.saveComplianceDropdownsState(); 
                 await Promise.all([
                     loadIntegrations(),
                     loadStats(),
                     loadLogs(),
                     loadIncidents()
+                    // loadComplianceResults() -- Removido do auto-refresh
                 ]);
+                // Restaura o estado dos dropdowns de compliance após carregar outros dados
+                setTimeout(() => {
+                    window.restoreComplianceDropdownsState();
+                }, 200); // Pequeno delay para garantir que o DOM foi atualizado
             }
 
-            // Auto-refresh a cada 15 segundos
+            // Auto-refresh a cada 15 segundos (sem atualizar compliance)
             setInterval(loadAllData, 15000);
 
             // Carregar dados iniciais
+            console.log('🚀 Dashboard iniciado - carregando todos os dados...');
             loadAllData();
+            
+            setTimeout(() => {
+                loadComplianceResults();
+            }, 1000);
         </script>
     </body>
     </html>
