@@ -4454,6 +4454,7 @@ _(Resuma os testes automatizados criados para validar os mecanismos implementado
 **Componentes de Teste:**
 
 1. **Mocks de Serviços (5 componentes)**
+
    - `src/mocks/ingestor_mock.py`: Simula ingestão de dados do Miro
    - `src/mocks/orchestrator_mock.py`: Simula orquestração de workflows de IA
    - `src/mocks/sharepoint_mock.py`: Simula uploads para SharePoint
@@ -4461,6 +4462,7 @@ _(Resuma os testes automatizados criados para validar os mecanismos implementado
    - `src/mocks/iam_mock.py`: Simula autenticação e autorização
 
 2. **Scripts de Carga Locust (5 cenários)**
+
    - `tests/locust/locustfile_ingestor.py`: Pico de 1.000 submissões
    - `tests/locust/locustfile_orchestrator.py`: 200 workflows concorrentes
    - `tests/locust/locustfile_sharepoint.py`: 500 uploads simultâneos
@@ -4468,6 +4470,7 @@ _(Resuma os testes automatizados criados para validar os mecanismos implementado
    - `tests/locust/locustfile_iam.py`: 50.000 sessões ativas
 
 3. **Scripts de Chaos Engineering (3 tipos de falha)**
+
    - `scripts/chaos/kill_pod.sh`: Simula queda de pod/container
    - `scripts/chaos/stop_service.sh`: Para serviço por porta
    - `scripts/chaos/toggle_network_delay.sh`: Injeta latência de rede
@@ -4478,13 +4481,13 @@ _(Resuma os testes automatizados criados para validar os mecanismos implementado
 
 #### B. Cenários de Teste vs. Especificação
 
-| Cenário Especificado (8.2.1) | Implementação | Massa de Testes | Status |
-|------------------------------|---------------|-----------------|--------|
-| **1. Ingestor Miro - Pico de Submissões** | `locustfile_ingestor.py` | 1.000 req (200 KB cada), ramp-up 0→1000 em 5-10 min | ✅ Implementado |
-| **2. Orquestrador IA - Concurrency** | `locustfile_orchestrator.py` | 200 workflows × 5-10 chamadas IA cada | ✅ Implementado |
-| **3. SharePoint - Upload Concomitante** | `locustfile_sharepoint.py` | 500 uploads simultâneos (1-10 MB) | ✅ Implementado |
-| **4. Auditoria - Burst de Eventos** | `locustfile_audit.py` | 10.000 eventos/s por 2 minutos | ✅ Implementado |
-| **5. IAM - Sessões Ativas** | `locustfile_iam.py` | 50.000 tokens ativos simulados | ✅ Implementado |
+| Cenário Especificado (8.2.1)              | Implementação                | Massa de Testes                                     | Status          |
+| ----------------------------------------- | ---------------------------- | --------------------------------------------------- | --------------- |
+| **1. Ingestor Miro - Pico de Submissões** | `locustfile_ingestor.py`     | 1.000 req (200 KB cada), ramp-up 0→1000 em 5-10 min | ✅ Implementado |
+| **2. Orquestrador IA - Concurrency**      | `locustfile_orchestrator.py` | 200 workflows × 5-10 chamadas IA cada               | ✅ Implementado |
+| **3. SharePoint - Upload Concomitante**   | `locustfile_sharepoint.py`   | 500 uploads simultâneos (1-10 MB)                   | ✅ Implementado |
+| **4. Auditoria - Burst de Eventos**       | `locustfile_audit.py`        | 10.000 eventos/s por 2 minutos                      | ✅ Implementado |
+| **5. IAM - Sessões Ativas**               | `locustfile_iam.py`          | 50.000 tokens ativos simulados                      | ✅ Implementado |
 
 #### C. Automação e Parametrização
 
@@ -4518,6 +4521,7 @@ locust -f tests/locust/locustfile_iam.py --headless \
 ```
 
 **Parâmetros Ajustáveis:**
+
 - `-u` (users): Número de usuários virtuais simultâneos
 - `-r` (spawn-rate): Taxa de criação de usuários por segundo
 - `-t` (run-time): Duração do teste (10m = 10 minutos)
@@ -4526,6 +4530,7 @@ locust -f tests/locust/locustfile_iam.py --headless \
 #### D. Massa de Testes e Carga Simulada
 
 **Volume Total de Operações:**
+
 - **Ingestor:** 150 usuários × 10 min × ~20 req/min = ~30.000 requisições
 - **Orchestrator:** 200 workflows × 7 chamadas IA (média) = 1.400 chamadas IA
 - **SharePoint:** 500 uploads × 5 MB (média) = 2.5 GB transferidos
@@ -4533,6 +4538,7 @@ locust -f tests/locust/locustfile_iam.py --headless \
 - **IAM:** 100 usuários × 20 min × 30 req/min = 60.000 operações de autenticação
 
 **Cobertura de Teste:**
+
 - ✅ Testes unitários: 23 testes (100% aprovados)
 - ✅ Testes de integração: 3 testes (100% aprovados)
 - ✅ Cobertura de código: 70% (mocks e common)
@@ -4549,6 +4555,7 @@ locust -f tests/locust/locustfile_iam.py --headless \
 **Comando:** `pytest tests/ -v --cov=src --cov-report=html`
 
 **Resumo Geral:**
+
 ```
 ============================= test session starts =============================
 platform win32 -- Python 3.13.9, pytest-8.3.4
@@ -4593,14 +4600,15 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 
 **1. Ingestor Mock (7 testes)**
 
-| Teste | Resultado | Tempo | Observações |
-|-------|-----------|-------|-------------|
-| `test_health_check` | ✅ PASS | 0.12s | Health check retornou status 200 |
-| `test_ingest_success` | ✅ PASS | 0.18s | Ingestão bem-sucedida, trace_id persistido |
-| `test_metrics_endpoint` | ✅ PASS | 0.09s | Métricas retornadas corretamente |
-| `test_multiple_ingestions[0-4]` | ✅ PASS | 0.65s | 5 ingestões concorrentes, 100% sucesso |
+| Teste                           | Resultado | Tempo | Observações                                |
+| ------------------------------- | --------- | ----- | ------------------------------------------ |
+| `test_health_check`             | ✅ PASS   | 0.12s | Health check retornou status 200           |
+| `test_ingest_success`           | ✅ PASS   | 0.18s | Ingestão bem-sucedida, trace_id persistido |
+| `test_metrics_endpoint`         | ✅ PASS   | 0.09s | Métricas retornadas corretamente           |
+| `test_multiple_ingestions[0-4]` | ✅ PASS   | 0.65s | 5 ingestões concorrentes, 100% sucesso     |
 
 **Comportamentos Observados:**
+
 - Latência simulada: 50-200ms (dentro do SLO < 800ms)
 - Taxa de erro: 2% simulado (abaixo do limite < 1% após ajuste)
 - Throttling: 1% das requisições (comportamento esperado)
@@ -4608,13 +4616,14 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 
 **2. Orchestrator Mock (3 testes)**
 
-| Teste | Resultado | Tempo | Observações |
-|-------|-----------|-------|-------------|
-| `test_health_check` | ✅ PASS | 0.11s | Serviço healthy |
-| `test_orchestrate_success` | ✅ PASS | 0.34s | Aceita erro simulado (3%) ou sucesso |
-| `test_metrics_endpoint` | ✅ PASS | 0.08s | Métricas de workflow coletadas |
+| Teste                      | Resultado | Tempo | Observações                          |
+| -------------------------- | --------- | ----- | ------------------------------------ |
+| `test_health_check`        | ✅ PASS   | 0.11s | Serviço healthy                      |
+| `test_orchestrate_success` | ✅ PASS   | 0.34s | Aceita erro simulado (3%) ou sucesso |
+| `test_metrics_endpoint`    | ✅ PASS   | 0.08s | Métricas de workflow coletadas       |
 
 **Comportamentos Observados:**
+
 - Latência simulada: 100-500ms (dentro do SLO < 600ms)
 - Taxa de erro: 3% simulado (ajustável)
 - Ajuste necessário: reduzir erro para 0.5% para atingir SLO de 99.5% sucesso
@@ -4622,13 +4631,14 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 
 **3. SharePoint Mock (3 testes)**
 
-| Teste | Resultado | Tempo | Observações |
-|-------|-----------|-------|-------------|
-| `test_health_check` | ✅ PASS | 0.10s | Endpoint disponível |
-| `test_upload_success` | ✅ PASS | 0.22s | Upload com validação de hash |
-| `test_metrics_endpoint` | ✅ PASS | 0.07s | Throttling monitorado |
+| Teste                   | Resultado | Tempo | Observações                  |
+| ----------------------- | --------- | ----- | ---------------------------- |
+| `test_health_check`     | ✅ PASS   | 0.10s | Endpoint disponível          |
+| `test_upload_success`   | ✅ PASS   | 0.22s | Upload com validação de hash |
+| `test_metrics_endpoint` | ✅ PASS   | 0.07s | Throttling monitorado        |
 
 **Comportamentos Observados:**
+
 - Latência: 100-300ms (muito abaixo do SLO < 2s)
 - Hash SHA-256 calculado e validado
 - Throttling: 5% simulado (realista para SharePoint)
@@ -4636,14 +4646,15 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 
 **4. Audit Mock (4 testes)**
 
-| Teste | Resultado | Tempo | Observações |
-|-------|-----------|-------|-------------|
-| `test_health_check` | ✅ PASS | 0.09s | Serviço operacional |
-| `test_create_audit_log` | ✅ PASS | 0.15s | Log criado com sucesso |
-| `test_get_logs_by_trace` | ✅ PASS | 0.19s | Consulta por trace_id funcional |
-| `test_metrics_endpoint` | ✅ PASS | 0.08s | Métricas de eventos coletadas |
+| Teste                    | Resultado | Tempo | Observações                     |
+| ------------------------ | --------- | ----- | ------------------------------- |
+| `test_health_check`      | ✅ PASS   | 0.09s | Serviço operacional             |
+| `test_create_audit_log`  | ✅ PASS   | 0.15s | Log criado com sucesso          |
+| `test_get_logs_by_trace` | ✅ PASS   | 0.19s | Consulta por trace_id funcional |
+| `test_metrics_endpoint`  | ✅ PASS   | 0.08s | Métricas de eventos coletadas   |
 
 **Comportamentos Observados:**
+
 - Latência: 10-50ms (muito abaixo do SLO < 150ms)
 - 0% perda de eventos durante testes
 - Consulta por trace_id em < 50ms
@@ -4651,15 +4662,16 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 
 **5. IAM Mock (5 testes)**
 
-| Teste | Resultado | Tempo | Observações |
-|-------|-----------|-------|-------------|
-| `test_health_check` | ✅ PASS | 0.10s | IAM disponível |
-| `test_authenticate_success` | ✅ PASS | 0.14s | Autenticação bem-sucedida |
-| `test_authenticate_invalid_user` | ✅ PASS | 0.12s | Bloqueio correto de usuário inválido |
-| `test_authorize_success` | ✅ PASS | 0.13s | Autorização RBAC funcional |
-| `test_metrics_endpoint` | ✅ PASS | 0.07s | Métricas de autenticação |
+| Teste                            | Resultado | Tempo | Observações                          |
+| -------------------------------- | --------- | ----- | ------------------------------------ |
+| `test_health_check`              | ✅ PASS   | 0.10s | IAM disponível                       |
+| `test_authenticate_success`      | ✅ PASS   | 0.14s | Autenticação bem-sucedida            |
+| `test_authenticate_invalid_user` | ✅ PASS   | 0.12s | Bloqueio correto de usuário inválido |
+| `test_authorize_success`         | ✅ PASS   | 0.13s | Autorização RBAC funcional           |
+| `test_metrics_endpoint`          | ✅ PASS   | 0.07s | Métricas de autenticação             |
 
 **Comportamentos Observados:**
+
 - Latência AuthN: 50-150ms (dentro do SLO < 100ms, mas no limite superior)
 - Taxa de bloqueio: 5% para autenticação inválida (esperado)
 - RBAC: 4 roles implementados (admin, user, viewer, guest)
@@ -4668,21 +4680,24 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 #### C. Testes de Integração (3 testes)
 
 **1. test_full_workflow**
+
 - **Objetivo:** Validar fluxo completo IAM → Ingestor → Audit
 - **Resultado:** ✅ PASS
 - **Tempo:** 2.11s
-- **Observações:** 
+- **Observações:**
   - Autenticação → Autorização → Ingestão → Log de auditoria
   - trace_id propagado corretamente entre componentes
   - Logs correlacionados via correlation_id
 
 **2. test_concurrent_requests**
+
 - **Objetivo:** 10 requisições simultâneas ao ingestor
 - **Resultado:** ✅ PASS
 - **Taxa de sucesso:** 100% (10/10 requisições)
 - **Observações:** Sistema suporta concorrência sem degradação
 
 **3. test_all_services_healthy**
+
 - **Objetivo:** Verificar health de todos os 5 serviços
 - **Resultado:** ✅ PASS
 - **Observações:** Todos os endpoints `/health` retornaram 200 OK
@@ -4690,11 +4705,14 @@ tests/unit/test_sharepoint.py::test_metrics_endpoint PASSED              [100%]
 #### D. Visualização de Resultados (Dashboards)
 
 **Artefatos Gerados:**
+
 1. **Relatório HTML de Cobertura:** `htmlcov/index.html`
+
    - Visualização interativa de linhas cobertas/não cobertas
    - Drill-down por arquivo e função
 
 2. **Logs Estruturados:** `logs/test_execution.json`
+
    - Formato JSON com timestamp, trace_id, component, status
    - Facilita ingestão em ferramentas de análise (ELK, Splunk)
 
@@ -4719,6 +4737,7 @@ Orchestr    ████████████████░░░░░░�
 #### E. Falhas e Comportamentos Inesperados
 
 **Falhas Simuladas (Esperadas):**
+
 - Erro simulado no Orchestrator (3%): Comportamento intencional para testar resiliência
 - Throttling no SharePoint (5%): Simula limites reais da API do SharePoint
 - Autenticação negada (5%): Testa bloqueio de credenciais inválidas
@@ -4726,10 +4745,10 @@ Orchestr    ████████████████░░░░░░�
 **Comportamentos Inesperados:** Nenhum detectado
 
 **Avisos e Alertas:**
-- ⚠️ **Pydantic Deprecation Warnings:** Uso de `.dict()` ao invés de `.model_dump()` 
+
+- ⚠️ **Pydantic Deprecation Warnings:** Uso de `.dict()` ao invés de `.model_dump()`
   - **Status:** CORRIGIDO em todos os arquivos de teste
   - **Ação:** Atualizado para Pydantic v2 (model_dump mode='json')
-  
 - ⚠️ **datetime.utcnow() Deprecation:** Python 3.13 requer timezone-aware datetime
   - **Status:** CORRIGIDO
   - **Ação:** Substituído por `datetime.now(timezone.utc)`
@@ -4737,6 +4756,7 @@ Orchestr    ████████████████░░░░░░�
 #### F. Logs de Execução de Exemplo
 
 **Exemplo de Log Estruturado (audit_mock):**
+
 ```json
 {
   "timestamp": "2025-11-18T14:03:27.927085Z",
@@ -4763,30 +4783,32 @@ Orchestr    ████████████████░░░░░░�
 
 **1. Taxa de Sucesso (SLO: ≥ 99.5%)**
 
-| Componente | Taxa Implementada | Taxa Medida | Status | Ação Necessária |
-|------------|------------------|-------------|--------|-----------------|
-| Ingestor | 98% (2% erro) | 98% | ❌ | Reduzir erro para 0.5% |
-| Orchestrator | 97% (3% erro) | 97% | ❌ | Reduzir erro para 0.5% |
-| SharePoint | 95% (5% throttle) | 95% | ❌ | Ajustar para 0.5% |
-| Audit | 99.5% (0.5% erro) | 99.5% | ✅ | Nenhuma |
-| IAM | 95% (5% rejeição) | 95% | ❌ | Reduzir para 0.5% |
+| Componente   | Taxa Implementada | Taxa Medida | Status | Ação Necessária        |
+| ------------ | ----------------- | ----------- | ------ | ---------------------- |
+| Ingestor     | 98% (2% erro)     | 98%         | ❌     | Reduzir erro para 0.5% |
+| Orchestrator | 97% (3% erro)     | 97%         | ❌     | Reduzir erro para 0.5% |
+| SharePoint   | 95% (5% throttle) | 95%         | ❌     | Ajustar para 0.5%      |
+| Audit        | 99.5% (0.5% erro) | 99.5%       | ✅     | Nenhuma                |
+| IAM          | 95% (5% rejeição) | 95%         | ❌     | Reduzir para 0.5%      |
 
-**Análise:** 
+**Análise:**
+
 - **Ajuste Crítico Necessário:** Todos os componentes exceto Audit precisam ter suas taxas de erro ajustadas para atingir o SLO de 99.5%
 - **Recomendação:** Alterar constantes de erro simulado nos mocks:
   - `if random.random() < 0.02` → `if random.random() < 0.005`
 
 **2. Latência p95/p99 (ms)**
 
-| Componente | SLO p95 | Medido p95 | SLO p99 | Medido p99 | Status |
-|------------|---------|------------|---------|------------|--------|
-| Ingestor | < 800ms | ~180ms | < 1500ms | ~320ms | ✅ **Excelente** |
-| Orchestrator | < 600ms | ~420ms | < 1200ms | ~850ms | ✅ **Bom** |
-| SharePoint | < 2000ms | ~150ms | N/A | ~280ms | ✅ **Muito Bom** |
-| Audit | < 150ms | ~45ms | N/A | ~95ms | ✅ **Excelente** |
-| IAM | < 100ms | ~95ms | N/A | ~145ms | ⚠️ **Limite** |
+| Componente   | SLO p95  | Medido p95 | SLO p99  | Medido p99 | Status           |
+| ------------ | -------- | ---------- | -------- | ---------- | ---------------- |
+| Ingestor     | < 800ms  | ~180ms     | < 1500ms | ~320ms     | ✅ **Excelente** |
+| Orchestrator | < 600ms  | ~420ms     | < 1200ms | ~850ms     | ✅ **Bom**       |
+| SharePoint   | < 2000ms | ~150ms     | N/A      | ~280ms     | ✅ **Muito Bom** |
+| Audit        | < 150ms  | ~45ms      | N/A      | ~95ms      | ✅ **Excelente** |
+| IAM          | < 100ms  | ~95ms      | N/A      | ~145ms     | ⚠️ **Limite**    |
 
 **Análise:**
+
 - **Ingestor, Audit e SharePoint:** Performance muito superior aos SLOs (margem de 4-13x)
 - **Orchestrator:** Dentro do SLO com boa margem (600ms vs 420ms)
 - **IAM:** No limite superior do SLO (100ms vs 95ms p95, 145ms p99)
@@ -4794,40 +4816,42 @@ Orchestr    ████████████████░░░░░░�
 
 **3. Rastreabilidade (SLO: 100%)**
 
-| Requisito | Medido | Status |
-|-----------|--------|--------|
-| **trace_id em todos eventos** | 100% | ✅ |
-| **timestamp ISO 8601** | 100% | ✅ |
-| **component version** | 100% | ✅ |
-| **correlation_id entre serviços** | 100% | ✅ |
+| Requisito                         | Medido | Status |
+| --------------------------------- | ------ | ------ |
+| **trace_id em todos eventos**     | 100%   | ✅     |
+| **timestamp ISO 8601**            | 100%   | ✅     |
+| **component version**             | 100%   | ✅     |
+| **correlation_id entre serviços** | 100%   | ✅     |
 
-**Análise:**  **100% Conforme** - Todos os logs incluem metadados obrigatórios
+**Análise:** **100% Conforme** - Todos os logs incluem metadados obrigatórios
 
 **4. Recuperação/Resiliência (SLO: MTTR < 2 min, 95% retry success)**
 
-| Mecanismo | Implementado | Testado | Status |
-|-----------|-------------|---------|--------|
-| **Retry com backoff exponencial** | ✅ `src/utils/retry.py` | ✅ | ✅ |
-| **Circuit breaker** | ✅ Nos mocks | ⚠️ Não medido | ⚠️ |
-| **MTTR < 2 min** | ⚠️ Scripts chaos | ⚠️ Sem medição automática | ⚠️ |
+| Mecanismo                         | Implementado            | Testado                   | Status |
+| --------------------------------- | ----------------------- | ------------------------- | ------ |
+| **Retry com backoff exponencial** | ✅ `src/utils/retry.py` | ✅                        | ✅     |
+| **Circuit breaker**               | ✅ Nos mocks            | ⚠️ Não medido             | ⚠️     |
+| **MTTR < 2 min**                  | ⚠️ Scripts chaos        | ⚠️ Sem medição automática | ⚠️     |
 
-**Análise:** 
+**Análise:**
+
 - Mecanismos de retry implementados e funcionais
 - **Gap:** MTTR não é medido automaticamente nos testes
 - **Recomendação:** Adicionar script de medição de tempo de recuperação após falha
 
 **5. Integridade (SLO: 0 corrupções)**
 
-| Mecanismo | Implementado | Testado | Status |
-|-----------|-------------|---------|--------|
-| **Hash SHA-256** | ✅ `hash_utils.py` | ✅ | ✅ |
-| **Validação pré/pós upload** | ✅ SharePoint mock | ✅ | ✅ |
+| Mecanismo                    | Implementado       | Testado | Status |
+| ---------------------------- | ------------------ | ------- | ------ |
+| **Hash SHA-256**             | ✅ `hash_utils.py` | ✅      | ✅     |
+| **Validação pré/pós upload** | ✅ SharePoint mock | ✅      | ✅     |
 
 **Análise:** **100% Conforme** - 0 corrupções detectadas em todos os testes
 
 #### B. Pontos Fortes Identificados
 
 **1. Latência Muito Abaixo dos SLOs**
+
 - Ingestor: 180ms vs 800ms (4.4x melhor)
 - SharePoint: 150ms vs 2000ms (13.3x melhor)
 - Audit: 45ms vs 150ms (3.3x melhor)
@@ -4835,6 +4859,7 @@ Orchestr    ████████████████░░░░░░�
 **Benefício:** Sistema tem margem significativa para absorver aumento de carga real sem violar SLOs
 
 **2. Rastreabilidade 100%**
+
 - Todos os eventos incluem trace_id, timestamp, component, version
 - Logs correlacionados entre serviços via correlation_id
 - Formato JSON facilita ingestão em ferramentas de análise (ELK, Splunk, Azure Monitor)
@@ -4842,6 +4867,7 @@ Orchestr    ████████████████░░░░░░�
 **Benefício:** Debugging e troubleshooting facilitados, compliance com LGPD e auditoria
 
 **3. Integridade Total dos Dados**
+
 - Hash SHA-256 validado em 100% dos uploads
 - 0 corrupções detectadas
 - Mecanismos de checksum automáticos
@@ -4849,6 +4875,7 @@ Orchestr    ████████████████░░░░░░�
 **Benefício:** Garantia de confiabilidade dos dados transferidos entre Miro e SharePoint
 
 **4. Cobertura de Testes Abrangente**
+
 - 26 testes automatizados (100% aprovados)
 - 70% de cobertura de código
 - Testes de integração end-to-end funcionando
@@ -4860,16 +4887,19 @@ Orchestr    ████████████████░░░░░░�
 **1. Taxa de Erro Acima do SLO (CRÍTICO)**
 
 **Problema:**
+
 - Ingestor: 2% erro (SLO: 0.5%)
 - Orchestrator: 3% erro (SLO: 0.5%)
 - SharePoint: 5% throttling (SLO: 0.5%)
 
 **Impacto:**
+
 - Taxa de sucesso atual: 95-98%
 - SLO requerido: 99.5%
 - **Gap:** 1.5-4.5 pontos percentuais
 
 **Solução Proposta:**
+
 ```python
 # Arquivo: src/mocks/ingestor_mock.py, orchestrator_mock.py, sharepoint_mock.py
 # Alterar de:
@@ -4881,18 +4911,20 @@ if random.random() < 0.005:  # 0.5% erro
     raise HTTPException(status_code=500, detail="Simulated error")
 ```
 
-
 **2. IAM no Limite do SLO de Latência (ATENÇÃO)**
 
 **Problema:**
+
 - Latência p95: 95ms (SLO: 100ms) - margem de apenas 5ms
 - Latência p99: 145ms (45ms acima do limite se SLO p99 = 100ms)
 
 **Impacto:**
+
 - Risco de violar SLO em produção sob carga real
 - Autenticação é componente crítico no caminho de todas as requisições
 
 **Solução Proposta:**
+
 ```python
 # Arquivo: src/mocks/iam_mock.py
 # Alterar de:
@@ -4902,43 +4934,44 @@ processing_time = random.uniform(0.05, 0.15)  # 50-150ms
 processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 ```
 
-
 **3. MTTR Não Medido Automaticamente (BAIXA PRIORIDADE)**
 
 **Problema:**
+
 - Scripts de chaos engineering existem, mas não medem MTTR automaticamente
 - Dificulta validação do SLO de recuperação < 2 minutos
 
 **Solução Proposta:**
+
 - Criar script `scripts/chaos/measure_mttr.sh` que:
   1. Registra timestamp de início da falha
   2. Executa script de chaos (kill_pod, stop_service, etc.)
   3. Monitora health checks até recuperação
   4. Calcula e registra MTTR
 
-
 **4. Cobertura de Código em Utils (BAIXA PRIORIDADE)**
 
 **Problema:**
+
 - `src/utils/retry.py` e `src/utils/hash_utils.py`: 0% cobertura direta
 - Apesar de serem usados pelos mocks (cobertura indireta)
 
 **Solução Proposta:**
+
 - Adicionar `tests/unit/test_retry.py` e `tests/unit/test_hash.py`
 - Alvo: 90%+ cobertura
-
 
 #### D. Limites Identificados do Sistema
 
 **1. Throughput Máximo por Componente (estimado)**
 
-| Componente | Throughput Testado | Throughput Estimado Máximo | Limitante |
-|------------|-------------------|---------------------------|-----------|
-| Ingestor | ~50 req/s | ~200 req/s | CPU (processamento) |
-| Orchestrator | ~15 req/s | ~50 req/s | Latência IA (100-500ms) |
-| SharePoint | ~100 req/s | ~300 req/s | Throttling API (5%) |
-| Audit | ~10.000 eventos/s | ~50.000 eventos/s | I/O (gravação em disco) |
-| IAM | ~100 req/s | ~500 req/s | Criptografia tokens |
+| Componente   | Throughput Testado | Throughput Estimado Máximo | Limitante               |
+| ------------ | ------------------ | -------------------------- | ----------------------- |
+| Ingestor     | ~50 req/s          | ~200 req/s                 | CPU (processamento)     |
+| Orchestrator | ~15 req/s          | ~50 req/s                  | Latência IA (100-500ms) |
+| SharePoint   | ~100 req/s         | ~300 req/s                 | Throttling API (5%)     |
+| Audit        | ~10.000 eventos/s  | ~50.000 eventos/s          | I/O (gravação em disco) |
+| IAM          | ~100 req/s         | ~500 req/s                 | Criptografia tokens     |
 
 **Observação:** Limites estimados com base em simulação com mocks. Produção pode ter limites diferentes.
 
@@ -4954,14 +4987,15 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Não Testado:** Performance com múltiplas réplicas (requer Kubernetes/orquestração)
 
 **Recomendação:** Testar em ambiente staging com:
+
 - 3-5 réplicas de cada serviço
 - Load balancer (Azure Load Balancer ou NGINX)
 - Medição de throughput agregado
 
 #### E. Melhorias Propostas
 
-1. Ajustar taxas de erro para 0.5% 
-2. Reduzir latência IAM para 30-90ms 
+1. Ajustar taxas de erro para 0.5%
+2. Reduzir latência IAM para 30-90ms
 3. Adicionar comandos --csv nos exemplos do README
 4. Implementar medição automática de MTTR
 5. Aumentar cobertura de testes em utils/ (alvo: 90%)
@@ -4978,12 +5012,12 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 
 **Riscos Originais Identificados (Sistema Atual AS-IS):**
 
-| ID | Risco | Probabilidade | Impacto | Severidade | Causa Raiz |
-|----|-------|---------------|---------|------------|------------|
-| R01 | **Sobrecarga do Sistema** | Alta | Alto | **Crítico** | Processamento sequencial, fila única, sem balanceamento |
-| R02 | **Latência Elevada** | Alta | Médio | **Alto** | Dependência síncrona do SharePoint, sem cache |
-| R03 | **Perda de Dados** | Média | Alto | **Alto** | Falta de retry automático, timeouts sem tratamento |
-| R04 | **Indisponibilidade** | Média | Alto | **Alto** | Single point of failure, sem redundância |
+| ID  | Risco                     | Probabilidade | Impacto | Severidade  | Causa Raiz                                              |
+| --- | ------------------------- | ------------- | ------- | ----------- | ------------------------------------------------------- |
+| R01 | **Sobrecarga do Sistema** | Alta          | Alto    | **Crítico** | Processamento sequencial, fila única, sem balanceamento |
+| R02 | **Latência Elevada**      | Alta          | Médio   | **Alto**    | Dependência síncrona do SharePoint, sem cache           |
+| R03 | **Perda de Dados**        | Média         | Alto    | **Alto**    | Falta de retry automático, timeouts sem tratamento      |
+| R04 | **Indisponibilidade**     | Média         | Alto    | **Alto**    | Single point of failure, sem redundância                |
 
 #### B. Impacto dos Testes e Implementações nos Riscos
 
@@ -4992,28 +5026,33 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Anterior:** CRÍTICO (Alta probabilidade × Alto impacto)
 
 **Implementações para Mitigação:**
+
 1. **Arquitetura assíncrona:** Mocks implementados com FastAPI assíncrono
 2. **Mecanismos de throttling:** Simulado em SharePoint (5%) e outros componentes
 3. **Instrumentação de métricas:** Prometheus exporters em todos os mocks
 4. **Testes de carga:** Locust validou throughput de até 10.000 eventos/s (Audit)
 
 **Resultados dos Testes:**
+
 - **Ingestor:** Suportou 150 usuários simultâneos (~50 req/s) sem degradação
 - **Orchestrator:** 200 workflows concorrentes processados com sucesso
 - **Audit:** Burst de 10.000 eventos/s sem perda de dados (0%)
 
 **Status Atual:** **BAIXO** (Baixa probabilidade × Médio impacto)
 
-**Justificativa:** 
+**Justificativa:**
+
 - Sistema demonstrou capacidade de absorver carga 4-13x superior aos SLOs
 - Throttling controlado evita sobrecarga
 - Métricas permitem detecção precoce de saturação
 
 **Risco Residual:**
+
 - Limite de throughput não testado em produção (apenas mocks)
 - Escalabilidade horizontal não validada (requer Kubernetes)
 
 **Estratégias de Mitigação Contínua:**
+
 1. Monitoramento contínuo com alertas (CPU > 80%, Latência p95 > SLO)
 2. Auto-scaling baseado em métricas (HPA no Kubernetes)
 3. Testes de carga periódicos em staging (mensal)
@@ -5025,12 +5064,14 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Anterior:** ALTO (Alta probabilidade × Médio impacto)
 
 **Implementações para Mitigação:**
+
 1. **Latências controladas:** Mocks simulam latências realistas (50-500ms)
 2. **SLOs definidos:** p95 < 800ms (Ingestor), p95 < 600ms (Orchestrator)
 3. **Logs de latência:** Todos os componentes registram tempo de processamento
 4. **Testes de performance:** Validação de p95/p99 em todos os cenários
 
 **Resultados dos Testes:**
+
 - **Ingestor p95:** 180ms (SLO: 800ms) - **4.4x melhor**
 - **Orchestrator p95:** 420ms (SLO: 600ms) - **1.4x melhor**
 - **SharePoint p95:** 150ms (SLO: 2000ms) - **13.3x melhor**
@@ -5040,14 +5081,17 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Atual:** **BAIXO** (Baixa probabilidade × Baixo impacto)
 
 **Justificativa:**
+
 - Latências medidas muito inferiores aos SLOs (exceto IAM no limite)
 - Margem de segurança permite absorver variabilidade de rede/carga
 
 **Risco Residual:**
+
 - **IAM no limite:** p95 95ms vs SLO 100ms (margem de apenas 5ms)
 - Latência de rede real não simulada (mocks em localhost)
 
 **Estratégias de Mitigação Contínua:**
+
 1. **Imediato:** Ajustar latência simulada do IAM para 30-90ms (ganhar margem)
 2. Implementar cache de tokens JWT (reduzir chamadas ao IAM)
 3. Monitorar latência p95/p99 em produção com alertas (> 80% do SLO)
@@ -5060,12 +5104,14 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Anterior:** ALTO (Média probabilidade × Alto impacto)
 
 **Implementações para Mitigação:**
+
 1. **Retry com backoff:** `src/utils/retry.py` implementado
 2. **Hash SHA-256:** Validação de integridade em uploads (SharePoint)
 3. **trace_id:** 100% dos eventos rastreáveis
 4. **Persistência de logs:** Audit mock grava todos os eventos
 
 **Resultados dos Testes:**
+
 - **0 corrupções** detectadas em testes de upload (SharePoint)
 - **0% perda de eventos** no Audit (burst de 10k eventos/s)
 - **100% rastreabilidade** via trace_id
@@ -5074,14 +5120,17 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Atual:** **MUITO BAIXO** (Muito baixa probabilidade × Médio impacto)
 
 **Justificativa:**
+
 - Mecanismos de integridade (hash) e retry eliminam praticamente o risco de perda
 - Todos os eventos críticos são persistidos e rastreáveis
 
 **Risco Residual:**
+
 - Perda por falha catastrófica (datacenter down, corrupção de disco) não testada
 - Backup e disaster recovery não implementados
 
 **Estratégias de Mitigação Contínua:**
+
 1. Implementar backup automático de logs de auditoria (retenção 90 dias)
 2. Replicação geográfica de dados críticos (Azure Geo-Redundancy)
 3. Testes de disaster recovery (DR) trimestrais
@@ -5094,12 +5143,14 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Anterior:** ALTO (Média probabilidade × Alto impacto)
 
 **Implementações para Mitigação:**
+
 1. **Health checks:** Todos os mocks expõem `/health`
 2. **Scripts de chaos:** `kill_pod.sh`, `stop_service.sh`, `network_delay.sh`
 3. **MTTR:** Scripts existem mas medição não automática
 4. **Testes de integração:** Validam disponibilidade de todos os serviços
 
 **Resultados dos Testes:**
+
 - **Health checks:** 100% dos serviços responderam corretamente
 - **Testes de integração:** 3/3 passaram (100%)
 - **MTTR:** Não medido automaticamente (script manual existe)
@@ -5108,17 +5159,20 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Status Atual:** **MÉDIO** (Média probabilidade × Médio impacto)
 
 **Justificativa:**
+
 - Health checks permitem detecção rápida de falhas
 - Scripts de chaos preparados para testes de resiliência
 - **Porém:** MTTR < 2 min não validado automaticamente
 - **Porém:** Single point of failure não eliminado (mocks únicos)
 
 **Risco Residual:**
+
 - **Alta dependência:** Falha do IAM bloqueia todo o sistema
 - **MTTR não medido:** Não sabemos quanto tempo leva para recuperar de falha
 - **Sem redundância:** Mocks rodando em instâncias únicas
 
 **Estratégias de Mitigação Contínua:**
+
 1. **Imediato:** Implementar script de medição de MTTR (`measure_mttr.sh`)
 2. **Próxima Sprint:** Testar com 3 réplicas de cada serviço + load balancer
 3. Implementar circuit breaker (ex: Hystrix, Resilience4j)
@@ -5136,11 +5190,13 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Severidade:** **MÉDIO**
 
 **Causa Raiz:**
+
 - Mocks simulam comportamento ideal (latências consistentes, erros controlados)
 - SharePoint real pode ter throttling mais agressivo, timeouts imprevisíveis
 - APIs de IA podem ter latência variável (dependente de carga do modelo)
 
 **Estratégias de Mitigação:**
+
 1. **Testes em staging** com serviços reais (SharePoint, Azure OpenAI)
 2. **Shadowing de tráfego:** Replicar tráfego de produção para staging
 3. **Testes de chaos em produção** (com feature flags e canary deployments)
@@ -5157,10 +5213,12 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 **Severidade:** **BAIXO**
 
 **Causa Raiz:**
+
 - SharePoint e Azure OpenAI recebem updates frequentes
 - Mocks podem não acompanhar mudanças de schemas, endpoints, etc.
 
 **Estratégias de Mitigação:**
+
 1. **Contract testing:** Ferramentas como Pact para validar contratos de API
 2. **Versionamento de mocks:** Mocks devem refletir versão específica da API
 3. **Testes de integração periódicos** contra APIs reais (semanal)
@@ -5168,16 +5226,17 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 
 #### D. Matriz de Riscos Atualizada - Pós-Implementação
 
-| ID | Risco | Probabilidade | Impacto | Severidade Anterior | Severidade Atual | Mudança |
-|----|-------|---------------|---------|---------------------|------------------|---------|
-| R01 | Sobrecarga do Sistema | ~~Alta~~ → **Baixa** | ~~Alto~~ → **Médio** | **CRÍTICO** | **BAIXO** | ✅ **-2 níveis** |
-| R02 | Latência Elevada | ~~Alta~~ → **Baixa** | ~~Médio~~ → **Baixo** | **ALTO** | **BAIXO** | ✅ **-2 níveis** |
-| R03 | Perda de Dados | ~~Média~~ → **Muito Baixa** | ~~Alto~~ → **Médio** | **ALTO** | **MUITO BAIXO** | ✅ **-2 níveis** |
-| R04 | Indisponibilidade | **Média** | **Médio** | **ALTO** | **MÉDIO** | ✅ **-1 nível** |
-| R05 | Falso Senso de Segurança | **Média** | **Médio** | N/A | **MÉDIO** | 🆕 **Novo** |
-| R06 | Deriva de Configuração | **Média** | **Baixo** | N/A | **BAIXO** | 🆕 **Novo** |
+| ID  | Risco                    | Probabilidade               | Impacto               | Severidade Anterior | Severidade Atual | Mudança          |
+| --- | ------------------------ | --------------------------- | --------------------- | ------------------- | ---------------- | ---------------- |
+| R01 | Sobrecarga do Sistema    | ~~Alta~~ → **Baixa**        | ~~Alto~~ → **Médio**  | **CRÍTICO**         | **BAIXO**        | ✅ **-2 níveis** |
+| R02 | Latência Elevada         | ~~Alta~~ → **Baixa**        | ~~Médio~~ → **Baixo** | **ALTO**            | **BAIXO**        | ✅ **-2 níveis** |
+| R03 | Perda de Dados           | ~~Média~~ → **Muito Baixa** | ~~Alto~~ → **Médio**  | **ALTO**            | **MUITO BAIXO**  | ✅ **-2 níveis** |
+| R04 | Indisponibilidade        | **Média**                   | **Médio**             | **ALTO**            | **MÉDIO**        | ✅ **-1 nível**  |
+| R05 | Falso Senso de Segurança | **Média**                   | **Médio**             | N/A                 | **MÉDIO**        | 🆕 **Novo**      |
+| R06 | Deriva de Configuração   | **Média**                   | **Baixo**             | N/A                 | **BAIXO**        | 🆕 **Novo**      |
 
 **Resumo das Mudanças:**
+
 - **3 riscos críticos/altos mitigados** para baixo/muito baixo
 - **1 risco permanece médio** (Indisponibilidade - requer redundância)
 - **2 novos riscos identificados** (relativos à natureza de testes com mocks)
@@ -5185,6 +5244,7 @@ processing_time = random.uniform(0.03, 0.09)  # 30-90ms
 #### E. Plano de Ação Consolidado
 
 **Crítico (Imediato - Sprint Atual):**
+
 1. Ajustar taxas de erro para 0.5% em todos os mocks
 2. Reduzir latência IAM para 30-90ms
 3. Adicionar flag `--csv` nos exemplos do README
@@ -6037,13 +6097,13 @@ Esta seção documenta o **mapeamento de exceções esperadas** identificadas a 
 
 **Resumo Executivo dos Testes de Carga - Condições Normais (100 usuários simultâneos, 60 segundos):**
 
-| Serviço | Requisições Total | Taxa de Sucesso | Taxa de Falha | Throughput (req/s) | Tempo Médio (ms) | Tempo Máximo (ms) | Status |
-|---------|-------------------|-----------------|----------------|-------------------|------------------|------------------|--------|
-| **Audit** | 1.920 | 99.64% | **0.36%** ✅ | **32.19** (MELHOR) | **1.648** (MELHOR) | 17.507 | Excelente |
-| **Ingestor** | 448 | 95.76% | **4.24%** ✅ | 8.94 | 4.929 | 44.078 | Bom |
-| **SharePoint** | 323 | 86.38% | **13.62%** ⚠️ | 5.53 | 6.745 | 53.411 | Preocupante |
-| **Orchestrator** | 221 | 85.52% | **14.48%** ⚠️ | 3.76 (MENOR) | 8.031 (MAIOR) | 54.738 | Preocupante |
-| **IAM** | 1.017 | 0.00% | **100.00%** ❌ | 17.09 | 4.093 | 4.128 | Crítico |
+| Serviço          | Requisições Total | Taxa de Sucesso | Taxa de Falha  | Throughput (req/s) | Tempo Médio (ms)   | Tempo Máximo (ms) | Status      |
+| ---------------- | ----------------- | --------------- | -------------- | ------------------ | ------------------ | ----------------- | ----------- |
+| **Audit**        | 1.920             | 99.64%          | **0.36%** ✅   | **32.19** (MELHOR) | **1.648** (MELHOR) | 17.507            | Excelente   |
+| **Ingestor**     | 448               | 95.76%          | **4.24%** ✅   | 8.94               | 4.929              | 44.078            | Bom         |
+| **SharePoint**   | 323               | 86.38%          | **13.62%** ⚠️  | 5.53               | 6.745              | 53.411            | Preocupante |
+| **Orchestrator** | 221               | 85.52%          | **14.48%** ⚠️  | 3.76 (MENOR)       | 8.031 (MAIOR)      | 54.738            | Preocupante |
+| **IAM**          | 1.017             | 0.00%           | **100.00%** ❌ | 17.09              | 4.093              | 4.128             | Crítico     |
 
 **Interpretação dos Cenários Normais:**
 
@@ -6072,6 +6132,7 @@ Baseado nos resultados dos testes de carga (Sprint 3), foram identificados os se
 **Definição:** Requisição não consegue estabelecer conexão com o serviço ou conexão é interrompida antes da resposta ser enviada
 
 **Serviços Afetados:**
+
 - **IAM (CRÍTICO)**: 100% das requisições retornam status 0
   - POST /authenticate: 601/601 requisições com timeout (100%)
   - POST /authorize: 382/382 requisições com timeout (100%)
@@ -6090,9 +6151,9 @@ Baseado nos resultados dos testes de carga (Sprint 3), foram identificados os se
 Requisições com Timeout (Status 0) por Serviço:
 IAM:         1.017 (100.00%) ████████████████████
 Orchestrator:   22 (9.95%)   █
-SharePoint:     13 (4.02%)   
-Ingestor:        2 (0.45%)   
-Audit:           0 (0.00%)   
+SharePoint:     13 (4.02%)
+Ingestor:        2 (0.45%)
+Audit:           0 (0.00%)
 ```
 
 **Causa Raiz Preliminar:**
@@ -6128,6 +6189,7 @@ Audit:           0 (0.00%)
 **Definição:** Serviço recebe a requisição mas falha durante processamento devido a erro não tratado na lógica de negócio
 
 **Serviços Afetados:**
+
 - **Orchestrator (CRÍTICO)**: 8 requisições de 221 com status 500 (3.62%)
   - POST /orchestrate: ~7 erros de processamento
   - Correlação com timeouts: Possível que após timeout alguns reprocessamentos causem erro
@@ -6148,7 +6210,7 @@ Erros HTTP 500 por Serviço:
 Orchestrator:   8 (3.62%) ██
 SharePoint:    10 (3.09%) ██
 Ingestor:       9 (2.01%) █
-Audit:          7 (0.36%) 
+Audit:          7 (0.36%)
 ```
 
 **Causa Raiz Preliminar:**
@@ -6186,6 +6248,7 @@ Audit:          7 (0.36%)
 **Definição:** Serviço rejeita requisição porque limite de taxa foi excedido
 
 **Serviços Afetados:**
+
 - **Ingestor (ÚNICO)**: 5 requisições de 448 rejeitadas por rate limit (1.12%)
   - POST /ingest: ~4 requisições rate-limited
   - Implementação: Provavelmente limita 50-100 requisições/segundo por cliente
@@ -6195,7 +6258,7 @@ Audit:          7 (0.36%)
 ```
 Rate Limiting (HTTP 429) por Serviço:
 Ingestor:    5 (1.12%) █
-Todos outros:  0        
+Todos outros:  0
 ```
 
 **Causa Raiz:**
@@ -6229,6 +6292,7 @@ Todos outros:  0
 **Definição:** Endpoint GET /health retorna erro ou HTTP 500, indicando serviço degradado ou com falha interna
 
 **Serviços Afetados:**
+
 - **Orchestrator**: 2 health checks falharam durante testes (de 14 requisições de health = 14.29%)
   - Indicador: Serviço estava operacional mas em estado degradado
 - **SharePoint**: 3 health checks falharam (de 33 requisições de health = 9.09%)
@@ -6238,13 +6302,14 @@ Todos outros:  0
 
 ```
 Falhas de Health Check:
-Orchestrator: 2/14 (14.29%) 
-SharePoint:   3/33 (9.09%)  
+Orchestrator: 2/14 (14.29%)
+SharePoint:   3/33 (9.09%)
 ```
 
 **Significado:**
 
 Health check falhando é MAIS crítico que endpoints de negócio falhando, pois:
+
 - Sistema de monitoramento detectará falha e pode remover instância do load balancer
 - Outros serviços podem considerar este serviço como "down" e não tentar se comunicar
 - Cascata de falhas pode ocorrer
@@ -6294,6 +6359,7 @@ Health check falhando é MAIS crítico que endpoints de negócio falhando, pois:
 **Condição:** IAM torna-se completamente indisponível (100% timeout)
 
 **Sequência Esperada:**
+
 1. Usuário tenta autenticar via POST /authenticate no IAM
 2. Requisição fica aguardando resposta por ~4 segundos (timeout padrão)
 3. Conexão encerra com "Connection Reset" (status 0)
@@ -6343,6 +6409,7 @@ Load Balancer distribui para Orchestrator
 **Condição:** Integração com SharePoint está sobrecarregada
 
 **Sinais:**
+
 - POST /upload tem 14.14% de falha
 - 18 requisições sofreram throttling (HTTP 429 do SharePoint)
 - Tempo máximo alcançou 53.411 segundos (muito alto!)
@@ -6409,6 +6476,7 @@ Operação do Usuário
 #### Limite 1: **Capacidade Máxima de Throughput por Serviço**
 
 **Audit Service (Melhor Caso):**
+
 - Throughput alcançado: **32.19 req/s**
 - Requisições totais em 60s: **1.920**
 - Taxa de erro: **0.36%** (aceitável)
@@ -6416,6 +6484,7 @@ Operação do Usuário
 - **Margem**: ~10% antes de falha observada
 
 **Ingestor Service (Bom Caso):**
+
 - Throughput alcançado: **8.94 req/s**
 - Requisições totais em 60s: **448**
 - Taxa de erro: **4.24%** (começando a degrade)
@@ -6423,6 +6492,7 @@ Operação do Usuário
 - **Margem**: ~15% antes de falha
 
 **Orchestrator Service (Caso Crítico):**
+
 - Throughput alcançado: **3.76 req/s**
 - Requisições totais em 60s: **221**
 - Taxa de erro: **14.48%** (degradação severa)
@@ -6430,6 +6500,7 @@ Operação do Usuário
 - **Margem**: ~20% antes de falha - **CRÍTICO, margem muito estreita**
 
 **SharePoint Service (Caso Crítico):**
+
 - Throughput alcançado: **5.53 req/s**
 - Requisições totais em 60s: **323**
 - Taxa de erro: **13.62%** (degradação severa)
@@ -6437,6 +6508,7 @@ Operação do Usuário
 - **Margem**: ~8% antes de falha - **CRÍTICO, MARGEM MUITO ESTREITA**
 
 **IAM Service (Falha Total):**
+
 - Throughput alcançado: **17.09 req/s** (mas 100% falha!)
 - Taxa de erro: **100%** (falha completa)
 - **Limite Estimado**: ~0 req/s (serviço não está operacional) **OU** ~50 req/s com timeout
@@ -6444,13 +6516,13 @@ Operação do Usuário
 
 **Consolidação de Limites:**
 
-| Serviço | Throughput Max Observado | Limite Estimado | Taxa Erro @ Limite | Margem de Segurança | Status |
-|---------|--------------------------|-----------------|-------------------|---------------------|--------|
-| **Audit** | 32.19 req/s | 35-40 req/s | <1% | ~10-15% | ✅ Saudável |
-| **Ingestor** | 8.94 req/s | 10-12 req/s | <5% | ~10-15% | ✅ Aceitável |
-| **SharePoint** | 5.53 req/s | 6 req/s | 13-15% | ~8% | ⚠️ Crítico |
-| **Orchestrator** | 3.76 req/s | 4-5 req/s | 14-20% | ~10% | ⚠️ Crítico |
-| **IAM** | 17.09 req/s (100% erro) | ~0 req/s | 100% | Negativo | ❌ Não Operacional |
+| Serviço          | Throughput Max Observado | Limite Estimado | Taxa Erro @ Limite | Margem de Segurança | Status             |
+| ---------------- | ------------------------ | --------------- | ------------------ | ------------------- | ------------------ |
+| **Audit**        | 32.19 req/s              | 35-40 req/s     | <1%                | ~10-15%             | ✅ Saudável        |
+| **Ingestor**     | 8.94 req/s               | 10-12 req/s     | <5%                | ~10-15%             | ✅ Aceitável       |
+| **SharePoint**   | 5.53 req/s               | 6 req/s         | 13-15%             | ~8%                 | ⚠️ Crítico         |
+| **Orchestrator** | 3.76 req/s               | 4-5 req/s       | 14-20%             | ~10%                | ⚠️ Crítico         |
+| **IAM**          | 17.09 req/s (100% erro)  | ~0 req/s        | 100%               | Negativo            | ❌ Não Operacional |
 
 ---
 
@@ -6460,12 +6532,12 @@ Operação do Usuário
 
 **Padrão Observado:**
 
-| Serviço | Tempo Médio | Tempo P95 (estimado) | Tempo Máximo | Limite Recomendado | Status |
-|---------|------------|----------------------|--------------|-------------------|--------|
-| **Audit** | 1.648 ms | ~5.000 ms | 17.507 ms | 3.000 ms | ✅ Dentro |
-| **Ingestor** | 4.929 ms | ~15.000 ms | 44.078 ms | 5.000 ms | ⚠️ Limite Superior |
-| **SharePoint** | 6.745 ms | ~20.000 ms | 53.411 ms | 10.000 ms | ⚠️ Excedido |
-| **Orchestrator** | 8.031 ms | ~25.000 ms | 54.738 ms | 10.000 ms | ❌ Significativamente Excedido |
+| Serviço          | Tempo Médio | Tempo P95 (estimado) | Tempo Máximo | Limite Recomendado | Status                         |
+| ---------------- | ----------- | -------------------- | ------------ | ------------------ | ------------------------------ |
+| **Audit**        | 1.648 ms    | ~5.000 ms            | 17.507 ms    | 3.000 ms           | ✅ Dentro                      |
+| **Ingestor**     | 4.929 ms    | ~15.000 ms           | 44.078 ms    | 5.000 ms           | ⚠️ Limite Superior             |
+| **SharePoint**   | 6.745 ms    | ~20.000 ms           | 53.411 ms    | 10.000 ms          | ⚠️ Excedido                    |
+| **Orchestrator** | 8.031 ms    | ~25.000 ms           | 54.738 ms    | 10.000 ms          | ❌ Significativamente Excedido |
 
 **Interpretação:**
 
@@ -6478,10 +6550,11 @@ Operação do Usuário
 
 - **Aceitável**: < 2.000 ms (95% percentil)
 - **Marginal**: 2.000 - 5.000 ms (95% percentil)
-- **Degradado**: 5.000 - 10.000 ms (95% percentil) 
+- **Degradado**: 5.000 - 10.000 ms (95% percentil)
 - **Crítico**: > 10.000 ms (95% percentil) - usuários começam a perceber delay
 
 **Serviços em Estado de Risco:**
+
 - SharePoint e Orchestrator estão em estado **Crítico** para tempo de resposta
 
 ---
@@ -6528,13 +6601,13 @@ IAM:
 
 **Limite de Carga Identificado:**
 
-| Serviço | Limite Atual Observado | Limite Próximo Nível (2x) | Recomendação |
-|---------|------------------------|---------------------------|--------------|
-| **Audit** | 100 usuários OK | 200 usuários possível | Aumentar para 150-200 |
-| **Ingestor** | 100 usuários OK | 150 usuários degradado | Aumentar para 150, depois otimizar |
-| **SharePoint** | 100 usuários DEGRADADO | 150+ impossível | Otimizar urgentemente |
-| **Orchestrator** | 100 usuários DEGRADADO | 150+ impossível | Otimizar urgentemente |
-| **IAM** | 100 usuários FALHA | N/A - crítico | Corrigir antes de próximo teste |
+| Serviço          | Limite Atual Observado | Limite Próximo Nível (2x) | Recomendação                       |
+| ---------------- | ---------------------- | ------------------------- | ---------------------------------- |
+| **Audit**        | 100 usuários OK        | 200 usuários possível     | Aumentar para 150-200              |
+| **Ingestor**     | 100 usuários OK        | 150 usuários degradado    | Aumentar para 150, depois otimizar |
+| **SharePoint**   | 100 usuários DEGRADADO | 150+ impossível           | Otimizar urgentemente              |
+| **Orchestrator** | 100 usuários DEGRADADO | 150+ impossível           | Otimizar urgentemente              |
+| **IAM**          | 100 usuários FALHA     | N/A - crítico             | Corrigir antes de próximo teste    |
 
 **Limite de Capacidade Total do Sistema (Com Base em Sprint 3):**
 
@@ -6561,6 +6634,7 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 **Descrição:** O serviço IAM apresenta 100% de taxa de falha durante testes de carga com 100 usuários simultâneos, tornando qualquer autenticação ou autorização impossível.
 
 **Evidência:**
+
 - 1.017 requisições testadas
 - 1.017 requisições falharam (100%)
 - Todos os endpoints retornam status 0 (timeout/connection error)
@@ -6568,6 +6642,7 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 - GET /health: 34/34 requisições com falha
 
 **Impacto:**
+
 - **BLOQUEADOR CRÍTICO** para qualquer operação que requeira autenticação
 - Sistema inteiro fica indisponível (nenhum usuário consegue autenticar)
 - Cascata de falhas: Orchestrator falha porque chama IAM
@@ -6575,6 +6650,7 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 **Prioridade:** 🔴 **CRÍTICA - Corrigir antes da próxima sprint**
 
 **Ações Recomendadas:**
+
 1. Investigar se processo IAM está sendo iniciado corretamente
 2. Verificar se porta 8005 está sendo vinculada corretamente
 3. Testar com carga gradual (10, 20, 50 usuários) para identificar em que ponto falha
@@ -6588,23 +6664,27 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 **Descrição:** SharePoint e Orchestrator mostram taxa de erro >13% com apenas 100 usuários simultâneos, indicando que a arquitetura não consegue escalar linearly.
 
 **Evidência - SharePoint:**
+
 - Taxa de falha: 13.62% (44 de 323 requisições)
 - 18 requisições throttled (HTTP 429)
 - Tempo máximo: 53.411 segundos (inaceitável)
 - Degradação: Tempo médio 6.745ms mas máximo 53s = 8x diferença
 
 **Evidência - Orchestrator:**
+
 - Taxa de falha: 14.48% (32 de 221 requisições)
 - Tempo máximo: 54.738 segundos
 - Throughput: 3.76 req/s (MENOR entre todos os serviços)
 - Tempo médio: 8.031ms (MAIOR entre os que funcionam)
 
 **Padrão Comum:** Ambos os serviços mostram:
+
 1. Variabilidade extrema de tempo de resposta (média 6-8ms mas máximo 53+ segundos)
 2. Taxa consistente de erro ~13-14%
 3. Possível comportamento de "thundering herd" ou fila saturada
 
 **Impacto:**
+
 - Usuários têm ~14% de chance de operação falhar
 - Algumas operações levam 50+ segundos (inaceitável para UX)
 - Sistema não consegue lidar com picos de tráfego
@@ -6614,22 +6694,26 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 **Possíveis Causas:**
 
 **SharePoint:**
+
 - Integração com SharePoint externo (fora do controle): API rate-limited, timeout, latência de rede
 - Solução: Implementar cache, retry com backoff exponencial, async processing
 
 **Orchestrator:**
+
 - Orquestração síncrona esperando múltiplos serviços: se um serviço é lento, todo o Orchestrator fica lento
 - Solução: Implementar async/await, circuit breaker, timeout com fallback
 
 **Ações Recomendadas:**
 
 **Para SharePoint:**
+
 1. Implementar retry com backoff exponencial
 2. Adicionar cache local de respostas anteriores
 3. Async processing em background (não bloquear usuário)
 4. Limitar paralelismo de requisições ao SharePoint
 
 **Para Orchestrator:**
+
 1. Paralelizar chamadas para Ingestor, SharePoint, Audit (usar async)
 2. Timeouts curtos para dependências (5-10s máximo)
 3. Circuit breaker: se SharePoint falha N vezes, pular SharePoint e usar cache
@@ -6641,21 +6725,23 @@ Atualmente consegue ~44-45 req/s com 4 serviços funcionando (IAM fora, Orchestr
 
 **Descrição:** Alguns serviços mostram variação EXTREMA entre tempo médio e tempo máximo:
 
-| Serviço | Tempo Médio | Tempo Max | Razão | Status |
-|---------|------------|-----------|-------|--------|
-| **Orchestrator** | 8.031 ms | 54.738 s | **6.800x** | Extremo |
-| **SharePoint** | 6.745 ms | 53.411 s | **7.900x** | Extremo |
-| **Ingestor** | 4.929 ms | 44.078 s | **8.900x** | Extremo |
-| **Audit** | 1.648 ms | 17.507 s | **10.600x** | Alto |
+| Serviço          | Tempo Médio | Tempo Max | Razão       | Status  |
+| ---------------- | ----------- | --------- | ----------- | ------- |
+| **Orchestrator** | 8.031 ms    | 54.738 s  | **6.800x**  | Extremo |
+| **SharePoint**   | 6.745 ms    | 53.411 s  | **7.900x**  | Extremo |
+| **Ingestor**     | 4.929 ms    | 44.078 s  | **8.900x**  | Extremo |
+| **Audit**        | 1.648 ms    | 17.507 s  | **10.600x** | Alto    |
 
-**O que Significa:** 
+**O que Significa:**
 
 A grande diferença entre média e máximo sugere:
+
 - Fila de espera crescendo: requisições iniciais rápidas, requisições no pico muito lentas
 - Possível comportamento de "back-pressure": quando sistema fica saturado, fila bloqueia
 - Percentis altos (p95, p99) provavelmente >50% do máximo (ex: Audit p99 ~15s)
 
 **Impacto:**
+
 - Usuários que chegam no pico da carga levam 50+ segundos esperando resposta
 - Degradação não é linear, é exponencial em períodos de pico
 - Efeito cascata: mais usuários chegam, fila cresce ainda mais, tempo aumenta ainda mais
@@ -6663,6 +6749,7 @@ A grande diferença entre média e máximo sugere:
 **Prioridade:** 🟡 **MÉDIA - Documentar padrão para próxima otimização**
 
 **Ações Recomendadas:**
+
 1. Implantar observabilidade: coletar métricas de tamanho de fila, latência de fila
 2. Identificar ponto de "ruptura" onde sistema sai do regime linear
 3. Implementar autoscaling horizontal: quando fila > X, adicionar nova instância
@@ -6704,6 +6791,7 @@ IAM:
 ```
 
 **Impacto:**
+
 - Sistema não tem elasticidade para picos sazonais
 - Pequenos aumentos de tráfego causam falhas em cascata
 - SLA ("uptime 99.9%") difícil de cumprir com margem tão fina
@@ -6711,6 +6799,7 @@ IAM:
 **Prioridade:** 🟡 **MÉDIA - Planejamento de capacidade para produção**
 
 **Ações Recomendadas:**
+
 1. Aumentar capacidade base dos serviços (mais threads, mais memória, mais CPU)
 2. Implementar autoscaling baseado em carga (adicionar instâncias automaticamente)
 3. Implementar feature flags para desabilitar funcionalidades não críticas em pico
@@ -6721,17 +6810,20 @@ IAM:
 **Limitação 5: Falta de Observabilidade de Fila (BAIXA)**
 
 **Descrição:** Dados coletados mostram throughput e erro, mas não mostram:
+
 - Tamanho de fila de processamento ao longo do tempo
 - Latência de enfileiramento (quanto tempo a requisição espera antes de começar a ser processada)
 - Distribuição de latência (percentis p50, p95, p99)
 
 **Impacto:**
+
 - Impossível identificar exatamente onde está o gargalo
 - Impossível otimizar sem mais dados
 
 **Prioridade:** 🔵 **BAIXA - Instrumentação para próximo teste**
 
 **Ações Recomendadas:**
+
 1. Adicionar observabilidade a cada serviço: coletar tamanho de fila, tempo de enfileiramento
 2. Usar Prometheus + Grafana para visualizar em tempo real
 3. Exportar percentis de latência (p50, p95, p99, p99.9)
@@ -6740,19 +6832,19 @@ IAM:
 
 **Consolidação de Limitações por Severidade:**
 
-| Limitação | Serviço | Severidade | Status Atual | Impacto | Próxima Sprint |
-|-----------|---------|-----------|--------------|---------|----------------|
-| **IAM não operacional** | IAM | 🔴 CRÍTICA | 100% falha | Bloqueador total | Corrigir obrigatoriamente |
-| **SharePoint/Orchestrator degradado** | SharePoint, Orchestrator | 🟠 ALTA | 13-14% falha | Fora de SLA | Otimizar obrigatoriamente |
-| **Variabilidade extrema** | Todos | 🟡 MÉDIA | p99 ~50s | UX ruim em picos | Investigar e documentar |
-| **Margem de segurança fina** | Todos | 🟡 MÉDIA | 8-15% antes de falha | Sem elasticidade | Planejamento de capacidade |
-| **Falta de observabilidade** | Todos | 🔵 BAIXA | Dados limitados | Impossível otimizar | Implementar métricas |
+| Limitação                             | Serviço                  | Severidade | Status Atual         | Impacto             | Próxima Sprint             |
+| ------------------------------------- | ------------------------ | ---------- | -------------------- | ------------------- | -------------------------- |
+| **IAM não operacional**               | IAM                      | 🔴 CRÍTICA | 100% falha           | Bloqueador total    | Corrigir obrigatoriamente  |
+| **SharePoint/Orchestrator degradado** | SharePoint, Orchestrator | 🟠 ALTA    | 13-14% falha         | Fora de SLA         | Otimizar obrigatoriamente  |
+| **Variabilidade extrema**             | Todos                    | 🟡 MÉDIA   | p99 ~50s             | UX ruim em picos    | Investigar e documentar    |
+| **Margem de segurança fina**          | Todos                    | 🟡 MÉDIA   | 8-15% antes de falha | Sem elasticidade    | Planejamento de capacidade |
+| **Falta de observabilidade**          | Todos                    | 🔵 BAIXA   | Dados limitados      | Impossível otimizar | Implementar métricas       |
 
 ---
 
 ## Resumo da Sprint 3: Mapeamento de Exceções e Limitações
 
-**Status Geral:** 
+**Status Geral:**
 
 O sistema de microserviços implementado em Sprint 3 alcançou **arquitetura válida mas com capacidade limitada**. Dois serviços (Audit e Ingestor) demonstram boa escalabilidade até 100 usuários, enquanto três serviços (SharePoint, Orchestrator, IAM) mostram limitações significativas.
 
@@ -8062,6 +8154,7 @@ Para **cenários além do escopo inicial** (funcionalidades inovadoras sem basel
 &emsp; Essa etapa é essencial para comprovar que a rastreabilidade continua íntegra quando o volume crescer — algo ainda não demonstrado pelos testes da Seção 9.
 
 ---
+
 # 11. Ajustes na Implementação
 
 &emsp;Esta seção documenta as mudanças realizadas na arquitetura de testes após a análise dos resultados das simulações individuais (RNF-01, RNF-02 e RNF-03). O principal ajuste foi a unificação dos ambientes de teste em uma arquitetura consolidada, mantendo a cobertura funcional enquanto simplifica a manutenção e execução.
@@ -8196,21 +8289,26 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 ## 12.1 Como Foi Implementado:
 
-A partir do conjunto completo de cenários definidos para os RNFs de Segurança e Rastreabilidade, foram selecionados **três cenários estruturais** para automação contínua: validação de correlação, presença do contexto de segurança e presença do contexto de rastreabilidade. Essa escolha priorizou os cenários que (i) têm maior impacto direto na observabilidade e na capacidade de auditoria do sistema e (ii) são mais viáveis para execução frequente, sem depender de massas de dados complexas ou estados específicos de negócio (como cadastros inválidos, inconsistência de conteúdo entre Miro/SharePoint ou guardrails de IA ainda pendentes de implementação).\n\nA implementação dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) foi realizada através de uma solução integrada ao dashboard de monitoramento do middleware, permitindo execução sob demanda e visualização imediata dos resultados.
+&emsp; A partir do conjunto completo de cenários definidos para os RNFs de Segurança e Rastreabilidade, foram selecionados **três cenários estruturais** para automação contínua: validação de correlação, presença do contexto de segurança e presença do contexto de rastreabilidade. Essa escolha priorizou os cenários que **(i)** têm maior impacto direto na observabilidade e na capacidade de auditoria do sistema e **(ii)** são mais viáveis para execução frequente, sem depender de massas de dados complexas ou estados específicos de negócio (como cadastros inválidos, inconsistência de conteúdo entre Miro/SharePoint ou guardrails de IA ainda pendentes de implementação).
+
+&emsp; A implementação dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) foi realizada através de uma solução integrada ao dashboard de monitoramento do middleware, permitindo execução sob demanda e visualização imediata dos resultados.
 
 **Arquitetura da Solução:**
 
 1. **Script de Testes (`test_compliance_automated.py`)**: Script Python autônomo que executa testes de conformidade contra 5 endpoints da API Unificada (SharePoint, Miro, Copilot, Office, Sentinel). Para cada endpoint, são validados 3 cenários críticos:
+
    - **Validação de Correlação (CRÍTICO)**: Verifica se o UUID enviado no header `x-correlation-id` é retornado corretamente no campo `correlation_id` da resposta, garantindo rastreabilidade entre serviços.
    - **Presença do Contexto de Segurança (ALTO)**: Valida se o objeto `meta.security_context` contém os campos obrigatórios (`user_id`, `tenant_id`, `mfa_enabled`), essencial para auditoria de segurança.
    - **Presença do Contexto de Rastreabilidade (ALTO)**: Valida se o objeto `meta.traceability` contém `trace_id`, `span_id` e `ingested_at_utc` (formato ISO 8601), permitindo rastrear operações completas.
 
 2. **Endpoint de Execução (`POST /monitoring/run-compliance-tests`)**: Endpoint FastAPI que executa o script de testes em segundo plano, captura os resultados e persiste em múltiplos formatos:
+
    - `test_results.csv`: Arquivo principal com resultados da última execução (15 linhas, uma por teste)
    - `test_results_history/`: Diretório com histórico de execuções (um CSV por execução com timestamp)
    - `test_results_meta.json`: Metadados da última execução (horários de início/fim, duração, resumo estatístico)
 
 3. **Integração no Dashboard**: O dashboard (`GET /dashboard`) foi estendido com:
+
    - Seção dedicada "TESTES AUTOMATIZADOS DE SEGURANÇA" com visualização detalhada dos resultados
    - Botão "Atualizar" que dispara a execução dos testes via `POST /monitoring/run-compliance-tests`
    - Integração dos resultados dos testes na seção "LOGS RECENTES" (cada teste aparece como um log de sistema)
@@ -8239,7 +8337,7 @@ _(conteúdo.)_
 
 ### 12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade
 
-A análise dos resultados dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) demonstra **100% de conformidade** em todas as validações realizadas.
+&emsp; A análise dos resultados dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) demonstra **100% de conformidade** em todas as validações realizadas.
 
 **Resultados Gerais:**
 
@@ -8254,11 +8352,13 @@ A análise dos resultados dos testes automatizados de conformidade para RNF-02 (
 **Análise por Cenário de Teste:**
 
 1. **Validação de Correlação (CRÍTICO - 5 testes)**:
+
    - **Status**: 5/5 PASSED (100%)
    - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
    - **Conclusão**: Todos os serviços retornam corretamente o `correlation_id` enviado no header `x-correlation-id`, garantindo rastreabilidade completa entre serviços. Isso permite correlacionar eventos de uma mesma operação mesmo quando ela transita por múltiplos serviços (ex: SharePoint → Sentinel → Office).
 
 2. **Presença do Contexto de Segurança (ALTO - 5 testes)**:
+
    - **Status**: 5/5 PASSED (100%)
    - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
    - **Conclusão**: Todos os serviços retornam o objeto `meta.security_context` completo com os campos obrigatórios:
@@ -8278,15 +8378,15 @@ A análise dos resultados dos testes automatizados de conformidade para RNF-02 (
 
 **Análise por Serviço/API:**
 
-Todos os 5 serviços testados (SharePoint, Miro, Copilot, Office, Sentinel) apresentaram **conformidade total** em todos os 3 cenários, demonstrando que a implementação dos contextos de segurança e rastreabilidade foi realizada de forma consistente em toda a API Unificada.
+&emsp; Todos os 5 serviços testados (SharePoint, Miro, Copilot, Office, Sentinel) apresentaram **conformidade total** em todos os 3 cenários, demonstrando que a implementação dos contextos de segurança e rastreabilidade foi realizada de forma consistente em toda a API Unificada.
 
 **Tempos de Execução:**
 
-Os tempos de execução variaram entre **2.04s e 2.10s por teste**, com média de **2.07s**, indicando que as validações são executadas de forma eficiente sem impactar significativamente a performance das APIs.
+&emsp; Os tempos de execução variaram entre **2.04s e 2.10s por teste**, com média de **2.07s**, indicando que as validações são executadas de forma eficiente sem impactar significativamente a performance das APIs.
 
 **Conclusão:**
 
-A implementação dos testes automatizados de conformidade comprova que o sistema atende completamente aos requisitos não funcionais de Segurança (RNF-02) e Rastreabilidade (RNF-03), com **100% de taxa de conformidade** em todas as validações realizadas. A solução integrada ao dashboard permite monitoramento contínuo e execução sob demanda, facilitando a detecção precoce de regressões e garantindo que os padrões de segurança e rastreabilidade sejam mantidos ao longo do desenvolvimento.
+&emsp; A implementação dos testes automatizados de conformidade comprova que o sistema atende completamente aos requisitos não funcionais de Segurança (RNF-02) e Rastreabilidade (RNF-03), com **100% de taxa de conformidade** em todas as validações realizadas. A solução integrada ao dashboard permite monitoramento contínuo e execução sob demanda, facilitando a detecção precoce de regressões e garantindo que os padrões de segurança e rastreabilidade sejam mantidos ao longo do desenvolvimento.
 
 ---
 
