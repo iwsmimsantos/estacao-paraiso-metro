@@ -316,7 +316,7 @@ async def run_compliance_tests():
             detail="Arquivo de resultados não encontrado após execução dos testes.",
         )
 
-    # Lê o CSV gerado para montar o resumo
+    # Lê o CSV gerado para montar o resumo e registrar logs permanentemente
     try:
         results: List[Dict[str, Any]] = []
         with open(csv_path, "r", encoding="utf-8") as csvfile:
@@ -341,6 +341,65 @@ async def run_compliance_tests():
             "critical_failed": critical_failed,
             "pass_rate": pass_rate,
         }
+        
+        # Registra execução dos testes no sistema de logs
+        logger.log(
+            event_type=EventType.TEST_COMPLIANCE_RUN,
+            user_id="system",
+            resource_type="test_suite",
+            resource_id="compliance_tests",
+            action="execute",
+            status="success" if failed == 0 else "failed",
+            details={
+                "test_type": "compliance",
+                "started_at_utc": started_at_utc,
+                "finished_at_utc": finished_at_utc,
+                "duration_seconds": duration_seconds,
+                "total": total,
+                "passed": passed,
+                "failed": failed,
+                "critical_failed": critical_failed,
+                "pass_rate": pass_rate
+            }
+        )
+        
+        # Registra cada teste individual no sistema de logs
+        for test_result in results:
+            test_status = "success" if test_result.get("status") == "PASSED" else "failed"
+            logger.log(
+                event_type=EventType.TEST_COMPLIANCE_RESULT,
+                user_id="system",
+                resource_type="test",
+                resource_id=test_result.get("service_tested", "unknown"),
+                action=test_result.get("endpoint_tested", "N/A"),
+                status=test_status,
+                details={
+                    "test_scenario": test_result.get("test_scenario"),
+                    "service_tested": test_result.get("service_tested"),
+                    "endpoint_tested": test_result.get("endpoint_tested"),
+                    "severity": test_result.get("severity"),
+                    "execution_time_ms": test_result.get("execution_time_ms"),
+                    "details": test_result.get("details"),
+                    "timestamp_utc": test_result.get("timestamp_utc")
+                }
+            )
+            
+            # Registra falhas críticas como incidentes
+            if test_result.get("status") == "FAILED" and test_result.get("severity") == "CRÍTICO":
+                logger.log_incident(
+                    incident_type="test_compliance_critical_failure",
+                    severity="critical",
+                    user_id="system",
+                    resource_id=test_result.get("service_tested", "unknown"),
+                    description=f"Falha crítica em teste de conformidade: {test_result.get('test_scenario')}",
+                    details={
+                        "test_scenario": test_result.get("test_scenario"),
+                        "service_tested": test_result.get("service_tested"),
+                        "endpoint_tested": test_result.get("endpoint_tested"),
+                        "execution_time_ms": test_result.get("execution_time_ms"),
+                        "details": test_result.get("details")
+                    }
+                )
     except Exception as e:
         raise HTTPException(
             status_code=500,
@@ -535,6 +594,65 @@ async def run_scalability_tests():
             "critical_failed": critical_failed,
             "pass_rate": pass_rate,
         }
+        
+        # Registra execução dos testes no sistema de logs
+        logger.log(
+            event_type=EventType.TEST_SCALABILITY_RUN,
+            user_id="system",
+            resource_type="test_suite",
+            resource_id="scalability_tests",
+            action="execute",
+            status="success" if failed == 0 else "failed",
+            details={
+                "test_type": "scalability",
+                "started_at_utc": started_at_utc,
+                "finished_at_utc": finished_at_utc,
+                "duration_seconds": duration_seconds,
+                "total": total,
+                "passed": passed,
+                "failed": failed,
+                "critical_failed": critical_failed,
+                "pass_rate": pass_rate
+            }
+        )
+        
+        # Registra cada teste individual no sistema de logs
+        for test_result in results:
+            test_status = "success" if test_result.get("status") == "PASSED" else "failed"
+            logger.log(
+                event_type=EventType.TEST_SCALABILITY_RESULT,
+                user_id="system",
+                resource_type="test",
+                resource_id=test_result.get("service_tested", "unknown"),
+                action=test_result.get("endpoint_tested", "N/A"),
+                status=test_status,
+                details={
+                    "test_scenario": test_result.get("test_scenario"),
+                    "service_tested": test_result.get("service_tested"),
+                    "endpoint_tested": test_result.get("endpoint_tested"),
+                    "severity": test_result.get("severity"),
+                    "execution_time_ms": test_result.get("execution_time_ms"),
+                    "details": test_result.get("details"),
+                    "timestamp_utc": test_result.get("timestamp_utc")
+                }
+            )
+            
+            # Registra falhas críticas como incidentes
+            if test_result.get("status") == "FAILED" and test_result.get("severity") == "CRÍTICO":
+                logger.log_incident(
+                    incident_type="test_scalability_critical_failure",
+                    severity="critical",
+                    user_id="system",
+                    resource_id=test_result.get("service_tested", "unknown"),
+                    description=f"Falha crítica em teste de escalabilidade: {test_result.get('test_scenario')}",
+                    details={
+                        "test_scenario": test_result.get("test_scenario"),
+                        "service_tested": test_result.get("service_tested"),
+                        "endpoint_tested": test_result.get("endpoint_tested"),
+                        "execution_time_ms": test_result.get("execution_time_ms"),
+                        "details": test_result.get("details")
+                    }
+                )
     except Exception as e:
         raise HTTPException(
             status_code=500,

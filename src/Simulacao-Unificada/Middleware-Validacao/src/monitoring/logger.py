@@ -61,6 +61,12 @@ class EventType(str, Enum):
     # Sistema
     SYSTEM_ERROR = "system.error"
     SYSTEM_HEALTH_CHECK = "system.health_check"
+    
+    # Testes Automatizados
+    TEST_COMPLIANCE_RUN = "test.compliance.run"
+    TEST_COMPLIANCE_RESULT = "test.compliance.result"
+    TEST_SCALABILITY_RUN = "test.scalability.run"
+    TEST_SCALABILITY_RESULT = "test.scalability.result"
 
 
 class AuditLog:

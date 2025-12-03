@@ -614,9 +614,99 @@ async def all_logs_page():
             
             async function loadAllLogs() {
                 try {
-                    const response = await fetch('/monitoring/logs');
+                    const response = await fetch('/monitoring/logs?limit=500');
                     const data = await response.json();
-                    allLogs = data.logs || [];
+                    let auditLogs = data.logs || [];
+                    
+                    // Busca resultados de testes automatizados e converte para formato de log
+                    try {
+                        const complianceResponse = await fetch('/monitoring/compliance-results');
+                        const complianceData = await complianceResponse.json();
+                        
+                        if (complianceData.available && complianceData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = complianceData.summary?.started_at_utc 
+                                ? 'test-compliance-' + new Date(complianceData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-compliance-' + Date.now().toString(36);
+                            
+                            const testLogs = complianceData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.compliance.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (complianceError) {
+                        // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        
+                        if (scalabilityData.available && scalabilityData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = scalabilityData.summary?.started_at_utc 
+                                ? 'test-scalability-' + new Date(scalabilityData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-scalability-' + Date.now().toString(36);
+                            
+                            const testLogs = scalabilityData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.scalability.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
+                    }
+                    
+                    // Ordena por timestamp (mais recente primeiro)
+                    auditLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    allLogs = auditLogs;
                     renderTable();
                 } catch (error) {
                     console.error('Erro ao carregar logs:', error);
@@ -686,14 +776,29 @@ async def all_logs_page():
                     if (log.status === 'denied') { badgeClass = 'badge-denied'; statusLabel = 'Negado'; }
                     if (log.status === 'incident') { badgeClass = 'badge-incident'; statusLabel = 'Incidente'; }
                     
+                    // Formata event_type para logs de teste
+                    let eventType = log.event_type || 'N/A';
+                    if (eventType.startsWith('test.')) {
+                        eventType = eventType.replace('test.', '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    }
+                    
+                    // Para logs de teste, usa o endpoint como resource_id se não houver
+                    let resourceId = log.resource_id || '-';
+                    if (resourceId === '-' && log.details && log.details.endpoint) {
+                        resourceId = log.details.endpoint;
+                    }
+                    
+                    // Busca project_id: primeiro tenta no nível raiz, depois em details
+                    const projectId = log.project_id || (log.details && log.details.project_id) || '-';
+                    
                     return `
                         <tr onclick='showLogDetails(${JSON.stringify(log).replace(/'/g, "&apos;")})'>
                             <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
                             <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
-                            <td>${log.event_type || 'N/A'}</td>
+                            <td>${eventType}</td>
                             <td>${log.user_id || 'N/A'}</td>
-                            <td>${log.project_id || '-'}</td>
-                            <td>${log.resource_id || '-'}</td>
+                            <td>${projectId}</td>
+                            <td>${resourceId}</td>
                             <td style="font-family: monospace; font-size: 0.8em;">${log.trace_id ? log.trace_id.substring(0, 16) + '...' : '-'}</td>
                         </tr>
                     `;
@@ -729,7 +834,7 @@ async def all_logs_page():
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Projeto</div>
-                        <div class="detail-value">${log.project_id || '-'}</div>
+                        <div class="detail-value">${log.project_id || (log.details && log.details.project_id) || '-'}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Recurso</div>
@@ -1608,11 +1713,11 @@ async def dashboard():
                             box-shadow: 0 2px 8px rgba(25, 135, 84, 0.2);
                         ">
                             <div style="font-size: 3em; margin-bottom: 16px;">⚡</div>
-                            <div style="font-size: 1.4em; font-weight: 700; color: #0a5229; margin-bottom: 12px;">Dashboard de Performance e Escalabilidade</div>
+                            <div style="font-size: 1.4em; font-weight: 700; color: #0a5229; margin-bottom: 12px;">Dashboard de Testes Automatizados</div>
                             <div style="color: #0a5229; margin-bottom: 20px; font-size: 1.05em;">Carregando resultados de escalabilidade...</div>
                             <div style="background: white; padding: 16px; border-radius: 8px; color: #495057; font-size: 1em; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                 <strong>Esta seção exibe:</strong><br/>
-                                • Validação de métricas de performance (RNF-01)<br/>
+                                • Resultados dos testes automatizados de escalabilidade (RNF-01)<br/>
                                 • Verificação de limites de latência<br/>
                                 • Validação de throughput e consistência
                             </div>
@@ -1632,7 +1737,7 @@ async def dashboard():
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-icon"><i class="fas fa-bell"></i></span>
-                                <span>INCIDENT QUEUE</span>
+                                <span>FILA DE INCIDENTES</span>
                             </div>
                         </div>
                         <div class="log-controls" id="incident-filters">
@@ -1943,11 +2048,22 @@ async def dashboard():
                         const complianceResponse = await fetch('/monitoring/compliance-results');
                         const complianceData = await complianceResponse.json();
                         if (complianceData.available && complianceData.results) {
-                            testLogsCount = complianceData.results.length;
-                            testFailedCount = complianceData.results.filter(r => r.status === 'FAILED').length;
+                            testLogsCount += complianceData.results.length;
+                            testFailedCount += complianceData.results.filter(r => r.status === 'FAILED').length;
                         }
                     } catch (complianceError) {
                         // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        if (scalabilityData.available && scalabilityData.results) {
+                            testLogsCount += scalabilityData.results.length;
+                            testFailedCount += scalabilityData.results.filter(r => r.status === 'FAILED').length;
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
                     }
                     
                     // Atualiza cards de estatísticas
@@ -1992,31 +2108,85 @@ async def dashboard():
                         const complianceData = await complianceResponse.json();
                         
                         if (complianceData.available && complianceData.results) {
-                            const testLogs = complianceData.results.map(test => ({
-                                timestamp: test.timestamp_utc || new Date().toISOString(),
-                                event_type: `test.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'compliance'}`,
-                                user_id: 'system',
-                                resource_type: 'test',
-                                resource_id: test.service_tested || 'unknown',
-                                action: test.endpoint_tested || 'N/A',
-                                status: test.status === 'PASSED' ? 'success' : 'failed',
-                                details: {
-                                    test_scenario: test.test_scenario,
-                                    service: test.service_tested,
-                                    endpoint: test.endpoint_tested,
-                                    severity: test.severity,
-                                    execution_time_ms: test.execution_time_ms,
-                                    details: test.details
-                                },
-                                trace_id: null,
-                                correlation_id: null
-                            }));
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = complianceData.summary?.started_at_utc 
+                                ? 'test-compliance-' + new Date(complianceData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-compliance-' + Date.now().toString(36);
+                            
+                            const testLogs = complianceData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.compliance.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
                             
                             // Mescla logs de auditoria com logs de testes
                             auditLogs = [...auditLogs, ...testLogs];
                         }
                     } catch (complianceError) {
                         // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        
+                        if (scalabilityData.available && scalabilityData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = scalabilityData.summary?.started_at_utc 
+                                ? 'test-scalability-' + new Date(scalabilityData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-scalability-' + Date.now().toString(36);
+                            
+                            const testLogs = scalabilityData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.scalability.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            // Mescla logs de auditoria com logs de testes
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
                     }
                     
                     // Ordena por timestamp (mais recente primeiro)
@@ -2071,7 +2241,8 @@ async def dashboard():
                     let eventType = log.event_type || 'unknown';
                     const userId = log.user_id || 'N/A';
                     const status = log.status || 'unknown';
-                    const projectId = log.project_id || null;
+                    // Busca project_id: primeiro tenta no nível raiz, depois em details
+                    const projectId = log.project_id || (log.details && log.details.project_id) || null;
                     let resourceId = log.resource_id || null;
                     const traceId = log.trace_id || null;
                     
@@ -2407,7 +2578,7 @@ async def dashboard():
                             });
                             
                             lastExecutionText = `
-                                <div style="font-size: 0.85em; color: #495057; margin-top: 8px;">
+                                <div style="font-size: 0.85em; color: #084298; margin-top: 8px;">
                                     <strong>Última execução:</strong> ${startedStr} – ${endedStr}
                                     (${durationSeconds.toFixed ? durationSeconds.toFixed(1) : durationSeconds}s)
                                 </div>
@@ -3061,12 +3232,13 @@ async def dashboard():
                     if (!data.available) {
                         container.innerHTML = `
                             <div style="padding: 40px; text-align: center; background: #e7fff3; border: 2px solid #198754; border-radius: 8px;">
-                                <div style="font-size: 3em; margin-bottom: 16px;">⚡</div>
-                                <div style="font-size: 1.2em; font-weight: 600; color: #0a5229; margin-bottom: 8px;">Nenhum teste foi executado ainda</div>
-                                <div style="color: #0a5229; margin-bottom: 20px;">${data.message || 'Clique no botão "Atualizar" para executar os testes.'}</div>
-                                <button onclick="runScalabilityTests()" style="background: #198754; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 1em; font-weight: 600;">
-                                    ⚡ Executar Testes de Escalabilidade
-                                </button>
+                                <div style="font-size: 3em; margin-bottom: 16px;">📋</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #0a5229; margin-bottom: 8px;">Nenhum resultado disponível</div>
+                                <div style="color: #0a5229; margin-bottom: 16px;">${data.message || 'Execute o script de teste primeiro'}</div>
+                                <div style="background: white; padding: 16px; border-radius: 8px; color: #495057;">
+                                    <strong>Execute no terminal:</strong><br/>
+                                    <code style="background: #f8f9fa; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-size: 1.1em;">python test_scalability_automated.py</code>
+                                </div>
                             </div>
                         `;
                         return;
@@ -3074,35 +3246,82 @@ async def dashboard():
 
                     const { results, summary } = data;
                     
-                    const passRate = summary.pass_rate || 0;
-                    const lastExecutionInfo = summary.started_at_utc && summary.finished_at_utc
-                        ? `<div style="font-size: 0.9em; color: #495057; margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.6); border-radius: 6px;">
-                                <strong>Última execução:</strong> ${new Date(summary.started_at_utc).toLocaleString('pt-BR')} - ${new Date(summary.finished_at_utc).toLocaleString('pt-BR')} | Duração: ${summary.duration_seconds}s
-                            </div>` : '';
-
+                    // Prepara texto de última execução, se metadados estiverem disponíveis
+                    let lastExecutionText = '';
+                    if (summary.started_at_utc && summary.finished_at_utc) {
+                        try {
+                            const startDate = new Date(summary.started_at_utc);
+                            const endDate = new Date(summary.finished_at_utc);
+                            const durationSeconds = summary.duration_seconds || 0;
+                            
+                            const startedStr = startDate.toLocaleString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            const endedStr = endDate.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            lastExecutionText = `
+                                <div style="font-size: 0.85em; color: #0a5229; margin-top: 8px;">
+                                    <strong>Última execução:</strong> ${startedStr} – ${endedStr}
+                                    (${durationSeconds.toFixed ? durationSeconds.toFixed(1) : durationSeconds}s)
+                                </div>
+                            `;
+                        } catch (e) {
+                            // Se der erro ao formatar datas, simplesmente não mostra o texto
+                            console.warn('Não foi possível formatar metadados de execução dos testes.', e);
+                        }
+                    }
+                    
+                    // Renderiza resumo
                     let html = `
-                        <div style="margin-bottom: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 180px; padding: 16px; background: linear-gradient(135deg, #e7fff3 0%, #cfffdf 100%); border-radius: 8px; border: 2px solid #198754;">
-                                <div style="font-size: 0.8em; font-weight: 600; color: #0a5229; text-transform: uppercase; margin-bottom: 8px;">Total de Testes</div>
-                                <div style="font-size: 2em; font-weight: 700; color: #198754;">${summary.total || 0}</div>
+                        <div style="margin-bottom: 20px;">
+                            <div style="background: #e7fff3; border: 2px solid #198754; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                                <div style="font-size: 1em; font-weight: 600; color: #0a5229; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-info-circle"></i> Sobre os Testes Automatizados de Escalabilidade
+                                </div>
+                                <div style="font-size: 0.9em; color: #0a5229; line-height: 1.5;">
+                                    Estes testes validam a conformidade das APIs Unificadas com os Requisitos Não Funcionais (RNF) de Escalabilidade (RNF-01). Eles garantem que as APIs estão retornando métricas de performance adequadas, respeitando limites de latência e mantendo consistência de throughput.
+                                </div>
+                                ${lastExecutionText}
                             </div>
-                            <div style="flex: 1; min-width: 180px; padding: 16px; background: linear-gradient(135deg, #d1e7dd 0%, #a3cfbb 100%); border-radius: 8px; border: 2px solid #198754;">
-                                <div style="font-size: 0.8em; font-weight: 600; color: #0f5132; text-transform: uppercase; margin-bottom: 8px;">✓ Aprovados</div>
-                                <div style="font-size: 2em; font-weight: 700; color: #0f5132;">${summary.passed || 0}</div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+                                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #dee2e6;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #212529; margin-bottom: 4px;">${summary.total || 0}</div>
+                                    <div style="font-size: 0.8em; color: #6c757d; font-weight: 500;">Total de Testes Executados</div>
+                                </div>
+                                <div style="background: #d1e7dd; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #a3cfbb;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #0f5132; margin-bottom: 4px;">✓ ${summary.passed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #0f5132; font-weight: 500;">Testes Aprovados</div>
+                                </div>
+                                <div style="background: #f8d7da; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #f1aeb5;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #842029; margin-bottom: 4px;">✗ ${summary.failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #842029; font-weight: 500;">Testes Falharam</div>
+                                </div>
+                                <div style="background: ${summary.critical_failed > 0 ? '#f8d7da' : '#d1e7dd'}; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid ${summary.critical_failed > 0 ? '#f1aeb5' : '#a3cfbb'};">
+                                    <div style="font-size: 2em; font-weight: 700; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; margin-bottom: 4px;">${summary.critical_failed > 0 ? '⚠️' : '✓'} ${summary.critical_failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; font-weight: 500;">Falhas Críticas</div>
+                                </div>
                             </div>
-                            <div style="flex: 1; min-width: 180px; padding: 16px; background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%); border-radius: 8px; border: 2px solid #dc3545;">
-                                <div style="font-size: 0.8em; font-weight: 600; color: #842029; text-transform: uppercase; margin-bottom: 8px;">✗ Falharam</div>
-                                <div style="font-size: 2em; font-weight: 700; color: #842029;">${summary.failed || 0}</div>
+                            
+                            <div style="background: ${summary.pass_rate >= 90 ? '#d1e7dd' : summary.pass_rate >= 70 ? '#fff3cd' : '#f8d7da'}; border: 2px solid ${summary.pass_rate >= 90 ? '#a3cfbb' : summary.pass_rate >= 70 ? '#ffc107' : '#f1aeb5'}; padding: 16px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.1em; font-weight: 600; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'}; margin-bottom: 4px;">
+                                    Taxa de Conformidade: <span style="font-size: 1.3em;">${summary.pass_rate || 0}%</span>
+                                </div>
+                                <div style="font-size: 0.85em; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'};">
+                                    ${summary.pass_rate >= 90 ? '✅ Sistema em conformidade' : summary.pass_rate >= 70 ? '⚠️ Atenção necessária' : '❌ Ação imediata requerida'}
+                                </div>
                             </div>
-                            <div style="flex: 1; min-width: 180px; padding: 16px; background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%); border-radius: 8px; border: 2px solid #ffc107;">
-                                <div style="font-size: 0.8em; font-weight: 600; color: #664d03; text-transform: uppercase; margin-bottom: 8px;">⚠ Críticas</div>
-                                <div style="font-size: 2em; font-weight: 700; color: #664d03;">${summary.critical_failed || 0}</div>
-                            </div>
-                            <div style="flex: 1; min-width: 180px; padding: 16px; background: linear-gradient(135deg, #cfe2ff 0%, #9ec5fe 100%); border-radius: 8px; border: 2px solid #0d6efd;">
-                                <div style="font-size: 0.8em; font-weight: 600; color: #084298; text-transform: uppercase; margin-bottom: 8px;">Taxa</div>
-                                <div style="font-size: 2em; font-weight: 700; color: #084298;">${passRate.toFixed(1)}%</div>
-                            </div>
-                        </div>${lastExecutionInfo}
+                        </div>
                     `;
 
                     // Agrupa por cenário
@@ -3157,10 +3376,16 @@ async def dashboard():
                         }
                     };
 
-                    html += `<div style="margin-top: 24px;">
-                        <h3 style="font-size: 1.1em; font-weight: 600; color: #212529; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-layer-group"></i> Resultados por Cenário de Escalabilidade
-                        </h3>`;
+                    html += `
+                        <div style="margin-top: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 1em; font-weight: 600; color: #212529; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-list-check"></i> Detalhamento por Cenário de Teste
+                                </h3>
+                                <button onclick="toggleAllScalabilityScenarios()" style="background: #198754; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; font-weight: 500;">
+                                    <i class="fas fa-chevron-down" id="toggle-all-scalability-icon"></i> <span id="toggle-all-scalability-text">Expandir Todos</span>
+                                </button>
+                            </div>`;
 
                     let scenarioIndex = 0;
                     Object.entries(byScenario).forEach(([scenario, stats]) => {
