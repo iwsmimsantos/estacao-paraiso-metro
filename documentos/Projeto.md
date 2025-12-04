@@ -8421,6 +8421,34 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 4. **Rastreabilidade de Performance**: O histórico de execuções permite análise de tendências ao longo do tempo, identificando padrões e prevenindo problemas antes que afetem usuários.
 
+**Visualização Dashboard**
+
+&emsp;A seguir podemos visualizar como ficou a dashboard e as suas etapas, é possível identificar que você tem um painel onde consegue visualizar o status de todos os testes e última vez que foram executados, além disso você possui uma possibilidade de expansão por cenário e por API para a visualização dos testes, além do histórico de todos os testes para registro e acompanhamento.
+
+<div align="center">
+<sub>Figura 12.2.1.1 - Dashboard Atual com Testes de Escalabilidade</sub><br>
+<img src="img/section12/escalabilidade.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.2 - Dashboard e Cenário de Testes Escolhidos</sub><br>
+<img src="img/section12/escalabilidade2.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.3 - Dashboard e APIs Testadas</sub><br>
+<img src="img/section12/escalabilidade3.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.4 - Dashboard e Detalhamento Testes de APIs</sub><br>
+<img src="img/section12/escalabilidade4.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
 ### 12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade
 
 &emsp; A análise dos resultados dos testes automatizados de conformidade para RNF-02 (Segurança) e RNF-03 (Rastreabilidade) demonstra **100% de conformidade** em todas as validações realizadas.
