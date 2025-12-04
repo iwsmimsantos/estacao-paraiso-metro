@@ -8,12 +8,10 @@ import json
 import shutil
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from fastapi import APIRouter, Query, HTTPException
 from typing import Optional, List, Dict, Any
-
-from fastapi import APIRouter, Query, HTTPException
 
 from ..monitoring.logger import logger, EventType
 
@@ -281,8 +279,8 @@ async def run_compliance_tests():
             detail="Script de testes automatizados não encontrado.",
         )
 
-    started_dt = datetime.utcnow()
-    started_at_utc = started_dt.replace(microsecond=0).isoformat() + "Z"
+    started_dt = datetime.now(timezone.utc)
+    started_at_utc = started_dt.replace(microsecond=0).isoformat().replace('+00:00', 'Z')
 
     try:
         completed = subprocess.run(
@@ -298,8 +296,8 @@ async def run_compliance_tests():
             detail=f"Erro ao executar script de testes: {str(e)}",
         )
 
-    finished_dt = datetime.utcnow()
-    finished_at_utc = finished_dt.replace(microsecond=0).isoformat() + "Z"
+    finished_dt = datetime.now(timezone.utc)
+    finished_at_utc = finished_dt.replace(microsecond=0).isoformat().replace('+00:00', 'Z')
     duration_seconds = (finished_dt - started_dt).total_seconds()
 
     if completed.returncode != 0:
@@ -316,6 +314,259 @@ async def run_compliance_tests():
         raise HTTPException(
             status_code=500,
             detail="Arquivo de resultados não encontrado após execução dos testes.",
+        )
+
+    # Lê o CSV gerado para montar o resumo e registrar logs permanentemente
+    try:
+        results: List[Dict[str, Any]] = []
+        with open(csv_path, "r", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                results.append(row)
+
+        total = len(results)
+        passed = sum(1 for r in results if r.get("status") == "PASSED")
+        failed = sum(1 for r in results if r.get("status") == "FAILED")
+        critical_failed = sum(
+            1
+            for r in results
+            if r.get("status") == "FAILED" and r.get("severity") == "CRÍTICO"
+        )
+        pass_rate = round(passed / total * 100, 1) if total > 0 else 0.0
+
+        summary = {
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "critical_failed": critical_failed,
+            "pass_rate": pass_rate,
+        }
+        
+        # Registra execução dos testes no sistema de logs
+        logger.log(
+            event_type=EventType.TEST_COMPLIANCE_RUN,
+            user_id="system",
+            resource_type="test_suite",
+            resource_id="compliance_tests",
+            action="execute",
+            status="success" if failed == 0 else "failed",
+            details={
+                "test_type": "compliance",
+                "started_at_utc": started_at_utc,
+                "finished_at_utc": finished_at_utc,
+                "duration_seconds": duration_seconds,
+                "total": total,
+                "passed": passed,
+                "failed": failed,
+                "critical_failed": critical_failed,
+                "pass_rate": pass_rate
+            }
+        )
+        
+        # Registra cada teste individual no sistema de logs
+        for test_result in results:
+            test_status = "success" if test_result.get("status") == "PASSED" else "failed"
+            logger.log(
+                event_type=EventType.TEST_COMPLIANCE_RESULT,
+                user_id="system",
+                resource_type="test",
+                resource_id=test_result.get("service_tested", "unknown"),
+                action=test_result.get("endpoint_tested", "N/A"),
+                status=test_status,
+                details={
+                    "test_scenario": test_result.get("test_scenario"),
+                    "service_tested": test_result.get("service_tested"),
+                    "endpoint_tested": test_result.get("endpoint_tested"),
+                    "severity": test_result.get("severity"),
+                    "execution_time_ms": test_result.get("execution_time_ms"),
+                    "details": test_result.get("details"),
+                    "timestamp_utc": test_result.get("timestamp_utc")
+                }
+            )
+            
+            # Registra falhas críticas como incidentes
+            if test_result.get("status") == "FAILED" and test_result.get("severity") == "CRÍTICO":
+                logger.log_incident(
+                    incident_type="test_compliance_critical_failure",
+                    severity="critical",
+                    user_id="system",
+                    resource_id=test_result.get("service_tested", "unknown"),
+                    description=f"Falha crítica em teste de conformidade: {test_result.get('test_scenario')}",
+                    details={
+                        "test_scenario": test_result.get("test_scenario"),
+                        "service_tested": test_result.get("service_tested"),
+                        "endpoint_tested": test_result.get("endpoint_tested"),
+                        "execution_time_ms": test_result.get("execution_time_ms"),
+                        "details": test_result.get("details")
+                    }
+                )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao ler resultados de conformidade: {str(e)}",
+        )
+
+    # Salva histórico em CSV com timestamp seguro para nome de arquivo
+    try:
+        history_dir = base_path / "test_results_history"
+        history_dir.mkdir(parents=True, exist_ok=True)
+        timestamp_for_filename = started_dt.strftime("%Y%m%dT%H%M%S")
+        history_csv_path = history_dir / f"test_results_{timestamp_for_filename}.csv"
+        shutil.copy2(csv_path, history_csv_path)
+    except Exception:
+        # Se o histórico falhar, não impede a resposta principal
+        pass
+
+    # Salva metadados da última execução em JSON para uso pelo dashboard
+    try:
+        meta_path = base_path / "test_results_meta.json"
+        meta_data = {
+            "started_at_utc": started_at_utc,
+            "finished_at_utc": finished_at_utc,
+            "duration_seconds": duration_seconds,
+            "summary": summary,
+        }
+        with open(meta_path, "w", encoding="utf-8") as meta_file:
+            json.dump(meta_data, meta_file, ensure_ascii=False, indent=2)
+    except Exception:
+        # Falha ao salvar metadados não deve quebrar o endpoint
+        pass
+
+    return {
+        "status": "completed",
+        "started_at_utc": started_at_utc,
+        "finished_at_utc": finished_at_utc,
+        "duration_seconds": duration_seconds,
+        "summary": summary,
+    }
+
+
+@router.get("/scalability-results")
+async def get_scalability_results():
+    """
+    Retorna resultados dos testes automatizados de conformidade de escalabilidade
+    
+    Lê o arquivo CSV gerado pelo script de teste e retorna os dados
+    para exibição no dashboard.
+    """
+    csv_path = Path(__file__).parent.parent.parent / "test_scalability_results.csv"
+    
+    if not csv_path.exists():
+        return {
+            "available": False,
+            "message": "Arquivo de resultados não encontrado. Execute o script de teste primeiro.",
+            "results": [],
+            "summary": {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "critical_failed": 0
+            }
+        }
+    
+    try:
+        results = []
+        with open(csv_path, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                results.append(row)
+        
+        # Calcula estatísticas
+        total = len(results)
+        passed = sum(1 for r in results if r.get("status") == "PASSED")
+        failed = sum(1 for r in results if r.get("status") == "FAILED")
+        critical_failed = sum(1 for r in results if r.get("status") == "FAILED" and r.get("severity") == "CRÍTICO")
+        
+        summary = {
+            "total": total,
+            "passed": passed,
+            "failed": failed,
+            "critical_failed": critical_failed,
+            "pass_rate": round(passed / total * 100, 1) if total > 0 else 0,
+        }
+
+        # Tenta enriquecer com metadados da última execução, se existirem
+        meta_path = csv_path.parent / "test_scalability_results_meta.json"
+        if meta_path.exists():
+            try:
+                with open(meta_path, "r", encoding="utf-8") as meta_file:
+                    meta_data = json.load(meta_file)
+                summary.update(
+                    {
+                        "started_at_utc": meta_data.get("started_at_utc"),
+                        "finished_at_utc": meta_data.get("finished_at_utc"),
+                        "duration_seconds": meta_data.get("duration_seconds"),
+                    }
+                )
+            except Exception:
+                # Se não conseguir ler o meta, segue apenas com o resumo básico
+                pass
+
+        return {
+            "available": True,
+            "results": results,
+            "summary": summary,
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao ler arquivo CSV: {str(e)}")
+
+
+@router.post("/run-scalability-tests")
+async def run_scalability_tests():
+    """
+    Executa o script de testes de conformidade de escalabilidade e retorna o resumo da execução.
+
+    - Roda o script test_scalability_automated.py
+    - Atualiza o arquivo test_scalability_results.csv
+    - Salva uma cópia com timestamp em test_scalability_results_history/
+    - Atualiza o arquivo test_scalability_results_meta.json com metadados da execução
+    """
+    base_path = Path(__file__).parent.parent.parent
+    script_path = base_path / "test_scalability_automated.py"
+    csv_path = base_path / "test_scalability_results.csv"
+
+    if not script_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail="Script de testes de escalabilidade não encontrado.",
+        )
+
+    started_dt = datetime.now(timezone.utc)
+    started_at_utc = started_dt.replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(script_path)],
+            cwd=str(base_path),
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao executar script de testes de escalabilidade: {str(e)}",
+        )
+
+    finished_dt = datetime.now(timezone.utc)
+    finished_at_utc = finished_dt.replace(microsecond=0).isoformat().replace('+00:00', 'Z')
+    duration_seconds = (finished_dt - started_dt).total_seconds()
+
+    if completed.returncode != 0:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "message": "Script de testes de escalabilidade retornou código de erro.",
+                "return_code": completed.returncode,
+                "stderr": completed.stderr,
+            },
+        )
+
+    if not csv_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail="Arquivo de resultados de escalabilidade não encontrado após execução dos testes.",
         )
 
     # Lê o CSV gerado para montar o resumo
@@ -343,18 +594,77 @@ async def run_compliance_tests():
             "critical_failed": critical_failed,
             "pass_rate": pass_rate,
         }
+        
+        # Registra execução dos testes no sistema de logs
+        logger.log(
+            event_type=EventType.TEST_SCALABILITY_RUN,
+            user_id="system",
+            resource_type="test_suite",
+            resource_id="scalability_tests",
+            action="execute",
+            status="success" if failed == 0 else "failed",
+            details={
+                "test_type": "scalability",
+                "started_at_utc": started_at_utc,
+                "finished_at_utc": finished_at_utc,
+                "duration_seconds": duration_seconds,
+                "total": total,
+                "passed": passed,
+                "failed": failed,
+                "critical_failed": critical_failed,
+                "pass_rate": pass_rate
+            }
+        )
+        
+        # Registra cada teste individual no sistema de logs
+        for test_result in results:
+            test_status = "success" if test_result.get("status") == "PASSED" else "failed"
+            logger.log(
+                event_type=EventType.TEST_SCALABILITY_RESULT,
+                user_id="system",
+                resource_type="test",
+                resource_id=test_result.get("service_tested", "unknown"),
+                action=test_result.get("endpoint_tested", "N/A"),
+                status=test_status,
+                details={
+                    "test_scenario": test_result.get("test_scenario"),
+                    "service_tested": test_result.get("service_tested"),
+                    "endpoint_tested": test_result.get("endpoint_tested"),
+                    "severity": test_result.get("severity"),
+                    "execution_time_ms": test_result.get("execution_time_ms"),
+                    "details": test_result.get("details"),
+                    "timestamp_utc": test_result.get("timestamp_utc")
+                }
+            )
+            
+            # Registra falhas críticas como incidentes
+            if test_result.get("status") == "FAILED" and test_result.get("severity") == "CRÍTICO":
+                logger.log_incident(
+                    incident_type="test_scalability_critical_failure",
+                    severity="critical",
+                    user_id="system",
+                    resource_id=test_result.get("service_tested", "unknown"),
+                    description=f"Falha crítica em teste de escalabilidade: {test_result.get('test_scenario')}",
+                    details={
+                        "test_scenario": test_result.get("test_scenario"),
+                        "service_tested": test_result.get("service_tested"),
+                        "endpoint_tested": test_result.get("endpoint_tested"),
+                        "execution_time_ms": test_result.get("execution_time_ms"),
+                        "details": test_result.get("details")
+                    }
+                )
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Erro ao ler resultados de conformidade: {str(e)}",
+            detail=f"Erro ao ler resultados de escalabilidade: {str(e)}",
         )
 
     # Salva histórico em CSV com timestamp seguro para nome de arquivo
     try:
-        history_dir = base_path / "test_results_history"
+        history_dir = base_path / "test_scalability_results_history"
         history_dir.mkdir(parents=True, exist_ok=True)
         timestamp_for_filename = started_dt.strftime("%Y%m%dT%H%M%S")
-        history_csv_path = history_dir / f"test_results_{timestamp_for_filename}.csv"
+        history_csv_path = history_dir / f"test_scalability_results_{timestamp_for_filename}.csv"
         shutil.copy2(csv_path, history_csv_path)
     except Exception:
         # Se o histórico falhar, não impede a resposta principal
@@ -362,7 +672,7 @@ async def run_compliance_tests():
 
     # Salva metadados da última execução em JSON para uso pelo dashboard
     try:
-        meta_path = base_path / "test_results_meta.json"
+        meta_path = base_path / "test_scalability_results_meta.json"
         meta_data = {
             "started_at_utc": started_at_utc,
             "finished_at_utc": finished_at_utc,

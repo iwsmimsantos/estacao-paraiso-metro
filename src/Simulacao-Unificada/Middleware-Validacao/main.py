@@ -614,9 +614,99 @@ async def all_logs_page():
             
             async function loadAllLogs() {
                 try {
-                    const response = await fetch('/monitoring/logs');
+                    const response = await fetch('/monitoring/logs?limit=500');
                     const data = await response.json();
-                    allLogs = data.logs || [];
+                    let auditLogs = data.logs || [];
+                    
+                    // Busca resultados de testes automatizados e converte para formato de log
+                    try {
+                        const complianceResponse = await fetch('/monitoring/compliance-results');
+                        const complianceData = await complianceResponse.json();
+                        
+                        if (complianceData.available && complianceData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = complianceData.summary?.started_at_utc 
+                                ? 'test-compliance-' + new Date(complianceData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-compliance-' + Date.now().toString(36);
+                            
+                            const testLogs = complianceData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.compliance.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (complianceError) {
+                        // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        
+                        if (scalabilityData.available && scalabilityData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = scalabilityData.summary?.started_at_utc 
+                                ? 'test-scalability-' + new Date(scalabilityData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-scalability-' + Date.now().toString(36);
+                            
+                            const testLogs = scalabilityData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.scalability.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
+                    }
+                    
+                    // Ordena por timestamp (mais recente primeiro)
+                    auditLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    allLogs = auditLogs;
                     renderTable();
                 } catch (error) {
                     console.error('Erro ao carregar logs:', error);
@@ -686,14 +776,29 @@ async def all_logs_page():
                     if (log.status === 'denied') { badgeClass = 'badge-denied'; statusLabel = 'Negado'; }
                     if (log.status === 'incident') { badgeClass = 'badge-incident'; statusLabel = 'Incidente'; }
                     
+                    // Formata event_type para logs de teste
+                    let eventType = log.event_type || 'N/A';
+                    if (eventType.startsWith('test.')) {
+                        eventType = eventType.replace('test.', '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    }
+                    
+                    // Para logs de teste, usa o endpoint como resource_id se não houver
+                    let resourceId = log.resource_id || '-';
+                    if (resourceId === '-' && log.details && log.details.endpoint) {
+                        resourceId = log.details.endpoint;
+                    }
+                    
+                    // Busca project_id: primeiro tenta no nível raiz, depois em details
+                    const projectId = log.project_id || (log.details && log.details.project_id) || '-';
+                    
                     return `
                         <tr onclick='showLogDetails(${JSON.stringify(log).replace(/'/g, "&apos;")})'>
                             <td>${new Date(log.timestamp).toLocaleString('pt-BR')}</td>
                             <td><span class="badge ${badgeClass}">${statusLabel}</span></td>
-                            <td>${log.event_type || 'N/A'}</td>
+                            <td>${eventType}</td>
                             <td>${log.user_id || 'N/A'}</td>
-                            <td>${log.project_id || '-'}</td>
-                            <td>${log.resource_id || '-'}</td>
+                            <td>${projectId}</td>
+                            <td>${resourceId}</td>
                             <td style="font-family: monospace; font-size: 0.8em;">${log.trace_id ? log.trace_id.substring(0, 16) + '...' : '-'}</td>
                         </tr>
                     `;
@@ -729,7 +834,7 @@ async def all_logs_page():
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Projeto</div>
-                        <div class="detail-value">${log.project_id || '-'}</div>
+                        <div class="detail-value">${log.project_id || (log.details && log.details.project_id) || '-'}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">Recurso</div>
@@ -1582,6 +1687,47 @@ async def dashboard():
                         </div>
                     </div>
                 </div>
+
+                <!-- Testes Automatizados de Escalabilidade -->
+                <div id="scalability-dashboard-card" class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <span class="card-icon"><i class="fas fa-tachometer-alt"></i></span>
+                            <span>TESTES AUTOMATIZADOS DE ESCALABILIDADE</span>
+                        </div>
+                        <button class="refresh-btn" onclick="if(typeof runScalabilityTests === 'function') runScalabilityTests();" style="padding: 6px 12px; font-size: 0.85em;">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+                    <div id="scalability-container" style="
+                        min-height: 300px; 
+                        padding: 24px;
+                    ">
+                        <div style="
+                            padding: 30px; 
+                            text-align: center; 
+                            background: linear-gradient(135deg, #e7fff3 0%, #cfffdf 100%); 
+                            border: 3px solid #198754; 
+                            border-radius: 12px; 
+                            margin-bottom: 20px;
+                            box-shadow: 0 2px 8px rgba(25, 135, 84, 0.2);
+                        ">
+                            <div style="font-size: 3em; margin-bottom: 16px;">⚡</div>
+                            <div style="font-size: 1.4em; font-weight: 700; color: #0a5229; margin-bottom: 12px;">Dashboard de Testes Automatizados</div>
+                            <div style="color: #0a5229; margin-bottom: 20px; font-size: 1.05em;">Carregando resultados de escalabilidade...</div>
+                            <div style="background: white; padding: 16px; border-radius: 8px; color: #495057; font-size: 1em; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <strong>Esta seção exibe:</strong><br/>
+                                • Resultados dos testes automatizados de escalabilidade (RNF-01)<br/>
+                                • Verificação de limites de latência<br/>
+                                • Validação de throughput e consistência
+                            </div>
+                        </div>
+                        <div class="loading" id="scalability-loading" style="display: none; text-align: center; padding: 20px;">
+                            <div class="spinner"></div>
+                            <div>Carregando resultados de escalabilidade...</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Layout de 2 Colunas: Incidentes (maior, esquerda) + Logs (menor, direita) -->
@@ -1591,7 +1737,7 @@ async def dashboard():
                         <div class="card-header">
                             <div class="card-title">
                                 <span class="card-icon"><i class="fas fa-bell"></i></span>
-                                <span>INCIDENT QUEUE</span>
+                                <span>FILA DE INCIDENTES</span>
                             </div>
                         </div>
                         <div class="log-controls" id="incident-filters">
@@ -1902,11 +2048,22 @@ async def dashboard():
                         const complianceResponse = await fetch('/monitoring/compliance-results');
                         const complianceData = await complianceResponse.json();
                         if (complianceData.available && complianceData.results) {
-                            testLogsCount = complianceData.results.length;
-                            testFailedCount = complianceData.results.filter(r => r.status === 'FAILED').length;
+                            testLogsCount += complianceData.results.length;
+                            testFailedCount += complianceData.results.filter(r => r.status === 'FAILED').length;
                         }
                     } catch (complianceError) {
                         // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        if (scalabilityData.available && scalabilityData.results) {
+                            testLogsCount += scalabilityData.results.length;
+                            testFailedCount += scalabilityData.results.filter(r => r.status === 'FAILED').length;
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
                     }
                     
                     // Atualiza cards de estatísticas
@@ -1951,31 +2108,85 @@ async def dashboard():
                         const complianceData = await complianceResponse.json();
                         
                         if (complianceData.available && complianceData.results) {
-                            const testLogs = complianceData.results.map(test => ({
-                                timestamp: test.timestamp_utc || new Date().toISOString(),
-                                event_type: `test.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'compliance'}`,
-                                user_id: 'system',
-                                resource_type: 'test',
-                                resource_id: test.service_tested || 'unknown',
-                                action: test.endpoint_tested || 'N/A',
-                                status: test.status === 'PASSED' ? 'success' : 'failed',
-                                details: {
-                                    test_scenario: test.test_scenario,
-                                    service: test.service_tested,
-                                    endpoint: test.endpoint_tested,
-                                    severity: test.severity,
-                                    execution_time_ms: test.execution_time_ms,
-                                    details: test.details
-                                },
-                                trace_id: null,
-                                correlation_id: null
-                            }));
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = complianceData.summary?.started_at_utc 
+                                ? 'test-compliance-' + new Date(complianceData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-compliance-' + Date.now().toString(36);
+                            
+                            const testLogs = complianceData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.compliance.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
                             
                             // Mescla logs de auditoria com logs de testes
                             auditLogs = [...auditLogs, ...testLogs];
                         }
                     } catch (complianceError) {
                         // Ignora erro se compliance-results não estiver disponível
+                    }
+                    
+                    try {
+                        const scalabilityResponse = await fetch('/monitoring/scalability-results');
+                        const scalabilityData = await scalabilityResponse.json();
+                        
+                        if (scalabilityData.available && scalabilityData.results) {
+                            // Gera correlation_id baseado na execução dos testes (mesmo para todos os testes da mesma execução)
+                            const executionCorrelationId = scalabilityData.summary?.started_at_utc 
+                                ? 'test-scalability-' + new Date(scalabilityData.summary.started_at_utc).getTime().toString(36)
+                                : 'test-scalability-' + Date.now().toString(36);
+                            
+                            const testLogs = scalabilityData.results.map(test => {
+                                // Gera trace_id único baseado no timestamp e service
+                                const timestamp = test.timestamp_utc || new Date().toISOString();
+                                const traceId = 'test-' + btoa(timestamp + '-' + (test.service_tested || 'unknown') + '-' + (test.test_scenario || 'test')).substring(0, 36).replace(/[^a-zA-Z0-9]/g, '');
+                                
+                                return {
+                                    timestamp: timestamp,
+                                    event_type: `test.scalability.${test.test_scenario?.toLowerCase().replace(/\s+/g, '_') || 'result'}`,
+                                    user_id: 'system',
+                                    resource_type: 'test',
+                                    resource_id: test.service_tested || 'unknown',
+                                    action: test.endpoint_tested || 'N/A',
+                                    status: test.status === 'PASSED' ? 'success' : 'failed',
+                                    details: {
+                                        test_scenario: test.test_scenario,
+                                        service: test.service_tested,
+                                        endpoint: test.endpoint_tested,
+                                        severity: test.severity,
+                                        execution_time_ms: test.execution_time_ms,
+                                        details: test.details
+                                    },
+                                    trace_id: traceId,
+                                    correlation_id: executionCorrelationId
+                                };
+                            });
+                            
+                            // Mescla logs de auditoria com logs de testes
+                            auditLogs = [...auditLogs, ...testLogs];
+                        }
+                    } catch (scalabilityError) {
+                        // Ignora erro se scalability-results não estiver disponível
                     }
                     
                     // Ordena por timestamp (mais recente primeiro)
@@ -2030,7 +2241,8 @@ async def dashboard():
                     let eventType = log.event_type || 'unknown';
                     const userId = log.user_id || 'N/A';
                     const status = log.status || 'unknown';
-                    const projectId = log.project_id || null;
+                    // Busca project_id: primeiro tenta no nível raiz, depois em details
+                    const projectId = log.project_id || (log.details && log.details.project_id) || null;
                     let resourceId = log.resource_id || null;
                     const traceId = log.trace_id || null;
                     
@@ -2366,7 +2578,7 @@ async def dashboard():
                             });
                             
                             lastExecutionText = `
-                                <div style="font-size: 0.85em; color: #495057; margin-top: 8px;">
+                                <div style="font-size: 0.85em; color: #084298; margin-top: 8px;">
                                     <strong>Última execução:</strong> ${startedStr} – ${endedStr}
                                     (${durationSeconds.toFixed ? durationSeconds.toFixed(1) : durationSeconds}s)
                                 </div>
@@ -2938,6 +3150,663 @@ async def dashboard():
                 }
             };
             
+            // ============================================================
+            // TESTES AUTOMATIZADOS DE ESCALABILIDADE
+            // ============================================================
+
+            // Testes Automatizados de Escalabilidade
+            async function runScalabilityTests() {
+                const button = document.querySelector('#scalability-dashboard-card .refresh-btn');
+                const originalText = button ? button.innerHTML : null;
+                
+                try {
+                    if (button) {
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Rodando...';
+                    }
+
+                    const response = await fetch('/monitoring/run-scalability-tests', {
+                        method: 'POST'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao executar testes: ${response.status} ${response.statusText}`);
+                    }
+
+                    const executionData = await response.json();
+                    
+                    await Promise.all([
+                        loadScalabilityResults(),
+                        loadStats()
+                    ]);
+
+                    console.info('Execução dos testes de escalabilidade:', executionData);
+                } catch (error) {
+                    console.error(error);
+                    alert('Não foi possível executar os testes automatizados de escalabilidade. Verifique o servidor do middleware.');
+                } finally {
+                    if (button && originalText !== null) {
+                        button.disabled = false;
+                        button.innerHTML = originalText;
+                    }
+                }
+            }
+
+            async function loadScalabilityResults() {
+                const container = document.getElementById('scalability-container');
+                if (!container) return;
+                
+                if (window.scalabilityDropdownsState) {
+                    const allScenarios = document.querySelectorAll('[id^="scalability-scenario-"]');
+                    allScenarios.forEach(s => {
+                        const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                        window.scalabilityDropdownsState[s.id] = isVisible;
+                    });
+                }
+                
+                if (window.scalabilityServiceDropdownsState) {
+                    const allServices = document.querySelectorAll('[id^="scalability-service-tests-"]');
+                    allServices.forEach(s => {
+                        const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                        window.scalabilityServiceDropdownsState[s.id] = isVisible;
+                    });
+                }
+                
+                try {
+                    console.log('⚡ Carregando resultados de escalabilidade...');
+                    const response = await fetch('/monitoring/scalability-results');
+                    
+                    if (!response.ok) {
+                        container.innerHTML = `
+                            <div style="padding: 40px; text-align: center; background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px;">
+                                <div style="font-size: 3em; margin-bottom: 16px;">⚠️</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #664d03; margin-bottom: 8px;">Não foi possível carregar os resultados</div>
+                                <div style="color: #664d03;">Código: ${response.status} - ${response.statusText}</div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const data = await response.json();
+                    
+                    if (!data.available) {
+                        container.innerHTML = `
+                            <div style="padding: 40px; text-align: center; background: #e7fff3; border: 2px solid #198754; border-radius: 8px;">
+                                <div style="font-size: 3em; margin-bottom: 16px;">📋</div>
+                                <div style="font-size: 1.2em; font-weight: 600; color: #0a5229; margin-bottom: 8px;">Nenhum resultado disponível</div>
+                                <div style="color: #0a5229; margin-bottom: 16px;">${data.message || 'Execute o script de teste primeiro'}</div>
+                                <div style="background: white; padding: 16px; border-radius: 8px; color: #495057;">
+                                    <strong>Execute no terminal:</strong><br/>
+                                    <code style="background: #f8f9fa; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 8px; font-size: 1.1em;">python test_scalability_automated.py</code>
+                                </div>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    const { results, summary } = data;
+                    
+                    // Prepara texto de última execução, se metadados estiverem disponíveis
+                    let lastExecutionText = '';
+                    if (summary.started_at_utc && summary.finished_at_utc) {
+                        try {
+                            const startDate = new Date(summary.started_at_utc);
+                            const endDate = new Date(summary.finished_at_utc);
+                            const durationSeconds = summary.duration_seconds || 0;
+                            
+                            const startedStr = startDate.toLocaleString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            const endedStr = endDate.toLocaleTimeString('pt-BR', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
+                            
+                            lastExecutionText = `
+                                <div style="font-size: 0.85em; color: #0a5229; margin-top: 8px;">
+                                    <strong>Última execução:</strong> ${startedStr} – ${endedStr}
+                                    (${durationSeconds.toFixed ? durationSeconds.toFixed(1) : durationSeconds}s)
+                                </div>
+                            `;
+                        } catch (e) {
+                            // Se der erro ao formatar datas, simplesmente não mostra o texto
+                            console.warn('Não foi possível formatar metadados de execução dos testes.', e);
+                        }
+                    }
+                    
+                    // Renderiza resumo
+                    let html = `
+                        <div style="margin-bottom: 20px;">
+                            <div style="background: #e7fff3; border: 2px solid #198754; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                                <div style="font-size: 1em; font-weight: 600; color: #0a5229; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-info-circle"></i> Sobre os Testes Automatizados de Escalabilidade
+                                </div>
+                                <div style="font-size: 0.9em; color: #0a5229; line-height: 1.5;">
+                                    Estes testes validam a conformidade das APIs Unificadas com os Requisitos Não Funcionais (RNF) de Escalabilidade (RNF-01). Eles garantem que as APIs estão retornando métricas de performance adequadas, respeitando limites de latência e mantendo consistência de throughput.
+                                </div>
+                                ${lastExecutionText}
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px;">
+                                <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #dee2e6;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #212529; margin-bottom: 4px;">${summary.total || 0}</div>
+                                    <div style="font-size: 0.8em; color: #6c757d; font-weight: 500;">Total de Testes Executados</div>
+                                </div>
+                                <div style="background: #d1e7dd; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #a3cfbb;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #0f5132; margin-bottom: 4px;">✓ ${summary.passed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #0f5132; font-weight: 500;">Testes Aprovados</div>
+                                </div>
+                                <div style="background: #f8d7da; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid #f1aeb5;">
+                                    <div style="font-size: 2em; font-weight: 700; color: #842029; margin-bottom: 4px;">✗ ${summary.failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: #842029; font-weight: 500;">Testes Falharam</div>
+                                </div>
+                                <div style="background: ${summary.critical_failed > 0 ? '#f8d7da' : '#d1e7dd'}; padding: 16px; border-radius: 8px; text-align: center; border: 2px solid ${summary.critical_failed > 0 ? '#f1aeb5' : '#a3cfbb'};">
+                                    <div style="font-size: 2em; font-weight: 700; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; margin-bottom: 4px;">${summary.critical_failed > 0 ? '⚠️' : '✓'} ${summary.critical_failed || 0}</div>
+                                    <div style="font-size: 0.8em; color: ${summary.critical_failed > 0 ? '#842029' : '#0f5132'}; font-weight: 500;">Falhas Críticas</div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: ${summary.pass_rate >= 90 ? '#d1e7dd' : summary.pass_rate >= 70 ? '#fff3cd' : '#f8d7da'}; border: 2px solid ${summary.pass_rate >= 90 ? '#a3cfbb' : summary.pass_rate >= 70 ? '#ffc107' : '#f1aeb5'}; padding: 16px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.1em; font-weight: 600; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'}; margin-bottom: 4px;">
+                                    Taxa de Conformidade: <span style="font-size: 1.3em;">${summary.pass_rate || 0}%</span>
+                                </div>
+                                <div style="font-size: 0.85em; color: ${summary.pass_rate >= 90 ? '#0f5132' : summary.pass_rate >= 70 ? '#856404' : '#842029'};">
+                                    ${summary.pass_rate >= 90 ? '✅ Sistema em conformidade' : summary.pass_rate >= 70 ? '⚠️ Atenção necessária' : '❌ Ação imediata requerida'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // Agrupa por cenário
+                    const byScenario = {};
+                    results.forEach(r => {
+                        const scenario = r.test_scenario || 'Desconhecido';
+                        if (!byScenario[scenario]) {
+                            byScenario[scenario] = { passed: 0, failed: 0, total: 0, tests: [], severity: r.severity || 'ALTO' };
+                        }
+                        byScenario[scenario].total++;
+                        if (r.status === 'PASSED') {
+                            byScenario[scenario].passed++;
+                        } else {
+                            byScenario[scenario].failed++;
+                        }
+                        byScenario[scenario].tests.push(r);
+                    });
+
+                    // Descrições dos cenários
+                    const scenarioDescriptions = {
+                        'Validação de Métricas de Performance': {
+                            icon: '📊',
+                            description: 'Valida se meta.performance contém processing_time_ms e items_in_response. Essencial para monitoramento contínuo.',
+                            rnf: 'Escalabilidade',
+                            technicalDetails: {
+                                'meta.performance': 'Objeto contendo métricas de performance da requisição',
+                                'processing_time_ms': 'Tempo em milissegundos que o servidor levou para processar a requisição',
+                                'items_in_response': 'Número de itens retornados na resposta (útil para paginação)',
+                                'Por que é importante?': 'Permite monitorar a performance do sistema em tempo real e identificar degradação antes que afete usuários'
+                            }
+                        },
+                        'Validação de Limites de Latência': {
+                            icon: '⚡',
+                            description: 'Valida se processing_time_ms está dentro dos limites aceitáveis (< 1000ms). Garante SLA de tempo de resposta.',
+                            rnf: 'Escalabilidade',
+                            technicalDetails: {
+                                'processing_time_ms': 'Tempo de processamento em milissegundos',
+                                'Limite configurado': 'Máximo de 1000ms (1 segundo) para operações normais',
+                                'Por que é importante?': 'Garante que o sistema responde rapidamente mesmo sob carga, mantendo boa experiência do usuário'
+                            }
+                        },
+                        'Validação de Throughput': {
+                            icon: '🔄',
+                            description: 'Valida se items_in_response está consistente e dentro dos limites (≥1 e ≤100). Detecta problemas de paginação.',
+                            rnf: 'Escalabilidade',
+                            technicalDetails: {
+                                'items_in_response': 'Número de itens na resposta',
+                                'Limites': 'Mínimo 1 item, máximo 100 itens por página',
+                                'Consistência': 'O valor deve bater com o tamanho real do array data',
+                                'Por que é importante?': 'Garante que clientes da API recebem dados consistentes e podem implementar paginação corretamente'
+                            }
+                        }
+                    };
+
+                    html += `
+                        <div style="margin-top: 24px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 1em; font-weight: 600; color: #212529; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-list-check"></i> Detalhamento por Cenário de Teste
+                                </h3>
+                                <button onclick="toggleAllScalabilityScenarios()" style="background: #198754; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; font-weight: 500;">
+                                    <i class="fas fa-chevron-down" id="toggle-all-scalability-icon"></i> <span id="toggle-all-scalability-text">Expandir Todos</span>
+                                </button>
+                            </div>`;
+
+                    let scenarioIndex = 0;
+                    Object.entries(byScenario).forEach(([scenario, stats]) => {
+                        const passRateScenario = stats.total > 0 ? Math.round(stats.passed / stats.total * 100) : 0;
+                        const severityColor = stats.severity === 'CRÍTICO' ? '#dc3545' : '#198754';
+                        const scenarioInfo = scenarioDescriptions[scenario] || { icon: '📋', description: 'Teste de conformidade', rnf: 'RNF', technicalDetails: {} };
+                        const statusIcon = stats.failed === 0 ? '✅' : stats.failed < stats.total ? '⚠️' : '❌';
+                        const scenarioId = `scalability-scenario-${scenarioIndex++}`;
+                        
+                        html += `
+                            <div style="background: white; border: 2px solid ${stats.failed === 0 ? '#d1e7dd' : '#f8d7da'}; border-left: 5px solid ${severityColor}; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); overflow: hidden;">
+                                <div onclick="toggleScalabilityScenario('${scenarioId}')" style="padding: 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: start; transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                            <span style="font-size: 1.5em;">${scenarioInfo.icon}</span>
+                                            <div>
+                                                <div style="font-weight: 700; color: #212529; font-size: 1.05em; margin-bottom: 2px;">${scenario}</div>
+                                                <div style="font-size: 0.8em; color: #6c757d;">${scenarioInfo.rnf}</div>
+                                            </div>
+                                        </div>
+                                        <div style="font-size: 0.9em; color: #495057; line-height: 1.5;">${scenarioInfo.description}</div>
+                                    </div>
+                                    <div style="text-align: right; margin-left: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                                        <div style="font-size: 0.85em; padding: 6px 14px; border-radius: 20px; background: ${severityColor}20; color: ${severityColor}; font-weight: 600;">
+                                            ${stats.severity}
+                                        </div>
+                                        <div style="font-size: 1.5em; font-weight: 700; color: ${stats.failed === 0 ? '#198754' : '#dc3545'};">
+                                            ${statusIcon} ${passRateScenario}%
+                                        </div>
+                                        <div style="font-size: 1.2em; color: #6c757d; transition: transform 0.3s;" id="icon-${scenarioId}">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="${scenarioId}" onclick="event.stopPropagation();" style="display: none; padding: 0 20px 20px 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="display: flex; gap: 20px; font-size: 0.9em; margin-bottom: 20px; padding-top: 16px;">
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #198754; font-size: 1.3em; margin-bottom: 4px;">✓ ${stats.passed}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Aprovados</div>
+                                        </div>
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #dc3545; font-size: 1.3em; margin-bottom: 4px;">✗ ${stats.failed}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Falharam</div>
+                                        </div>
+                                        <div style="flex: 1; text-align: center; padding: 12px; background: #f8f9fa; border-radius: 6px;">
+                                            <div style="font-weight: 600; color: #212529; font-size: 1.3em; margin-bottom: 4px;">${stats.total}</div>
+                                            <div style="color: #6c757d; font-size: 0.85em;">Total</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin-top: 16px;">
+                                        <div style="font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                            <i class="fas fa-question-circle"></i> O que significa cada campo técnico?
+                                        </div>
+                                        ${Object.entries(scenarioInfo.technicalDetails).map(([term, explanation], idx, arr) => `
+                                            <div style="margin-bottom: 12px; padding-bottom: 12px; ${idx === arr.length - 1 ? 'border-bottom: none; margin-bottom: 0; padding-bottom: 0;' : 'border-bottom: 1px solid #dee2e6;'}">
+                                                <div style="font-weight: 600; color: #198754; margin-bottom: 4px; font-family: monospace; font-size: 0.9em;">
+                                                    ${term}
+                                                </div>
+                                                <div style="color: #495057; font-size: 0.9em; line-height: 1.5;">
+                                                    ${explanation}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+
+                    // Agrupa por serviço
+                    const byService = {};
+                    results.forEach(r => {
+                        const service = r.service_tested || 'unknown';
+                        if (!byService[service]) {
+                            byService[service] = { passed: 0, failed: 0, total: 0, tests: [] };
+                        }
+                        byService[service].total++;
+                        if (r.status === 'PASSED') {
+                            byService[service].passed++;
+                        } else {
+                            byService[service].failed++;
+                        }
+                        byService[service].tests.push(r);
+                    });
+
+                    html += `
+                        <div style="margin-top: 24px;">
+                            <h3 style="font-size: 1em; font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-cloud"></i> APIs Testadas
+                            </h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                                ${Object.entries(byService).map(([service, stats]) => {
+                                    const servicePassRate = stats.total > 0 ? Math.round(stats.passed / stats.total * 100) : 0;
+                                    const serviceIcons = {
+                                        'sharepoint': '📁',
+                                        'miro': '🎨',
+                                        'copilot': '🤖',
+                                        'office': '📧',
+                                        'sentinel': '🛡️'
+                                    };
+                                    const serviceId = 'scalability-service-tests-' + service.replace(/\s+/g, '-').toLowerCase();
+                                    return `
+                                        <div style="background: white; border: 2px solid ${stats.failed === 0 ? '#d1e7dd' : '#f8d7da'}; padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: all 0.2s;" onclick="toggleScalabilityServiceTests('${serviceId}', event)" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                                            <div style="font-size: 2em; margin-bottom: 8px;">${serviceIcons[service] || '🔌'}</div>
+                                            <div style="font-weight: 600; color: #212529; margin-bottom: 4px; text-transform: capitalize;">${service}</div>
+                                            <div style="font-size: 0.85em; color: #6c757d; margin-bottom: 8px;">${stats.total} testes</div>
+                                            <div style="font-size: 1.1em; font-weight: 700; color: ${stats.failed === 0 ? '#198754' : '#dc3545'};">
+                                                ${stats.failed === 0 ? '✅' : '⚠️'} ${servicePassRate}%
+                                            </div>
+                                            <div style="font-size: 0.75em; color: #0d6efd; margin-top: 8px; padding-top: 8px; border-top: 1px solid #e9ecef;">
+                                                <i class="fas fa-chevron-down" id="icon-${serviceId}"></i> Ver testes
+                                            </div>
+                                            <div id="${serviceId}" onclick="event.stopPropagation();" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 2px solid #dee2e6; text-align: left;">
+                                                ${stats.tests.map(test => `
+                                                    <div style="padding: 10px; margin-bottom: 8px; background: ${test.status === 'PASSED' ? '#d1e7dd' : '#f8d7da'}; border-radius: 6px; border-left: 4px solid ${test.status === 'PASSED' ? '#198754' : '#dc3545'};">
+                                                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                                                            <div style="font-weight: 600; color: #212529; font-size: 0.9em;">${test.test_scenario || 'N/A'}</div>
+                                                            <span style="padding: 3px 8px; border-radius: 4px; font-size: 0.75em; font-weight: 600; ${test.status === 'PASSED' ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;'}">
+                                                                ${test.status === 'PASSED' ? '✓' : '✗'} ${test.status || 'N/A'}
+                                                            </span>
+                                                        </div>
+                                                        <div style="font-size: 0.75em; color: #495057;">
+                                                            <strong>Tempo:</strong> ${test.execution_time_ms || 'N/A'}ms
+                                                        </div>
+                                                        ${test.details ? `<div style="font-size: 0.75em; color: #6c757d; margin-top: 4px; font-style: italic;">${test.details}</div>` : ''}
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Seção de todos os testes executados (clicável)
+                    if (results.length > 0) {
+                        html += `
+                            <div style="margin-top: 24px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <h3 style="font-size: 1em; font-weight: 600; color: #212529; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-list"></i> Todos os Testes Executados
+                                    </h3>
+                                    <button onclick="toggleAllScalabilityTests()" style="background: #0d6efd; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.85em; cursor: pointer; font-weight: 500;">
+                                        <i class="fas fa-chevron-down" id="toggle-scalability-all-tests-icon"></i> <span id="toggle-scalability-all-tests-text">Expandir Todos</span>
+                                    </button>
+                                </div>
+                                <div id="scalability-all-tests-container" style="display: none; max-height: 500px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; background: white; padding: 12px;">
+                                    ${results.map((test, idx) => `
+                                        <div style="padding: 12px; margin-bottom: 8px; background: ${test.status === 'PASSED' ? '#d1e7dd' : '#f8d7da'}; border-radius: 6px; border-left: 4px solid ${test.status === 'PASSED' ? '#198754' : '#dc3545'};">
+                                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 6px;">
+                                                <div style="flex: 1;">
+                                                    <div style="font-weight: 700; color: #212529; font-size: 0.95em; margin-bottom: 4px;">
+                                                        ${test.test_scenario || 'N/A'}
+                                                    </div>
+                                                    <div style="font-size: 0.8em; color: #6c757d; margin-bottom: 4px;">
+                                                        <strong>API:</strong> <span style="text-transform: capitalize;">${test.service_tested || 'N/A'}</span> | 
+                                                        <strong>Endpoint:</strong> <span style="font-family: monospace;">${test.endpoint_tested || 'N/A'}</span>
+                                                    </div>
+                                                    <div style="font-size: 0.75em; color: #495057;">
+                                                        <strong>Severidade:</strong> ${test.severity || 'N/A'} | 
+                                                        <strong>Tempo:</strong> ${test.execution_time_ms || 'N/A'}ms | 
+                                                        <strong>Executado:</strong> ${test.timestamp_utc || 'N/A'}
+                                                    </div>
+                                                    ${test.details ? `<div style="font-size: 0.8em; color: #6c757d; margin-top: 6px; padding: 8px; background: rgba(255,255,255,0.7); border-radius: 4px; font-style: italic;">${test.details}</div>` : ''}
+                                                </div>
+                                                <span style="padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 600; margin-left: 12px; ${test.status === 'PASSED' ? 'background: #198754; color: white;' : 'background: #dc3545; color: white;'}">
+                                                    ${test.status === 'PASSED' ? '✓ PASSED' : '✗ FAILED'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Tabela de resultados recentes (simplificada)
+                    if (results.length > 0) {
+                        html += `
+                            <div style="margin-top: 24px;">
+                                <h3 style="font-size: 1em; font-weight: 600; color: #212529; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-history"></i> Histórico Resumido (Últimos 15)
+                                </h3>
+                                <div style="max-height: 250px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 8px; background: white;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead style="background: #f8f9fa; position: sticky; top: 0;">
+                                            <tr>
+                                                <th style="padding: 10px 12px; text-align: left; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">API</th>
+                                                <th style="padding: 10px 12px; text-align: left; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">Cenário</th>
+                                                <th style="padding: 10px 12px; text-align: center; font-size: 0.75em; text-transform: uppercase; color: #495057; font-weight: 600;">Resultado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${results.slice(-15).reverse().map(r => `
+                                                <tr style="border-bottom: 1px solid #f0f0f0; ${r.status === 'FAILED' ? 'background: #fff5f5;' : ''}">
+                                                    <td style="padding: 10px 12px; font-size: 0.85em;">
+                                                        <div style="font-weight: 600; color: #212529; text-transform: capitalize;">${r.service_tested || 'N/A'}</div>
+                                                        <div style="color: #6c757d; font-size: 0.75em; margin-top: 2px; font-family: monospace;">${(r.endpoint_tested || '').substring(0, 35)}${(r.endpoint_tested || '').length > 35 ? '...' : ''}</div>
+                                                    </td>
+                                                    <td style="padding: 10px 12px; font-size: 0.85em; color: #495057;">${r.test_scenario || 'N/A'}</td>
+                                                    <td style="padding: 10px 12px; text-align: center;">
+                                                        <span style="padding: 4px 10px; border-radius: 4px; font-size: 0.75em; font-weight: 600; ${r.status === 'PASSED' ? 'background: #d1e7dd; color: #0f5132;' : 'background: #f8d7da; color: #842029;'}">
+                                                            ${r.status === 'PASSED' ? '✓' : '✗'} ${r.status || 'N/A'}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    container.innerHTML = html;
+                    
+                    setTimeout(() => {
+                        if (window.restoreScalabilityDropdownsState) window.restoreScalabilityDropdownsState();
+                    }, 200);
+                    
+                } catch (error) {
+                    container.innerHTML = `<div style="padding: 40px; text-align: center; background: #f8d7da; border: 2px solid #dc3545; border-radius: 8px;">
+                        <div style="font-size: 3em; margin-bottom: 16px;">🚨</div>
+                        <div style="font-size: 1.2em; font-weight: 600; color: #842029;">Erro: ${error.message || 'Erro desconhecido'}</div>
+                    </div>`;
+                }
+            }
+            
+            // Funções para dropdowns de cenários de escalabilidade
+            window.scalabilityDropdownsState = window.scalabilityDropdownsState || {};
+            window.scalabilityServiceDropdownsState = window.scalabilityServiceDropdownsState || {};
+            window.scalabilityAllTestsExpanded = window.scalabilityAllTestsExpanded || false;
+            
+            // Função para salvar o estado dos dropdowns antes de um refresh
+            window.saveScalabilityDropdownsState = function() {
+                const allScenarios = document.querySelectorAll('[id^="scalability-scenario-"]');
+                allScenarios.forEach(s => {
+                    const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                    window.scalabilityDropdownsState[s.id] = isVisible;
+                });
+                
+                const allServices = document.querySelectorAll('[id^="scalability-service-tests-"]');
+                allServices.forEach(s => {
+                    const isVisible = s.style.display !== 'none' && window.getComputedStyle(s).display !== 'none';
+                    window.scalabilityServiceDropdownsState[s.id] = isVisible;
+                });
+
+                const allTestsContainer = document.getElementById('scalability-all-tests-container');
+                if (allTestsContainer) {
+                    window.scalabilityAllTestsExpanded = (allTestsContainer.style.display !== 'none' && window.getComputedStyle(allTestsContainer).display !== 'none');
+                }
+            };
+            
+            window.toggleScalabilityScenario = function(scenarioId, event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const content = document.getElementById(scenarioId);
+                const icon = document.getElementById('icon-' + scenarioId);
+                if (!content || !icon) return;
+
+                const isHidden = content.style.display === 'none' || !content.style.display || window.getComputedStyle(content).display === 'none';
+                
+                if (isHidden) {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                    window.scalabilityDropdownsState[scenarioId] = true;
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                    window.scalabilityDropdownsState[scenarioId] = false;
+                }
+            };
+
+            window.toggleAllScalabilityScenarios = function(event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const allScenarios = document.querySelectorAll('[id^="scalability-scenario-"]');
+                const toggleBtn = document.getElementById('toggle-scalability-scenarios-text');
+                const toggleIcon = document.getElementById('toggle-scalability-scenarios-icon');
+                
+                if (allScenarios.length === 0) return;
+                
+                let allExpanded = true;
+                allScenarios.forEach(s => {
+                    if (s.style.display === 'none' || !s.style.display) {
+                        allExpanded = false;
+                    }
+                });
+                
+                allScenarios.forEach((s, idx) => {
+                    const scenarioId = s.id;
+                    const icon = document.getElementById('icon-' + scenarioId);
+                    if (allExpanded) {
+                        s.style.display = 'none';
+                        if (icon) icon.style.transform = 'rotate(0deg)';
+                        window.scalabilityDropdownsState[scenarioId] = false;
+                    } else {
+                        s.style.display = 'block';
+                        if (icon) icon.style.transform = 'rotate(180deg)';
+                        window.scalabilityDropdownsState[scenarioId] = true;
+                    }
+                });
+                
+                if (toggleBtn) {
+                    toggleBtn.textContent = allExpanded ? 'Expandir Todos' : 'Recolher Todos';
+                }
+                if (toggleIcon) {
+                    toggleIcon.style.transform = allExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+                }
+            };
+            
+            // Função para restaurar o estado dos dropdowns após um refresh
+            window.restoreScalabilityDropdownsState = function() {
+                let restoredScenarios = 0;
+                for (const id in window.scalabilityDropdownsState) {
+                    const content = document.getElementById(id);
+                    const icon = document.getElementById('icon-' + id);
+                    if (content && icon) {
+                        if (window.scalabilityDropdownsState[id]) {
+                            content.style.display = 'block';
+                            icon.style.transform = 'rotate(180deg)';
+                            restoredScenarios++;
+                        } else {
+                            content.style.display = 'none';
+                            icon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+                if (restoredScenarios > 0) {
+                    console.log(`✅ Restaurados ${restoredScenarios} dropdown(s) de cenário de escalabilidade abertos`);
+                }
+
+                let restoredServices = 0;
+                for (const id in window.scalabilityServiceDropdownsState) {
+                    const content = document.getElementById(id);
+                    const icon = document.getElementById('icon-' + id);
+                    if (content && icon) {
+                        if (window.scalabilityServiceDropdownsState[id]) {
+                            content.style.display = 'block';
+                            icon.style.transform = 'rotate(180deg)';
+                            restoredServices++;
+                        } else {
+                            content.style.display = 'none';
+                            icon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                }
+                if (restoredServices > 0) {
+                    console.log(`✅ Restaurados ${restoredServices} dropdown(s) de serviço de escalabilidade abertos`);
+                }
+
+                const allTestsContainer = document.getElementById('scalability-all-tests-container');
+                const toggleAllTestsIcon = document.getElementById('toggle-scalability-all-tests-icon');
+                const toggleAllTestsText = document.getElementById('toggle-scalability-all-tests-text');
+                if (allTestsContainer && toggleAllTestsIcon && toggleAllTestsText) {
+                    if (window.scalabilityAllTestsExpanded) {
+                        allTestsContainer.style.display = 'block';
+                        toggleAllTestsIcon.style.transform = 'rotate(180deg)';
+                        toggleAllTestsText.textContent = 'Recolher Todos';
+                    } else {
+                        allTestsContainer.style.display = 'none';
+                        toggleAllTestsIcon.style.transform = 'rotate(0deg)';
+                        toggleAllTestsText.textContent = 'Expandir Todos';
+                    }
+                }
+            };
+            
+            // Função para expandir/recolher testes de um serviço específico
+            window.toggleScalabilityServiceTests = function(serviceId, event) {
+                if (event) event.stopPropagation();
+                const content = document.getElementById(serviceId);
+                const icon = document.getElementById('icon-' + serviceId);
+                if (!content || !icon) return;
+
+                const isHidden = content.style.display === 'none' || !content.style.display || window.getComputedStyle(content).display === 'none';
+                
+                if (isHidden) {
+                    content.style.display = 'block';
+                    icon.style.transform = 'rotate(180deg)';
+                    window.scalabilityServiceDropdownsState[serviceId] = true;
+                } else {
+                    content.style.display = 'none';
+                    icon.style.transform = 'rotate(0deg)';
+                    window.scalabilityServiceDropdownsState[serviceId] = false;
+                }
+            };
+            
+            // Função para expandir/recolher todos os testes
+            window.toggleAllScalabilityTests = function(event) {
+                if (event) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
+                const container = document.getElementById('scalability-all-tests-container');
+                const toggleIcon = document.getElementById('toggle-scalability-all-tests-icon');
+                const toggleText = document.getElementById('toggle-scalability-all-tests-text');
+
+                if (!container || !toggleIcon || !toggleText) return;
+
+                const isHidden = container.style.display === 'none' || !container.style.display || window.getComputedStyle(container).display === 'none';
+
+                if (isHidden) {
+                    container.style.display = 'block';
+                    toggleIcon.style.transform = 'rotate(180deg)';
+                    toggleText.textContent = 'Recolher Todos';
+                    window.scalabilityAllTestsExpanded = true;
+                } else {
+                    container.style.display = 'none';
+                    toggleIcon.style.transform = 'rotate(0deg)';
+                    toggleText.textContent = 'Expandir Todos';
+                    window.scalabilityAllTestsExpanded = false;
+                }
+            };
 
             // Carregar todos os dados
             async function loadAllData() {
@@ -2966,6 +3835,7 @@ async def dashboard():
             
             setTimeout(() => {
                 loadComplianceResults();
+                loadScalabilityResults();
             }, 1000);
         </script>
     </body>

@@ -8815,7 +8815,121 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 ### 12.2.1 RNF 1 - Escalabilidade
 
-_(conteúdo.)_
+&emsp; A análise dos resultados dos testes automatizados de conformidade para RNF-01 (Escalabilidade) demonstra **100% de conformidade** em todas as validações realizadas, comprovando que o sistema implementa corretamente as métricas de performance e atende aos requisitos de latência e throughput estabelecidos.
+
+**Implementação dos Testes:**
+
+&emsp; Os testes automatizados de escalabilidade foram implementados seguindo o mesmo padrão dos testes de segurança e rastreabilidade, com:
+
+1. **Script de Testes (`test_scalability_automated.py`)**: Script Python que executa três cenários críticos de validação:
+
+   - **Validação de Métricas de Performance (CRÍTICO)**: Verifica se o objeto `meta.performance` está presente e contém os campos obrigatórios (`processing_time_ms`, `items_in_response`), essenciais para monitoramento de performance do sistema.
+   - **Validação de Limites de Latência (ALTO)**: Valida se `processing_time_ms` está dentro dos limites aceitáveis (< 1000ms para operações normais), garantindo que o sistema responde adequadamente sob carga.
+   - **Validação de Throughput (ALTO)**: Verifica se `items_in_response` está dentro dos limites esperados (≥ 1 e ≤ 100), validando a consistência do sistema na entrega de dados e detectando possíveis problemas de paginação.
+
+2. **Endpoint de Execução (`POST /monitoring/run-scalability-tests`)**: Endpoint FastAPI que executa o script de testes em segundo plano, captura os resultados e persiste em múltiplos formatos:
+
+   - `test_scalability_results.csv`: Arquivo principal com resultados da última execução (15 linhas, uma por teste)
+   - `test_scalability_results_history/`: Diretório com histórico de execuções (um CSV por execução com timestamp)
+   - `test_scalability_results_meta.json`: Metadados da última execução (horários de início/fim, duração, resumo estatístico)
+
+3. **Integração no Dashboard**: O dashboard (`GET /dashboard`) foi estendido com:
+
+   - Seção dedicada "TESTES AUTOMATIZADOS DE ESCALABILIDADE" com visualização detalhada dos resultados
+   - Botão "Atualizar" que dispara a execução dos testes via `POST /monitoring/run-scalability-tests`
+   - Visualização de métricas agregadas (total de testes, aprovados, falharam, críticas, taxa de conformidade)
+   - Detalhamento por cenário de teste e por serviço/API
+   - Informações temporais da última execução (início, fim, duração)
+
+4. **Endpoint de Consulta (`GET /monitoring/scalability-results`)**: Endpoint que lê o `test_scalability_results.csv` e o `test_scalability_results_meta.json`, calcula estatísticas agregadas e retorna dados formatados para o frontend.
+
+**Resultados Gerais:**
+
+- **Total de Testes Executados**: 15 testes
+- **Testes Aprovados**: 15 (100%)
+- **Testes Falharam**: 0
+- **Falhas Críticas**: 0
+- **Taxa de Conformidade**: 100.0%
+- **Tempo Médio de Execução por Teste**: ~2.05 segundos
+- **Duração Total da Execução**: ~33 segundos
+
+**Análise por Cenário de Teste:**
+
+1. **Validação de Métricas de Performance (CRÍTICO - 5 testes)**:
+
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Resultados Típicos**:
+     - Processing time: 15-45ms por requisição
+     - Items in response: 10-20 itens por página
+   - **Conclusão**: Todos os serviços retornam corretamente o objeto `meta.performance` completo, permitindo monitoramento contínuo de performance. Os tempos de processamento reportados estão dentro das expectativas e fornecem dados confiáveis para análise de tendências e identificação precoce de degradação de performance.
+
+2. **Validação de Limites de Latência (ALTO - 5 testes)**:
+
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Limite Configurado**: 1000ms (1 segundo)
+   - **Latências Observadas**:
+     - SharePoint: 23ms (dentro do limite)
+     - Miro: 31ms (dentro do limite)
+     - Copilot: 18ms (dentro do limite)
+     - Office: 27ms (dentro do limite)
+     - Sentinel: 15ms (dentro do limite)
+   - **Conclusão**: Todos os serviços atendem ao requisito de latência estabelecido com margem significativa. As latências observadas são 40-60x menores que o limite, indicando que o sistema possui capacidade de absorver picos de carga sem degradação crítica de performance.
+
+3. **Validação de Throughput (ALTO - 5 testes)**:
+   - **Status**: 5/5 PASSED (100%)
+   - **Endpoints Validados**: SharePoint, Miro, Copilot, Office, Sentinel
+   - **Limites Configurados**: Mínimo 1 item, Máximo 100 itens por página
+   - **Itens Retornados**:
+     - SharePoint: 10 itens (consistente com array data)
+     - Miro: 20 itens (consistente com array data)
+     - Copilot: 15 itens (consistente com array data)
+     - Office: 12 itens (consistente com array data)
+     - Sentinel: 18 itens (consistente com array data)
+   - **Conclusão**: Todos os serviços retornam quantidades adequadas de itens e mantêm consistência entre o campo `items_in_response` e o tamanho real do array `data`. Isso garante que clientes da API podem confiar nas métricas reportadas para implementar paginação e processamento eficiente.
+
+**Análise por Serviço/API:**
+
+&emsp; Todos os 5 serviços testados (SharePoint, Miro, Copilot, Office, Sentinel) apresentaram **conformidade total** em todos os 3 cenários, demonstrando que a implementação das métricas de performance foi realizada de forma consistente em toda a API Unificada.
+
+**Benefícios da Implementação:**
+
+1. **Monitoramento Contínuo**: Os testes podem ser executados sob demanda ou programados para validar continuamente que as APIs mantêm os padrões de performance estabelecidos.
+
+2. **Detecção Precoce de Regressões**: Qualquer degradação de performance (latência acima do limite, throughput inconsistente) é detectada imediatamente pelos testes automatizados.
+
+3. **Dados para SLA**: As métricas coletadas fornecem evidências objetivas para validação de Service Level Agreements (SLAs) e identificação de áreas que requerem otimização.
+
+4. **Rastreabilidade de Performance**: O histórico de execuções permite análise de tendências ao longo do tempo, identificando padrões e prevenindo problemas antes que afetem usuários.
+
+**Visualização Dashboard**
+
+&emsp;A seguir podemos visualizar como ficou a dashboard e as suas etapas, é possível identificar que você tem um painel onde consegue visualizar o status de todos os testes e última vez que foram executados, além disso você possui uma possibilidade de expansão por cenário e por API para a visualização dos testes, além do histórico de todos os testes para registro e acompanhamento.
+
+<div align="center">
+<sub>Figura 12.2.1.1 - Dashboard Atual com Testes de Escalabilidade</sub><br>
+<img src="img/section12/escalabilidade.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.2 - Dashboard e Cenário de Testes Escolhidos</sub><br>
+<img src="img/section12/escalabilidade2.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.3 - Dashboard e APIs Testadas</sub><br>
+<img src="img/section12/escalabilidade3.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+<div align="center">
+<sub>Figura 12.2.1.4 - Dashboard e Detalhamento Testes de APIs</sub><br>
+<img src="img/section12/escalabilidade4.png" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
 
 ### 12.2.2 RNF 2 e 3 - Segurança e Rastreabilidade
 
