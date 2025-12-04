@@ -10419,7 +10419,24 @@ middleware_latency_seconds_count{service="sharepoint"} 90
 - Painéis para RNF-01, RNF-02 e RNF-03 separados
 - Queries pré-definidas para análises comuns
 
+## E. Conclusões da Medição Dinâmica
 
+1. **RNF-01 (Escalabilidade)**: Sistema opera com latência p95 de **69ms** (13.3x melhor que SLO de 1000ms), demonstrando capacidade de processar requisições com alta performance mesmo sob carga.
+
+2. **RNF-02 e RNF-03 (Segurança e Rastreabilidade - Consolidados)**: Validação integrada funcionando em **100% das requisições**, com:
+   - **Segurança**: Autenticação OAuth2, autorização RBAC e detecção automática de 11 incidentes (5 críticos, 6 de acesso negado) no período monitorado
+   - **Rastreabilidade**: 100% de completude de trilhas de auditoria com correlação end-to-end garantida através de trace_id, span_id e correlation_id em todas as operações
+   - **Integração**: Cada evento de segurança possui rastreabilidade completa, permitindo auditoria forense e investigação de causa raiz em < 2 segundos
+
+3. **Conformidade Global**: **100% de taxa de sucesso** (45/45 testes), comprovando que os mecanismos arquiteturais implementados atendem completamente aos requisitos não funcionais definidos.
+
+4. **Evidência para Auditoria**: Sistema gera automaticamente **101 logs estruturados** com contexto completo de segurança e rastreabilidade (usuário, timestamp, correlação, autenticação, integridade), atendendo simultaneamente requisitos de órgãos fiscalizadores (TCE-SP, LGPD, CGU).
+
+5. **Não Repúdio**: A consolidação de segurança e rastreabilidade garante que **nenhuma ação pode ser negada posteriormente**, pois cada operação possui:
+   - Identificação autenticada do usuário (user_id + tenant_id + MFA status)
+   - Correlação única e imutável (correlation_id + trace_id)
+   - Timestamp preciso de execução e persistência (timestamp_utc + ingested_at_utc)
+   - Contexto completo de autorização (RBAC permissions)
 
 # 13.4 Avaliação das Medições
 
