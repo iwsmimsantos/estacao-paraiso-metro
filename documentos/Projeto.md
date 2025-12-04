@@ -9018,11 +9018,36 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 # 13. Medição e Avaliação do Sistema Novo
 
-_(Descreva como as medições estruturais e comportamentais comprovam o aprimoramento arquitetural obtido.)_
+&emsp;Esta seção descreve como o **sistema novo é medido e avaliado** frente aos **Requisitos Não Funcionais priorizados**, com foco em dois RNFs principais: **Escalabilidade** e **Rastreabilidade/Segurança** (consolidados). A avaliação é realizada a partir de cenários de teste automatizados, telemetria contínua da Arquitetura Unificada e painéis de monitoramento que consolidam métricas técnicas e de negócio.
+
+&emsp;A Tabela 13.1 resume os principais indicadores usados na avaliação dos dois RNFs centrais:
+
+| **RNF** | **Dimensão Avaliada** | **Indicadores-Chave** | **Evidência de Conformidade** |
+|--------|------------------------|------------------------|--------------------------------|
+| **Rastreabilidade/Segurança** | Auditoria e integridade | % de requisições com `correlation_id` válido, presença de `security_context` completo, presença de `meta.traceability` (trace_id, span_id, ingested_at_utc), nº de incidentes detectados/ano, MTTR de incidentes | 100% de requisições com contexto completo nos testes automatizados; redução do tempo de auditoria de 5–10 dias para ~2s; registro centralizado em dashboard e log estruturado. |
+| **Escalabilidade** | Capacidade e desempenho | Usuários simultâneos suportados, operações/dia, throughput (req/s), tempo de resposta p95, taxa de erro, uso de CPU/memória por instância | Aumento de 30–50 para 1.000+ usuários, de 50.000 para 500.000+ operações/dia, p95 <520ms, manutenção de disponibilidade >99% com auto scaling e redundância regional. |
+
+&emsp;Essas métricas alimentam a análise de tradeoffs apresentada na Seção 14 e permitem ao Metrô-SP tomar decisões arquiteturais baseadas em evidências, equilibrando custo, desempenho e conformidade regulatória.
 
 # 13.1 Modelo de Medição
 
-_(conteúdo.)_
+&emsp;O **modelo de medição** do sistema novo é orientado a atributos de qualidade e foi desenhado para estar **diretamente alinhado aos mecanismos da Arquitetura Unificada**. Cada requisição que atravessa a API Unificada carrega um **`correlation_id`**, um **`security_context`** e um contexto de **rastreabilidade** (`trace_id`, `span_id`, `ingested_at_utc`), garantindo que todas as operações relevantes possam ser medidas, correlacionadas e auditadas ponta a ponta. Esses metadados são registrados de forma padronizada nos logs estruturados e enviados para a plataforma de observabilidade (por exemplo, Application Insights, Azure Monitor e dashboards específicos desenvolvidos na solução).
+
+&emsp;Para **Escalabilidade**, o modelo de medição captura indicadores como volume de requisições por minuto, número de usuários simultâneos, throughput agregado (req/s), tempo de resposta p95 por endpoint crítico, taxa de erro e utilização de recursos por instância. Esses dados são extraídos automaticamente da infraestrutura (App Service, banco de dados, filas e serviços auxiliares) e da própria camada de orquestração da API Unificada, permitindo observar o comportamento do sistema sob diferentes cargas, inclusive nos cenários de simulação de alto volume descritos nas seções anteriores.
+
+&emsp;Para **Rastreabilidade/Segurança**, o modelo de medição foca na **completude dos contextos de auditoria** e na eficácia dos controles de segurança. São monitorados: a porcentagem de chamadas com `security_context` e `meta.traceability` completos, a consistência dos identificadores (`user_id`, `tenant_id`, `trace_id`, `span_id`), a ocorrência de incidentes de segurança (acessos indevidos, divergências de integridade identificadas por checksums, falhas de autenticação/autorização) e o tempo médio de detecção e resolução (MTTD/MTTR). Além disso, integra-se a eventos de ferramentas de segurança (como Sentinel) para consolidar alertas e evidências de conformidade com LGPD, TCE-SP e órgãos de controle.
+
+&emsp;Na implementação da **API simulada de Arquitetura Unificada** (`Simulacao-Unificada/API`), esses conceitos são materializados em código por meio de rotas FastAPI organizadas em `routers/*`, utilitários compartilhados em `core/utils.py` e configurações centralizadas em `core/config.py`. Todas as respostas seguem um **formato padronizado** (campos `request_id`, `service`, `timestamp_utc`, `correlation_id`, `data` e `meta` com subestruturas de `security_context`, `traceability` e `performance`), e os dados de usuário são sempre carregados do CSV único `data/users.csv`, garantindo consistência de `user_id`, `tenant_id`, `mfa_enabled` e nível de risco em todos os serviços (SharePoint, Miro, Copilot, Office e Sentinel). Essa padronização de modelo de dados e resposta, combinada com parâmetros comuns de consulta (`page`, `page_size`, `user_id`, `tenant_id`) e cabeçalhos como `X-Correlation-Id`, torna a API um **middleware de simulação ideal** para validar o modelo de medição: qualquer chamada de teste já nasce instrumentada com tudo o que é necessário para medir Escalabilidade e Rastreabilidade/Segurança de ponta a ponta.
+
+&emsp;A coleta de dados é **majoritariamente automática** e contínua: os serviços da Arquitetura Unificada publicam logs estruturados e métricas para um repositório central de observabilidade, enquanto os testes automatizados de conformidade (Seção 12) são executados periodicamente ou sob demanda para validar se novos deploys mantêm os RNFs atendidos. A Tabela 13.2 ilustra o alinhamento entre RNFs, métricas e fontes de dados:
+
+| **RNF** | **Métrica Principal** | **Fonte de Dados / Mecanismo Arquitetural** |
+|--------|----------------------|---------------------------------------------|
+| **Rastreabilidade/Segurança** | % de requisições com contexto completo, nº de incidentes detectados, MTTR | Headers e payloads da API Unificada (`x-correlation-id`, `security_context`, `meta.traceability`), logs estruturados, dashboards de auditoria, integrações com Sentinel. |
+| **Escalabilidade** | Usuários simultâneos, throughput (req/s), p95 de latência, disponibilidade | Métricas de infraestrutura (App Service, banco, filas), telemetria da API Unificada, testes de carga e simulações operacionais, dashboards de capacidade. |
+
+&emsp;Esse modelo garante que cada decisão arquitetural, inclusive os **tradeoffs entre reforçar Rastreabilidade/Segurança e preservar Escalabilidade**, seja suportada por dados objetivos, permitindo ajustes iterativos na configuração da infraestrutura, nas táticas de logging e nas políticas de segurança sem perder visibilidade sobre o impacto nos indicadores de negócio.
+
 
 # 13.2 Medição e Estática
 
