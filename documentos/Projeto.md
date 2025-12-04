@@ -9118,9 +9118,102 @@ Os registros coletados são fundamentais para a avaliação arquitetural porque:
 
 5. **Evidência de Conformidade**: Os registros estruturados servem como evidência para auditoria e compliance, demonstrando que os mecanismos arquiteturais estão operando conforme os requisitos definidos e atendendo aos RNFs estabelecidos.
 
-# 13.2 Medição e Estática
+# 13.2 Medição Estática da Estrutura
 
-_(conteúdo.)_
+&emsp;Nesta seção é realizada a **medição estática** da arquitetura implementada, com foco em descrever como os componentes são organizados, quais integrações existem entre eles e de que forma essas decisões estruturais contribuem (ou não) para o atendimento dos RNFs definidos para o sistema. Diferentemente das medições dinâmicas, aqui não são considerados tempos de resposta ou cargas de uso, mas sim a forma como o sistema foi **decomposto em módulos, serviços e camadas**, bem como o nível de acoplamento entre eles.
+
+
+<div align="center">
+<sub>Figura 13.2.1 - Estrutura em Diagrama</sub><br>
+<img src="img/section13/diagrama-estatico.jpg" width="250%"><br>
+<sup>Fonte: Material produzido pelos autores (2025) </sup>
+</div>
+
+## A. Medição Estática (Estrutural): Coleta dos Dados da Estrutura
+
+&emsp;A partir da simulação criada para testes automatizados, é descrita a estrutura da solução arquitetural, consolidando os seguintes dados estáticos:
+
+- **1. Componentes Principais**
+  - `main.py` (Middleware FastAPI unificado) concentrando 8 endpoints consolidados de integração com SharePoint, Miro, Copilot, Office e Sentinel.
+  - Módulo `core/` contendo serviços transversais de **autenticação** (`auth.py`) e **autorização/RBAC** (`permissions.py`).
+  - Módulo `services/` com o **serviço de validação** (`validator.py`), responsável por checksums, validações de integridade e aplicação de guardrails de IA.
+  - Módulo `monitoring/` com o **SystemLogger** e componentes de coleta de métricas e incidentes (`logger.py`).
+  - Módulo `storage/` responsável pela **persistência de dados e logs** em arquivos JSON/JSONL.
+  - Diretório `tests/` e scripts especializados de testes (`test_scalability_automated.py`, `test_compliance_automated.py`), que exercem a arquitetura, mas não fazem parte do caminho de produção.
+
+- **2. Tipos de Interações Estruturais**
+  - Interações **cliente → middleware** via endpoints HTTP REST unificados.
+  - Interações **middleware → serviços internos** por chamadas de função entre módulos (`core`, `services`, `monitoring`).
+  - Interações **middleware → fontes externas** (APIs Microsoft, SharePoint, Miro, etc.) encapsuladas atrás de funções específicas, reduzindo o espalhamento de dependências externas.
+  - Interações **serviços internos → storage** via repositórios padronizados em `storage/`, responsáveis por leitura/escrita de arquivos JSONL e históricos de testes.
+
+- **3. Padrões Estruturais**
+  - **Arquitetura em camadas lógicas** (exposição de API, serviços de domínio, infraestrutura/monitoramento e storage).
+  - Uso de **modelos unificados** de requisição e resposta para validações (redução de 12 modelos para 4), facilitando consistência estrutural dos dados.
+  - **SystemLogger centralizado**, atuando como ponto único de entrada para geração de logs e incidentes, garantindo formato homogêneo dos registros.
+  - **Separação de responsabilidades** entre autenticação, autorização, validação e monitoramento, evitando que lógica de segurança fique espalhada pelos controladores.
+
+- **4. Métricas Estáticas Extraídas**
+  - **Número de componentes estruturais relevantes**: 5 domínios principais (middleware, autenticação/autorização, validação, monitoramento, storage).
+  - **Número de endpoints consolidados**: 8 endpoints principais na API unificada.
+  - **Número de integrações externas diretas** (APIs de terceiros) encapsuladas em poucos pontos de saída.
+  - **Estrutura dos logs**: presença de campos obrigatórios (`correlation_id`, `trace_id`, `user_id`, `event_type`, `severity`, `timestamp`), evidenciando padronização estrutural de rastreabilidade.
+
+**Endpoints da API Unificada**
+
+| **Endpoint**                            | **Método HTTP** | **Função na API Unificada**                                                                                       | **Comunicação Interna/Externa**                                                                                                                                          | **Uso em Testes Automatizados**                                                                                                                                                              |
+| --------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/validate/access`                      | POST            | Validação de acesso a recursos (RBAC)                                                                             | Cliente → Middleware (`main.py`) → `AccessControlService` (`core/permissions.py`) → APIs mockadas de Miro/SharePoint → `SystemLogger`/`storage/`                        | Testes unitários `pytest` de RNF‑02 (bloqueio de acesso não autorizado) e cenários de conformidade de segurança em `test_compliance_automated.py`.                                          |
+| `/validate/integrity`                   | POST            | Verificação de integridade de dados entre Miro e SharePoint (checksums SHA‑256)                                  | Middleware → `IntegrityService` (`services/validator.py`) → APIs mockadas de Miro/SharePoint → `SystemLogger`/`storage/`                                                | Testes de RNF‑02/03 que verificam detecção de inconsistências e registro de incidentes de integridade, incluindo cenários de falha prevista nas simulações.                                 |
+| `/validate/guardrails`                  | POST            | Aplicação de guardrails de IA para interações com Copilot                                                         | Middleware → serviço de guardrails (em `services/validator.py`) → API mockada do Copilot → `SystemLogger`/`storage/`                                                     | Testes de segurança focados em conteúdo de prompts/respostas (RNF‑02), garantindo que requisições suspeitas sejam bloqueadas e registradas como incidentes.                                 |
+| `/validate/change`                      | POST            | Validação de requisições de mudança em documentos/projetos                                                        | Middleware → serviços de workflow/histórico → SharePoint mockado → `SystemLogger`/`storage/`                                                                            | Testes de RNF‑03 que verificam geração de trilhas de auditoria completas para alterações (criação, edição, aprovação) e consistência entre logs e estado final.                            |
+| `/validate/ingest`                      | POST            | Ingestão de eventos/dados de Miro para o repositório de auditoria                                                 | Middleware → serviço de ingestão → Miro mockado → `SystemLogger`/`storage/`                                                                                             | Testes de RNF‑01 (throughput de ingestão) e RNF‑03 (presença de eventos no audit trail), incluindo cenários de carga onde múltiplos eventos são ingeridos em sequência.                     |
+| `/validate/upload`                      | POST            | Validação de uploads no SharePoint com cálculo de checksums e registro de operação                                | Middleware → `IntegrityService`/serviço de uploads → SharePoint mockado → `SystemLogger`/`storage/`                                                                     | Testes de segurança e rastreabilidade que garantem registro de uploads críticos com `correlation_id`, `trace_id` e checksums válidos.                                                       |
+| `/incidents`                            | GET             | Listagem de incidentes de segurança registrados pelo `SystemLogger`                                               | Cliente (dashboard ou testes) → Middleware → `SystemLogger.get_incidents()` → arquivos JSONL em `storage/`                                                              | Testes de RNF‑02/03 que validam formato padronizado de incidentes, filtros por severidade/projeto e compatibilidade com logs históricos.                                                   |
+| `/incidents/{incident_id}`             | GET             | Consulta detalhada de um incidente específico                                                                     | Middleware → `SystemLogger.get_incidents()` filtrando por `incident_id` → `storage/`                                                                                    | Testes que verificam se incidentes esperados (ex.: bloqueio de `u999`) foram efetivamente criados com os campos corretos após chamadas a `/validate/access`.                                |
+| `/incidents/{incident_id}/approve`     | POST            | Aprovação/resolução de incidentes, atualizando seu status                                                         | Middleware → `SystemLogger` (atualização do registro) → `storage/`                                                                                                      | Testes de fluxo de trabalho de incidentes (RNF‑03), garantindo rastreabilidade de quem aprovou, quando aprovou e qual incidente foi encerrado.                                             |
+| `/get-audit-trail`                      | POST            | Retorno da trilha de auditoria consolidada para um projeto/usuário                                                | Middleware → serviço de auditoria → leitura de `audit_logs.jsonl` em `storage/`                                                                                         | Testes de RNF‑03 que validam presença, ordenação temporal e completude da trilha de auditoria para operações de mudança e acesso.                                                          |
+| `/health-check`                         | POST            | Verificação de saúde básica do middleware (disponibilidade dos serviços internos)                                 | Cliente (pipelines de CI, scripts de teste) → Middleware → checagem de dependências internas (`core/`, `services/`, `monitoring/`, `storage/`)                         | Utilizado em suites automatizadas para garantir que o middleware esteja saudável antes da execução dos testes principais de RNF‑01, RNF‑02 e RNF‑03.                                       |
+| `/monitoring/run-compliance-tests`     | POST            | Disparo assíncrono dos testes automatizados de conformidade de segurança e rastreabilidade                        | Dashboard/cliente → Middleware → execução de `test_compliance_automated.py` via subprocess → gravação em `test_results*.csv` e `test_results_meta.json`                | Endpoint central para testes end‑to‑end de RNF‑02/RNF‑03, permitindo agendar e executar em lote os 15 cenários de conformidade contra a API unificada.                                     |
+| `/monitoring/compliance-results`       | GET             | Consulta dos resultados consolidados dos testes de conformidade                                                    | Dashboard/cliente → Middleware → leitura de `test_results*.csv` + `test_results_meta.json` → agregação de métricas                                                       | Testes automatizados de frontend/back‑office que verificam cálculo correto de totais, taxas de sucesso e metadados de execução dos testes de segurança e rastreabilidade.                  |
+| `/monitoring/run-scalability-tests`    | POST            | Disparo dos testes automatizados de escalabilidade                                                                 | Dashboard/cliente → Middleware → execução de `test_scalability_automated.py` via subprocess → gravação em `test_scalability_results*.csv` e meta JSON                  | Utilizado para validar automaticamente RNF‑01, executando cenários de latência, throughput e métricas de performance descritos na Seção 12.2.1.                                           |
+| `/monitoring/scalability-results`      | GET             | Consulta dos resultados consolidados dos testes de escalabilidade                                                  | Dashboard/cliente → Middleware → leitura de `test_scalability_results*.csv` + `test_scalability_results_meta.json`                                                      | Testes automatizados que garantem que os indicadores de escalabilidade (latência média, p95, throughput, falhas) sejam calculados e expostos corretamente à camada de visualização.        |
+| `/dashboard`                            | GET             | Dashboard unificado de monitoramento do middleware, incluindo logs, incidentes e resultados de testes automatizados | Navegador/cliente → Middleware → agregação de dados de `storage/` (logs/incidentes) + resultados de `/monitoring/*` → renderização HTML/JSON para visualização no front | Testes de interface e de integração que garantem que os resultados dos testes automatizados apareçam corretamente no painel (cartões de resumo, tabelas, gráficos, histórico).             |
+
+&emsp;Esses dados estáticos permitem visualizar que o sistema converge para um **núcleo arquitetural único**, com serviços especializados conectados a partir do middleware FastAPI, todos apoiados por uma camada de monitoramento e storage compartilhada.
+
+## B. Avaliação das Decisões Arquiteturais em Relação aos RNFs
+
+&emsp;Com base na estrutura, pode-se realizar uma avaliação crítica das decisões de arquitetura tomadas ao longo do projeto, considerando sua aderência aos RNFs de **Escalabilidade (RNF‑01)** e **Segurança + Rastreabilidade (RNF‑02 e RNF‑03 consolidados)**.
+
+### B.1 Escalabilidade (RNF‑01)
+
+- **Decisões Arquiteturais Relevantes**
+  - Consolidação de múltiplas integrações em um **único middleware FastAPI**, reduzindo a necessidade de múltiplos serviços independentes.
+  - Organização em módulos separados para autenticação, autorização, validação e monitoramento, permitindo **evolução independente** desses componentes.
+  - Encapsulamento de chamadas a serviços externos em funções e camadas específicas, reduzindo o acoplamento direto entre endpoints e provedores externos.
+
+- **Impacto Estático sobre o RNF**
+  - A existência de um único ponto de entrada e de módulos bem definidos **facilita a replicação horizontal** da aplicação (scale-out) — basta multiplicar instâncias do mesmo middleware.
+  - A clara separação entre camadas (API, serviços e infraestrutura) reduz o risco de monolito, permitindo distribuir responsabilidades em microserviços específicos, caso necessário em uma fase futura.
+  - Por outro lado, a centralização em um único middleware cria um **potencial ponto único de falha**, que precisa ser compensado por decisões de implantação (load balancer, múltiplas réplicas, health checks), tratadas nas seções de tradeoffs.
+
+&emsp;Em síntese, a estrutura estática favorece a escalabilidade horizontal e a evolução modular, alinhando-se ao RNF‑01, desde que a camada de infraestrutura (não detalhada no código) garanta replicação e balanceamento adequados.
+
+### B.2 Segurança e Rastreabilidade (RNF‑02 e RNF‑03 Consolidados)
+
+- **Decisões Arquiteturais Relevantes**
+  - Centralização das preocupações de **autenticação** e **autorização RBAC** no módulo `core/`, evitando que regras de segurança fiquem duplicadas em múltiplos endpoints.
+  - Criação de um **SystemLogger** único, responsável por registrar incidentes e eventos de forma padronizada, incluindo campos de segurança e rastreabilidade.
+  - Padronização da estrutura dos logs em arquivos JSONL dentro de `storage/`, garantindo que todos os eventos possuam `correlation_id`, `trace_id` e metadados de usuário.
+  - Uso de modelos unificados de requisição e resposta, que incluem campos de contexto de segurança e rastreabilidade (`security_context`, `traceability`), evitando omissões estruturais.
+
+- **Impacto Estático sobre os RNFs**
+  - A separação entre **lógica de negócio** e **mecanismos de segurança/rastreabilidade** torna visível onde cada controle é aplicado e facilita auditoria de que todos os endpoints passam pelos mesmos filtros.
+  - O logger centralizado e o formato estruturado dos arquivos de log garantem que **todas as ações críticas sejam registradas de forma homogênea**, facilitando reconstrução de trilhas de auditoria.
+  - O fato de todos os componentes críticos escreverem em uma mesma camada de storage e utilizarem o mesmo modelo de dados reduz lacunas de rastreabilidade entre serviços.
+
+&emsp;De forma geral, as decisões arquiteturais estáticas reforçam os RNFs de Segurança e Rastreabilidade, ao reduzir pontos cegos de auditoria e ao concentrar lógica de segurança em módulos. O custo adicional em termos de complexidade estrutural (mais camadas e componentes transversais) é reconhecido e será tratado na análise de tradeoffs da Seção 14, mas é considerado aceitável frente aos ganhos em governança, conformidade regulatória e capacidade de investigação de incidentes.
 
 # 13.3 Medição e Dinâmica
 
