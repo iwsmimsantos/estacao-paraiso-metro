@@ -9122,9 +9122,36 @@ Os registros coletados são fundamentais para a avaliação arquitetural porque:
 
 _(conteúdo.)_
 
-# 13.3 Medição e Dinâmica
+# 13.3 Medição Dinâmica
 
-_(conteúdo.)_
+&emsp;A medição dinâmica refere-se às métricas coletadas durante a execução do sistema, permitindo avaliar o comportamento real dos mecanismos arquiteturais implementados. Esta seção apresenta os resultados obtidos através da execução automatizada dos testes de conformidade e escalabilidade da API e Middleware de Validação.
+
+## A. Ambiente de Coleta de Métricas Dinâmicas
+
+### A.1 Componentes Monitorados
+
+A coleta de métricas dinâmicas envolve dois componentes principais:
+
+**1. API de Integração** (Porta 8000):
+- Simula integrações com 5 serviços Microsoft (SharePoint, Miro, Office 365, Copilot, Sentinel)
+- Fornece dados mockados estruturados com contexto de segurança e rastreabilidade
+- Implementa resposta padrão com `correlation_id`, `trace_id`, `security_context` e `performance` metrics
+
+**2. Middleware de Validação** (Porta 8001):
+- Valida requisições contra os RNFs implementados (Segurança, Escalabilidade, Rastreabilidade)
+- Aplica controle de acesso, validação de integridade e guardrails de IA
+- Gera logs estruturados em tempo real no formato JSONL
+
+### A.2 Metodologia de Coleta
+
+A coleta de métricas dinâmicas foi realizada através de:
+
+- **Testes de Conformidade**: Validam presença de contextos de segurança, rastreabilidade e correlação
+- **Testes de Escalabilidade**: Avaliam performance, latência e throughput dos serviços
+- **Período de Coleta**: 04 de dezembro de 2025, entre 10:26 e 13:27 UTC
+- **Volume de Dados**: 101 logs de auditoria, 30 testes de conformidade, 15 testes de escalabilidade
+
+
 
 # 13.4 Avaliação das Medições
 
