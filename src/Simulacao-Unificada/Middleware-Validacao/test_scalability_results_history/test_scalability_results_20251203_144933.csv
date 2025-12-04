@@ -1,0 +1,16 @@
+timestamp_utc,service_tested,endpoint_tested,test_scenario,status,severity,details,execution_time_ms
+2025-12-03T17:49:01.992158+00:00,sharepoint,/sharepoint/sites,Validação de Métricas de Performance,PASSED,CRÍTICO,"Métricas válidas: processing_time=85ms, items=20",2141.06
+2025-12-03T17:49:04.134218+00:00,sharepoint,/sharepoint/sites,Validação de Limites de Latência,PASSED,ALTO,Latência dentro do limite: 32ms ≤ 1000ms,2079.89
+2025-12-03T17:49:06.214105+00:00,sharepoint,/sharepoint/sites,Validação de Throughput,PASSED,ALTO,Throughput adequado: 20 itens,2074.42
+2025-12-03T17:49:08.288529+00:00,miro,/miro/boards,Validação de Métricas de Performance,PASSED,CRÍTICO,"Métricas válidas: processing_time=41ms, items=20",2086.79
+2025-12-03T17:49:10.375319+00:00,miro,/miro/boards,Validação de Limites de Latência,PASSED,ALTO,Latência dentro do limite: 102ms ≤ 1000ms,2079.74
+2025-12-03T17:49:12.455697+00:00,miro,/miro/boards,Validação de Throughput,PASSED,ALTO,Throughput adequado: 20 itens,2057.58
+2025-12-03T17:49:14.514353+00:00,copilot,/copilot/sessions,Validação de Métricas de Performance,PASSED,CRÍTICO,"Métricas válidas: processing_time=43ms, items=20",2100.72
+2025-12-03T17:49:16.616154+00:00,copilot,/copilot/sessions,Validação de Limites de Latência,PASSED,ALTO,Latência dentro do limite: 37ms ≤ 1000ms,2094.88
+2025-12-03T17:49:18.712018+00:00,copilot,/copilot/sessions,Validação de Throughput,PASSED,ALTO,Throughput adequado: 20 itens,2095.04
+2025-12-03T17:49:20.807062+00:00,office,/office/documents,Validação de Métricas de Performance,PASSED,CRÍTICO,"Métricas válidas: processing_time=73ms, items=20",2068.67
+2025-12-03T17:49:22.875730+00:00,office,/office/documents,Validação de Limites de Latência,PASSED,ALTO,Latência dentro do limite: 93ms ≤ 1000ms,2103.51
+2025-12-03T17:49:24.980243+00:00,office,/office/documents,Validação de Throughput,PASSED,ALTO,Throughput adequado: 20 itens,2080.09
+2025-12-03T17:49:27.061337+00:00,sentinel,/sentinel/incidents,Validação de Métricas de Performance,PASSED,CRÍTICO,"Métricas válidas: processing_time=68ms, items=12",2085.45
+2025-12-03T17:49:29.148337+00:00,sentinel,/sentinel/incidents,Validação de Limites de Latência,PASSED,ALTO,Latência dentro do limite: 93ms ≤ 1000ms,2044.81
+2025-12-03T17:49:31.193146+00:00,sentinel,/sentinel/incidents,Validação de Throughput,PASSED,ALTO,Throughput adequado: 20 itens,2081.96

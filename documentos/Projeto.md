@@ -8306,18 +8306,18 @@ Total: ~2.600 linhas, 3 servidores, 25+ endpoints, 3 repositórios de dados
 
 ### 11.3.2 Tabela Comparativa: Sprint 3 vs. Sprint 4
 
-| **Dimensão** | **Sprint 3 (Fragmentada)** | **Sprint 4 (Unificada)** | **Melhoria** |
-|---|---|---|---|
-| **Arquitetura** | 3 ambientes independentes (RNF-01, RNF-02, RNF-03) | 1 middleware unificado com types de validação | -66% ambientes |
-| **Servidores FastAPI** | 3 servidores rodando em portas diferentes (8001-8003) | 1 servidor central + estrutura de rotas dinâmicas | -66% processos |
-| **Endpoints HTTP** | 25+ endpoints específicos por RNF | 8 endpoints genéricos com path parameters | -68% endpoints |
-| **Modelos Pydantic** | 12+ modelos (AccessRequest, ChangeRequest, IntegrityRequest, etc.) | 4 modelos unificados (ValidationRequest, WorkflowRequest, etc.) | -66% modelos |
-| **Repositórios de Dados** | 3 repositórios separados (IncidentRepository, LogRepository, MockRepository) | 1 SystemLogger centralizado | -66% repositórios |
-| **Linhas de Código** | ~2.600 linhas | ~673 linhas (test_support.py) | -74% LOC |
-| **Framework de Testes** | Scripts Python customizados com print() | pytest com markers, fixtures, fixtures paramétricos | Profissionalização |
-| **Tempo de Execução Testes** | ~15 minutos (manual + serial) | ~4.88 segundos (automático + paralelizado) | -99.5% tempo |
-| **Execução Manual** | 15+ passos (3 servidores + 3 scripts + consolidação manual) | 1 comando: `pytest tests/unit/` | -93% passos |
-| **Cobertura de Código** | Não medida | 32% (baseline estabelecido) | Novo metric |
+| **Dimensão**                 | **Sprint 3 (Fragmentada)**                                                   | **Sprint 4 (Unificada)**                                        | **Melhoria**       |
+| ---------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------ |
+| **Arquitetura**              | 3 ambientes independentes (RNF-01, RNF-02, RNF-03)                           | 1 middleware unificado com types de validação                   | -66% ambientes     |
+| **Servidores FastAPI**       | 3 servidores rodando em portas diferentes (8001-8003)                        | 1 servidor central + estrutura de rotas dinâmicas               | -66% processos     |
+| **Endpoints HTTP**           | 25+ endpoints específicos por RNF                                            | 8 endpoints genéricos com path parameters                       | -68% endpoints     |
+| **Modelos Pydantic**         | 12+ modelos (AccessRequest, ChangeRequest, IntegrityRequest, etc.)           | 4 modelos unificados (ValidationRequest, WorkflowRequest, etc.) | -66% modelos       |
+| **Repositórios de Dados**    | 3 repositórios separados (IncidentRepository, LogRepository, MockRepository) | 1 SystemLogger centralizado                                     | -66% repositórios  |
+| **Linhas de Código**         | ~2.600 linhas                                                                | ~673 linhas (test_support.py)                                   | -74% LOC           |
+| **Framework de Testes**      | Scripts Python customizados com print()                                      | pytest com markers, fixtures, fixtures paramétricos             | Profissionalização |
+| **Tempo de Execução Testes** | ~15 minutos (manual + serial)                                                | ~4.88 segundos (automático + paralelizado)                      | -99.5% tempo       |
+| **Execução Manual**          | 15+ passos (3 servidores + 3 scripts + consolidação manual)                  | 1 comando: `pytest tests/unit/`                                 | -93% passos        |
+| **Cobertura de Código**      | Não medida                                                                   | 32% (baseline estabelecido)                                     | Novo metric        |
 
 ---
 
@@ -8482,7 +8482,7 @@ POST /health-check
 @app.post("/validate/{validation_type}")
 async def validate(validation_type: str, request: ValidationRequest):
     """Endpoint único que suporta múltiplos tipos de validação"""
-    
+
     validators = {
         "access": validate_access,
         "integrity": validate_integrity,
@@ -8491,10 +8491,10 @@ async def validate(validation_type: str, request: ValidationRequest):
         "upload": validate_upload,
         "guardrails": validate_guardrails
     }
-    
+
     if validation_type not in validators:
         raise HTTPException(status_code=400, detail="Invalid validation type")
-    
+
     return validators[validation_type](request)
 ```
 
@@ -8514,7 +8514,7 @@ class ValidationRequest(BaseModel):
     checksum: Optional[str] = None
     justification: Optional[str] = None
     trace_id: Optional[str] = None
-    
+
     # Validadores inteligentes
     @validator('user_id', pre=True, always=True)
     def generate_trace_id(cls, v):
@@ -8532,7 +8532,7 @@ class ValidationRequest(BaseModel):
 ```python
 class SystemLogger:
     """Single source of truth para persistência de logs e incidentes"""
-    
+
     def log_incident(self, incident_type: str, severity: str, user_id: str, **kwargs):
         """Garante formato padronizado para TODOS os incidentes"""
         incident = {
@@ -8545,11 +8545,11 @@ class SystemLogger:
         }
         self._write_json("incidents.json", incident)
         return incident
-    
+
     def get_incidents(self, project_id: str = None, severity: str = None):
         """Autocorrige estrutura de dados históricos inconsistentes"""
         incidents = self._read_json("incidents.json")
-        
+
         # Promover campos aninhados para compatibilidade
         for incident in incidents:
             if 'details' in incident:
@@ -8558,13 +8558,13 @@ class SystemLogger:
                 if 'severity' in incident['details']:
                     incident['severity'] = incident['details']['severity']
                 del incident['details']
-        
+
         # Aplicar filtros
         if project_id:
             incidents = [i for i in incidents if i.get('project_id') == project_id]
         if severity:
             incidents = [i for i in incidents if i.get('severity') == severity]
-        
+
         return incidents
 ```
 
@@ -8596,7 +8596,7 @@ def valid_user_headers():
 def test_rbac_bloqueio_acesso_nao_autorizado(client, valid_user_headers):
     """
     Testa bloqueio de acesso para usuário não autorizado
-    
+
     Dado: usuário u999 (não autorizado)
     Quando: tenta acessar projeto proj-001
     Então: acesso é negado e incidente é registrado
@@ -8610,12 +8610,13 @@ def test_rbac_bloqueio_acesso_nao_autorizado(client, valid_user_headers):
         },
         headers=valid_user_headers
     )
-    
+
     assert response.status_code == 403
     assert "acesso_negado" in response.json()["incident_type"]
 ```
 
-**Benefício:** 
+**Benefício:**
+
 - Padronização: todos os testes seguem mesmo padrão
 - Execução: `pytest tests/unit/` executa TODOS
 - Markers: `pytest -m rnf02` executa apenas RNF-02
@@ -8675,7 +8676,7 @@ Redução: 93% de complexidade operacional
 
 ```
 Sprint 3:
-├── RNF-01: Locust (load testing) 
+├── RNF-01: Locust (load testing)
 ├── RNF-02: TestScenarios customizada
 └── RNF-03: Demo interativa
 
@@ -8699,16 +8700,16 @@ Sprint 4: 32% (baseline estabelecido)
 
 ### 11.3.6 Ganhos por Dimensão
 
-| **Dimensão** | **Sprint 3** | **Sprint 4** | **Ganho** | **Métrica** |
-|---|---|---|---|---|
-| **Manutenibilidade** | Fragmentada (3 código bases) | Unificada (1 código base) | **100% centralização** | Redução de duplicação |
-| **Performance Operacional** | 15 min/execução | 4.88 seg/execução | **-99.5%** | Tempo de testes |
-| **Integração CI/CD** | Impossível (manual) | Nativa (pytest) | **Habilitada** | Deploy automation |
-| **Rastreabilidade** | Incompleta (3 formatos) | 100% (1 formato) | **100%** | Consistência dados |
-| **Escalabilidade** | 3 servidores | 1 servidor | **-66%** | Recursos consumidos |
-| **Segurança de Testes** | Passível de erro manual | Automatizado | **0% erro manual** | Testes falhando silenciosamente |
-| **Observabilidade** | Logs no console | Estruturados em JSON | **100% estruturado** | Análise programática |
-| **Qualidade de Código** | Não medida | 32% (baseline) | **Visibilidade** | Métrica operacional |
+| **Dimensão**                | **Sprint 3**                 | **Sprint 4**              | **Ganho**              | **Métrica**                     |
+| --------------------------- | ---------------------------- | ------------------------- | ---------------------- | ------------------------------- |
+| **Manutenibilidade**        | Fragmentada (3 código bases) | Unificada (1 código base) | **100% centralização** | Redução de duplicação           |
+| **Performance Operacional** | 15 min/execução              | 4.88 seg/execução         | **-99.5%**             | Tempo de testes                 |
+| **Integração CI/CD**        | Impossível (manual)          | Nativa (pytest)           | **Habilitada**         | Deploy automation               |
+| **Rastreabilidade**         | Incompleta (3 formatos)      | 100% (1 formato)          | **100%**               | Consistência dados              |
+| **Escalabilidade**          | 3 servidores                 | 1 servidor                | **-66%**               | Recursos consumidos             |
+| **Segurança de Testes**     | Passível de erro manual      | Automatizado              | **0% erro manual**     | Testes falhando silenciosamente |
+| **Observabilidade**         | Logs no console              | Estruturados em JSON      | **100% estruturado**   | Análise programática            |
+| **Qualidade de Código**     | Não medida                   | 32% (baseline)            | **Visibilidade**       | Métrica operacional             |
 
 ---
 
@@ -8736,13 +8737,13 @@ Sprint 4: 32% (baseline estabelecido)
 
 #### **Recomendações para Sprint 5+:**
 
-| **Ação** | **Benefício** | **Esforço** |
-|---|---|---|
-| Aumentar cobertura de código para 50% | Confiança em refatorações futuras | Médio |
-| Implementar mutation testing | Validar qualidade real dos testes | Alto |
-| Adicionar performance benchmarking | Rastrear regressões de performance | Médio |
-| Integrar com SonarQube | Análise estática centralizada | Médio |
-| Chaos testing (fault injection) | Validar resiliência real do sistema | Alto |
+| **Ação**                              | **Benefício**                       | **Esforço** |
+| ------------------------------------- | ----------------------------------- | ----------- |
+| Aumentar cobertura de código para 50% | Confiança em refatorações futuras   | Médio       |
+| Implementar mutation testing          | Validar qualidade real dos testes   | Alto        |
+| Adicionar performance benchmarking    | Rastrear regressões de performance  | Médio       |
+| Integrar com SonarQube                | Análise estática centralizada       | Médio       |
+| Chaos testing (fault injection)       | Validar resiliência real do sistema | Alto        |
 
 ---
 
@@ -8756,6 +8757,7 @@ A evolução de **Sprint 3 (fragmentada) para Sprint 4 (unificada)** demonstrou 
 4. **0% erros de configuração manual** → Confiabilidade
 
 **Status Geral:**
+
 - ✅ Manutenibilidade: Significativamente melhorada
 - ✅ Performance operacional: Drástica melhoria (15 min → 5 seg)
 - ✅ Automação: Totalmente habilitada para CI/CD
@@ -9018,36 +9020,103 @@ _(Apresente os resultados e análises dos testes automatizados não funcionais r
 
 # 13. Medição e Avaliação do Sistema Novo
 
-&emsp;Esta seção descreve como o **sistema novo é medido e avaliado** frente aos **Requisitos Não Funcionais priorizados**, com foco em dois RNFs principais: **Escalabilidade** e **Rastreabilidade/Segurança** (consolidados). A avaliação é realizada a partir de cenários de teste automatizados, telemetria contínua da Arquitetura Unificada e painéis de monitoramento que consolidam métricas técnicas e de negócio.
-
-&emsp;A Tabela 13.1 resume os principais indicadores usados na avaliação dos dois RNFs centrais:
-
-| **RNF** | **Dimensão Avaliada** | **Indicadores-Chave** | **Evidência de Conformidade** |
-|--------|------------------------|------------------------|--------------------------------|
-| **Rastreabilidade/Segurança** | Auditoria e integridade | % de requisições com `correlation_id` válido, presença de `security_context` completo, presença de `meta.traceability` (trace_id, span_id, ingested_at_utc), nº de incidentes detectados/ano, MTTR de incidentes | 100% de requisições com contexto completo nos testes automatizados; redução do tempo de auditoria de 5–10 dias para ~2s; registro centralizado em dashboard e log estruturado. |
-| **Escalabilidade** | Capacidade e desempenho | Usuários simultâneos suportados, operações/dia, throughput (req/s), tempo de resposta p95, taxa de erro, uso de CPU/memória por instância | Aumento de 30–50 para 1.000+ usuários, de 50.000 para 500.000+ operações/dia, p95 <520ms, manutenção de disponibilidade >99% com auto scaling e redundância regional. |
-
-&emsp;Essas métricas alimentam a análise de tradeoffs apresentada na Seção 14 e permitem ao Metrô-SP tomar decisões arquiteturais baseadas em evidências, equilibrando custo, desempenho e conformidade regulatória.
+&emsp;Nesta etapa, será realizado um processo de revisão do modelo de medição dos mecanismos implementados na arquitetura, garantindo que o modelo esteja alinhado com os componentes e táticas arquiteturais implementados, e definindo como os dados das medições serão coletados e registrados.
 
 # 13.1 Modelo de Medição
 
-&emsp;O **modelo de medição** do sistema novo é orientado a atributos de qualidade e foi desenhado para estar **diretamente alinhado aos mecanismos da Arquitetura Unificada**. Cada requisição que atravessa a API Unificada carrega um **`correlation_id`**, um **`security_context`** e um contexto de **rastreabilidade** (`trace_id`, `span_id`, `ingested_at_utc`), garantindo que todas as operações relevantes possam ser medidas, correlacionadas e auditadas ponta a ponta. Esses metadados são registrados de forma padronizada nos logs estruturados e enviados para a plataforma de observabilidade (por exemplo, Application Insights, Azure Monitor e dashboards específicos desenvolvidos na solução).
+## A. Garantir que o modelo de medição esteja alinhado com os mecanismos implementados na arquitetura
 
-&emsp;Para **Escalabilidade**, o modelo de medição captura indicadores como volume de requisições por minuto, número de usuários simultâneos, throughput agregado (req/s), tempo de resposta p95 por endpoint crítico, taxa de erro e utilização de recursos por instância. Esses dados são extraídos automaticamente da infraestrutura (App Service, banco de dados, filas e serviços auxiliares) e da própria camada de orquestração da API Unificada, permitindo observar o comportamento do sistema sob diferentes cargas, inclusive nos cenários de simulação de alto volume descritos nas seções anteriores.
+&emsp;O modelo de medição foi projetado para mapear diretamente cada mecanismo arquitetural implementado, garantindo que exista uma métrica correspondente que valide sua eficácia. A arquitetura implementada consiste nos seguintes componentes e mecanismos:
 
-&emsp;Para **Rastreabilidade/Segurança**, o modelo de medição foca na **completude dos contextos de auditoria** e na eficácia dos controles de segurança. São monitorados: a porcentagem de chamadas com `security_context` e `meta.traceability` completos, a consistência dos identificadores (`user_id`, `tenant_id`, `trace_id`, `span_id`), a ocorrência de incidentes de segurança (acessos indevidos, divergências de integridade identificadas por checksums, falhas de autenticação/autorização) e o tempo médio de detecção e resolução (MTTD/MTTR). Além disso, integra-se a eventos de ferramentas de segurança (como Sentinel) para consolidar alertas e evidências de conformidade com LGPD, TCE-SP e órgãos de controle.
+### Componentes Arquiteturais Implementados
 
-&emsp;Na implementação da **API simulada de Arquitetura Unificada** (`Simulacao-Unificada/API`), esses conceitos são materializados em código por meio de rotas FastAPI organizadas em `routers/*`, utilitários compartilhados em `core/utils.py` e configurações centralizadas em `core/config.py`. Todas as respostas seguem um **formato padronizado** (campos `request_id`, `service`, `timestamp_utc`, `correlation_id`, `data` e `meta` com subestruturas de `security_context`, `traceability` e `performance`), e os dados de usuário são sempre carregados do CSV único `data/users.csv`, garantindo consistência de `user_id`, `tenant_id`, `mfa_enabled` e nível de risco em todos os serviços (SharePoint, Miro, Copilot, Office e Sentinel). Essa padronização de modelo de dados e resposta, combinada com parâmetros comuns de consulta (`page`, `page_size`, `user_id`, `tenant_id`) e cabeçalhos como `X-Correlation-Id`, torna a API um **middleware de simulação ideal** para validar o modelo de medição: qualquer chamada de teste já nasce instrumentada com tudo o que é necessário para medir Escalabilidade e Rastreabilidade/Segurança de ponta a ponta.
+| **Componente**                                            | **Mecanismo Implementado**                                          | **Métrica de Medição Correspondente**                                           |
+| --------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Middleware FastAPI** (`main.py`)                        | API REST unificada com 8 endpoints consolidados                     | Número de endpoints (estática), tempo de resposta e taxa de sucesso (dinâmica)  |
+| **Serviço de Autenticação** (`core/auth.py`)              | Validação de tokens, integração Microsoft Entra ID                  | Taxa de autenticação bem-sucedida, latência de autenticação p95 (dinâmica)      |
+| **Serviço de Controle de Acesso** (`core/permissions.py`) | RBAC granular, verificação de permissões por projeto                | Taxa de bloqueios de acesso indevido, tempo de validação (dinâmica)             |
+| **Serviço de Validação** (`services/validator.py`)        | Validação de integridade, checksums SHA-256, guardrails de IA       | Taxa de detecção de inconsistências, precisão de checksums (dinâmica)           |
+| **Sistema de Monitoramento** (`monitoring/logger.py`)     | Logs estruturados, correlação de eventos (correlation_id, trace_id) | Volume de logs, taxa de correlação, completude de trilhas (estática e dinâmica) |
+| **Repositório de Dados** (`storage/`)                     | Persistência em formato JSONL                                       | Estrutura de armazenamento, volume de dados (estática)                          |
 
-&emsp;A coleta de dados é **majoritariamente automática** e contínua: os serviços da Arquitetura Unificada publicam logs estruturados e métricas para um repositório central de observabilidade, enquanto os testes automatizados de conformidade (Seção 12) são executados periodicamente ou sob demanda para validar se novos deploys mantêm os RNFs atendidos. A Tabela 13.2 ilustra o alinhamento entre RNFs, métricas e fontes de dados:
+### Mapeamento RNF → Mecanismos → Métricas
 
-| **RNF** | **Métrica Principal** | **Fonte de Dados / Mecanismo Arquitetural** |
-|--------|----------------------|---------------------------------------------|
-| **Rastreabilidade/Segurança** | % de requisições com contexto completo, nº de incidentes detectados, MTTR | Headers e payloads da API Unificada (`x-correlation-id`, `security_context`, `meta.traceability`), logs estruturados, dashboards de auditoria, integrações com Sentinel. |
-| **Escalabilidade** | Usuários simultâneos, throughput (req/s), p95 de latência, disponibilidade | Métricas de infraestrutura (App Service, banco, filas), telemetria da API Unificada, testes de carga e simulações operacionais, dashboards de capacidade. |
+#### RNF-01: Escalabilidade
 
-&emsp;Esse modelo garante que cada decisão arquitetural, inclusive os **tradeoffs entre reforçar Rastreabilidade/Segurança e preservar Escalabilidade**, seja suportada por dados objetivos, permitindo ajustes iterativos na configuração da infraestrutura, nas táticas de logging e nas políticas de segurança sem perder visibilidade sobre o impacto nos indicadores de negócio.
+- **Mecanismos Implementados**: Processamento assíncrono, enfileiramento, balanceamento de carga
+- **Métricas do Modelo**:
+  - **Estática**: Número de endpoints otimizados (8), arquitetura de processamento (assíncrona)
+  - **Dinâmica**: Throughput (requisições/segundo), latência p95, capacidade de processamento concorrente
 
+#### RNF-02 e RNF-03: Segurança e Rastreabilidade (Consolidados)
+
+- **Mecanismos Implementados**:
+  - Autenticação (Microsoft Entra ID), Autorização (RBAC), Integridade (checksums SHA-256)
+  - Logs estruturados, correlação de eventos (correlation_id, trace_id), trilhas de auditoria
+- **Métricas do Modelo**:
+  - **Estática**: Número de componentes (4 serviços principais), endpoints protegidos (8), estrutura de logs (JSONL, 8+ campos)
+  - **Dinâmica**: Taxa de bloqueios, latência de validação (p95 < 200ms), completude de trilhas (100%), tempo de recuperação (< 2s), precisão de correlação
+
+&emsp;Este mapeamento garante que cada mecanismo arquitetural implementado possui métricas correspondentes que permitem validar se o mecanismo está funcionando conforme especificado e se está contribuindo para o atendimento dos RNFs.
+
+## B. Como serão coletados os dados/resultados das medições, destacando a relevância dos registros para a avaliação
+
+### B.1 Como serão coletados os dados/resultados das medições
+
+A coleta de dados é realizada através de instrumentação automatizada que executa testes e gera registros estruturados:
+
+**1. Testes Automatizados** (`tests/unit/`):
+
+- **42 testes unitários** organizados por RNF (12 para Escalabilidade, 30 para Segurança e Rastreabilidade)
+- **Execução**: `pytest tests/unit/ -v --no-cov` (tempo médio: 4.88 segundos)
+- **Coleta**: Cada teste faz requisições HTTP ao middleware, capturando métricas de tempo, status e detalhes da resposta
+
+**2. Scripts Especializados**:
+
+- `test_scalability_automated.py`: Coleta métricas de performance (latência, throughput) para RNF-01
+- `test_compliance_automated.py`: Coleta métricas integradas de segurança e rastreabilidade (correlation_id, trace_id, security_context) para RNF-02 e RNF-03
+
+**3. Logs em Tempo Real**:
+
+- Durante a execução, o middleware gera logs estruturados via `monitoring/logger.py`
+- Logs são escritos em tempo real em arquivos JSONL no diretório `storage/`
+
+### B.2 Formatos de Registro dos Dados Coletados
+
+Os dados coletados são registrados em três formatos estruturados:
+
+**CSV de Resultados** (`test_results.csv`, `test_scalability_results.csv`):
+
+- Campos: `timestamp_utc`, `service_tested`, `endpoint_tested`, `test_scenario`, `status`, `severity`, `details`, `execution_time_ms`
+- Permite análise tabular e comparação de resultados entre execuções
+
+**JSON de Metadados** (`test_results_meta.json`):
+
+- Campos: `started_at_utc`, `finished_at_utc`, `duration_seconds`, `summary` (total, passed, failed, pass_rate)
+- Fornece resumo estatístico rápido de cada execução
+
+**JSONL de Logs** (`storage/audit_logs.jsonl`, `storage/incidents.jsonl`):
+
+- Campos: `id`, `timestamp`, `event_type`, `user_id`, `correlation_id`, `trace_id`, `status`, `details`
+- Permite rastreamento de operações em tempo real e auditoria completa
+
+### B.3 Relevância dos Registros para a Avaliação
+
+Os registros coletados são fundamentais para a avaliação arquitetural porque:
+
+1. **Quantificação de Melhorias**: Permitem comparar objetivamente as métricas do sistema novo com o sistema atual (ex.: latência reduzida de 450ms para 280ms), evidenciando o aprimoramento arquitetural obtido.
+
+2. **Validação dos RNFs**: Cada RNF possui métricas específicas que comprovam seu atendimento:
+
+   - **Escalabilidade**: Throughput, latência p95, capacidade de carga
+   - **Segurança**: Taxa de bloqueios, precisão de validação, latência de autenticação
+   - **Rastreabilidade**: Completude de logs (100%), precisão de correlação, tempo de recuperação (< 2s)
+
+3. **Rastreabilidade de Decisões Arquiteturais**: Os logs com `correlation_id` e `trace_id` permitem rastrear decisões arquiteturais desde a requisição até a persistência, validando que as táticas implementadas estão funcionando conforme especificado.
+
+4. **Análise Temporal**: O histórico de execuções (armazenado em `test_results_history/`) permite identificar tendências, degradação de performance e evolução do sistema ao longo do tempo.
+
+5. **Evidência de Conformidade**: Os registros estruturados servem como evidência para auditoria e compliance, demonstrando que os mecanismos arquiteturais estão operando conforme os requisitos definidos e atendendo aos RNFs estabelecidos.
 
 # 13.2 Medição e Estática
 
@@ -9070,6 +9139,7 @@ _(conteúdo.)_
 ## 14.1 Mapeamento de Tradeoffs
 
 &emsp;Os principais RNFs priorizados são:
+
 - Segurança e Rastreabilidade (consolidado em um único requisito)
 - Escalabilidade
 
@@ -9077,32 +9147,31 @@ _(conteúdo.)_
 
 ## Tabela de Impactos dos RNFs
 
-| **RNF** | **Impacto em Segurança e Rastreabilidade** | **Impacto em Escalabilidade** |
-|--------|---------------------------------------------|--------------------------------|
-| **Desempenho** | Aumenta a latência devido a criptografia, autenticação em série e geração de logs detalhados. | Pode ser mitigado com paralelização, auto scaling e mecanismos de cache. |
-| **Volume de Dados** | Gera grande quantidade de logs, versões, metadados e trilhas de auditoria (podendo chegar a centenas de GB/ano). | Suporte via compressão, camadas de storage, particionamento e sharding. |
-| **Tempo de Resposta** | Cresce devido às etapas de validação (token, RBAC, checksums, rastreamento). | Reduzido com novas instâncias, filas assíncronas e otimização de índices e rotas. |
-| **Disponibilidade** | Mecanismos de segurança podem gerar falsos positivos e bloquear operações legítimas. | Melhorada com redundância, failover automatizado e replicação regional. |
-| **Custos** | Aumenta com ferramentas de segurança, monitoramento, logs e compliance. | Pode ser otimizado com auto scaling, compressão e redução de carga no banco. |
-| **Confiabilidade** | Reforça não repúdio, consistência e auditoria completa das ações. | Replicações, backups e validação de integridade aumentam a qualidade do sistema distribuído. |
-| **Manutenibilidade** | Eleva complexidade por exigir múltiplas camadas de proteção, auditoria e padronização rígida. | Modularização, documentação e CI/CD diminuem esforço de manutenção. |
-| **Privacidade (LGPD)** | Garante rastreabilidade de dados pessoais, controle de acesso e governança. | Escalabilidade global pode ser limitada por exigências de localização de dados. |
-| **Resistência a Falhas** | Ferramentas de segurança podem travar operações quando mal configuradas. | Instâncias redundantes absorvem falhas locais e mantêm operação mesmo sob carga. |
-
+| **RNF**                  | **Impacto em Segurança e Rastreabilidade**                                                                       | **Impacto em Escalabilidade**                                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **Desempenho**           | Aumenta a latência devido a criptografia, autenticação em série e geração de logs detalhados.                    | Pode ser mitigado com paralelização, auto scaling e mecanismos de cache.                     |
+| **Volume de Dados**      | Gera grande quantidade de logs, versões, metadados e trilhas de auditoria (podendo chegar a centenas de GB/ano). | Suporte via compressão, camadas de storage, particionamento e sharding.                      |
+| **Tempo de Resposta**    | Cresce devido às etapas de validação (token, RBAC, checksums, rastreamento).                                     | Reduzido com novas instâncias, filas assíncronas e otimização de índices e rotas.            |
+| **Disponibilidade**      | Mecanismos de segurança podem gerar falsos positivos e bloquear operações legítimas.                             | Melhorada com redundância, failover automatizado e replicação regional.                      |
+| **Custos**               | Aumenta com ferramentas de segurança, monitoramento, logs e compliance.                                          | Pode ser otimizado com auto scaling, compressão e redução de carga no banco.                 |
+| **Confiabilidade**       | Reforça não repúdio, consistência e auditoria completa das ações.                                                | Replicações, backups e validação de integridade aumentam a qualidade do sistema distribuído. |
+| **Manutenibilidade**     | Eleva complexidade por exigir múltiplas camadas de proteção, auditoria e padronização rígida.                    | Modularização, documentação e CI/CD diminuem esforço de manutenção.                          |
+| **Privacidade (LGPD)**   | Garante rastreabilidade de dados pessoais, controle de acesso e governança.                                      | Escalabilidade global pode ser limitada por exigências de localização de dados.              |
+| **Resistência a Falhas** | Ferramentas de segurança podem travar operações quando mal configuradas.                                         | Instâncias redundantes absorvem falhas locais e mantêm operação mesmo sob carga.             |
 
 ### A. Análise de Conflitos Custo-Benefício
 
-| **RNFs em Conflito** | **Atributo de Qualidade Impactado** | **Descrição do Conflito** | **Como a Escalabilidade Compensa** |
-|---------------------|-------------------------------------|---------------------------|-----------------------------------|
-| **Segurança + Rastreabilidade** vs. **Desempenho** | **Tempo de Resposta** | Muitos controles de segurança (autenticação via Microsoft Entra ID, validação RBAC, criptografia AES-256) e rastreabilidade (logs detalhados, registro de incidentes, checksums SHA-256) sobrecarregam o sistema, aumentando a latência de ~100ms para ~450ms por requisição. | A **escalabilidade** compensa com balanceamento de carga distribuída e processamento paralelo, permitindo que múltiplas instâncias processem requisições simultaneamente. Com cache de tokens (Redis) e índices otimizados, a latência é reduzida para ~280ms mesmo com todos os controles ativos. |
-| **Segurança + Rastreabilidade** vs. **Volume de Armazenamento** | **Volume de Dados** | A geração contínua de logs de auditoria (~150MB/dia), incidentes de segurança (~2.5MB/dia), checksums de integridade (~20MB/dia) e versionamento de documentos (~2GB/dia) aumenta drasticamente o volume de armazenamento necessário para ~827GB/ano. | A **escalabilidade** suporta crescimento contínuo com estratégias de compressão automática (logs antigos reduzidos em 70%), retenção diferenciada (logs operacionais mantidos apenas 90 dias) e migração para storage de baixo custo (Azure Archive para dados >1 ano), reduzindo o volume efetivo em 40%. |
-| **Segurança + Rastreabilidade** vs. **Desempenho** | **Throughput (requisições/segundo)** | Validações de segurança em série (token → RBAC → checksum → log) reduzem o throughput de ~500 req/s para ~200 req/s, limitando a capacidade do sistema. | A **escalabilidade horizontal** permite adicionar novas instâncias da API dinamicamente (auto-scaling), mantendo throughput agregado de 350+ req/s mesmo com todos os controles. Processamento assíncrono de logs em buffer reduz bloqueio da thread principal. |
-| **Segurança** vs. **Disponibilidade** | **Disponibilidade Percebida** | Controles rigorosos de segurança (bloqueio automático de acessos suspeitos, validação de checksums antes de sincronização, RBAC granular no SharePoint) podem gerar falsos positivos que bloqueiam operações legítimas, reduzindo disponibilidade de 99.5% para 98.5%. | Sistemas escaláveis possuem **redundância e failover automático**, garantindo que o sistema continue operando mesmo durante bloqueios ou falhas de componentes individuais. Mecanismos de auto-recuperação (retry automático, circuit breaker) mantêm disponibilidade em 99.4% mesmo com controles ativos. |
-| **Segurança + Rastreabilidade** vs. **Custos** | **Custos Operacionais** | Logs, armazenamento de incidentes, infraestrutura de compliance, criptografia e checksums aumentam custos operacionais em ~R$ 650/ano (storage) + R$ 116.400/ano (manutenção) = **R$ 117.050/ano**. | Infraestrutura escalável permite **otimização de custos** com auto-scaling (paga-se apenas pelo uso efetivo), compressão de dados (redução de 40% no storage), cache distribuído (menos consultas ao DB) e automação (redução de 60% em intervenções manuais). ROI: economia de R$ 278.950/ano em eficiência operacional. |
-| **Segurança + Rastreabilidade** vs. **Confiabilidade** | **Confiabilidade dos Dados** | **Positivo:** Auditoria completa e logs detalhados de todas as ações (100% de rastreabilidade validada na seção 9.2) aumentam significativamente a confiabilidade dos dados e do sistema, permitindo investigação forense e não repúdio. | A **escalabilidade** reforça a confiabilidade com replicação de dados entre múltiplas zonas (Azure Brazil South + Brazil Southeast), backup contínuo e mecanismos de integridade (checksums SHA-256 validados com 100% de precisão nos testes). |
-| **Segurança + Rastreabilidade** vs. **Manutenibilidade** | **Complexidade de Manutenção** | Ferramentas de segurança em excesso (autenticação, autorização, logs, checksums, incidentes) e grande volume de logs (~827GB/ano) aumentam a complexidade da manutenção, exigindo equipe especializada e +122h/mês de trabalho. | Sistema **modular e padronizado** facilita manutenção: APIs bem documentadas, logs estruturados com índices, automação de deploy (CI/CD), observabilidade centralizada (Application Insights). Uso de managed services (Azure) delega 40% das tarefas de infraestrutura ao provedor cloud. |
-| **Escalabilidade** vs. **Privacidade (LGPD)** | **Privacidade e Localização de Dados** | Sistemas escaláveis tendem a distribuir dados entre múltiplas regiões geográficas para reduzir latência, mas requisitos de LGPD exigem que dados de projetos estratégicos e informações pessoais permaneçam em território brasileiro, limitando a distribuição global. | **Estratégia de compensação:** Classificação de dados em categorias (estratégicos ficam no Brasil, públicos podem usar CDN global). Replicação apenas entre regiões nacionais (Azure Brazil South ↔ Brazil Southeast) garante conformidade LGPD mantendo disponibilidade de 99.9%. Custo adicional: +R$ 4.000/mês vs. infra global. |
-| **Segurança** vs. **Resistência a Falhas** | **Bloqueios e Travas** | Mecanismos de segurança podem ocasionar bloqueios desnecessários (falsos positivos em ~1-2% das operações), como acesso negado após mudança de equipe ou sincronização bloqueada por diferenças irrelevantes de formatação. | Sistemas escaláveis **continuam operando mesmo com bloqueios** localizados: outras instâncias atendem requisições, filas de retry processam operações bloqueadas, e sistema de exceções permite aprovação rápida de casos legítimos (tempo de resolução reduzido de 90min → 15min com automação). |
+| **RNFs em Conflito**                                            | **Atributo de Qualidade Impactado**    | **Descrição do Conflito**                                                                                                                                                                                                                                                     | **Como a Escalabilidade Compensa**                                                                                                                                                                                                                                                                                                  |
+| --------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Segurança + Rastreabilidade** vs. **Desempenho**              | **Tempo de Resposta**                  | Muitos controles de segurança (autenticação via Microsoft Entra ID, validação RBAC, criptografia AES-256) e rastreabilidade (logs detalhados, registro de incidentes, checksums SHA-256) sobrecarregam o sistema, aumentando a latência de ~100ms para ~450ms por requisição. | A **escalabilidade** compensa com balanceamento de carga distribuída e processamento paralelo, permitindo que múltiplas instâncias processem requisições simultaneamente. Com cache de tokens (Redis) e índices otimizados, a latência é reduzida para ~280ms mesmo com todos os controles ativos.                                  |
+| **Segurança + Rastreabilidade** vs. **Volume de Armazenamento** | **Volume de Dados**                    | A geração contínua de logs de auditoria (~150MB/dia), incidentes de segurança (~2.5MB/dia), checksums de integridade (~20MB/dia) e versionamento de documentos (~2GB/dia) aumenta drasticamente o volume de armazenamento necessário para ~827GB/ano.                         | A **escalabilidade** suporta crescimento contínuo com estratégias de compressão automática (logs antigos reduzidos em 70%), retenção diferenciada (logs operacionais mantidos apenas 90 dias) e migração para storage de baixo custo (Azure Archive para dados >1 ano), reduzindo o volume efetivo em 40%.                          |
+| **Segurança + Rastreabilidade** vs. **Desempenho**              | **Throughput (requisições/segundo)**   | Validações de segurança em série (token → RBAC → checksum → log) reduzem o throughput de ~500 req/s para ~200 req/s, limitando a capacidade do sistema.                                                                                                                       | A **escalabilidade horizontal** permite adicionar novas instâncias da API dinamicamente (auto-scaling), mantendo throughput agregado de 350+ req/s mesmo com todos os controles. Processamento assíncrono de logs em buffer reduz bloqueio da thread principal.                                                                     |
+| **Segurança** vs. **Disponibilidade**                           | **Disponibilidade Percebida**          | Controles rigorosos de segurança (bloqueio automático de acessos suspeitos, validação de checksums antes de sincronização, RBAC granular no SharePoint) podem gerar falsos positivos que bloqueiam operações legítimas, reduzindo disponibilidade de 99.5% para 98.5%.        | Sistemas escaláveis possuem **redundância e failover automático**, garantindo que o sistema continue operando mesmo durante bloqueios ou falhas de componentes individuais. Mecanismos de auto-recuperação (retry automático, circuit breaker) mantêm disponibilidade em 99.4% mesmo com controles ativos.                          |
+| **Segurança + Rastreabilidade** vs. **Custos**                  | **Custos Operacionais**                | Logs, armazenamento de incidentes, infraestrutura de compliance, criptografia e checksums aumentam custos operacionais em ~R$ 650/ano (storage) + R$ 116.400/ano (manutenção) = **R$ 117.050/ano**.                                                                           | Infraestrutura escalável permite **otimização de custos** com auto-scaling (paga-se apenas pelo uso efetivo), compressão de dados (redução de 40% no storage), cache distribuído (menos consultas ao DB) e automação (redução de 60% em intervenções manuais). ROI: economia de R$ 278.950/ano em eficiência operacional.           |
+| **Segurança + Rastreabilidade** vs. **Confiabilidade**          | **Confiabilidade dos Dados**           | **Positivo:** Auditoria completa e logs detalhados de todas as ações (100% de rastreabilidade validada na seção 9.2) aumentam significativamente a confiabilidade dos dados e do sistema, permitindo investigação forense e não repúdio.                                      | A **escalabilidade** reforça a confiabilidade com replicação de dados entre múltiplas zonas (Azure Brazil South + Brazil Southeast), backup contínuo e mecanismos de integridade (checksums SHA-256 validados com 100% de precisão nos testes).                                                                                     |
+| **Segurança + Rastreabilidade** vs. **Manutenibilidade**        | **Complexidade de Manutenção**         | Ferramentas de segurança em excesso (autenticação, autorização, logs, checksums, incidentes) e grande volume de logs (~827GB/ano) aumentam a complexidade da manutenção, exigindo equipe especializada e +122h/mês de trabalho.                                               | Sistema **modular e padronizado** facilita manutenção: APIs bem documentadas, logs estruturados com índices, automação de deploy (CI/CD), observabilidade centralizada (Application Insights). Uso de managed services (Azure) delega 40% das tarefas de infraestrutura ao provedor cloud.                                          |
+| **Escalabilidade** vs. **Privacidade (LGPD)**                   | **Privacidade e Localização de Dados** | Sistemas escaláveis tendem a distribuir dados entre múltiplas regiões geográficas para reduzir latência, mas requisitos de LGPD exigem que dados de projetos estratégicos e informações pessoais permaneçam em território brasileiro, limitando a distribuição global.        | **Estratégia de compensação:** Classificação de dados em categorias (estratégicos ficam no Brasil, públicos podem usar CDN global). Replicação apenas entre regiões nacionais (Azure Brazil South ↔ Brazil Southeast) garante conformidade LGPD mantendo disponibilidade de 99.9%. Custo adicional: +R$ 4.000/mês vs. infra global. |
+| **Segurança** vs. **Resistência a Falhas**                      | **Bloqueios e Travas**                 | Mecanismos de segurança podem ocasionar bloqueios desnecessários (falsos positivos em ~1-2% das operações), como acesso negado após mudança de equipe ou sincronização bloqueada por diferenças irrelevantes de formatação.                                                   | Sistemas escaláveis **continuam operando mesmo com bloqueios** localizados: outras instâncias atendem requisições, filas de retry processam operações bloqueadas, e sistema de exceções permite aprovação rápida de casos legítimos (tempo de resolução reduzido de 90min → 15min com automação).                                   |
 
 ### B. Destaque dos Impactos nos Negócios
 
@@ -9110,46 +9179,46 @@ _(conteúdo.)_
 
 #### **1. Impacto Financeiro**
 
-| **Aspecto** | **Custo/Investimento** | **Benefício Mitigado** | **ROI** |
-|-------------|------------------------|------------------------|---------|
-| **Armazenamento de logs** | R$ 650/ano | Evita multas TCE por falta de auditoria (R$ 500.000+) | **76.800%** |
-| **Manutenção de infra escalável** | R$ 116.400/ano | Evita downtime (R$ 50.000/hora) + Evita nova aquisição em 3 anos (R$ 7-12 milhões) | **6.000%** |
-| **Conformidade LGPD (infra nacional)** | R$ 48.000/ano | Evita multas LGPD (até R$ 50 milhões) | **104.000%** |
-| **TOTAL ANUAL** | **R$ 165.050** | **Riscos mitigados: R$ 57,5 milhões** | **34.700%** |
+| **Aspecto**                            | **Custo/Investimento** | **Benefício Mitigado**                                                             | **ROI**      |
+| -------------------------------------- | ---------------------- | ---------------------------------------------------------------------------------- | ------------ |
+| **Armazenamento de logs**              | R$ 650/ano             | Evita multas TCE por falta de auditoria (R$ 500.000+)                              | **76.800%**  |
+| **Manutenção de infra escalável**      | R$ 116.400/ano         | Evita downtime (R$ 50.000/hora) + Evita nova aquisição em 3 anos (R$ 7-12 milhões) | **6.000%**   |
+| **Conformidade LGPD (infra nacional)** | R$ 48.000/ano          | Evita multas LGPD (até R$ 50 milhões)                                              | **104.000%** |
+| **TOTAL ANUAL**                        | **R$ 165.050**         | **Riscos mitigados: R$ 57,5 milhões**                                              | **34.700%**  |
 
 **Conclusão Financeira:** Os custos adicionais representam apenas **0,3%** dos riscos regulatórios e operacionais mitigados. A decisão de implementar todos os RNFs é **financeiramente mandatória** para empresa pública de infraestrutura crítica.
 
 #### **2. Impacto Operacional**
 
-| **Indicador** | **Sistema Atual** | **Sistema Novo** | **Ganho** | **Valor Anual** |
-|---------------|-------------------|------------------|-----------|-----------------|
-| **Tempo de consolidação de dados (Miro → SharePoint)** | 40h/mês (manual) | 5h/mês (automatizado) | -87.5% | R$ 168.000 |
-| **Detecção de acessos indevidos** | 0% (não existe) | 100% (automático) | +100% | Risco zero |
-| **Tempo de auditoria/investigação** | 5-10 dias | 2 segundos | -99.9% | R$ 240.000 |
-| **Tempo de resolução de incidentes** | 90min (manual) | 15min (automático) | -83% | R$ 36.000 |
-| **TOTAL** | - | - | - | **R$ 444.000/ano** |
+| **Indicador**                                          | **Sistema Atual** | **Sistema Novo**      | **Ganho** | **Valor Anual**    |
+| ------------------------------------------------------ | ----------------- | --------------------- | --------- | ------------------ |
+| **Tempo de consolidação de dados (Miro → SharePoint)** | 40h/mês (manual)  | 5h/mês (automatizado) | -87.5%    | R$ 168.000         |
+| **Detecção de acessos indevidos**                      | 0% (não existe)   | 100% (automático)     | +100%     | Risco zero         |
+| **Tempo de auditoria/investigação**                    | 5-10 dias         | 2 segundos            | -99.9%    | R$ 240.000         |
+| **Tempo de resolução de incidentes**                   | 90min (manual)    | 15min (automático)    | -83%      | R$ 36.000          |
+| **TOTAL**                                              | -                 | -                     | -         | **R$ 444.000/ano** |
 
 **Conclusão Operacional:** Ganhos de eficiência (**R$ 444.000/ano**) superam em **2,7x** os custos adicionais (R$ 165.050/ano), gerando **economia líquida de R$ 278.950/ano**.
 
 #### **3. Impacto Estratégico**
 
-| **Métrica** | **Sistema Atual** | **Sistema Novo** | **Capacidade de Crescimento** |
-|-------------|-------------------|------------------|-------------------------------|
-| **Usuários simultâneos suportados** | 30-50 | 1.000+ | +1.900% |
-| **Projetos gerenciados simultaneamente** | 500 | 5.000+ | +900% |
-| **Throughput (operações/dia)** | 50.000 | 500.000+ | +900% |
-| **Tempo de resposta (p95)** | 2-5 segundos | <520ms | -89% |
+| **Métrica**                              | **Sistema Atual** | **Sistema Novo** | **Capacidade de Crescimento** |
+| ---------------------------------------- | ----------------- | ---------------- | ----------------------------- |
+| **Usuários simultâneos suportados**      | 30-50             | 1.000+           | +1.900%                       |
+| **Projetos gerenciados simultaneamente** | 500               | 5.000+           | +900%                         |
+| **Throughput (operações/dia)**           | 50.000            | 500.000+         | +900%                         |
+| **Tempo de resposta (p95)**              | 2-5 segundos      | <520ms           | -89%                          |
 
 **Contexto Estratégico:** Plano de expansão do Metrô-SP 2025-2030 prevê +15 estações, +30 km de linhas, **+150 projetos simultâneos** e +2.000 colaboradores indiretos. Sistema escalável suporta esse crescimento sem necessidade de nova aquisição (economia de **R$ 7-12 milhões** em 5 anos).
 
 #### **4. Impacto Regulatório e Reputacional**
 
-| **Órgão Fiscalizador** | **Requisito** | **Risco Sem Compliance** | **Status no Sistema Novo** |
-|------------------------|---------------|--------------------------|----------------------------|
-| **TCE-SP** | Rastreabilidade total | Multa: R$ 500.000+ |  100% de auditoria |
-| **LGPD** | Controle de dados pessoais | Multa: até R$ 50 milhões |  Conformidade total |
-| **CGU** | Transparência de gastos | Processo administrativo |  Logs imutáveis |
-| **MPF** | Investigação de irregularidades | Processo penal |  Não repúdio |
+| **Órgão Fiscalizador** | **Requisito**                   | **Risco Sem Compliance** | **Status no Sistema Novo** |
+| ---------------------- | ------------------------------- | ------------------------ | -------------------------- |
+| **TCE-SP**             | Rastreabilidade total           | Multa: R$ 500.000+       | 100% de auditoria          |
+| **LGPD**               | Controle de dados pessoais      | Multa: até R$ 50 milhões | Conformidade total         |
+| **CGU**                | Transparência de gastos         | Processo administrativo  | Logs imutáveis             |
+| **MPF**                | Investigação de irregularidades | Processo penal           | Não repúdio                |
 
 **Valor Intangível:** Posicionamento do Metrô-SP como **referência em governança digital** entre empresas públicas de transporte, gerando confiança institucional e atração de talentos qualificados.
 
@@ -9195,4 +9264,3 @@ _(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 for
 [9] MICROSOFT. Azure SQL Database Pricing. Disponível em: https://azure.microsoft.com/en-us/pricing/details/sql-database/. Acesso em: 27 nov. 2025.
 
 [10] MICROSOFT. Azure Load Balancer Pricing. Disponível em: https://azure.microsoft.com/en-us/pricing/details/load-balancer/. Acesso em: 27 nov. 2025.
-
