@@ -35,7 +35,7 @@
 - [5. Infraestrutura como Código](#5-infraestrutura-como-código)
 - [6. Gestão de Arquivos Sensíveis](#6-gestao-de-arquivos-sensiveis)
 - [7. Política de Rollback](#7-política-de-rollback)
-- [8. Registro de Variáveis de Ambiente][#8-registro-de-variaveis-de-ambiente]
+- [8. Registro de Variáveis de Ambiente](#8-registro-de-variaveis-de-ambiente)
 - [Referências](#referências)
 
 # 1. Introdução

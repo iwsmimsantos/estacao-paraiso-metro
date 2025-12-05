@@ -1,0 +1,51 @@
+user_id,display_name,email,department,role,risk_level,is_active,last_login_utc,mfa_enabled,tenant_id
+u001,Ana Souza,ana.souza@empresa.com,TI,Administrador,high,true,2025-11-20T13:45:00Z,true,tenant-01
+u002,Carlos Lima,carlos.lima@empresa.com,Finanças,Analista,medium,true,2025-11-21T09:12:00Z,true,tenant-01
+u003,Mariana Silva,mariana.silva@empresa.com,Marketing,Colaborador,low,true,2025-11-22T18:03:00Z,false,tenant-01
+u004,Pedro Santos,pedro.santos@empresa.com,TI,DevOps,medium,true,2025-11-23T08:30:00Z,true,tenant-01
+u005,Juliana Costa,juliana.costa@empresa.com,RH,Gerente,medium,true,2025-11-24T10:15:00Z,true,tenant-01
+u006,Roberto Alves,roberto.alves@empresa.com,Vendas,Executivo,low,true,2025-11-25T14:22:00Z,false,tenant-01
+u007,Fernanda Oliveira,fernanda.oliveira@empresa.com,Jurídico,Advogada,high,true,2025-11-26T16:48:00Z,true,tenant-01
+u008,Lucas Mendes,lucas.mendes@empresa.com,Finanças,Controller,high,true,2025-11-27T07:55:00Z,true,tenant-01
+u009,Camila Rocha,camila.rocha@empresa.com,Marketing,Designer,low,true,2025-11-26T11:20:00Z,false,tenant-01
+u010,Rafael Ferreira,rafael.ferreira@empresa.com,TI,Arquiteto,high,true,2025-11-27T09:05:00Z,true,tenant-01
+u011,Patricia Gomes,patricia.gomes@empresa.com,Operações,Analista,medium,true,2025-11-25T15:30:00Z,true,tenant-02
+u012,Bruno Martins,bruno.martins@empresa.com,Compliance,Auditor,high,true,2025-11-27T08:10:00Z,true,tenant-02
+u013,André Ribeiro,andre.ribeiro@empresa.com,TI,Suporte,low,true,2025-11-23T12:05:00Z,false,tenant-01
+u014,Beatriz Carvalho,beatriz.carvalho@empresa.com,Marketing,Analista,medium,true,2025-11-24T17:42:00Z,true,tenant-01
+u015,Diego Araujo,diego.araujo@empresa.com,Vendas,Representante,low,true,2025-11-22T09:55:00Z,false,tenant-01
+u016,Elisa Faria,elisa.faria@empresa.com,RH,Especialista,medium,true,2025-11-21T16:33:00Z,true,tenant-02
+u017,Gustavo Pires,gustavo.pires@empresa.com,TI,Engenheiro de Dados,high,true,2025-11-26T19:11:00Z,true,tenant-02
+u018,Helena Nunes,helena.nunes@empresa.com,Operações,Coordenadora,medium,true,2025-11-25T08:27:00Z,true,tenant-02
+u019,Igor Fonseca,igor.fonseca@empresa.com,Logística,Analista,low,true,2025-11-20T10:02:00Z,false,tenant-02
+u020,Joana Barros,joana.barros@empresa.com,Finanças,Tesoureira,high,true,2025-11-27T06:49:00Z,true,tenant-02
+u021,Karina Teixeira,karina.teixeira@empresa.com,Atendimento,Supervisora,medium,true,2025-11-23T14:18:00Z,true,tenant-03
+u022,Leandro Costa,leandro.costa@empresa.com,TI,Administrador,high,false,2025-11-18T11:40:00Z,true,tenant-03
+u023,Marcelo Dias,marcelo.dias@empresa.com,Segurança,Especialista,high,true,2025-11-27T02:15:00Z,true,tenant-03
+u024,Natália Rezende,natalia.rezende@empresa.com,Produto,PO,medium,true,2025-11-24T13:07:00Z,true,tenant-03
+u025,Otávio Prado,otavio.prado@empresa.com,Engenharia,Engenheiro de Software,medium,true,2025-11-26T09:29:00Z,true,tenant-03
+u026,Paula Freitas,paula.freitas@empresa.com,Marketing,Social Media,low,true,2025-11-22T20:41:00Z,false,tenant-03
+u027,Renato Moreira,renato.moreira@empresa.com,Operações,Coordenador,medium,true,2025-11-21T07:58:00Z,true,tenant-03
+u028,Sabrina Lopes,sabrina.lopes@empresa.com,RH,Business Partner,medium,true,2025-11-25T18:24:00Z,true,tenant-03
+u029,Thiago Correia,thiago.correia@empresa.com,TI,DevOps,high,true,2025-11-27T04:37:00Z,true,tenant-03
+u030,Viviane Sousa,viviane.sousa@empresa.com,Compliance,Analista,medium,true,2025-11-19T15:19:00Z,true,tenant-03
+u031,Alexandre Pinto,alexandre.pinto@empresa.com,Suprimentos,Gerente,medium,true,2025-11-20T09:03:00Z,true,tenant-04
+u032,Bianca Melo,bianca.melo@empresa.com,Atendimento,Analista,low,true,2025-11-23T10:56:00Z,false,tenant-04
+u033,Caio Duarte,caio.duarte@empresa.com,TI,Estagiário,low,true,2025-11-26T16:05:00Z,false,tenant-04
+u034,Débora Lima,debora.lima@empresa.com,Finanças,Analista Sênior,high,true,2025-11-24T11:47:00Z,true,tenant-04
+u035,Edson Monteiro,edson.monteiro@empresa.com,Segurança,Analista,high,true,2025-11-25T21:12:00Z,true,tenant-04
+u036,Fábio Xavier,fabio.xavier@empresa.com,Operações,Supervisor,medium,true,2025-11-22T06:39:00Z,true,tenant-04
+u037,Giselle Castro,giselle.castro@empresa.com,Jurídico,Advogada,high,true,2025-11-21T19:23:00Z,true,tenant-04
+u038,Hugo Santana,hugo.santana@empresa.com,Vendas,Executivo,medium,true,2025-11-27T03:54:00Z,false,tenant-04
+u039,Isabela Braga,isabela.braga@empresa.com,Produto,Analista,medium,true,2025-11-26T12:16:00Z,true,tenant-04
+u040,João Vitor Ferreira,joao.vitor.ferreira@empresa.com,Engenharia,Arquiteto de Soluções,high,true,2025-11-27T01:28:00Z,true,tenant-04
+u041,Kamila Santos,kamila.santos@empresa.com,TI,Cientista de Dados,high,true,2025-11-25T17:02:00Z,true,tenant-02
+u042,Luiz Henrique,luiz.henrique@empresa.com,Data,Engenheiro de Dados,high,true,2025-11-26T08:51:00Z,true,tenant-01
+u043,Márcia Tavares,marcia.tavares@empresa.com,Operações,Analista Pleno,medium,true,2025-11-20T13:33:00Z,false,tenant-02
+u044,Nicolas Ramos,nicolas.ramos@empresa.com,TI,Desenvolvedor,medium,true,2025-11-24T09:44:00Z,true,tenant-03
+u045,Olívia Antunes,olivia.antunes@empresa.com,Marketing,Coordenadora,medium,true,2025-11-23T18:19:00Z,true,tenant-01
+u046,Paulo Henrique,paulo.henrique@empresa.com,Atendimento,Operador,low,true,2025-11-21T11:27:00Z,false,tenant-02
+u047,Raquel Cardoso,raquel.cardoso@empresa.com,Compliance,Especialista,high,true,2025-11-27T05:39:00Z,true,tenant-03
+u048,Sérgio Nogueira,sergio.nogueira@empresa.com,Segurança,Gestor,high,false,2025-11-19T07:15:00Z,true,tenant-04
+u049,Tatiane Moura,tatiane.moura@empresa.com,RH,Analista,medium,true,2025-11-22T16:58:00Z,true,tenant-01
+u050,William Rocha,william.rocha@empresa.com,Vendas,Coordenador,medium,true,2025-11-26T14:36:00Z,true,tenant-02

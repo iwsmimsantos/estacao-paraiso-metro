@@ -1,0 +1,16 @@
+timestamp_utc,service_tested,endpoint_tested,test_scenario,status,severity,details,execution_time_ms
+2025-12-04T13:26:56.580633+00:00,sharepoint,/sharepoint/sites,Validação de Correlação,PASSED,CRÍTICO,Correlation ID validado com sucesso: f9c4ab57-f619-43b2-bf14-9bc1144fd371,2065.45
+2025-12-04T13:26:58.646085+00:00,sharepoint,/sharepoint/sites,Presença do Contexto de Segurança,PASSED,ALTO,"Security context válido: user_id=u001, tenant_id=tenant-01, mfa_enabled=True",2033.68
+2025-12-04T13:27:00.679767+00:00,sharepoint,/sharepoint/sites,Presença do Contexto de Rastreabilidade,PASSED,ALTO,"Traceability context válido: trace_id=6faaa497-4379-4e..., span_id=635ba18f-2827-43..., ingested_at_utc=2025-12-04T13:27:02Z",2061.11
+2025-12-04T13:27:02.744941+00:00,miro,/miro/boards,Validação de Correlação,PASSED,CRÍTICO,Correlation ID validado com sucesso: c1ebd27c-a6ee-46ff-aec4-268f4ed19105,2067.53
+2025-12-04T13:27:04.812466+00:00,miro,/miro/boards,Presença do Contexto de Segurança,PASSED,ALTO,"Security context válido: user_id=u001, tenant_id=tenant-01, mfa_enabled=True",2049.21
+2025-12-04T13:27:06.861677+00:00,miro,/miro/boards,Presença do Contexto de Rastreabilidade,PASSED,ALTO,"Traceability context válido: trace_id=37cf646c-9d4a-42..., span_id=4dc1248b-5b91-4d..., ingested_at_utc=2025-12-04T13:27:08Z",2050.43
+2025-12-04T13:27:08.912104+00:00,copilot,/copilot/sessions,Validação de Correlação,PASSED,CRÍTICO,Correlation ID validado com sucesso: 9dd6f5eb-c3af-433c-93c4-8629082efbd1,2075.22
+2025-12-04T13:27:10.987324+00:00,copilot,/copilot/sessions,Presença do Contexto de Segurança,PASSED,ALTO,"Security context válido: user_id=u004, tenant_id=tenant-01, mfa_enabled=True",2041.13
+2025-12-04T13:27:13.028456+00:00,copilot,/copilot/sessions,Presença do Contexto de Rastreabilidade,PASSED,ALTO,"Traceability context válido: trace_id=585b5627-ef80-41..., span_id=d48ba325-f6a7-4f..., ingested_at_utc=2025-12-04T13:27:15Z",2066.95
+2025-12-04T13:27:15.095406+00:00,office,/office/documents,Validação de Correlação,PASSED,CRÍTICO,Correlation ID validado com sucesso: 6dbe67c3-341e-4e3b-b472-1286df0fbfa4,2034.09
+2025-12-04T13:27:17.129499+00:00,office,/office/documents,Presença do Contexto de Segurança,PASSED,ALTO,"Security context válido: user_id=u033, tenant_id=tenant-01, mfa_enabled=False",2033.97
+2025-12-04T13:27:19.163473+00:00,office,/office/documents,Presença do Contexto de Rastreabilidade,PASSED,ALTO,"Traceability context válido: trace_id=22a2f901-bf76-4e..., span_id=0ebcfee3-1bb9-49..., ingested_at_utc=2025-12-04T13:27:21Z",2042.27
+2025-12-04T13:27:21.205746+00:00,sentinel,/sentinel/incidents,Validação de Correlação,PASSED,CRÍTICO,Correlation ID validado com sucesso: 7cf40b35-6d69-4662-ad40-1d7aaa06d8d5,2059.34
+2025-12-04T13:27:23.265090+00:00,sentinel,/sentinel/incidents,Presença do Contexto de Segurança,PASSED,ALTO,"Security context válido: user_id=u043, tenant_id=tenant-01, mfa_enabled=False",2065.33
+2025-12-04T13:27:25.330424+00:00,sentinel,/sentinel/incidents,Presença do Contexto de Rastreabilidade,PASSED,ALTO,"Traceability context válido: trace_id=e982bd67-8e04-4e..., span_id=d4de1258-81ed-41..., ingested_at_utc=2025-12-04T13:27:27Z",2035.93
