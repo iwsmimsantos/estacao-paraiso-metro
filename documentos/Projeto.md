@@ -176,7 +176,19 @@
 - [14. Tradeoffs Arquiteturais](#14-tradeoffs-arquiteturais)
   - [14.1 Mapeamento de Tradeoffs](#141-mapeamento-de-tradeoffs)
   - [14.2 Evidência dos Tradeoffs com Base em Medidas Realizadas](#142-evidência-dos-tradeoffs-com-base-em-medidas-realizadas)
-- [15. [A construir]](#15-a-construir)
+- [15. Componentes e Custos Finais](#15-componentes-e-custos-finais)
+  - [15.1 Componentes e Tecnologias Utilizadas](#151-componentes-e-tecnologias-utilizadas)
+  - [15.2 Custo de Implementação e Estimativas](#152-custo-de-implementação-e-estimativas)
+  - [15.3 Análise Financeira do Projeto](#153-análise-financeira-do-projeto)
+- [16. Especifiçações Finais da Arquitetura](#16-especifiçações-finais-da-arquitetura)
+  - [16.1 Especificações e Registros das Simulações](#161-especificações-e-registros-das-simulações)
+  - [16.2 Documentação Arquitetural do Atual e do Novo](#162-documentação-arquitetural-do-atual-e-do-novo)
+  - [16.3 Benefícios Entregues](#163-benefícios-entregues)
+- [17. Considerações Finais do Projeto](#17-considerações-finais-do-projeto)
+  - [17.1 Análise de Métricas](#171-análise-de-métricas)
+  - [17.2 Análise Post Mortem](#172-análise-post-mortem)
+  - [17.3 Impacto e Alinhamento com ODS](#173-impacto-e-alinhamento-com-ods)
+  - [17.4 Aperfeiçoamentos Futuros](#174-aperfeiçoamentos-futuros)
 - [Referências](#referências)
 
 # Projeto · Módulo 08 – Arquitetura Digital Segura e Tolerante a Falhas
@@ -11276,9 +11288,52 @@ Throughput Comparativo (req/s):
 | Volume de Logs  | < 1 GB/ano  | > 2 GB/ano              | Revisar compressão         |
 | Custo Mensal    | < R$ 8k     | > R$ 10k                | Otimizar recursos          |
 
-# 15. [A construir]
+---
 
-_(As próximas seções serão adicionadas conforme os artefatos da Sprint 5 forem definidos.)_
+# 15. Componentes e Custos Finais
+_(Introduzir Seção)_
+
+## 15.1 Componentes e Tecnologias Utilizadas
+_(Atualizar lista de tecnologias e justificativas de escolha.)_
+
+## 15.2 Custo de Implementação e Estimativas
+_(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
+
+## 15.3 Análise Financeira do Projeto
+_(Atualizar visão financeira, projeções e viabilidade.)_
+
+---
+
+# 16. Especifiçações Finais da Arquitetura
+_(Introduzir Seção)_
+
+## 16.1 Especificações e Registros das Simulações
+_(Organizar as simulações feitas (antigo e novo).)_
+
+## 16.2 Documentação Arquitetural do Atual e do Novo
+_(Conferir consistência das documentações existentes e atualizar e fazer um resumo breve com base nisso)_
+
+## 16.3 Benefícios Entregues
+_(Listar e atualizar ganhos do projeto.)_
+
+---
+
+# 17. Considerações Finais do Projeto
+_(Introduzir Seção)_
+
+## 17.1 Análise de Métricas
+_(Evolução das Métricas: Realizar uma análise dos valores aferidos ao longo das sprints e que foram enviados ao final das reuniões de retrospectiva. Tirar conclusões sobre os comportamentos, identificando tendências e destacando melhorias em eficiência e eficácia.)_
+
+## 17.2 Análise Post Mortem
+_(Reflexão Final: Observar os pontos positivos do projeto, incluindo conquistas e áreas onde a equipe excedeu as expectativas. Identificar oportunidades de melhoria, discutindo desafios enfrentados e sugestões de como abordá-los em futuros projetos.)_
+
+## 17.3 Impacto e Alinhamento com ODS
+_(A- Apresentar o Checklist de Impacto Operacional e Sustentabilidade, destacando as cinco dimensões da Agenda 2030 (Pessoas, Planeta, ProsperidadePaz e Parcerias) B- Indicar os ODS prioritários, relacionando-os com o conceito de Cidades Inteligentes aplicado ao módulo)_
+
+## 17.4 Aperfeiçoamentos Futuros
+_(Descrever melhorias possíveis e roadmap sugerido.)_
+
+---
 
 # Referências
 
