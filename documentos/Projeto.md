@@ -11373,6 +11373,36 @@ A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e co
 - **Faker:** Geração de dados realistas para testes (nomes, e-mails, datas)
 - **python-dateutil:** Manipulação de timestamps UTC e conversão de fusos horários
 
+### 15.1.3 Simulações Realizadas
+
+#### Simulação com JMT (Sprint 2)
+**Ferramenta:** Java Modelling Tools (JMT)  
+**Objetivo:** Modelar rede de filas do sistema atual para identificar gargalos
+
+**Justificativa da escolha:**
+- Ferramenta acadêmica consolidada para análise de teoria de filas
+- Permite simulação de múltiplas estações, servidores e políticas de escalonamento
+- Exportação de resultados em formato .jsimg para análise visual
+
+**Resultados obtidos:**
+- Identificação do gargalo no componente de sincronização Miro/SharePoint
+- Utilização de 97% no servidor de sincronização, causando filas de até 45 segundos
+- Base para definição de melhorias no sistema novo (target: redução de 150% no tempo de resposta)
+
+#### Simulação com Python (Sprint 3)
+**Ferramenta:** Mocks FastAPI + Geração Probabilística + Chaos Engineering  
+**Objetivo:** Simular o sistema novo e validar RNFs sob condições adversas
+
+**Justificativa da escolha:**
+- Implementação de mocks realistas com comportamento probabilístico (simulação de falhas intermitentes)
+- Chaos Engineering com scripts PowerShell para simular indisponibilidade de serviços
+- Testes de burst (100 eventos simultâneos) e pico de carga (100 requisições/segundo)
+
+**Resultados obtidos:**
+- Latências p95 validadas: Ingestor <800ms, Workflows <600ms, IAM <100ms
+- Sistema mantém 93% de taxa de sucesso mesmo sob falhas simuladas
+- Enfileiramento efetivo para 100% das requisições durante indisponibilidade temporária
+
 
 
 
