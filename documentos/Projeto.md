@@ -11404,7 +11404,79 @@ A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e co
 - Enfileiramento efetivo para 100% das requisições durante indisponibilidade temporária
 
 ## 15.2 Custo de Implementação e Estimativas
-_(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
+
+&emsp;Esta seção apresenta o orçamento da Prova de Conceito (PoC) do projeto, baseado em uma equipe de 6 profissionais atuando por 10 semanas (Outubro a Dezembro 2025). Os valores incluem custos de pessoal (com encargos), despesas operacionais (infraestrutura compartilhada) e custos de manutenção (licenças Microsoft 365 Copilot e Azure), com aplicação de margem de lucro (10%) e carga tributária (fator 0,85).
+
+---
+
+### 15.2.1 Custos de Pessoal
+
+&emsp;Equipe de 6 profissionais por 10 semanas, com encargos trabalhistas de 52,74% (INSS 20%, FGTS 8%, outros 24,74%).
+
+| **Cargo**                             | **Qtd** | **Salário/semana** | **Encargos (52,74%)** | **Total 10 semanas** |
+| ------------------------------------- | ------- | ------------------ | --------------------- | -------------------- |
+| Engenheiro de Software                | 2       | R$ 2.250,00        | R$ 1.186,65           | **R$ 68.733,00**     |
+| Engenheiro de IA / LLM                | 2       | R$ 2.000,00        | R$ 1.054,80           | **R$ 61.096,00**     |
+| Data Analyst / BI                     | 1       | R$ 1.500,00        | R$ 791,10             | **R$ 22.911,00**     |
+| PM / Tech Lead                        | 1       | R$ 3.000,00        | R$ 1.582,20           | **R$ 45.822,00**     |
+| **TOTAL**                             | **6**   | -                  | -                     | **R$ 198.562,00**    |
+
+---
+
+### 15.2.2 Despesas Operacionais
+
+&emsp;Custos indiretos estimados em **10% dos custos de pessoal** (TCO): infraestrutura física, energia, depreciação de equipamentos, redes.
+
+| **Item**                           | **Base**      | **%**  | **Total**        |
+| ---------------------------------- | ------------- | ------ | ---------------- |
+| Infraestrutura + Energia + Redes   | R$ 198.562,00 | 10%    | **R$ 19.856,20** |
+
+---
+
+### 15.2.3 Custos de Manutenção (10 semanas = 2,5 meses)
+
+| **Serviço**                      | **Valor Mensal** | **Período** | **Total**        |
+| -------------------------------- | ---------------- | ----------- | ---------------- |
+| Microsoft 365 Copilot (150 users)| R$ 30.045,00     | 2,5 meses   | R$ 75.112,50     |
+| Sentinel + Logs (2 GB/mês)       | R$ 930,00        | 2,5 meses   | R$ 2.325,00      |
+| App Service B1 + Analytics       | R$ 1.790,93      | 2,5 meses   | R$ 4.477,33      |
+| Copilot AI Usage                 | R$ 300,00        | 2,5 meses   | R$ 750,00        |
+| **TOTAL**                        | R$ 33.065,93     | -           | **R$ 82.664,83** |
+
+---
+
+### 15.2.4 Consolidação e Valor Final
+
+| **Categoria**                  | **Valor**        |
+| ------------------------------ | ---------------- |
+| Custos de Pessoal              | R$ 198.562,00    |
+| Despesas Operacionais          | R$ 19.856,20     |
+| Custos de Manutenção           | R$ 82.664,83     |
+| **Subtotal (custos diretos)**  | **R$ 301.083,03**|
+| + Margem de Lucro (10%)        | R$ 30.108,30     |
+| **= Subtotal (com lucro)**     | **R$ 331.191,33**|
+| + Impostos (fator 0,85)        | R$ 58.445,53     |
+| **= VALOR FINAL (10 semanas)** | **R$ 389.636,86**|
+
+---
+
+### 15.2.5 Análise de Custo-Benefício
+
+**Investimento:** R$ 389.636,86
+
+**Entregáveis:**
+- Arquitetura validada (AS-IS vs TO-BE)
+- 42 testes automatizados (93% sucesso)
+- Simulações JMT e Python documentadas
+- RNFs implementados: Segurança, Escalabilidade, Rastreabilidade
+- Dashboard de monitoramento + logs estruturados
+
+**Riscos Mitigados:**
+- Multas TCE-SP/LGPD: R$ 50 milhões+
+- Downtime evitado: R$ 50k/hora
+- Retrabalho evitado: R$ 7-12 milhões (nova aquisição)
+
+**ROI:** 14.658% (mitigação de riscos regulatórios e operacionais)
 
 ## 15.3 Análise Financeira do Projeto
 _(Atualizar visão financeira, projeções e viabilidade.)_
