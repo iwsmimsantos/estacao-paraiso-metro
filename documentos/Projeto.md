@@ -11291,10 +11291,64 @@ Throughput Comparativo (req/s):
 ---
 
 # 15. Componentes e Custos Finais
-_(Introduzir Seção)_
+
+Esta seção agrupa os componentes tecnológicos desenvolvidos ao longo do projeto, apresentando as escolhas técnicas fundamentadas nos requisitos não funcionais priorizados (Segurança, Escalabilidade e Rastreabilidade). Além disso, detalha os custos de implementação da prova de conceito e projeções para a solução completa, seguidos de análise de viabilidade financeira.
 
 ## 15.1 Componentes e Tecnologias Utilizadas
-_(Atualizar lista de tecnologias e justificativas de escolha.)_
+
+A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e consolidadas no mercado, priorizando a compatibilidade com o ecossistema Microsoft já adotado pelo Metrô-SP, a escalabilidade horizontal e a facilidade de manutenção. As escolhas tecnológicas foram orientadas pelos RNFs definidos e pelas melhores práticas de arquitetura de software.
+
+### 15.1.1 Componentes Principais
+
+#### API Mockada (Porta 8000)
+**Tecnologia:** FastAPI + Python  
+**Serviços Simulados:** SharePoint, Miro, Microsoft 365 Copilot, Office 365, Microsoft Sentinel
+
+**Justificativa da escolha:**
+- **FastAPI** foi escolhido por sua alta performance assíncrona (baseada em Starlette e Pydantic), essencial para o RNF-01 (Escalabilidade)
+- Compatibilidade nativa com OpenAPI/Swagger, facilitando a documentação e integração futura
+- Suporte nativo a validação de dados com Pydantic, reduzindo erros de entrada e melhorando a segurança (RNF-02)
+- Comunidade ativa e integração facilitada com Azure Functions para migração futura
+- Python foi selecionado por ser amplamente utilizado em projetos de IA e Machine Learning, alinhado ao objetivo de integração futura de agentes inteligentes
+
+**Funcionalidades implementadas:**
+- Simulação de 5 APIs do ecossistema Microsoft com dados mockados em CSV
+- Resposta padronizada com rastreabilidade completa (request_id, correlation_id, trace_id)
+- Suporte a múltiplos tenants e paginação
+- Autenticação simulada com níveis de acesso (Admin, Manager, Analyst, Viewer)
+
+#### Middleware de Validação (Porta 8001)
+**Tecnologia:** FastAPI + Python  
+**Funções:** Validação de Segurança, Escalabilidade e Rastreabilidade
+
+**Justificativa da escolha:**
+- Implementação como API Gateway Pattern, centralizando validações e reduzindo acoplamento
+- Uso de FastAPI para processar requisições com baixa latência (< 100ms para sessões IAM)
+- Dashboard em tempo real implementado com HTML/CSS/JavaScript para visualização de logs e incidentes
+- Armazenamento de logs estruturados em JSON, facilitando integração futura com Azure Application Insights
+
+**Funcionalidades implementadas:**
+- **RNF-01 Segurança:** Controle de acesso por projeto, validação de checksums (SHA-256), guardrails de IA
+- **RNF-02 Escalabilidade:** Enfileiramento de requisições, retry automático, gerenciamento de carga concorrente
+- **RNF-03 Rastreabilidade:** Auditoria completa, correlação de eventos, detecção de anomalias
+
+#### Testes Automatizados
+**Tecnologia:** pytest + Locust  
+**Cobertura:** 42 testes unitários (93% de sucesso)
+
+**Justificativa da escolha:**
+- **pytest** por sua simplicidade, fixtures reutilizáveis e ampla adoção na comunidade Python
+- **Locust** para testes de carga, permitindo simulação de milhares de usuários concorrentes e validação de latências p95
+- Integração com CI/CD através de GitHub Actions (preparado para futuro deployment)
+- Cobertura de código com pytest-cov para garantir qualidade
+
+**Resultados obtidos:**
+- Segurança (RNF-01): 13/13 testes (100%)
+- Escalabilidade (RNF-02): 10/12 testes (83%)
+- Rastreabilidade (RNF-03): 16/17 testes (94%)
+
+
+
 
 ## 15.2 Custo de Implementação e Estimativas
 _(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
