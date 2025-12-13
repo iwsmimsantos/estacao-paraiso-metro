@@ -11347,6 +11347,32 @@ A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e co
 - Escalabilidade (RNF-02): 10/12 testes (83%)
 - Rastreabilidade (RNF-03): 16/17 testes (94%)
 
+### 15.1.2 Stack Tecnológico
+
+#### Backend e APIs
+- **FastAPI 0.104-0.115:** Framework web assíncrono escolhido pela performance superior a Flask e Django em benchmarks
+- **Uvicorn 0.24-0.32:** Servidor ASGI com suporte a HTTP/2 e WebSockets, preparado para futuras integrações em tempo real
+- **Pydantic 2.5-2.12:** Validação de dados em tempo de execução com serialização otimizada
+
+#### Testes e Qualidade
+- **pytest 7.4-8.3:** Framework de testes com suporte a fixtures parametrizadas
+- **pytest-cov:** Relatórios de cobertura em HTML e terminal
+- **pytest-asyncio:** Testes assíncronos para validar endpoints FastAPI
+- **Locust 2.32:** Testes de carga com interface web para análise de throughput e latência
+
+#### Segurança
+- **python-jose (JWT):** Autenticação baseada em tokens, compatível com Azure AD (futuro)
+- **passlib (bcrypt):** Hash de senhas com algoritmo bcrypt (custo adaptativo)
+
+#### Monitoramento
+- **python-json-logger:** Logs estruturados em JSON para facilitar parsing e análise
+- **prometheus-client:** Métricas expostas para Prometheus (preparado para Grafana)
+
+#### Utilitários
+- **httpx:** Cliente HTTP assíncrono para comunicação entre middleware e APIs
+- **Faker:** Geração de dados realistas para testes (nomes, e-mails, datas)
+- **python-dateutil:** Manipulação de timestamps UTC e conversão de fusos horários
+
 
 
 
