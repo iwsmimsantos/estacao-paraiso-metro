@@ -11403,9 +11403,6 @@ A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e co
 - Sistema mantém 93% de taxa de sucesso mesmo sob falhas simuladas
 - Enfileiramento efetivo para 100% das requisições durante indisponibilidade temporária
 
-
-
-
 ## 15.2 Custo de Implementação e Estimativas
 _(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
 
