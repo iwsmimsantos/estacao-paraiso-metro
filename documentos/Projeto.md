@@ -11300,7 +11300,172 @@ _(Atualizar lista de tecnologias e justificativas de escolha.)_
 _(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
 
 ## 15.3 Análise Financeira do Projeto
-_(Atualizar visão financeira, projeções e viabilidade.)_
+
+<div align="center">
+
+[LINK DE ACESSO À PLANILHA](https://docs.google.com/spreadsheets/d/1MyK5KIySJZcPhU4Yc-GWshkn2XigX5-2va1NkqFXeF4/edit?usp=sharing) 
+
+</div>
+
+&emsp;Aprofundamos a análise financeira do projeto por meio da construção de um modelo de *valuation* baseado em Fluxo de Caixa Descontado (*Discounted Cash Flow – DCF*), com o objetivo de estimar o valor econômico gerado para a empresa parceira ao longo do tempo.
+
+&emsp;Embora o projeto não gere receitas diretas, seu racional econômico está fundamentado na geração de valor indireto, capturado por dois principais *value drivers*:
+
+1. **Ganhos de produtividade** decorrentes da adoção de agentes de IA nos processos da área de PMO;  
+2. **Redução de riscos operacionais e arquiteturais**, mitigando incidentes associados a falhas de escalabilidade, rastreabilidade e déficits de arquitetura.
+
+&emsp;A modelagem financeira apresentada é baseada em premissas explícitas e parametrizáveis. Ressalta-se que os valores podem ser ajustados futuramente, sendo a principal contribuição desta análise a estrutura metodológica adotada.
+
+### Driver I – Ganho de Produtividade Operacional
+
+&emsp;Para quantificar o impacto financeiro dos ganhos de produtividade, foram consideradas as seguintes premissas:
+
+- Número de colaboradores impactados pelo projeto;
+- Economia média de horas diárias por colaborador;
+- Valor-hora médio, estimado a partir do salário médio mensal da área de PMO;
+- Número médio de dias úteis por mês.
+
+&emsp;De acordo com pesquisa divulgada pela OpenAI, a utilização de ferramentas de IA pode gerar, em média, uma economia de até **1 hora por dia por colaborador**. Esta estimativa foi adotada como premissa-base do modelo.
+
+<div align="center">
+<sub>Tabela X - Premissas Relacionadas a Produtividade</sub>
+
+| Premissa | Valor |
+|---------|------|
+| Pessoas impactadas | 150 |
+| Economia de produtividade diária por pessoa (h/dia) | 1 |
+| Salário médio mensal (R$) | 5.000,00 |
+| Valor-hora médio (R$) | 28,41 |
+| Dias úteis por mês | 22 |
+| Economia mensal por pessoa (R$) | 625,00 |
+| **Benefício anual de produtividade (R$)** | **93.750,00** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O benefício anual consolidado reflete a economia agregada de custo de mão de obra, interpretada como eficiência operacional adicional para a organização.
+
+### Driver II - Redução de Riscos e Incidentes Arquiteturais
+
+&emsp;O segundo *driver* de valor considera a mitigação de riscos operacionais relacionados a incidentes decorrentes de fragilidades arquiteturais. O cálculo foi estruturado a partir das seguintes premissas:
+
+- Probabilidade histórica de ocorrência de incidentes;
+- Probabilidade projetada após a implementação do projeto;
+- Custo financeiro médio por incidente relevante.
+
+<div align="center">
+<sub>Tabela X - Premissas de Risco e Benefício Financeiro</sub>
+
+| Premissa | Valor |
+|--------|------|
+| Probabilidade atual de incidente | 10% |
+| Probabilidade após arquitetura | 1% |
+| Custo financeiro por incidente (R$) | 100.000,00 |
+| **Benefício anual de risco evitado (R$)** | **9.000,00** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O benefício anual corresponde à redução do valor esperado de perdas financeiras associadas a incidentes, refletindo maior robustez operacional e previsibilidade.
+
+### Fluxo de caixa projetado
+
+&emsp;A partir dos benefícios financeiros anuais estimados (produtividade + risco evitado), foi projetado um fluxo de caixa para um horizonte de cinco anos. O modelo incorpora:
+
+- **CAPEX inicial**, necessário para execução e implantação do projeto;
+- **OPEX recorrente**, associado à manutenção e operação da solução;
+- Benefícios financeiros constantes ao longo do período de projeção.
+
+<div align="center">
+<sub>Tabela X - Fluxo de Caixa Projetado (R$)</sub>
+
+| Ano | CAPEX | Benefícios | OPEX | Fluxo Líquido | Acumulado |
+|---|------|-----------|------|--------------|-----------|
+| 0 | 129.829,00 | 102.750,00 | 43.501,39 | -70.580,39 | -70.580,39 |
+| 1 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | -11.331,78 |
+| 2 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 47.916,82 |
+| 3 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 107.165,43 |
+| 4 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 166.414,04 |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O fluxo evidencia um *payback* operacional entre o segundo e o terceiro ano, além de geração consistente de caixa ao longo do horizonte analisado.
+
+### Análise de Sensibilidade e Cenários
+
+&emsp;Com o objetivo de testar a robustez do modelo, foi construída uma tabela de cenários contemplando hipóteses **pessimista, neutra e otimista**, variando os principais parâmetros financeiros do projeto, incluindo custos, benefícios e taxa de desconto utilizada no *valuation*. Essa abordagem permite avaliar a sensibilidade do valor presente do projeto frente a variações nas premissas-chave.
+
+<div align="center">
+<sub>Tabela X - Premissas por Cenário</sub>
+
+| Variável | Pessimista | Neutro | Otimista |
+|-------|------------|--------|----------|
+| Custos diretos (R$) | 43.501,39 | 36.251,16 | 29.000,93 |
+| Benefício de produtividade (R$) | 75.000,00 | 93.750,00 | 112.500,00 |
+| Risco evitado (R$) | 7.200,00 | 9.000,00 | 10.800,00 |
+| Taxa de desconto | 12% | 10% | 8% |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+### Resultados por Cenário
+
+&emsp;Com base nas premissas definidas na análise de sensibilidade, foram calculados os principais indicadores financeiros — Valor Presente Líquido (VPL), Taxa Interna de Retorno (TIR) e Retorno sobre o Investimento (ROI) — para cada cenário. Os resultados permitem avaliar a atratividade econômica do projeto sob diferentes condições operacionais e macrofinanceiras.
+
+---
+
+**Resultado pessimita**: O cenário pessimista incorpora premissas mais conservadoras, com maiores custos operacionais (OPEX), menores benefícios financeiros e uma taxa de desconto mais elevada, refletindo maior percepção de risco.
+
+<div align="center">
+<sub>Tabela X - Cenário Pessimista</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **-R$ 80.949,05** |
+| TIR (Taxa Interna de Retorno) | **-16%** |
+| ROI (Return On Investment) | **18,33%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Sob essas condições, o projeto apresenta destruição de valor econômico, evidenciada por um VPL negativo e uma TIR inferior à taxa de desconto. Esse resultado indica que, caso as premissas pessimistas se materializem, o retorno financeiro não seria suficiente para compensar o capital investido, tornando o projeto economicamente pouco atrativo nesse cenário extremo.
+
+---
+
+**Cenário neutro**: O cenário neutro reflete as premissas-base do modelo, consideradas mais prováveis à luz das informações atualmente disponíveis, incluindo custos, benefícios e taxa de desconto alinhados ao cenário esperado.
+
+<div align="center">
+<sub>Tabela X - Cenário Neutro</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **R$ 216.230,71** |
+| TIR (Taxa Interna de Retorno) | **82%** |
+| ROI (Return On Investment) | **65,15%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Nesse contexto, o projeto demonstra geração consistente de valor econômico, com VPL significativamente positivo e TIR substancialmente superior à taxa de desconto adotada. Os resultados indicam elevada atratividade financeira, sugerindo que o projeto remunera adequadamente o capital investido e oferece retorno expressivo para a empresa parceira.
+
+---
+
+**Resultados otimistas**: O cenário otimista considera hipóteses mais favoráveis, como menores custos operacionais, maior captura de ganhos de produtividade, maior mitigação de riscos e uma taxa de desconto reduzida.
+
+<div align="center">
+<sub>Tabela X - Cenário Otimista</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **R$ 553.352,20** |
+| TIR (Taxa Interna de Retorno) | **260%** |
+| ROI (Return On Investment) | **124,32%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Os resultados deste cenário evidenciam um potencial elevado de criação de valor, com VPL expressivamente positivo e TIR significativamente superior aos benchmarks usuais de mercado. Esse desempenho reforça o caráter assimétrico do projeto, no qual o *upside* financeiro pode ser substancial caso as premissas mais favoráveis se concretizem.
 
 ---
 
