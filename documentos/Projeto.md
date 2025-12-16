@@ -497,6 +497,71 @@ A nova arquitetura deve suportar a transição entre os fluxos, garantindo os se
 | **R5** | **Baixa Rastreabilidade das Ações**                        | Técnico / Governança   | As plataformas atuais não possuem logs integrados e centralizados de auditoria das ações dos usuários e fluxos do _Power Automate_.          | **Rastreabilidade**, **Auditoria**, **Transparência**        |      50%      |  Moderado  |
 | **R6** | **Dependência de Conectividade e Licenciamento Microsoft** | Negócio / Técnico      | A indisponibilidade de serviços Microsoft ou falhas de licenciamento podem interromper o funcionamento das automações e relatórios.          | **Disponibilidade**, **Continuidade Operacional**            |      30%      |    Alto    |
 
+#### Racional da Avaliação de Probabilidade e Impacto dos Riscos
+
+&emsp;A probabilidade e o impacto de cada risco foram estimados com base na observação do funcionamento atual do sistema, na frequência dos problemas identificados ao longo do projeto e na criticidade dos aspectos de qualidade afetados, considerando tanto efeitos técnicos quanto de negócio. As porcentagens representam uma estimativa qualitativa quantificada, e os níveis de impacto refletem o potencial de prejuízo operacional, decisório e de governança.
+
+R1 – Inconsistência de Dados
+
+Probabilidade: 70%
+
+&emsp;A probabilidade é considerada alta, pois o sistema atual depende fortemente de preenchimento manual em múltiplas ferramentas, sem validação automática ou padronização centralizada. Esse tipo de operação ocorre com frequência no dia a dia do processo, aumentando significativamente a chance de divergências entre fontes.
+
+Impacto: Alto
+
+&emsp;O impacto é alto porque inconsistências afetam diretamente a precisão das informações utilizadas para análise e tomada de decisão, além de comprometer a integridade dos dados ao longo do tempo, exigindo retrabalho e correções manuais.
+
+R2 – Dependência de Processos Manuais
+
+Probabilidade: 80%
+
+&emsp;A probabilidade é muito alta, pois grande parte do fluxo atual depende de ações humanas repetitivas, como inserção, validação e atualização de dados. A ausência de automação sistemática torna o erro humano recorrente e difícil de evitar.
+
+Impacto: Moderado
+
+&emsp;O impacto é classificado como moderado porque, embora erros manuais causem atrasos e retrabalho, eles tendem a ser detectáveis e corrigíveis antes de gerar perdas críticas, afetando principalmente desempenho e confiabilidade operacional.
+
+R3 – Falha de Integração entre Ferramentas
+
+Probabilidade: 60%
+
+&emsp;A probabilidade é média-alta devido à dependência de integrações entre múltiplos serviços (Power Automate, Power BI e SharePoint), que possuem pontos de falha relacionados a sincronização, configuração e limites de conectores.
+
+Impacto: Alto
+
+&emsp;O impacto é alto porque falhas de integração comprometem relatórios, atualizações de status e automações, afetando diretamente a disponibilidade das informações e a tolerância a falhas do sistema como um todo.
+
+R4 – Acesso Indevido a Informações
+
+Probabilidade: 40%
+
+&emsp;A probabilidade é considerada média, pois embora existam mecanismos de controle de acesso nas plataformas Microsoft, configurações inadequadas de permissões são comuns em ambientes colaborativos e podem ocorrer sem monitoramento contínuo.
+
+Impacto: Muito Alto
+
+&emsp;O impacto é muito alto devido ao potencial de exposição de dados sensíveis, gerando riscos de compliance, quebra de confidencialidade e possíveis consequências legais e reputacionais para a organização.
+
+R5 – Baixa Rastreabilidade das Ações
+
+Probabilidade: 50%
+
+&emsp;A probabilidade é média, pois as ferramentas utilizadas atualmente não oferecem logs centralizados e integrados de auditoria, o que dificulta o acompanhamento consistente das ações dos usuários e dos fluxos automatizados.
+
+Impacto: Moderado
+
+&emsp;O impacto é moderado porque a falta de rastreabilidade não impede imediatamente a operação do sistema, mas compromete auditoria, transparência e governança, dificultando investigações, correções e melhorias contínuas.
+
+R6 – Dependência de Conectividade e Licenciamento Microsoft
+
+Probabilidade: 30%
+
+&emsp;A probabilidade é relativamente baixa, considerando que os serviços Microsoft possuem alta disponibilidade, porém não é desprezível devido a possíveis falhas de conectividade, indisponibilidades pontuais ou problemas de licenciamento.
+
+Impacto: Alto
+
+&emsp;O impacto é alto porque qualquer indisponibilidade ou falha de licenciamento pode interromper completamente as automações e relatórios, afetando a continuidade operacional e a disponibilidade do sistema.
+
+
 ### 2.2.3 Oportunidades de melhoria dos SLAs
 
 &emsp;Apesar de funcional, o ecossistema apresenta oportunidades de melhoria voltadas à disponibilidade, desempenho, segurança, rastreabilidade e governança dos dados, com foco em elevar os níveis de serviço (SLA) e reduzir riscos operacionais.
