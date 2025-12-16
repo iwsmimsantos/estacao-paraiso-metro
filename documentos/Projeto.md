@@ -11479,9 +11479,21 @@ _(Organizar as simulações feitas (antigo e novo).)_
 _(Conferir consistência das documentações existentes e atualizar e fazer um resumo breve com base nisso)_
 
 ## 16.3 Benefícios Entregues
-_(Listar e atualizar ganhos do projeto.)_
 
----
+&nbsp; A adoção da nova arquitetura proposta, integrada a agentes de IA e mecanismos robustos de segurança, traz um conjunto significativo de benefícios ao processo de gestão de portfólio do Metrô. A principal mudança ocorre na forma como a informação é estruturada, validada e distribuída ao longo do ciclo de vida dos projetos. A consolidação automática de dados reduz a dependência de tarefas manuais e minimiza inconsistências que hoje surgem com frequência na transição entre Miro, SharePoint e documentos corporativos.
+
+&nbsp; A melhoria mais evidente é o aumento da rastreabilidade. Todas as interações realizadas por usuários e agentes são registradas de forma contínua e íntegra, criando uma trilha de auditoria capaz de reconstruir o histórico completo de decisões, atualizações e revisões. Isso reforça a governança e o compliance, permitindo análises mais confiáveis e eliminando ambiguidades comuns no processo atual.
+
+&nbsp; A automação de processos também representa um avanço importante. Etapas antes repetitivas, como estruturação do TAP, preparação de apresentações e consolidação de indicadores, passam a ser executadas com o apoio direto da IA, que sugere ajustes, detecta inconsistências e produz versões prévias dos artefatos necessários. Isso libera tempo das equipes, melhora a qualidade dos dados gerados e reduz o risco operacional associado ao retrabalho.
+
+&nbsp; Outro benefício central é a maior segurança na manipulação das informações. A arquitetura estabelece controles de acesso granulares, validações obrigatórias, camadas de proteção contra ações indevidas e mecanismos que asseguram o não repúdio. Com isso, a integridade dos dados corporativos é preservada mesmo diante do aumento de automações e acessos simultâneos.
+
+&nbsp; A escalabilidade e a disponibilidade também são ampliadas. A solução proposta é capaz de lidar com picos de utilização, distribuir carga de forma eficiente e recuperar-se rapidamente de falhas, evitando interrupções em períodos críticos de reporte. Esse comportamento mais resiliente garante continuidade operacional e reduz impactos decorrentes de indisponibilidades inesperadas.
+
+&nbsp; Por fim, o ambiente se torna mais integrado e padronizado. A troca de informações entre ferramentas deixa de depender de intervenções manuais, o que garante maior consistência entre planejamento, execução e monitoramento. Isso fortalece o suporte à tomada de decisão, uma vez que diretoria, PMO e equipes passam a trabalhar com dados mais completos, precisos e atualizados.
+
+&nbsp; Em conjunto, esses benefícios resultam em um processo de gestão mais confiável, eficiente e alinhado às necessidades do Metrô, preparando o ecossistema digital para crescimento sustentável e integração futura de capacidades ainda mais avançadas de Inteligência Artificial.
+
 
 # 17. Considerações Finais do Projeto
 _(Introduzir Seção)_
