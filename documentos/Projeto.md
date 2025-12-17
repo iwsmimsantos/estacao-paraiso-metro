@@ -11291,10 +11291,120 @@ Throughput Comparativo (req/s):
 ---
 
 # 15. Componentes e Custos Finais
-_(Introduzir Seção)_
+
+Esta seção agrupa os componentes tecnológicos desenvolvidos ao longo do projeto, apresentando as escolhas técnicas fundamentadas nos requisitos não funcionais priorizados (Segurança, Escalabilidade e Rastreabilidade). Além disso, detalha os custos de implementação da prova de conceito e projeções para a solução completa, seguidos de análise de viabilidade financeira.
 
 ## 15.1 Componentes e Tecnologias Utilizadas
-_(Atualizar lista de tecnologias e justificativas de escolha.)_
+
+A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e consolidadas no mercado, priorizando a compatibilidade com o ecossistema Microsoft já adotado pelo Metrô-SP, a escalabilidade horizontal e a facilidade de manutenção. As escolhas tecnológicas foram orientadas pelos RNFs definidos e pelas melhores práticas de arquitetura de software.
+
+### 15.1.1 Componentes Principais
+
+#### API Mockada (Porta 8000)
+**Tecnologia:** FastAPI + Python  
+**Serviços Simulados:** SharePoint, Miro, Microsoft 365 Copilot, Office 365, Microsoft Sentinel
+
+**Justificativa da escolha:**
+- **FastAPI** foi escolhido por sua alta performance assíncrona (baseada em Starlette e Pydantic), essencial para o RNF-01 (Escalabilidade)
+- Compatibilidade nativa com OpenAPI/Swagger, facilitando a documentação e integração futura
+- Suporte nativo a validação de dados com Pydantic, reduzindo erros de entrada e melhorando a segurança (RNF-02)
+- Comunidade ativa e integração facilitada com Azure Functions para migração futura
+- Python foi selecionado por ser amplamente utilizado em projetos de IA e Machine Learning, alinhado ao objetivo de integração futura de agentes inteligentes
+
+**Funcionalidades implementadas:**
+- Simulação de 5 APIs do ecossistema Microsoft com dados mockados em CSV
+- Resposta padronizada com rastreabilidade completa (request_id, correlation_id, trace_id)
+- Suporte a múltiplos tenants e paginação
+- Autenticação simulada com níveis de acesso (Admin, Manager, Analyst, Viewer)
+
+#### Middleware de Validação (Porta 8001)
+**Tecnologia:** FastAPI + Python  
+**Funções:** Validação de Segurança, Escalabilidade e Rastreabilidade
+
+**Justificativa da escolha:**
+- Implementação como API Gateway Pattern, centralizando validações e reduzindo acoplamento
+- Uso de FastAPI para processar requisições com baixa latência (< 100ms para sessões IAM)
+- Dashboard em tempo real implementado com HTML/CSS/JavaScript para visualização de logs e incidentes
+- Armazenamento de logs estruturados em JSON, facilitando integração futura com Azure Application Insights
+
+**Funcionalidades implementadas:**
+- **RNF-01 Segurança:** Controle de acesso por projeto, validação de checksums (SHA-256), guardrails de IA
+- **RNF-02 Escalabilidade:** Enfileiramento de requisições, retry automático, gerenciamento de carga concorrente
+- **RNF-03 Rastreabilidade:** Auditoria completa, correlação de eventos, detecção de anomalias
+
+#### Testes Automatizados
+**Tecnologia:** pytest + Locust  
+**Cobertura:** 42 testes unitários (93% de sucesso)
+
+**Justificativa da escolha:**
+- **pytest** por sua simplicidade, fixtures reutilizáveis e ampla adoção na comunidade Python
+- **Locust** para testes de carga, permitindo simulação de milhares de usuários concorrentes e validação de latências p95
+- Integração com CI/CD através de GitHub Actions (preparado para futuro deployment)
+- Cobertura de código com pytest-cov para garantir qualidade
+
+**Resultados obtidos:**
+- Segurança (RNF-01): 13/13 testes (100%)
+- Escalabilidade (RNF-02): 10/12 testes (83%)
+- Rastreabilidade (RNF-03): 16/17 testes (94%)
+
+### 15.1.2 Stack Tecnológico
+
+#### Backend e APIs
+- **FastAPI 0.104-0.115:** Framework web assíncrono escolhido pela performance superior a Flask e Django em benchmarks
+- **Uvicorn 0.24-0.32:** Servidor ASGI com suporte a HTTP/2 e WebSockets, preparado para futuras integrações em tempo real
+- **Pydantic 2.5-2.12:** Validação de dados em tempo de execução com serialização otimizada
+
+#### Testes e Qualidade
+- **pytest 7.4-8.3:** Framework de testes com suporte a fixtures parametrizadas
+- **pytest-cov:** Relatórios de cobertura em HTML e terminal
+- **pytest-asyncio:** Testes assíncronos para validar endpoints FastAPI
+- **Locust 2.32:** Testes de carga com interface web para análise de throughput e latência
+
+#### Segurança
+- **python-jose (JWT):** Autenticação baseada em tokens, compatível com Azure AD (futuro)
+- **passlib (bcrypt):** Hash de senhas com algoritmo bcrypt (custo adaptativo)
+
+#### Monitoramento
+- **python-json-logger:** Logs estruturados em JSON para facilitar parsing e análise
+- **prometheus-client:** Métricas expostas para Prometheus (preparado para Grafana)
+
+#### Utilitários
+- **httpx:** Cliente HTTP assíncrono para comunicação entre middleware e APIs
+- **Faker:** Geração de dados realistas para testes (nomes, e-mails, datas)
+- **python-dateutil:** Manipulação de timestamps UTC e conversão de fusos horários
+
+### 15.1.3 Simulações Realizadas
+
+#### Simulação com JMT (Sprint 2)
+**Ferramenta:** Java Modelling Tools (JMT)  
+**Objetivo:** Modelar rede de filas do sistema atual para identificar gargalos
+
+**Justificativa da escolha:**
+- Ferramenta acadêmica consolidada para análise de teoria de filas
+- Permite simulação de múltiplas estações, servidores e políticas de escalonamento
+- Exportação de resultados em formato .jsimg para análise visual
+
+**Resultados obtidos:**
+- Identificação do gargalo no componente de sincronização Miro/SharePoint
+- Utilização de 97% no servidor de sincronização, causando filas de até 45 segundos
+- Base para definição de melhorias no sistema novo (target: redução de 150% no tempo de resposta)
+
+#### Simulação com Python (Sprint 3)
+**Ferramenta:** Mocks FastAPI + Geração Probabilística + Chaos Engineering  
+**Objetivo:** Simular o sistema novo e validar RNFs sob condições adversas
+
+**Justificativa da escolha:**
+- Implementação de mocks realistas com comportamento probabilístico (simulação de falhas intermitentes)
+- Chaos Engineering com scripts PowerShell para simular indisponibilidade de serviços
+- Testes de burst (100 eventos simultâneos) e pico de carga (100 requisições/segundo)
+
+**Resultados obtidos:**
+- Latências p95 validadas: Ingestor <800ms, Workflows <600ms, IAM <100ms
+- Sistema mantém 93% de taxa de sucesso mesmo sob falhas simuladas
+- Enfileiramento efetivo para 100% das requisições durante indisponibilidade temporária
+
+
+
 
 ## 15.2 Custo de Implementação e Estimativas
 _(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
