@@ -11690,9 +11690,31 @@ _(Reflexão Final: Observar os pontos positivos do projeto, incluindo conquistas
 _(A- Apresentar o Checklist de Impacto Operacional e Sustentabilidade, destacando as cinco dimensões da Agenda 2030 (Pessoas, Planeta, ProsperidadePaz e Parcerias) B- Indicar os ODS prioritários, relacionando-os com o conceito de Cidades Inteligentes aplicado ao módulo)_
 
 ## 17.4 Aperfeiçoamentos Futuros
-_(Descrever melhorias possíveis e roadmap sugerido.)_
 
----
+A arquitetura proposta foi concebida para atender aos requisitos atuais de segurança, rastreabilidade, escalabilidade e automação do sistema de gestão de portfólio do Metrô. No entanto, considerando a natureza dinâmica dos processos organizacionais e a evolução constante das tecnologias de Inteligência Artificial, é fundamental tratar a solução como um produto em evolução contínua, e não como uma implementação estática.
+
+Nesse contexto, os aperfeiçoamentos futuros estão organizados em um roadmap evolutivo, estruturado por horizontes temporais. Essa abordagem permite alinhar avanços tecnológicos à maturidade operacional da organização, garantindo que novas capacidades sejam incorporadas de forma gradual, controlada e aderente às diretrizes de governança institucional.
+
+### Roadmap de Evolução da Solução
+
+| Horizonte | Direcionamento Estratégico | Evoluções Planejadas | Oportunidades Geradas | Riscos e Pontos de Atenção |
+|----------|---------------------------|----------------------|-----------------------|----------------------------|
+| **Curto Prazo** | Estabilização e consolidação | - Aprimoramento dos mecanismos de validação automática de dados<br>- Evolução inicial dos agentes de IA para análise básica de riscos e inconsistências<br>- Refinamento da coleta de métricas operacionais, logs e trilhas de auditoria | - Redução adicional de erros manuais<br>- Aumento da confiabilidade das informações desde o planejamento<br>- Maior aceitação da solução pelas equipes | - Curva de aprendizado dos usuários<br>- Necessidade de ajustes finos nos fluxos automatizados |
+| **Médio Prazo** | Integração e apoio gerencial | - Integração progressiva com outras ferramentas corporativas (Project, Planner, Copilot)<br>- Expansão dos painéis analíticos com indicadores em tempo real<br>- Implementação de análises comparativas entre projetos, programas e linhas | - Visão integrada do portfólio<br>- Melhoria no acompanhamento estratégico e tático<br>- Apoio mais consistente à tomada de decisão do PMO e da diretoria | - Aumento da complexidade arquitetural<br>- Dependência de integrações externas e licenciamento |
+| **Longo Prazo** | Inteligência preditiva e proatividade | - Uso de IA generativa para elaboração automática de documentos estratégicos<br>- Simulação de cenários alternativos de execução e alocação de recursos<br>- Criação de agentes especializados por domínio (prazo, custo, risco) | - Antecipação de problemas críticos<br>- Redução de impactos financeiros e operacionais<br>- Diferencial estratégico para a gestão pública | - Necessidade elevada de governança de IA<br>- Riscos éticos e de autonomia excessiva dos agentes |
+
+### Análise de Riscos e Governança
+
+À medida que a arquitetura evolui e incorpora níveis mais altos de automação e inteligência, torna-se essencial fortalecer os mecanismos de governança e controle. O aumento da autonomia dos agentes de IA exige políticas claras de validação humana, auditoria contínua e definição de limites operacionais, garantindo que decisões críticas permaneçam alinhadas às normas e responsabilidades institucionais.
+
+Além disso, a crescente complexidade técnica demanda atenção especial à manutenção, monitoramento e capacitação das equipes envolvidas. A ausência desses cuidados pode gerar dependência tecnológica excessiva ou dificultar a adoção plena das funcionalidades avançadas.
+
+### Visão de Longo Prazo
+
+Os aperfeiçoamentos futuros descritos neste roadmap consolidam a solução como uma plataforma estratégica de gestão de portfólio, capaz de evoluir de forma sustentável e segura. Ao equilibrar inovação tecnológica com controle, rastreabilidade e conformidade, o Metrô se posiciona para ampliar seus ganhos de eficiência operacional, transparência e qualidade na tomada de decisão.
+
+Dessa forma, a arquitetura proposta não apenas resolve limitações atuais, mas estabelece uma base sólida para a incorporação contínua de novas capacidades digitais, mantendo aderência às necessidades organizacionais e às melhores práticas de governança no setor público.
+
 
 # Referências
 
