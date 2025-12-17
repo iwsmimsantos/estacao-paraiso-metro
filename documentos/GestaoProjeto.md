@@ -333,14 +333,219 @@ Tabela para acompanhamento do desenvolvimento dos riscos.
 
 # 4. Análise Post Mortem
 
-_conteúdo_
+&emsp;Esta seção documenta os principais sucessos, desafios e aprendizados do grupo **Estação Paraíso**, desenvolvido para o Metrô de São Paulo ao longo de 5 sprints, focando na integração de agentes de IA ao sistema de gestão de projetos com garantia de rastreabilidade, segurança e escalabilidade.
 
 ## 4.1 Sucessos do Projeto
 
-_conteúdo_
+### Entregas Técnicas
+
+- **Middleware FastAPI unificado** consolidando 8 endpoints principais (redução de 68% em relação aos 25+ endpoints fragmentados iniciais)
+- **Arquitetura consolidada** com processamento assíncrono, reduzindo tempo de execução de testes de 15 minutos para 4.88 segundos (-99.5%)
+- **Implementação completa dos 3 RNFs críticos**: Rastreabilidade (100% de ações auditáveis), Segurança (100% de bloqueio de acessos indevidos), Escalabilidade (middleware unificado com simulação de integrações)
+- **Sistema de Audit Trail** com hash SHA-256 e correlação automática de eventos (75% automática, meta 95%+)
+- **42 testes automatizados** organizados por RNF (12 para Escalabilidade, 30 para Segurança e Rastreabilidade) com 100% de aprovação
+- **Simulação de integrações externas** (SharePoint, Miro, Copilot, Sentinel) através de APIs mockadas integradas no middleware
+- **Redução de 74% em linhas de código** através da consolidação arquitetural (de 2.600 linhas distribuídas para 673 linhas no arquivo principal)
+- **Cobertura de código** estabelecida em 32% (baseline), com meta de 50%+ para evolução futura
+- **Performance otimizada**: latência p95 reduzida de ~450ms para 69ms (-84.7%), throughput aumentado de ~5 req/s para 16 req/s (+220%)
+
+### Processo e Gestão
+
+- **Redução de 50% no tempo de revisão de PRs**: de 48h (Sprint 1) para 24h (Sprint 2) e 12h (Sprint 3)
+- **100% das ações críticas das retrospectivas implementadas** antes das reviews finais
+- **Melhoria na distribuição de tarefas**: Sprint 5 alcançou distribuição equalitária e alinhamento por habilidade, eliminando sobrecarga de membros específicos
+- **Documentação completa** no Projeto.md com mais de 11.000 linhas, incluindo diagramas C4, simulações e evidências técnicas
+- **Gestão de riscos efetiva**: 12 riscos identificados e monitorados, com mitigação bem-sucedida dos riscos críticos (R7, R8, R12)
+- **Consolidação arquitetural bem-sucedida**: transição de Sprint 3 (fragmentada) para Sprint 4 (unificada) com ganhos mensuráveis em manutenibilidade e performance
+
+### Resultados de Negócio
+
+- **Rastreabilidade**: aumento de 30% para 100% de ações auditáveis, com tempo de recuperação reduzido de 5-10 dias para <2 segundos (-99.9997%)
+- **Segurança**: bloqueio de acessos indevidos aumentou de ~60% para 100% (+40 pontos percentuais), com detecção automática de incidentes em <0.15s
+- **Performance**: latência reduzida em 84.7%, throughput aumentado em 220%, capacidade concorrente aumentada em 400%
+- **Escalabilidade**: capacidade projetada aumentada de 100 req/dia para 100k req/dia (1000x)
+- **Conformidade**: 100% de atendimento aos RNFs críticos (3/3 RNFs implementados e validados)
+- **Eficiência operacional**: redução média de 99% no tempo de tarefas operacionais através de automação
 
 ## 4.2 Oportunidades de Melhoria
 
-_conteúdo_
+### Gestão de Tarefas e Dependências
+
+**Problema recorrente em Sprints 3 e 4**: alta linearidade entre artefatos gerando dependências sequenciais e dificuldade na distribuição de tarefas.
+
+**Impacto**: Risco de sobrecarga em membros responsáveis por etapas "gatilho" da cadeia de artefatos, menor flexibilidade para trocas de responsável no meio da sprint.
+
+**Melhoria futura**: Fatiar artefatos grandes em subtarefas mais independentes, planejar caminhos alternativos de trabalho (histórias em paralelo) para evitar ociosidade quando uma task estiver bloqueada.
+
+### Clareza de Escopo e Descrições
+
+**Problema em Sprint 4**: descrições iniciais pouco detalhadas dos artefatos gerando dúvidas sobre escopo e critérios de aceite.
+
+**Impacto**: Retrabalho em esclarecimentos e ajustes de escopo, necessidade de refinamento adicional durante a sprint.
+
+**Melhoria futura**: Checklist de refinamento obrigatório (DOR) para cada artefato antes de entrar em "Em andamento", criação de subtarefas vinculadas no Trello para artefatos maiores com responsáveis e dependências explícitas.
+
+### Revisão de Pull Requests
+
+**Problema persistente**: Apesar da melhoria significativa (48h → 12h), ainda houve acúmulo de PRs em algumas sprints.
+
+**Tempo médio de merge**: 12h (meta: <8h para revisões críticas)
+
+**Melhoria futura**: Matriz de revisores especialistas por área técnica, checklist de revisão padronizado, SLA de <8h para revisões críticas e <24h para revisões normais.
+
+### Cobertura de Testes
+
+**Backend**: 32% de cobertura estabelecida (baseline) | **Meta**: 50%+ para evolução futura
+
+**Consequência**: Algumas áreas críticas podem não estar totalmente cobertas por testes automatizados.
+
+**Melhoria futura**: Coverage mínimo de 50% backend como critério de merge, implementar mutation testing para validar qualidade real dos testes, adicionar performance benchmarking para rastrear regressões.
+
+### Monitoramento e Observabilidade
+
+**Ausência de ferramentas de monitoring** em produção para métricas de uptime e disponibilidade.
+
+**Risco**: SLA de disponibilidade não mensurável em ambiente de produção real.
+
+**Melhoria futura**: Implementar stack de observabilidade (ELK, Datadog ou Azure Monitor) com dashboards técnicos, alertas automáticos e métricas de uptime.
+
+### Alinhamento com Stakeholders
+
+**Problema em Sprint 5**: necessidade de validações finais e esclarecimentos de escopo em momentos críticos da sprint.
+
+**Impacto**: Gargalos de validação que poderiam ter sido evitados com alinhamento antecipado.
+
+**Melhoria futura**: Definir canal e frequência específicos para alinhamento com stakeholders externos (professores/clientes), sessões de alinhamento estruturadas antes do início de sprints críticas.
 
 ## 4.3 Lições Aprendidas
+
+### Lições Técnicas
+
+**1. Consolidação Arquitetural com Design Patterns**
+
+A transição de Sprint 3 (fragmentada com 3 código bases) para Sprint 4 (unificada com 1 código base) demonstrou que consolidação arquitetural com design patterns corretos resulta em:
+
+- **74% redução em linhas de código** → Manutenibilidade
+- **99.5% redução em tempo de execução** (15 min → 4.88s) → Feedback rápido
+- **100% padronização de testes** → Qualidade previsível
+- **0% erros de configuração manual** → Confiabilidade
+
+**Aplicação futura**: Investir tempo em design arquitetural desde Sprint 1, usar Strategy Pattern para roteamento dinâmico, consolidar código duplicado proativamente.
+
+**2. Testes Automatizados São Investimento Crítico**
+
+42 testes automatizados detectaram problemas antes da integração e validaram 100% dos cenários críticos. A padronização via pytest permitiu execução em 4.88 segundos vs. 15 minutos de processo manual.
+
+**Aprendizado**: Cada hora em testes economiza 3-5 horas de debugging e validação manual.
+
+**Aplicação futura**: Coverage mínimo de 50% como critério de merge, implementar testes automatizados desde Sprint 1, não apenas nas sprints finais.
+
+**3. Roteamento Dinâmico Reduz Complexidade**
+
+A substituição de 25+ endpoints específicos por 8 endpoints genéricos com path parameters (`/validate/{validation_type}`) reduziu complexidade em 68% sem comprometer clareza semântica.
+
+**Aprendizado**: Endpoints genéricos com parâmetros são mais escaláveis e manuteníveis que endpoints específicos.
+
+**Aplicação futura**: Usar padrões RESTful maduros desde o início, evitar proliferação de endpoints específicos.
+
+**4. Processamento Assíncrono É Essencial para Escalabilidade**
+
+FastAPI assíncrono implementado permitiu throughput de 16 req/s (vs. 5 req/s síncrono) e capacidade concorrente de 50+ requisições simultâneas.
+
+**Aprendizado**: Processamento assíncrono não é apenas otimização, é requisito para escalabilidade.
+
+**Aplicação futura**: Considerar processamento assíncrono desde o design inicial, não como otimização posterior.
+
+**5. Simulação de Integrações Facilita Desenvolvimento**
+
+APIs mockadas para SharePoint, Miro, Copilot e Sentinel permitiram desenvolvimento e testes sem dependência de sistemas externos.
+
+**Aprendizado**: Mocks bem estruturados aceleram desenvolvimento e garantem testes isolados.
+
+**Aplicação futura**: Criar mocks desde Sprint 1, não apenas quando necessário para testes.
+
+### Lições Organizacionais
+
+**6. Retrospectivas Com Acompanhamento Têm Alta Efetividade**
+
+100% das ações críticas das retrospectivas foram implementadas antes das reviews finais quando havia responsável definido e tracking.
+
+**Aprendizado**: Ações sem responsável têm <30% efetividade, ações com owner e tracking têm 85%+ efetividade.
+
+**Aplicação futura**: Limitar a 3 ações prioritárias por retro, atribuir owner com prazo definido, fazer tracking semanal.
+
+**7. Distribuição Equalitária de Tarefas Reduz Sobrecarga**
+
+Sprint 5 alcançou distribuição equalitária e alinhamento por habilidade, eliminando sobrecarga que ocorreu em Sprint 4.
+
+**Aprendizado**: Distribuição desigual gera burnout e reduz qualidade das entregas.
+
+**Aplicação futura**: Monitorar carga de trabalho semanalmente, redistribuir tarefas quando necessário, usar pareamento para balancear conhecimento.
+
+**8. Revisões Rápidas Aceleram Desenvolvimento**
+
+Redução de tempo de revisão de 48h para 12h acelerou feedback e permitiu ajustes incrementais mais rápidos.
+
+**Aprendizado**: Revisões lentas são gargalos que bloqueiam desenvolvimento paralelo.
+
+**Aplicação futura**: SLA de <12h para revisões críticas, <24h para revisões normais, matriz de revisores por área técnica.
+
+**9. Checkpoints de Meio de Sprint Previnem Surpresas**
+
+Checkpoints implementados em Sprint 3 e 4 permitiram identificação precoce de problemas e ajustes antes da reta final.
+
+**Aprendizado**: Checkpoints estruturados reduzem retrabalho e melhoram qualidade das entregas.
+
+**Aplicação futura**: Checkpoints obrigatórios na metade de cada sprint com checklist de completude (documentação + código + testes).
+
+**10. Clareza de Escopo Antecipa Problemas**
+
+Sprint 4 sofreu com descrições pouco detalhadas, gerando retrabalho. Sprint 5 melhorou com checklist de refinamento obrigatório.
+
+**Aprendizado**: Investir tempo em refinamento de escopo economiza tempo durante execução.
+
+**Aplicação futura**: Checklist de DOR obrigatório antes de iniciar artefatos, validação de escopo com PO/professores antes do início da sprint.
+
+### Lições Comportamentais
+
+**11. Comunicação Assíncrona Reduz Necessidade de Reuniões**
+
+Uso efetivo de documentação e atualizações no Trello permitiu reduzir reuniões sem perder alinhamento.
+
+**Aprendizado**: Documentação clara reduz necessidade de reuniões síncronas.
+
+**Aplicação futura**: Priorizar documentação assíncrona, usar reuniões apenas para discussões complexas que requerem interação e rituais do método scrum.
+
+**12. Transparência em Desafios Acelera Resolução**
+
+Membros que compartilharam bloqueios abertamente receberam ajuda mais rapidamente.
+
+**Aprendizado**: Cultura de "pedir ajuda é fraqueza" prejudica produtividade.
+
+**Aplicação futura**: Implementar "bloqueio do dia" nas dailys, criar canal dedicado para dúvidas técnicas.
+
+**13. Alinhamento por Habilidade Otimiza Qualidade**
+
+Sprint 5 demonstrou que alocar tarefas baseadas em habilidades específicas resulta em maior qualidade e menor tempo de execução.
+
+**Aprendizado**: Forçar membros a trabalhar em áreas desconhecidas pode reduzir qualidade e velocidade.
+
+**Aplicação futura**: Mapear habilidades da equipe no início do projeto, alocar tarefas considerando expertise, usar pareamento para transferir conhecimento.
+
+**14. Gestão de Tempo em Sprints Finais É Crítica**
+
+Sprint 5 teve agenda apertada na reta final, exigindo esforço concentrado.
+
+**Aprendizado**: Sprints finais requerem maior folga no planejamento para integração e documentação final.
+
+**Aplicação futura**: Planejar 20-30% mais tempo para sprints finais, considerar complexidade de integração e documentação no planejamento.
+
+**15. Dailys Focadas**
+
+Sprint 5 perdeu qualidade nas dailys, não tendo um acompanhamento qualificado nas tasks.
+
+**Aprendizado**: Dailys devem focar em "o que me impede de avançar", e "o que fiz".
+
+**Aplicação futura**: Retomar foco da daily como ferramenta de identificação de impedimentos, manter reuniões curtas e objetivas (<15 min).
+
+---
