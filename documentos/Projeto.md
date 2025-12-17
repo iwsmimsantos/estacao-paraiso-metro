@@ -11291,16 +11291,363 @@ Throughput Comparativo (req/s):
 ---
 
 # 15. Componentes e Custos Finais
-_(Introduzir Seção)_
+
+Esta seção agrupa os componentes tecnológicos desenvolvidos ao longo do projeto, apresentando as escolhas técnicas fundamentadas nos requisitos não funcionais priorizados (Segurança, Escalabilidade e Rastreabilidade). Além disso, detalha os custos de implementação da prova de conceito e projeções para a solução completa, seguidos de análise de viabilidade financeira.
 
 ## 15.1 Componentes e Tecnologias Utilizadas
-_(Atualizar lista de tecnologias e justificativas de escolha.)_
+
+A arquitetura desenvolvida foi implementada utilizando tecnologias modernas e consolidadas no mercado, priorizando a compatibilidade com o ecossistema Microsoft já adotado pelo Metrô-SP, a escalabilidade horizontal e a facilidade de manutenção. As escolhas tecnológicas foram orientadas pelos RNFs definidos e pelas melhores práticas de arquitetura de software.
+
+### 15.1.1 Componentes Principais
+
+#### API Mockada (Porta 8000)
+**Tecnologia:** FastAPI + Python  
+**Serviços Simulados:** SharePoint, Miro, Microsoft 365 Copilot, Office 365, Microsoft Sentinel
+
+**Justificativa da escolha:**
+- **FastAPI** foi escolhido por sua alta performance assíncrona (baseada em Starlette e Pydantic), essencial para o RNF-01 (Escalabilidade)
+- Compatibilidade nativa com OpenAPI/Swagger, facilitando a documentação e integração futura
+- Suporte nativo a validação de dados com Pydantic, reduzindo erros de entrada e melhorando a segurança (RNF-02)
+- Comunidade ativa e integração facilitada com Azure Functions para migração futura
+- Python foi selecionado por ser amplamente utilizado em projetos de IA e Machine Learning, alinhado ao objetivo de integração futura de agentes inteligentes
+
+**Funcionalidades implementadas:**
+- Simulação de 5 APIs do ecossistema Microsoft com dados mockados em CSV
+- Resposta padronizada com rastreabilidade completa (request_id, correlation_id, trace_id)
+- Suporte a múltiplos tenants e paginação
+- Autenticação simulada com níveis de acesso (Admin, Manager, Analyst, Viewer)
+
+#### Middleware de Validação (Porta 8001)
+**Tecnologia:** FastAPI + Python  
+**Funções:** Validação de Segurança, Escalabilidade e Rastreabilidade
+
+**Justificativa da escolha:**
+- Implementação como API Gateway Pattern, centralizando validações e reduzindo acoplamento
+- Uso de FastAPI para processar requisições com baixa latência (< 100ms para sessões IAM)
+- Dashboard em tempo real implementado com HTML/CSS/JavaScript para visualização de logs e incidentes
+- Armazenamento de logs estruturados em JSON, facilitando integração futura com Azure Application Insights
+
+**Funcionalidades implementadas:**
+- **RNF-01 Segurança:** Controle de acesso por projeto, validação de checksums (SHA-256), guardrails de IA
+- **RNF-02 Escalabilidade:** Enfileiramento de requisições, retry automático, gerenciamento de carga concorrente
+- **RNF-03 Rastreabilidade:** Auditoria completa, correlação de eventos, detecção de anomalias
+
+#### Testes Automatizados
+**Tecnologia:** pytest + Locust  
+**Cobertura:** 42 testes unitários (93% de sucesso)
+
+**Justificativa da escolha:**
+- **pytest** por sua simplicidade, fixtures reutilizáveis e ampla adoção na comunidade Python
+- **Locust** para testes de carga, permitindo simulação de milhares de usuários concorrentes e validação de latências p95
+- Integração com CI/CD através de GitHub Actions (preparado para futuro deployment)
+- Cobertura de código com pytest-cov para garantir qualidade
+
+**Resultados obtidos:**
+- Segurança (RNF-01): 13/13 testes (100%)
+- Escalabilidade (RNF-02): 10/12 testes (83%)
+- Rastreabilidade (RNF-03): 16/17 testes (94%)
+
+### 15.1.2 Stack Tecnológico
+
+#### Backend e APIs
+- **FastAPI 0.104-0.115:** Framework web assíncrono escolhido pela performance superior a Flask e Django em benchmarks
+- **Uvicorn 0.24-0.32:** Servidor ASGI com suporte a HTTP/2 e WebSockets, preparado para futuras integrações em tempo real
+- **Pydantic 2.5-2.12:** Validação de dados em tempo de execução com serialização otimizada
+
+#### Testes e Qualidade
+- **pytest 7.4-8.3:** Framework de testes com suporte a fixtures parametrizadas
+- **pytest-cov:** Relatórios de cobertura em HTML e terminal
+- **pytest-asyncio:** Testes assíncronos para validar endpoints FastAPI
+- **Locust 2.32:** Testes de carga com interface web para análise de throughput e latência
+
+#### Segurança
+- **python-jose (JWT):** Autenticação baseada em tokens, compatível com Azure AD (futuro)
+- **passlib (bcrypt):** Hash de senhas com algoritmo bcrypt (custo adaptativo)
+
+#### Monitoramento
+- **python-json-logger:** Logs estruturados em JSON para facilitar parsing e análise
+- **prometheus-client:** Métricas expostas para Prometheus (preparado para Grafana)
+
+#### Utilitários
+- **httpx:** Cliente HTTP assíncrono para comunicação entre middleware e APIs
+- **Faker:** Geração de dados realistas para testes (nomes, e-mails, datas)
+- **python-dateutil:** Manipulação de timestamps UTC e conversão de fusos horários
+
+### 15.1.3 Simulações Realizadas
+
+#### Simulação com JMT (Sprint 2)
+**Ferramenta:** Java Modelling Tools (JMT)  
+**Objetivo:** Modelar rede de filas do sistema atual para identificar gargalos
+
+**Justificativa da escolha:**
+- Ferramenta acadêmica consolidada para análise de teoria de filas
+- Permite simulação de múltiplas estações, servidores e políticas de escalonamento
+- Exportação de resultados em formato .jsimg para análise visual
+
+**Resultados obtidos:**
+- Identificação do gargalo no componente de sincronização Miro/SharePoint
+- Utilização de 97% no servidor de sincronização, causando filas de até 45 segundos
+- Base para definição de melhorias no sistema novo (target: redução de 150% no tempo de resposta)
+
+#### Simulação com Python (Sprint 3)
+**Ferramenta:** Mocks FastAPI + Geração Probabilística + Chaos Engineering  
+**Objetivo:** Simular o sistema novo e validar RNFs sob condições adversas
+
+**Justificativa da escolha:**
+- Implementação de mocks realistas com comportamento probabilístico (simulação de falhas intermitentes)
+- Chaos Engineering com scripts PowerShell para simular indisponibilidade de serviços
+- Testes de burst (100 eventos simultâneos) e pico de carga (100 requisições/segundo)
+
+**Resultados obtidos:**
+- Latências p95 validadas: Ingestor <800ms, Workflows <600ms, IAM <100ms
+- Sistema mantém 93% de taxa de sucesso mesmo sob falhas simuladas
+- Enfileiramento efetivo para 100% das requisições durante indisponibilidade temporária
+
+
+
 
 ## 15.2 Custo de Implementação e Estimativas
-_(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
+
+&emsp;Esta seção apresenta o orçamento da Prova de Conceito (PoC) do projeto, baseado em uma equipe de 6 profissionais atuando por 10 semanas (Outubro a Dezembro 2025). Os valores incluem custos de pessoal (com encargos), despesas operacionais (infraestrutura compartilhada) e custos de manutenção (licenças Microsoft 365 Copilot e Azure), com aplicação de margem de lucro (10%) e carga tributária (fator 0,85).
+
+---
+
+### 15.2.1 Custos de Pessoal
+
+&emsp;Equipe de 6 profissionais por 10 semanas, com encargos trabalhistas de 52,74% (INSS 20%, FGTS 8%, outros 24,74%).
+
+| **Cargo**                             | **Qtd** | **Salário/semana** | **Encargos (52,74%)** | **Total 10 semanas** |
+| ------------------------------------- | ------- | ------------------ | --------------------- | -------------------- |
+| Engenheiro de Software                | 2       | R$ 2.250,00        | R$ 1.186,65           | **R$ 68.733,00**     |
+| Engenheiro de IA / LLM                | 2       | R$ 2.000,00        | R$ 1.054,80           | **R$ 61.096,00**     |
+| Data Analyst / BI                     | 1       | R$ 1.500,00        | R$ 791,10             | **R$ 22.911,00**     |
+| PM / Tech Lead                        | 1       | R$ 3.000,00        | R$ 1.582,20           | **R$ 45.822,00**     |
+| **TOTAL**                             | **6**   | -                  | -                     | **R$ 198.562,00**    |
+
+---
+
+### 15.2.2 Despesas Operacionais
+
+&emsp;Custos indiretos estimados em **10% dos custos de pessoal** (TCO): infraestrutura física, energia, depreciação de equipamentos, redes.
+
+| **Item**                           | **Base**      | **%**  | **Total**        |
+| ---------------------------------- | ------------- | ------ | ---------------- |
+| Infraestrutura + Energia + Redes   | R$ 198.562,00 | 10%    | **R$ 19.856,20** |
+
+---
+
+### 15.2.3 Custos de Manutenção (10 semanas = 2,5 meses)
+
+| **Serviço**                      | **Valor Mensal** | **Período** | **Total**        |
+| -------------------------------- | ---------------- | ----------- | ---------------- |
+| Microsoft 365 Copilot (150 users)| R$ 30.045,00     | 2,5 meses   | R$ 75.112,50     |
+| Sentinel + Logs (2 GB/mês)       | R$ 930,00        | 2,5 meses   | R$ 2.325,00      |
+| App Service B1 + Analytics       | R$ 1.790,93      | 2,5 meses   | R$ 4.477,33      |
+| Copilot AI Usage                 | R$ 300,00        | 2,5 meses   | R$ 750,00        |
+| **TOTAL**                        | R$ 33.065,93     | -           | **R$ 82.664,83** |
+
+---
+
+### 15.2.4 Consolidação e Valor Final
+
+| **Categoria**                  | **Valor**        |
+| ------------------------------ | ---------------- |
+| Custos de Pessoal              | R$ 198.562,00    |
+| Despesas Operacionais          | R$ 19.856,20     |
+| Custos de Manutenção           | R$ 82.664,83     |
+| **Subtotal (custos diretos)**  | **R$ 301.083,03**|
+| + Margem de Lucro (10%)        | R$ 30.108,30     |
+| **= Subtotal (com lucro)**     | **R$ 331.191,33**|
+| + Impostos (fator 0,85)        | R$ 58.445,53     |
+| **= VALOR FINAL (10 semanas)** | **R$ 389.636,86**|
+
+---
+
+### 15.2.5 Análise de Custo-Benefício
+
+**Investimento:** R$ 389.636,86
+
+**Entregáveis:**
+- Arquitetura validada (AS-IS vs TO-BE)
+- 42 testes automatizados (93% sucesso)
+- Simulações JMT e Python documentadas
+- RNFs implementados: Segurança, Escalabilidade, Rastreabilidade
+- Dashboard de monitoramento + logs estruturados
+
+**Riscos Mitigados:**
+- Multas TCE-SP/LGPD: R$ 50 milhões+
+- Downtime evitado: R$ 50k/hora
+- Retrabalho evitado: R$ 7-12 milhões (nova aquisição)
+
+**ROI:** 14.658% (mitigação de riscos regulatórios e operacionais)
 
 ## 15.3 Análise Financeira do Projeto
-_(Atualizar visão financeira, projeções e viabilidade.)_
+
+<div align="center">
+
+[LINK DE ACESSO À PLANILHA](https://docs.google.com/spreadsheets/d/1MyK5KIySJZcPhU4Yc-GWshkn2XigX5-2va1NkqFXeF4/edit?usp=sharing) 
+
+</div>
+
+&emsp;Aprofundamos a análise financeira do projeto por meio da construção de um modelo de *valuation* baseado em Fluxo de Caixa Descontado (*Discounted Cash Flow – DCF*), com o objetivo de estimar o valor econômico gerado para a empresa parceira ao longo do tempo.
+
+&emsp;Embora o projeto não gere receitas diretas, seu racional econômico está fundamentado na geração de valor indireto, capturado por dois principais *value drivers*:
+
+1. **Ganhos de produtividade** decorrentes da adoção de agentes de IA nos processos da área de PMO;  
+2. **Redução de riscos operacionais e arquiteturais**, mitigando incidentes associados a falhas de escalabilidade, rastreabilidade e déficits de arquitetura.
+
+&emsp;A modelagem financeira apresentada é baseada em premissas explícitas e parametrizáveis. Ressalta-se que os valores podem ser ajustados futuramente, sendo a principal contribuição desta análise a estrutura metodológica adotada.
+
+### Driver I – Ganho de Produtividade Operacional
+
+&emsp;Para quantificar o impacto financeiro dos ganhos de produtividade, foram consideradas as seguintes premissas:
+
+- Número de colaboradores impactados pelo projeto;
+- Economia média de horas diárias por colaborador;
+- Valor-hora médio, estimado a partir do salário médio mensal da área de PMO;
+- Número médio de dias úteis por mês.
+
+&emsp;De acordo com pesquisa divulgada pela OpenAI, a utilização de ferramentas de IA pode gerar, em média, uma economia de até **1 hora por dia por colaborador**. Esta estimativa foi adotada como premissa-base do modelo.
+
+<div align="center">
+<sub>Tabela X - Premissas Relacionadas a Produtividade</sub>
+
+| Premissa | Valor |
+|---------|------|
+| Pessoas impactadas | 150 |
+| Economia de produtividade diária por pessoa (h/dia) | 1 |
+| Salário médio mensal (R$) | 5.000,00 |
+| Valor-hora médio (R$) | 28,41 |
+| Dias úteis por mês | 22 |
+| Economia mensal por pessoa (R$) | 625,00 |
+| **Benefício anual de produtividade (R$)** | **93.750,00** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O benefício anual consolidado reflete a economia agregada de custo de mão de obra, interpretada como eficiência operacional adicional para a organização.
+
+### Driver II - Redução de Riscos e Incidentes Arquiteturais
+
+&emsp;O segundo *driver* de valor considera a mitigação de riscos operacionais relacionados a incidentes decorrentes de fragilidades arquiteturais. O cálculo foi estruturado a partir das seguintes premissas:
+
+- Probabilidade histórica de ocorrência de incidentes;
+- Probabilidade projetada após a implementação do projeto;
+- Custo financeiro médio por incidente relevante.
+
+<div align="center">
+<sub>Tabela X - Premissas de Risco e Benefício Financeiro</sub>
+
+| Premissa | Valor |
+|--------|------|
+| Probabilidade atual de incidente | 10% |
+| Probabilidade após arquitetura | 1% |
+| Custo financeiro por incidente (R$) | 100.000,00 |
+| **Benefício anual de risco evitado (R$)** | **9.000,00** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O benefício anual corresponde à redução do valor esperado de perdas financeiras associadas a incidentes, refletindo maior robustez operacional e previsibilidade.
+
+### Fluxo de caixa projetado
+
+&emsp;A partir dos benefícios financeiros anuais estimados (produtividade + risco evitado), foi projetado um fluxo de caixa para um horizonte de cinco anos. O modelo incorpora:
+
+- **CAPEX inicial**, necessário para execução e implantação do projeto;
+- **OPEX recorrente**, associado à manutenção e operação da solução;
+- Benefícios financeiros constantes ao longo do período de projeção.
+
+<div align="center">
+<sub>Tabela X - Fluxo de Caixa Projetado (R$)</sub>
+
+| Ano | CAPEX | Benefícios | OPEX | Fluxo Líquido | Acumulado |
+|---|------|-----------|------|--------------|-----------|
+| 0 | 129.829,00 | 102.750,00 | 43.501,39 | -70.580,39 | -70.580,39 |
+| 1 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | -11.331,78 |
+| 2 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 47.916,82 |
+| 3 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 107.165,43 |
+| 4 | 0,00 | 102.750,00 | 43.501,39 | 59.248,61 | 166.414,04 |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+&emsp;O fluxo evidencia um *payback* operacional entre o segundo e o terceiro ano, além de geração consistente de caixa ao longo do horizonte analisado.
+
+### Análise de Sensibilidade e Cenários
+
+&emsp;Com o objetivo de testar a robustez do modelo, foi construída uma tabela de cenários contemplando hipóteses **pessimista, neutra e otimista**, variando os principais parâmetros financeiros do projeto, incluindo custos, benefícios e taxa de desconto utilizada no *valuation*. Essa abordagem permite avaliar a sensibilidade do valor presente do projeto frente a variações nas premissas-chave.
+
+<div align="center">
+<sub>Tabela X - Premissas por Cenário</sub>
+
+| Variável | Pessimista | Neutro | Otimista |
+|-------|------------|--------|----------|
+| Custos diretos (R$) | 43.501,39 | 36.251,16 | 29.000,93 |
+| Benefício de produtividade (R$) | 75.000,00 | 93.750,00 | 112.500,00 |
+| Risco evitado (R$) | 7.200,00 | 9.000,00 | 10.800,00 |
+| Taxa de desconto | 12% | 10% | 8% |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+### Resultados por Cenário
+
+&emsp;Com base nas premissas definidas na análise de sensibilidade, foram calculados os principais indicadores financeiros — Valor Presente Líquido (VPL), Taxa Interna de Retorno (TIR) e Retorno sobre o Investimento (ROI) — para cada cenário. Os resultados permitem avaliar a atratividade econômica do projeto sob diferentes condições operacionais e macrofinanceiras.
+
+---
+
+**Resultado pessimita**: O cenário pessimista incorpora premissas mais conservadoras, com maiores custos operacionais (OPEX), menores benefícios financeiros e uma taxa de desconto mais elevada, refletindo maior percepção de risco.
+
+<div align="center">
+<sub>Tabela X - Cenário Pessimista</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **-R$ 80.949,05** |
+| TIR (Taxa Interna de Retorno) | **-16%** |
+| ROI (Return On Investment) | **18,33%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Sob essas condições, o projeto apresenta destruição de valor econômico, evidenciada por um VPL negativo e uma TIR inferior à taxa de desconto. Esse resultado indica que, caso as premissas pessimistas se materializem, o retorno financeiro não seria suficiente para compensar o capital investido, tornando o projeto economicamente pouco atrativo nesse cenário extremo.
+
+---
+
+**Cenário neutro**: O cenário neutro reflete as premissas-base do modelo, consideradas mais prováveis à luz das informações atualmente disponíveis, incluindo custos, benefícios e taxa de desconto alinhados ao cenário esperado.
+
+<div align="center">
+<sub>Tabela X - Cenário Neutro</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **R$ 216.230,71** |
+| TIR (Taxa Interna de Retorno) | **82%** |
+| ROI (Return On Investment) | **65,15%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Nesse contexto, o projeto demonstra geração consistente de valor econômico, com VPL significativamente positivo e TIR substancialmente superior à taxa de desconto adotada. Os resultados indicam elevada atratividade financeira, sugerindo que o projeto remunera adequadamente o capital investido e oferece retorno expressivo para a empresa parceira.
+
+---
+
+**Resultados otimistas**: O cenário otimista considera hipóteses mais favoráveis, como menores custos operacionais, maior captura de ganhos de produtividade, maior mitigação de riscos e uma taxa de desconto reduzida.
+
+<div align="center">
+<sub>Tabela X - Cenário Otimista</sub>
+
+| Indicador | Valor |
+|---------|------|
+| VPL (Valor Presente Líquido) | **R$ 553.352,20** |
+| TIR (Taxa Interna de Retorno) | **260%** |
+| ROI (Return On Investment) | **124,32%** |
+
+<sup>Fonte: material produzido pelos autores (2025).</sup>
+</div>
+
+Os resultados deste cenário evidenciam um potencial elevado de criação de valor, com VPL expressivamente positivo e TIR significativamente superior aos benchmarks usuais de mercado. Esse desempenho reforça o caráter assimétrico do projeto, no qual o *upside* financeiro pode ser substancial caso as premissas mais favoráveis se concretizem.
 
 ---
 
@@ -11314,9 +11661,21 @@ _(Organizar as simulações feitas (antigo e novo).)_
 _(Conferir consistência das documentações existentes e atualizar e fazer um resumo breve com base nisso)_
 
 ## 16.3 Benefícios Entregues
-_(Listar e atualizar ganhos do projeto.)_
 
----
+&nbsp; A adoção da nova arquitetura proposta, integrada a agentes de IA e mecanismos robustos de segurança, traz um conjunto significativo de benefícios ao processo de gestão de portfólio do Metrô. A principal mudança ocorre na forma como a informação é estruturada, validada e distribuída ao longo do ciclo de vida dos projetos. A consolidação automática de dados reduz a dependência de tarefas manuais e minimiza inconsistências que hoje surgem com frequência na transição entre Miro, SharePoint e documentos corporativos.
+
+&nbsp; A melhoria mais evidente é o aumento da rastreabilidade. Todas as interações realizadas por usuários e agentes são registradas de forma contínua e íntegra, criando uma trilha de auditoria capaz de reconstruir o histórico completo de decisões, atualizações e revisões. Isso reforça a governança e o compliance, permitindo análises mais confiáveis e eliminando ambiguidades comuns no processo atual.
+
+&nbsp; A automação de processos também representa um avanço importante. Etapas antes repetitivas, como estruturação do TAP, preparação de apresentações e consolidação de indicadores, passam a ser executadas com o apoio direto da IA, que sugere ajustes, detecta inconsistências e produz versões prévias dos artefatos necessários. Isso libera tempo das equipes, melhora a qualidade dos dados gerados e reduz o risco operacional associado ao retrabalho.
+
+&nbsp; Outro benefício central é a maior segurança na manipulação das informações. A arquitetura estabelece controles de acesso granulares, validações obrigatórias, camadas de proteção contra ações indevidas e mecanismos que asseguram o não repúdio. Com isso, a integridade dos dados corporativos é preservada mesmo diante do aumento de automações e acessos simultâneos.
+
+&nbsp; A escalabilidade e a disponibilidade também são ampliadas. A solução proposta é capaz de lidar com picos de utilização, distribuir carga de forma eficiente e recuperar-se rapidamente de falhas, evitando interrupções em períodos críticos de reporte. Esse comportamento mais resiliente garante continuidade operacional e reduz impactos decorrentes de indisponibilidades inesperadas.
+
+&nbsp; Por fim, o ambiente se torna mais integrado e padronizado. A troca de informações entre ferramentas deixa de depender de intervenções manuais, o que garante maior consistência entre planejamento, execução e monitoramento. Isso fortalece o suporte à tomada de decisão, uma vez que diretoria, PMO e equipes passam a trabalhar com dados mais completos, precisos e atualizados.
+
+&nbsp; Em conjunto, esses benefícios resultam em um processo de gestão mais confiável, eficiente e alinhado às necessidades do Metrô, preparando o ecossistema digital para crescimento sustentável e integração futura de capacidades ainda mais avançadas de Inteligência Artificial.
+
 
 # 17. Considerações Finais do Projeto
 _(Introduzir Seção)_
@@ -11331,9 +11690,31 @@ _(Reflexão Final: Observar os pontos positivos do projeto, incluindo conquistas
 _(A- Apresentar o Checklist de Impacto Operacional e Sustentabilidade, destacando as cinco dimensões da Agenda 2030 (Pessoas, Planeta, ProsperidadePaz e Parcerias) B- Indicar os ODS prioritários, relacionando-os com o conceito de Cidades Inteligentes aplicado ao módulo)_
 
 ## 17.4 Aperfeiçoamentos Futuros
-_(Descrever melhorias possíveis e roadmap sugerido.)_
 
----
+A arquitetura proposta foi concebida para atender aos requisitos atuais de segurança, rastreabilidade, escalabilidade e automação do sistema de gestão de portfólio do Metrô. No entanto, considerando a natureza dinâmica dos processos organizacionais e a evolução constante das tecnologias de Inteligência Artificial, é fundamental tratar a solução como um produto em evolução contínua, e não como uma implementação estática.
+
+Nesse contexto, os aperfeiçoamentos futuros estão organizados em um roadmap evolutivo, estruturado por horizontes temporais. Essa abordagem permite alinhar avanços tecnológicos à maturidade operacional da organização, garantindo que novas capacidades sejam incorporadas de forma gradual, controlada e aderente às diretrizes de governança institucional.
+
+### Roadmap de Evolução da Solução
+
+| Horizonte | Direcionamento Estratégico | Evoluções Planejadas | Oportunidades Geradas | Riscos e Pontos de Atenção |
+|----------|---------------------------|----------------------|-----------------------|----------------------------|
+| **Curto Prazo** | Estabilização e consolidação | - Aprimoramento dos mecanismos de validação automática de dados<br>- Evolução inicial dos agentes de IA para análise básica de riscos e inconsistências<br>- Refinamento da coleta de métricas operacionais, logs e trilhas de auditoria | - Redução adicional de erros manuais<br>- Aumento da confiabilidade das informações desde o planejamento<br>- Maior aceitação da solução pelas equipes | - Curva de aprendizado dos usuários<br>- Necessidade de ajustes finos nos fluxos automatizados |
+| **Médio Prazo** | Integração e apoio gerencial | - Integração progressiva com outras ferramentas corporativas (Project, Planner, Copilot)<br>- Expansão dos painéis analíticos com indicadores em tempo real<br>- Implementação de análises comparativas entre projetos, programas e linhas | - Visão integrada do portfólio<br>- Melhoria no acompanhamento estratégico e tático<br>- Apoio mais consistente à tomada de decisão do PMO e da diretoria | - Aumento da complexidade arquitetural<br>- Dependência de integrações externas e licenciamento |
+| **Longo Prazo** | Inteligência preditiva e proatividade | - Uso de IA generativa para elaboração automática de documentos estratégicos<br>- Simulação de cenários alternativos de execução e alocação de recursos<br>- Criação de agentes especializados por domínio (prazo, custo, risco) | - Antecipação de problemas críticos<br>- Redução de impactos financeiros e operacionais<br>- Diferencial estratégico para a gestão pública | - Necessidade elevada de governança de IA<br>- Riscos éticos e de autonomia excessiva dos agentes |
+
+### Análise de Riscos e Governança
+
+À medida que a arquitetura evolui e incorpora níveis mais altos de automação e inteligência, torna-se essencial fortalecer os mecanismos de governança e controle. O aumento da autonomia dos agentes de IA exige políticas claras de validação humana, auditoria contínua e definição de limites operacionais, garantindo que decisões críticas permaneçam alinhadas às normas e responsabilidades institucionais.
+
+Além disso, a crescente complexidade técnica demanda atenção especial à manutenção, monitoramento e capacitação das equipes envolvidas. A ausência desses cuidados pode gerar dependência tecnológica excessiva ou dificultar a adoção plena das funcionalidades avançadas.
+
+### Visão de Longo Prazo
+
+Os aperfeiçoamentos futuros descritos neste roadmap consolidam a solução como uma plataforma estratégica de gestão de portfólio, capaz de evoluir de forma sustentável e segura. Ao equilibrar inovação tecnológica com controle, rastreabilidade e conformidade, o Metrô se posiciona para ampliar seus ganhos de eficiência operacional, transparência e qualidade na tomada de decisão.
+
+Dessa forma, a arquitetura proposta não apenas resolve limitações atuais, mas estabelece uma base sólida para a incorporação contínua de novas capacidades digitais, mantendo aderência às necessidades organizacionais e às melhores práticas de governança no setor público.
+
 
 # Referências
 

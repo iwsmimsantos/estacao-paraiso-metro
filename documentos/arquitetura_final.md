@@ -74,8 +74,6 @@ _(Apresente evidências do comportamento do sistema antes da evolução.)_
 
 ## 5. Decisões Arquiteturais e Simulação do Novo Sistema
 
-## 5. Decisões Arquiteturais e Simulação do Novo Sistema
-
 ### 5.1 Visão Geral da Arquitetura
 
 A arquitetura proposta para o sistema de gerenciamento de projetos do Metrô-SP foi projetada com foco em três pilares fundamentais: **escalabilidade horizontal**, **rastreabilidade completa** e **segurança em profundidade**. A solução integra agentes de IA ao fluxo de trabalho existente (Miro → SharePoint), automatizando validações, análises e sincronizações que atualmente são manuais.
