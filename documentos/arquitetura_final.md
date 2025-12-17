@@ -46,11 +46,71 @@ _(Apresente o contexto e as motivações de negócio que originaram o projeto e 
 ---
 
 ## 2. Riscos e Oportunidades como Requisitos Não Funcionais
-_(Descreva como os riscos e oportunidades identificados foram transformados em requisitos não funcionais priorizados.)_
 
-- **Principais riscos e oportunidades:** _(Liste e contextualize os RNFs originados dessas análises.)_  
-- **Evidências:** _(Inclua visualizações, tabelas ou artefatos de análise de risco.)_  
-- **Pitch:** _(Explique como esses fatores estratégicos guiaram as decisões técnicas.)_
+### 2.1 Mapeamento de Riscos e Oportunidades para RNFs
+
+&emsp;Mapeamento dos riscos e oportunidades identificados para os **3 RNFs** implementados:
+
+| **Risco/Oportunidade**                                 | **Código** | **RNF**         | **Estratégia Implementada**                                         |
+| :----------------------------------------------------- | :--------: | :-------------- | :------------------------------------------------------------------ |
+| **Riscos Mitigados:**                                  |            |                 |                                                                     |
+| Inconsistência de Dados                                |     R1     | Rastreabilidade | Hash SHA-256 + validação de integridade                             |
+| Baixa Rastreabilidade das Ações                        |     R5     | Rastreabilidade | Audit Trail 100% + correlação automática                            |
+| Acesso Indevido a Informações                          |     R4     | Segurança       | Middleware de segurança + bloqueio automático                       |
+| Dependência de Processos Manuais                       |     R2     | Escalabilidade  | Middleware unificado + processamento assíncrono                     |
+| Falha de Integração entre Ferramentas                  |     R3     | Escalabilidade  | Middleware com simulação de integrações (SharePoint, Miro, Copilot) |
+| **Oportunidades Realizadas:**                          |            |                 |                                                                     |
+| Padronização de Logs e Auditorias                      |     O2     | Rastreabilidade | Logs centralizados + recuperação <2s                                |
+| Otimização de Processos no Power Automate              |     O3     | Escalabilidade  | Middleware unificado + processamento assíncrono                     |
+| Fortalecimento das Políticas de Segurança e Compliance |     O5     | Segurança       | Verificação de integridade + registro de incidentes                 |
+
+### 2.2 Evidências e Resultados das Estratégias
+
+#### 2.2.1 RNF-01: Rastreabilidade
+
+| **Métrica**            | **AS-IS** | **TO-BE**      | **Evidência**                               |
+| :--------------------- | :-------- | :------------- | :------------------------------------------ |
+| Cobertura de Logs      | 30-40%    | 100%           | Audit Trail completo em todos os cenários   |
+| Integridade Verificada | 0%        | 100% (SHA-256) | Hash comparison = True em 100% dos logs     |
+| Correlação de Eventos  | Manual    | 75% automática | Correlation ID presente em todas as trilhas |
+
+**Estratégia:** Sistema de Audit Trail com hash SHA-256 e correlação automática.
+**Resultado:** Trilha completa de ponta a ponta (SharePoint → Sentinel → Power BI) com 6 eventos correlacionados.
+
+#### 2.2.2 RNF-02: Segurança
+
+| **Métrica**                   | **AS-IS**  | **TO-BE**  | **Evidência**                            |
+| :---------------------------- | :--------- | :--------- | :--------------------------------------- |
+| Bloqueio de Acessos Indevidos | Limitado   | 100%       | 3/3 tentativas bloqueadas                |
+| Verificação de Integridade    | Não existe | SHA-256    | 100% de detecção de inconsistências      |
+| Registro de Incidentes        | Manual     | Automático | 3 incidentes registrados automaticamente |
+
+**Estratégia:** Middleware FastAPI com controle de acesso e verificação de integridade.
+**Resultado:** 100% de bloqueio de acessos indevidos e detecção de inconsistências entre Miro e SharePoint.
+
+#### 2.2.3 RNF-03: Escalabilidade
+
+| **Métrica**              | **AS-IS**  | **TO-BE**                           | **Evidência**                                                                                    |
+| :----------------------- | :--------- | :---------------------------------- | :----------------------------------------------------------------------------------------------- |
+| Arquitetura              | Monolítica | Middleware unificado                | Middleware FastAPI consolidando 8 endpoints principais (+ endpoints auxiliares de monitoramento) |
+| Processamento            | Síncrono   | Assíncrono                          | FastAPI assíncrono implementado                                                                  |
+| Simulação de Integrações | Não existe | SharePoint, Miro, Copilot, Sentinel | APIs mockadas integradas no middleware                                                           |
+| Throughput               | Limitado   | Validado em testes                  | Testes Locust validaram capacidade de processamento                                              |
+
+**Estratégia:** Middleware unificado com processamento assíncrono que simula integrações externas (SharePoint, Miro, Copilot, Sentinel).
+**Resultado:** Arquitetura consolidada com 8 endpoints unificados, reduzindo complexidade e permitindo escalabilidade através de processamento assíncrono.
+
+#### 2.2.4 Consolidação
+
+| **Risco/Oportunidade**      | **RNF**         | **Status**   | **Evidência**                                     |
+| :-------------------------- | :-------------- | :----------- | :------------------------------------------------ |
+| R1: Inconsistência de Dados | Rastreabilidade | ✅ Mitigado  | 100% de integridade verificada                    |
+| R4: Acesso Indevido         | Segurança       | ✅ Mitigado  | 100% de bloqueio (3/3 tentativas)                 |
+| R5: Baixa Rastreabilidade   | Rastreabilidade | ✅ Mitigado  | Trilha completa em 100% dos eventos               |
+| R2: Processos Manuais       | Escalabilidade  | ✅ Mitigado  | Middleware unificado com processamento assíncrono |
+| O2: Logs Padronizados       | Rastreabilidade | ✅ Realizada | 100% de ações auditáveis                          |
+| O5: Segurança Fortalecida   | Segurança       | ✅ Realizada | Verificação SHA-256 + registro automático         |
+| O3: Otimização de Processos | Escalabilidade  | ✅ Realizada | Middleware consolidado com 8 endpoints unificados |
 
 ---
 
