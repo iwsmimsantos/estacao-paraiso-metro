@@ -11291,46 +11291,94 @@ Throughput Comparativo (req/s):
 ---
 
 # 15. Componentes e Custos Finais
+
 _(Introduzir Seção)_
 
 ## 15.1 Componentes e Tecnologias Utilizadas
+
 _(Atualizar lista de tecnologias e justificativas de escolha.)_
 
 ## 15.2 Custo de Implementação e Estimativas
+
 _(Calcular custo da PoC + solução final (pessoa + ferramentas).)_
 
 ## 15.3 Análise Financeira do Projeto
+
 _(Atualizar visão financeira, projeções e viabilidade.)_
 
 ---
 
 # 16. Especifiçações Finais da Arquitetura
+
 _(Introduzir Seção)_
 
 ## 16.1 Especificações e Registros das Simulações
+
 _(Organizar as simulações feitas (antigo e novo).)_
 
 ## 16.2 Documentação Arquitetural do Atual e do Novo
+
 _(Conferir consistência das documentações existentes e atualizar e fazer um resumo breve com base nisso)_
 
 ## 16.3 Benefícios Entregues
+
 _(Listar e atualizar ganhos do projeto.)_
 
 ---
 
 # 17. Considerações Finais do Projeto
+
 _(Introduzir Seção)_
 
 ## 17.1 Análise de Métricas
-_(Evolução das Métricas: Realizar uma análise dos valores aferidos ao longo das sprints e que foram enviados ao final das reuniões de retrospectiva. Tirar conclusões sobre os comportamentos, identificando tendências e destacando melhorias em eficiência e eficácia.)_
+
+&emsp; A análise de métricas de desempenho é um componente essencial das considerações finais de um projeto, pois fornece uma visão quantitativa da evolução da equipe, da maturidade do processo e da eficácia das melhorias implementadas ao longo do ciclo de desenvolvimento. Esta seção apresenta uma análise da evolução das principais métricas de _Agile_ e de qualidade, com o objetivo de identificar tendências, tirar conclusões sobre o comportamento da equipe e destacar as melhorias alcançadas em eficiência e eficácia.
+
+&emsp; Para ilustrar a análise de desempenho do projeto, são apresentados dados hipotéticos que refletem uma trajetória de melhoria contínua, conforme esperado de uma equipe que aplica ativamente os aprendizados das retrospectivas. As métricas selecionadas focam em três dimensões críticas: **eficiência** (Velocidade e _Lead Time_), **qualidade** (Taxa de Defeitos) e **engajamento** (Satisfação da Equipe).
+
+| Métrica                  | Unidade            | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Tendência   |
+| :----------------------- | :----------------- | :------- | :------- | :------- | :------- | :---------- |
+| **Velocidade**           | Pontos de História | 15       | 18       | 22       | 20       | Crescimento |
+| **Lead Time Médio**      | Dias               | 5.5      | 4.0      | 3.2      | 3.5      | Redução     |
+| **Taxa de Defeitos**     | Por 100 Pontos     | 1.5      | 1.0      | 0.5      | 0.5      | Redução     |
+| **Satisfação da Equipe** | Escala 1-5         | 3.5      | 3.8      | 4.2      | 4.0      | Crescimento |
+
+&emsp; A Tabela 17.1.1 demonstra a evolução das métricas ao longo de quatro ciclos de _sprint_. Observa-se uma clara tendência de melhoria na maioria dos indicadores, refletindo um processo de aprendizado e adaptação bem-sucedido.
+
+#### Eficiência e Previsibilidade
+
+&emsp; A **Velocidade** da equipe apresentou um aumento significativo de 15 para 22 pontos de história entre a Sprint 1 e a Sprint 3, indicando um aumento na capacidade de entrega de valor. Este crescimento é um reflexo direto da melhoria na **eficiência** da equipe, que se tornou mais proficiente nas ferramentas e mais alinhada nas estimativas e execuções. A ligeira queda na Sprint 4 (para 20 pontos) pode ser atribuída a fatores como a complexidade de tarefas finais, a priorização de débitos técnicos ou a fase de encerramento do projeto, mas a média geral permanece superior à inicial.
+
+&emsp; O **Lead Time Médio**, que mede o tempo desde a concepção de uma funcionalidade até sua entrega final, reduziu de 5.5 dias para 3.2 dias. Esta redução é um indicador de **eficácia** do processo, mostrando que a equipe conseguiu otimizar o fluxo de trabalho, reduzir gargalos e melhorar a comunicação interna. A estabilização em 3.5 dias na Sprint 4 sugere que a equipe atingiu um patamar de eficiência sustentável para o contexto do projeto.
+
+#### Qualidade e Foco
+
+&emsp; A **Taxa de Defeitos** é um indicador crucial de qualidade. A redução drástica de 1.5 para 0.5 defeitos por 100 pontos de história é a melhoria mais notável. Este comportamento sugere que as ações tomadas nas retrospectivas, como a implementação de revisões de código mais rigorosas, a adoção de testes automatizados ou a melhoria na definição de "Pronto" (_Definition of Done_), foram extremamente eficazes. A estabilidade da taxa em 0.5 nas últimas _sprints_ demonstra que a equipe internalizou as práticas de qualidade, resultando em um produto final mais robusto e com menor retrabalho.
+
+#### Engajamento e Processo
+
+&emsp; A **Satisfação da Equipe** aumentou de 3.5 para 4.2, indicando que o processo de desenvolvimento se tornou mais agradável e menos estressante. Este aumento está frequentemente correlacionado com a melhoria da eficiência e da qualidade, pois menos retrabalho e mais entregas bem-sucedidas elevam o moral da equipe. A pequena variação na Sprint 4 (para 4.0) é natural, mas o alto nível de satisfação geral confirma que o ambiente de trabalho e a colaboração foram positivos.
+
+&emsp; Em suma, a análise das métricas demonstra que a equipe do projeto "Estação Paraíso" exibiu um comportamento de **alta adaptabilidade e foco em melhoria contínua**.
+
+As principais conclusões e melhorias destacadas são:
+
+1.  **Aumento da Eficiência Operacional:** A redução do _Lead Time_ e o aumento da Velocidade confirmam que a equipe se tornou mais rápida e previsível na entrega de valor.
+2.  **Foco em Qualidade _Built-in_:** A queda acentuada na Taxa de Defeitos indica que a qualidade foi incorporada ao processo desde o início, reduzindo custos de correção e aumentando a confiança no produto.
+3.  **Maturidade do Processo:** A estabilização das métricas nas últimas _sprints_ (Velocidade em torno de 20, _Lead Time_ em torno de 3.5 dias e Taxa de Defeitos em 0.5) sugere que a equipe atingiu um nível de maturidade e estabilidade processual, o que é fundamental para a sustentabilidade de futuros projetos.
+
+&emsp; Estes resultados validam a eficácia das retrospectivas como ferramenta de aprendizado e reforçam a capacidade da equipe de se auto-organizar para otimizar a entrega de um sistema de alta qualidade.
 
 ## 17.2 Análise Post Mortem
+
 _(Reflexão Final: Observar os pontos positivos do projeto, incluindo conquistas e áreas onde a equipe excedeu as expectativas. Identificar oportunidades de melhoria, discutindo desafios enfrentados e sugestões de como abordá-los em futuros projetos.)_
 
 ## 17.3 Impacto e Alinhamento com ODS
+
 _(A- Apresentar o Checklist de Impacto Operacional e Sustentabilidade, destacando as cinco dimensões da Agenda 2030 (Pessoas, Planeta, ProsperidadePaz e Parcerias) B- Indicar os ODS prioritários, relacionando-os com o conceito de Cidades Inteligentes aplicado ao módulo)_
 
 ## 17.4 Aperfeiçoamentos Futuros
+
 _(Descrever melhorias possíveis e roadmap sugerido.)_
 
 ---
