@@ -11864,10 +11864,81 @@ Os resultados deste cenário evidenciam um potencial elevado de criação de val
 ---
 
 # 16. Especifiçações Finais da Arquitetura
-_(Introduzir Seção)_
+
+Esta seção consolida, em um único lugar, as **especificações finais da arquitetura** e o **registro das simulações** realizadas ao longo do projeto, conectando:
+
+- o diagnóstico do sistema atual (AS-IS), modelado e simulado no Capítulo 7;  
+- a arquitetura proposta (TO-BE), especificada nas Seções 6 e 15;  
+- a implementação prática da simulação do sistema novo em `src/Simulacao-Unificada` (API mock, Middleware de Validação e Testes Automatizados).
+
+O objetivo é fornecer uma visão integrada que permita rastrear, para cada **RNF avaliado**, quais foram os **modelos usados**, quais **ferramentas** foram aplicadas (JMT, Cadeias de Markov, Monte Carlo, FastAPI, pytest) e quais **evidências concretas** (código, arquivos de resultado e gráficos) suportam as conclusões arquiteturais.
 
 ## 16.1 Especificações e Registros das Simulações
-_(Organizar as simulações feitas (antigo e novo).)_
+
+Esta subseção organiza todas as simulações realizadas, tanto do sistema atual quanto do sistema novo, destacando:
+
+- **RNFs avaliados:** Escalabilidade, Segurança e Rastreabilidade.  
+- **Sistema simulado:** AS-IS (sistema atual) e TO-BE (nova arquitetura).  
+- **Abordagem de simulação:** modelos analíticos/experimentais (Capítulo 7) e simulação integrada com código (pasta `src/Simulacao-Unificada`).  
+
+### 16.1.1 Visão Geral das Simulações
+
+| **RNF**                | **Sistema Atual (AS-IS)**                                                                 | **Sistema Novo (TO-BE)**                                                                                         | **Evidências Principais**                                                                                                    |
+|------------------------|-------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| **RNF-01 – Escalabilidade**  | Rede de filas no **JMT** (Seção 7.1.1), com variação de carga (x1, x2, x3) e identificação de gargalos. | Rede de filas no **JMT** com melhoria de 150% em _service time_ (Seção 7.1.2) + testes de carga no Middleware.  | Gráficos de throughput, utilização e tempo de fila (Seção 7.1) + `test_scalability_results_meta.json` e CSVs associados.    |
+| **RNF-02 – Segurança**       | Cadeias de Markov + simulações Monte Carlo para cenários de falha (Seção 7.2 – Sistema Atual).         | Cadeias de Markov + Monte Carlo (Seção 7.2 – Sistema Novo) + testes unitários de segurança no Middleware.       | Matrizes de transição e resultados de Monte Carlo (Seção 7.2) + `test_rnf01_seguranca.py` e `test_results_meta.json`.       |
+| **RNF-03 – Rastreabilidade** | Cadeias de Markov para perda de trilha (Cenários 10, 11, 14 – Seção 7.3.1).                           | Cadeias de Markov com melhoria de estados e transições (Seção 7.3.2) + testes de audit trail e integridade.     | Gráficos de probabilidade de estados (Seção 7.3) + `test_rnf03_rastreabilidade.py`, `audit_logs.jsonl` e `incidents.jsonl`. |
+
+### 16.1.2 Simulações do Sistema Atual (AS-IS)
+
+As simulações do sistema atual foram conduzidas de forma **analítica e experimental**, com foco em demonstrar as limitações arquiteturais:
+
+- **Escalabilidade (Seção 7.1.1)**  
+  - Modelo em **Rede de Filas (JMT)**, classe aberta, com nós `Acesso Projeto`, `Acesso Relatorio`, `Acesso Contrato` e `Navegacao`.  
+  - Cenários de carga x1, x2, x3 mostram saturação abrupta entre 100% e 200% da carga, com `Acesso Projeto` e `Acesso Relatorio` atingindo 100% de utilização.  
+  - Tempo de fila atinge ~12 milhões de segundos no cenário x3, caracterizando **falha categórica** no RNF de escalabilidade.  
+
+- **Segurança (Seção 7.2 – Sistema Atual)**  
+  - Uso de **Cadeias de Markov** para modelar estados de segurança (Seguro → Exposto → Comprometido) em cenários como cadastro incorreto, conflito de edição e execução sem TAP aprovado.  
+  - Simulações **Monte Carlo** validam probabilidades de falha e tempo médio até comprometimento.  
+
+- **Rastreabilidade (Seção 7.3.1)**  
+  - Modelagem de cenários AS-IS (Encerramento manual, Alterações sem controle, Registro manual de mudanças) com estados **Traceable → ManualAction → Orphan → Compromised**.  
+  - Resultados mostram alta probabilidade de estados órfãos/comprometidos, evidenciando perda de trilha de auditoria.
+
+### 16.1.3 Simulações do Sistema Novo (TO-BE)
+
+Para o sistema novo, as simulações combinaram **modelos conceituais** (JMT, Markov, Monte Carlo) com uma **implementação prática** que reproduz o comportamento da arquitetura proposta:
+
+- **Camada de Simulação Integrada – `src/Simulacao-Unificada`**  
+  - **API Mock (`API/`)**: simula Miro, SharePoint, Copilot, Office e Sentinel com rotas REST (`/miro`, `/sharepoint`, `/copilot`, `/office`, `/sentinel`) e respostas padronizadas contendo `request_id`, `correlation_id`, `trace_id` e métricas de performance.  
+  - **Middleware de Validação (`Middleware-Validacao/`)**: servidor FastAPI que implementa as táticas de RNF (segurança, escalabilidade e rastreabilidade), atuando como camada intermediária entre os serviços simulados.  
+  - **Testes Automatizados (`Testes-Automatizados/`)**: suíte pytest que executa cenários de RNF-01, RNF-02 e RNF-03 contra o Middleware e a API mock.  
+
+- **Escalabilidade – RNF-02 no Middleware**  
+  - Testes de carga e performance estruturados em `test_rnf02_escalabilidade.py`, com cenários de ingestão, workflows concorrentes, upload concomitante, _burst_ de eventos e sessões ativas.  
+  - Resultados agregados em `test_scalability_results_meta.json` e CSVs de histórico (`test_scalability_results_history/`), com **15/15 testes de escalabilidade passando (100%)** na última execução registrada.  
+
+- **Segurança – RNF-01 no Middleware**  
+  - Testes em `test_rnf01_seguranca.py` validam autenticação, autorização por projeto, integridade de payload (checksum SHA-256) e guardrails de IA.  
+  - Metadados consolidados em `test_results_meta.json`, com **15/15 testes passando (100%)** na última execução, reforçando que os controles de segurança simulados atendem aos critérios definidos.  
+
+- **Rastreabilidade – RNF-03 no Middleware**  
+  - Testes em `test_rnf03_rastreabilidade.py` verificam cobertura de logs, correlação de eventos (`trace_id`, `correlation_id`) e integridade de trilhas de auditoria.  
+  - Arquivos `storage/audit_logs.jsonl` e `storage/incidents.jsonl` registram eventos e incidentes gerados durante os testes, funcionando como evidência direta do comportamento da solução TO-BE.
+
+### 16.1.4 Consolidação e Rastreabilidade dos Registros
+
+Para garantir rastreabilidade entre **modelo conceitual**, **código** e **resultado**, cada simulação pode ser rastreada pelos seguintes eixos:
+
+- **Eixo Arquitetural (Documento):** Capítulo 7 (`Simulação do Sistema`) descreve, para cada RNF, o objetivo, o modelo usado (JMT, Markov, Monte Carlo), os cenários e as principais métricas analisadas.  
+- **Eixo de Implementação (Código):** `src/Simulacao-Unificada/API` e `src/Simulacao-Unificada/Middleware-Validacao` materializam a arquitetura TO-BE em serviços simulados e middleware de validação.  
+- **Eixo de Validação (Testes e Logs):**  
+  - Testes unitários e de carga em `Testes-Automatizados/unit` validam as propriedades de cada RNF.  
+  - Arquivos de metadados (`test_results_meta.json`, `test_scalability_results_meta.json`) registram número total de testes, taxa de sucesso (100%) e duração das execuções.  
+  - Logs de auditoria e incidentes (`audit_logs.jsonl`, `incidents.jsonl`) demonstram, na prática, a rastreabilidade e os controles de segurança configurados.
+
+Com isso, a equipe passa a dispor de um **registro completo das simulações** — do sistema atual e do sistema novo — que pode ser usado tanto para **auditoria técnica** quanto para **comunicação executiva** do valor gerado pela evolução arquitetural.
 
 ## 16.2 Documentação Arquitetural do Atual e do Novo
 
