@@ -771,7 +771,7 @@ A arquitetura é organizada em **camadas lógicas bem definidas**, com separaç�
 ### Componentes e Métricas Estruturais
 
 <div align="center">
-<sub>Tabela X - Componentes</sub>
+<sub>Tabela 1 - Componentes</sub>
 
 | Componente                | Função Arquitetural                      | Integrações                           | Acoplamento |
 | ------------------------- | ---------------------------------------- | ------------------------------------- | ----------- |
@@ -792,7 +792,7 @@ A arquitetura é organizada em **camadas lógicas bem definidas**, com separaç�
 ### Endpoints da API Unificada (Principais)
 
 <div align="center">
-<sub>Tabela X - Endpoints</sub>
+<sub>Tabela 2 - Endpoints</sub>
 
 | Endpoint                           | Método | Função                               |
 | ---------------------------------- | ------ | ------------------------------------ |
@@ -817,7 +817,7 @@ Volume analisado: **45 testes**, **101 logs de auditoria** e **1.093 campos vali
 ### RNF-01 — Escalabilidade (Testes de Carga)
 
 <div align="center">
-<sub>Tabela X - Teste de Carga</sub>
+<sub>Tabela 3 - Teste de Carga</sub>
 
 | Serviço    | Latência Média (ms) | Latência p95 (ms) | Throughput | Status   |
 | ---------- | ------------------- | ----------------- | ---------- | -------- |
@@ -841,7 +841,7 @@ Volume analisado: **45 testes**, **101 logs de auditoria** e **1.093 campos vali
 ### RNF-02 — Segurança (Conformidade)
 
 <div align="center">
-<sub>Tabela X - Segurança e Conformidade</sub>
+<sub>Tabela 4 - Segurança e Conformidade</sub>
 
 | Serviço    | MFA | Auth   | Latência (ms) | Status |
 | ---------- | --- | ------ | ------------- | ------ |
@@ -864,7 +864,7 @@ Volume analisado: **45 testes**, **101 logs de auditoria** e **1.093 campos vali
 ### RNF-03 — Rastreabilidade
 
 <div align="center">
-<sub>Tabela X - Métricas de Rastreabilidade</sub>
+<sub>Tabela 5 - Métricas de Rastreabilidade</sub>
 
 | Métrica                | Resultado |
 | ---------------------- | --------- |
@@ -881,7 +881,7 @@ Volume analisado: **45 testes**, **101 logs de auditoria** e **1.093 campos vali
 ### Incidentes Registrados
 
 <div align="center">
-<sub>Tabela X - Incidentes</sub>
+<sub>Tabela 6 - Incidentes</sub>
 
 | Categoria          | Severidade | Qtde    | Tempo Médio |
 | ------------------ | ---------- | ------- | ----------- |
@@ -899,7 +899,7 @@ Volume analisado: **45 testes**, **101 logs de auditoria** e **1.093 campos vali
 ### Taxa de Conformidade Global
 
 <div align="center">
-<sub>Tabela X - Incidentes</sub>
+<sub>Tabela 7 - Incidentes</sub>
 
 | RNF                      | Testes | Sucesso  | Status |
 | ------------------------ | ------ | -------- | ------ |
