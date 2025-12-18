@@ -21,8 +21,8 @@
 - <a href="https://www.linkedin.com/in/thalyta-viana/">Thalyta da Silva Viana</a>
 - <a href="https://www.linkedin.com/in/viniciussavian/">Vinicius dos Reis Savian</a>
 
-
 # Sumário
+
 - [1. Introdução](#1-introdução)
 - [2. Avaliação das Sprints](#2-avaliação-das-sprints)
   - [2.1 Sprint 1](#21-sprint-1)
@@ -48,35 +48,38 @@
 
 ## Matriz de Risco do Projeto
 
-| ID | Risco                                 | Probabilidade | Impacto   | Severidade | Estratégia de Mitigação                       | Responsável |
-|----|----------------------------------------|---------------|-----------|------------|-----------------------------------------------|-------------|
-| 1  | Atraso na entrega de tarefas           | Alta          | Alto      | Crítico    | Revisão semanal do cronograma e dailys        | Scrum Master|
-| 2  | Falha na comunicação entre membros     | Média         | Médio     | Moderado   | Reuniões regulares e uso de canais oficiais   | Todos       |
-| 3  | Problemas técnicos com ferramentas      | Média         | Alto      | Alto       | Treinamento e suporte técnico                 | DevOps      |
-| 4  | Escopo mal definido                    | Baixa         | Alto      | Alto       | Revisão do escopo com o cliente               | PO          |
-| 5  | Falta de engajamento dos integrantes   | Baixa         | Médio     | Moderado   | Feedbacks constantes e acompanhamento         | Scrum Master|
-| 6  | Mudanças de requisitos do cliente      | Média         | Alto      | Alto       | Documentação de mudanças e validação contínua | PO          |
-
+| ID  | Risco                                | Probabilidade | Impacto | Severidade | Estratégia de Mitigação                       | Responsável  |
+| --- | ------------------------------------ | ------------- | ------- | ---------- | --------------------------------------------- | ------------ |
+| 1   | Atraso na entrega de tarefas         | Alta          | Alto    | Crítico    | Revisão semanal do cronograma e dailys        | Scrum Master |
+| 2   | Falha na comunicação entre membros   | Média         | Médio   | Moderado   | Reuniões regulares e uso de canais oficiais   | Todos        |
+| 3   | Problemas técnicos com ferramentas   | Média         | Alto    | Alto       | Treinamento e suporte técnico                 | DevOps       |
+| 4   | Escopo mal definido                  | Baixa         | Alto    | Alto       | Revisão do escopo com o cliente               | PO           |
+| 5   | Falta de engajamento dos integrantes | Baixa         | Médio   | Moderado   | Feedbacks constantes e acompanhamento         | Scrum Master |
+| 6   | Mudanças de requisitos do cliente    | Média         | Alto    | Alto       | Documentação de mudanças e validação contínua | PO           |
 
 ## 2.1 Sprint 1
-
 
 &emsp; A Sprint 1 foi definida como a base do projeto de integração de agentes de IA ao sistema de gestão de projetos do Metrô de São Paulo. O objetivo é criar uma arquitetura escalável que facilite o gerenciamento, garantindo disponibilidade, rastreabilidade e segurança dos dados.
 
 ---
+
 ### Pontos Fortes
+
 - Discussões produtivas sobre a definição do projeto e entendimento do contexto do Metrô.
 - Estruturação inicial da arquitetura escalável para integração de IA.
 - Colaboração efetiva e engajamento dos integrantes.
 - Agilidade na execução das primeiras tarefas.
 
 ### Pontos Fracos
+
 - Dificuldade inicial em compreender a proposta de integração com sistemas existentes (Miro, SharePoint).
 - Desafio em mapear requisitos específicos de rastreabilidade e segurança.
 - Atrasos na disponibilização das ferramentas (Trello e GitHub), impactando o início do desenvolvimento.
 
 ---
+
 ### Requisitos Não Funcionais do Sistema Novo
+
 1. **Disponibilidade:** O sistema deve estar disponível 99% do tempo, com monitoramento de falhas.
 2. **Rastreabilidade:** Todas as ações realizadas no sistema devem ser registradas e auditáveis.
 3. **Segurança:** Garantir autenticação, autorização e proteção dos dados dos projetos.
@@ -85,18 +88,22 @@
 ---
 
 ### Mapeamento dos Requisitos Não Funcionais para Melhorar o Sistema Atual
+
 - Implementar monitoramento contínuo para garantir disponibilidade.
 - Adotar logs detalhados e trilhas de auditoria para rastreabilidade.
 - Reforçar políticas de segurança e controle de acesso.
 - Estruturar a arquitetura para suportar crescimento e novas integrações.
 
 ### Ações de Melhoria Verificáveis
+
 - Documentar decisões técnicas e fluxos de integração em um documento compartilhada.
 - Estabelecer prazos curtos para revisão de código (PRs) e feedback.
 - Padronizar o uso das ferramentas desde o início da sprint.
 
 ---
+
 ### Propostas de Melhoria para a Sprint 2
+
 - Implementar reuniões de alinhamento semanal para garantir entendimento coletivo dos objetivos da sprint.
 - Adotar checklist de requisitos de rastreabilidade e segurança para validação contínua com o cliente.
 - Monitorar engajamento dos integrantes com feedbacks regulares.
@@ -110,12 +117,14 @@
 ---
 
 #### Resumo de Mudanças da Matriz de Risco para Sprint 2:
+
 - **Risco 1** (Atraso nas entregas): Probabilidade reduzida de Alta para Média devido ao SLA de 24h para revisões
 - **Risco 2** (Comunicação): Probabilidade reduzida de Média para Baixa devido às dailys consistentes
 - **Risco 4** (Escopo mal definido): Impacto reduzido de Alto para Médio após validações com cliente
 - **6 novos riscos técnicos identificados** durante o mapeamento da arquitetura AS-IS e levantamento de requisitos
 
 #### Riscos Críticos Priorizados para Sprint 3:
+
 1. Risco 7 - Acesso às APIs do SharePoint
 2. Risco 8 - Compatibilidade de segurança e compliance
 3. Risco 12 - Sistemas legados não documentados
@@ -123,6 +132,7 @@
 ---
 
 ### Pontos Fortes da Sprint
+
 - Colaboração efetiva da equipe para levantamento técnico do ambiente atual.
 - Criação de diagramas C4 (contexto, containers e componentes) que facilitaram o entendimento da arquitetura existente.
 - Identificação clara dos pontos de integração entre SharePoint, Power BI, Power Automate e Miro.
@@ -130,26 +140,32 @@
 - Melhoria significativa no tempo de resposta das revisões de código (de 48h para 24h em média).
 
 ### Pontos Fracos
+
 - Dificuldade inicial em obter informações detalhadas sobre as APIs do SharePoint utilizadas atualmente.
 - Necessidade de mais sessões técnicas para compreender os fluxos do Power Automate existentes.
 - Dificuldade com entender como poderiamos simular os testes da sprint.
 - Desafio em entender como realizar a cadeia de markov com dados projetados pelo grupo.
 
 ---
+
 ### Entregas da Sprint
+
 - Diagrama de Arquitetura com Modelo C4 explorando o contexto e os containers
 - Táticas de arquitetura e identificação das principais vulnerabilidades
 - Simulação dos principais requisitos não funcionais escolhidos pelo grupo no sistema atual e novo
 - Atualização da matriz de riscos com novos riscos técnicos identificados.
 
 ---
+
 ### Propostas de Melhoria para a Sprint 3
+
 - Criar planos de contingência (Planos B) para tasks críticas.
 - Estabelecer revisões rápidas e contínuas de Pull Requests e tasks no Trello mantendo um prazo de 24 horas.
 - Criar mais tasks individuais, diminuindo as dependencias.
 - Garantir que todas as tasks estejam claras e detalhadas no Trello antes da execução.
 
 ### Ações de Melhoria Verificáveis
+
 - Estabelecido prazo de 24h para revisão de PRs.
 - Discussões semanais de 30 minutos com o grupo para validação continua de entendimento do projeto.
 - 100% das tarefas no trello devem estar com DOR e DOD, além de uma descrição detalhada.
@@ -163,21 +179,24 @@
 &emsp;A Sprint 3 foi mais curta e concentrou um volume maior de artefatos. A equipe reforçou o pareamento, replanejou o quadro do Trello diariamente e concentrou esforços nas histórias com maior dependência técnica para garantir que os componentes críticos e seus registros de teste fossem entregues dentro do ciclo.
 
 #### Resumo de Mudanças da Matriz de Risco para Sprint 3:
+
 - **Risco 1** voltou a ficar em evidência devido ao encurtamento da janela de entrega.
 - **Risco 3** aumentou de Severidade Moderada para Alta após problemas no pipeline de automação.
 - **Risco 7** manteve-se crítico e ganhou plano de contingência offline para testes.
 
-_Por recomendação do último feedback, passamos a tabela de acompanhamento para uma nova seção:  [Acompanhamento de Progresso](#acompanhamento-de-progresso---sprints-1234-e-5), e para os riscos: [Acompanhamento de Riscos](#acompanhamento-de-riscos---sprints-1234-e-5), evitando replicação de conteúdo_
+_Por recomendação do último feedback, passamos a tabela de acompanhamento para uma nova seção: [Acompanhamento de Progresso](#acompanhamento-de-progresso---sprints-1234-e-5), e para os riscos: [Acompanhamento de Riscos](#acompanhamento-de-riscos---sprints-1234-e-5), evitando replicação de conteúdo_
 
 ---
 
 ### Pontos Fortes da Sprint
+
 - Capacidade da equipe em absorver o escopo adicional mesmo com menos tempo, mantendo as entregas priorizadas.
 - Integração contínua entre código, documentação e roteiros de teste, com atualizações simultâneas no repositório e no plano de evidências.
 - Revisões assíncronas mais rápidas, permitindo feedback quase imediato e facilitando ajustes incrementais.
 - Monitoramento diário do burn-down no Trello, reduzindo surpresas de última hora.
 
 ### Pontos Fracos
+
 - Sobrecarga em membros durante a reta final da sprint, especialmente nas histórias com maior complexidade técnica.
 - Dependência de dados e cenários de teste ainda incompletos, o que atrasou a confirmação de algumas hipóteses.
 - Ajustes de escopo de última hora geraram retrabalho em tarefas de documentação e testes.
@@ -186,14 +205,17 @@ _Por recomendação do último feedback, passamos a tabela de acompanhamento par
 ---
 
 ### Propostas de Melhoria para a Sprint 4
+
 - Balancear alocação da equipe, distribuindo histórias críticas entre mais integrantes e prevendo pares alternados.
 - Validar escopo detalhado de cada artefato antes do início da sprint, com checklist simples de critérios de aceite e dependências.
 - Garantir que cada história tenha estimativa revisada e apontamento claro de quem revisa o quê, evitando gargalos no fim da semana.
 
 ### Ações de Melhorias
+
 - Checkpoints de meio de sprint com checklist de completude (documentação + código + testes).
 - Registro diário de impedimentos no Trello para facilitar acompanhamento pelo time.
 - Revisão rápida de lições aprendidas ao término de cada história para alimentar o relatório da sprint.
+
 ---
 
 &emsp;A Sprint 3 marcou a transição do foco analítico para um ciclo de entrega acelerada de artefatos. Apesar do tempo reduzido, priorizamos riscos críticos, mantivemos o controle do quadro e validamos a baseline arquitetural necessária para evoluir as implementações da próxima sprint.
@@ -205,12 +227,14 @@ _Por recomendação do último feedback, passamos a tabela de acompanhamento par
 ---
 
 ### Pontos Fortes da Sprint
+
 - Reorganização constante do Trello e Docs para respeitar a ordem lógica dos artefatos.
 - Colaboração entre os integrantes para destravar dependências técnicas.
 - Consolidação da baseline arquitetural e dos testes definidos nas sprints anteriores.
 - Entregas alinhadas com os requisitos não funcionais prioritários (rastreabilidade, segurança e disponibilidade).
 
 ### Pontos Fracos
+
 - Dificuldade na distribuição de tasks devido à alta linearidade entre os artefatos.
 - Risco de sobrecarga em membros responsáveis por etapas “gatilho” da cadeia de artefatos.
 - Descrições iniciais pouco detalhadas, gerando retrabalho em esclarecimentos e ajustes de escopo.
@@ -219,67 +243,309 @@ _Por recomendação do último feedback, passamos a tabela de acompanhamento par
 ---
 
 ### Propostas de Melhoria para a Sprint 5
+
 - Fatiar artefatos grandes em subtarefas mais independentes, reduzindo a linearidade extrema.
 - Planejar caminhos alternativos de trabalho (histórias em paralelo) para evitar ociosidade quando uma task estiver bloqueada.
 - Antecipar alinhamentos com professores e PO para validar expectativas de artefatos críticos antes do início da sprint.
 
 ### Ações de Melhoria Verificáveis
+
 - Checklist de refinamento obrigatório (DOR) para cada artefato antes de entrar em “Em andamento”.
 - Criação de subtarefas vinculadas no Trello para artefatos maiores, com responsáveis e dependências explícitas.
 - Registro de bloqueios e dependências diretamente nas cards, facilitando a visualização pelo time.
 - Sessão rápida de revisão de backlog no início da sprint com foco especial nos artefatos mais lineares.
 
 ## 2.5 Sprint 5
-_conteúdo_
- **Nota:** Insira informações sobre mudanças realizadas.
+
+&emsp;A Sprint 5 representou a fase final de consolidação e entrega do projeto. O foco principal foi a finalização dos artefatos pendentes, a integração de todos os componentes desenvolvidos e a preparação da documentação final. A equipe demonstrou um **compreendimento aprofundado do projeto** e conseguiu realizar uma **distribuição equalitária das tarefas**, aproveitando as **habilidades específicas de cada membro** para otimizar a qualidade e a velocidade das entregas. No entanto, a pressão do prazo final e a necessidade de **maior alinhamento com os professores** foram os principais desafios a serem superados.
+
+---
+
+### Pontos Fortes da Sprint
+
+- **Compreensão Aprofundada do Projeto:** A equipe atingiu um nível de maturidade técnica e de negócio, permitindo a tomada de decisões autônomas e a resolução eficiente de problemas complexos de entedimento do projeto, refletindo o conhecimento acumulado nas sprints anteriores.
+- **Distribuição e Divisão Equalitária das Tasks:** O planejamento da Sprint 5 garantiu que a carga de trabalho fosse balanceada, evitando a sobrecarga de membros específicos (problema da Sprint 4) e promovendo a responsabilidade compartilhada, o que contribuiu para a moral da equipe.
+- **Alinhamento por Habilidade:** As tarefas foram alocadas de forma estratégica, permitindo que cada membro trabalhasse em áreas onde possuía maior proficiência, o que resultou em maior qualidade e menor tempo de execução para os artefatos finais.
+
+### Pontos Fracos
+
+- **Prazos:** A reta final do projeto exigiu um esforço concentrado, e a gestão do tempo para as últimas entregas foi um ponto de estresse, indicando a necessidade de maior folga no planejamento de sprints finais em projetos futuros.
+- **Alinhamento com Professores:** A necessidade de validações finais e esclarecimentos de escopo em momentos críticos da sprint evidenciou a importância de sessões de alinhamento mais frequentes e estruturadas com professores para evitar gargalos de validação.
+- **Qualidade das Dailys:** Com a alta demanda de trabalho e a proximidade da entrega, as reuniões diárias (dailys) perderam um pouco de sua qualidade e foco, tornando-se mais um reporte de status do que um momento de identificação e destravamento de impedimentos.
+
+---
+
+### Propostas de Melhoria para Próximos Passos (Lições Aprendidas)
+
+- **Reforçar a Gestão de Tempo:** Implementar um planejamento de tempo melhor para as últimas sprints de projetos futuros, considerando a complexidade da integração final e da documentação.
+- **Estruturar Alinhamentos Externos:** Definir um canal e frequência específicos para alinhamento com _stakeholders_ externos (professores/clientes) para evitar gargalos de validação em momentos críticos.
+- **Otimizar a Daily:** Retomar o foco da _daily_ como ferramenta de identificação de impedimentos e não apenas de status, garantindo que sejam curtas, objetivas e focadas em "o que me impede de avançar".
+
+### Ações de Melhoria Verificáveis (Implementadas na Sprint 5)
+
+- **Foco no Destravamento:** As _dailys_ foram direcionadas para focar em bloqueios e dependências, otimizando o tempo da equipe.
+- **Revisão Cruzada de Documentação:** Implementação de uma revisão cruzada final de todos os artefatos de documentação para garantir consistência narrativa e técnica.
+- **Uso de Habilidades Específicas:** Alocação de tarefas finais (como formatação e revisão de código) baseada nas habilidades mais fortes de cada membro para garantir a máxima qualidade na entrega.
+
+---
+
+&emsp;A Sprint 5 foi concluída com sucesso, marcando a entrega final do projeto. O alto nível de colaboração e o entendimento técnico consolidado foram cruciais para superar os desafios de prazo. As lições aprendidas sobre gestão de tempo e alinhamento externo serão fundamentais para o planejamento de projetos futuros.
 
 # 3. Tabelas de Acompanhamento:
 
 ## Acompanhamento de Progresso - Sprints 1,2,3,4 e 5
+
 Tabela para acompanhamento dos pontos de melhora e estresse.
 
-| Aspecto                        | Sprint 1                                | Sprint 2                   | Sprint 3                                    | Sprint 4                                                                 |
-| :----------------------------- | :-------------------------------------- | :-------------------------- | :------------------------------------------ | :------------------------------------------------------------------------ |
-| **Pontualidade**               | Ponto de melhora (demora nas revisões)  | Melhorou, prazos cumpridos  | Pressionada: ajustes diários para caber no tempo reduzido | Desafiada pelo alto número de artefatos e dependências sequenciais       |
-| **Priorização das tasks**      | Funcionou bem                           | Mantido o padrão            | Replanejada diariamente para focar artefatos críticos     | Focada em destravar cadeias lineares e artefatos “gatilho”               |
-| **Divisão de tarefas**         | Livre e incentivou autonomia            | Mais estruturada            | Pareamento intenso para acelerar entregas                 | Dificultada pela alta linearidade entre artefatos e dependências fortes  |
-| **Dailys**                     | Produtivas e bem aproveitadas           | Consistentes                | Curtas e objetivas, focadas em bloqueios                  | Utilizadas para realinhar dependências e replanejar a sequência de tasks |
-| **Revisões (PRs)**             | Demora nas revisões                     | Agilizadas com limite de 24h| Realizadas em até 12h com revisão cruzada                  | Mantidas rápidas para não bloquear cadeias de artefatos                   |
-| **Apresentação Sprint Review** | Bem planejada e estruturada             | Técnica e objetiva          | Centrada no protótipo funcional e evidências de testes     | Focada em mostrar o conjunto de artefatos e sua interdependência         |
-| **Validação com professores**  | Ótimo, ponto a ser mantido              | Feedbacks incorporados      | Sessões rápidas para validar entregáveis                   | Reforçada para esclarecer escopo de artefatos com descrição pouco clara  |
-| **Documentação**               | Bem elaborada                           | Diagramas adicionados       | Atualizada em paralelo ao desenvolvimento                 | Ajustada para detalhar melhor os artefatos e suas relações               |
-| **Sugestões implementadas**    | Identificadas                           | 80% implementadas           | 100% das críticas aplicadas antes da review final          | Foco em tornar descrições mais explicativas e reduzir retrabalho         |
-| **Riscos**                     | Definidos na Matriz de Risco            | Atualizados e monitorados   | Repriorizados com foco nos riscos 7, 8 e 12              | Acompanhados com foco em atrasos por dependência e clareza de escopo     |
+| Aspecto                        | Sprint 1                               | Sprint 2                     | Sprint 3                                                  | Sprint 4                                                                 | Sprint 5                                                               |
+| :----------------------------- | :------------------------------------- | :--------------------------- | :-------------------------------------------------------- | :----------------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **Pontualidade**               | Ponto de melhora (demora nas revisões) | Melhorou, prazos cumpridos   | Pressionada: ajustes diários para caber no tempo reduzido | Desafiada pelo alto número de artefatos e dependências sequenciais       | Agenda apertada na reta final, mas entregas concluídas                 |
+| **Priorização das tasks**      | Funcionou bem                          | Mantido o padrão             | Replanejada diariamente para focar artefatos críticos     | Focada em destravar cadeias lineares e artefatos “gatilho”               | Priorização absoluta das entregas finais e documentação                |
+| **Divisão de tarefas**         | Livre e incentivou autonomia           | Mais estruturada             | Pareamento intenso para acelerar entregas                 | Dificultada pela alta linearidade entre artefatos e dependências fortes  | Distribuição equalitária e alinhamento por habilidade                  |
+| **Dailys**                     | Produtivas e bem aproveitadas          | Consistentes                 | Curtas e objetivas, focadas em bloqueios                  | Utilizadas para realinhar dependências e replanejar a sequência de tasks | Perda de qualidade e foco, perdendo um pouco do reporte de status      |
+| **Revisões (PRs)**             | Demora nas revisões                    | Agilizadas com limite de 24h | Realizadas em até 12h com revisão cruzada                 | Mantidas rápidas para não bloquear cadeias de artefatos                  | Revisão cruzada final de documentação e código                         |
+| **Apresentação Sprint Review** | Bem planejada e estruturada            | Técnica e objetiva           | Centrada no protótipo funcional e evidências de testes    | Focada em mostrar o conjunto de artefatos e sua interdependência         | Foco na apresentação completa do projeto e resultados                  |
+| **Validação com professores**  | Ótimo, ponto a ser mantido             | Feedbacks incorporados       | Sessões rápidas para validar entregáveis                  | Reforçada para esclarecer escopo de artefatos com descrição pouco clara  | Necessidade de maior alinhamento estruturado em momentos críticos      |
+| **Documentação**               | Bem elaborada                          | Diagramas adicionados        | Atualizada em paralelo ao desenvolvimento                 | Ajustada para detalhar melhor os artefatos e suas relações               | Bem elaborada, com revisão final para consistência narrativa e técnica |
+| **Sugestões implementadas**    | Identificadas                          | 80% implementadas            | 100% das críticas aplicadas antes da review final         | Foco em tornar descrições mais explicativas e reduzir retrabalho         | Todas as sugestões e lições aprendidas incorporadas                    |
+| **Riscos**                     | Definidos na Matriz de Risco           | Atualizados e monitorados    | Repriorizados com foco nos riscos 7, 8 e 12               | Acompanhados com foco em atrasos por dependência e clareza de escopo     | Riscos críticos controlados e projeto entregue                         |
 
 ## Acompanhamento de Riscos - Sprints 1,2,3,4 e 5
+
 Tabela para acompanhamento do desenvolvimento dos riscos.
 
-| ID | Risco | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 |
-|----|-------|----------|----------|----------|----------|----------|
-| 1 | Atraso na entrega de tarefas | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Revisão semanal do cronograma e dailys | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão semanal do cronograma e dailys · **Status:** Mitigado | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Replanejamento diário focado em dependências críticas · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Fatiamento de artefatos e controle de cadeia linear · **Status:** Em monitoramento |  |
-| 2 | Falha na comunicação entre membros | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Quadros digitais e checkpoints assíncronos · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Dailys usadas para esclarecer descrições pouco explicativas · **Status:** Controlado |  |
-| 3 | Problemas técnicos com ferramentas | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Ambiente replicado em containers e playbooks rápidos · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Reuso do ambiente e automação de rotinas críticas · **Status:** Ativo |  |
-| 4 | Escopo mal definido | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão do escopo com o cliente | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Revisão do escopo com o cliente · **Status:** Mitigado | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Moderado · **Estratégia:** Refinamento conjunto PO + Professores antes de cada artefato · **Status:** Controlado | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Refinamento de descrições e checklists de DOR para artefatos lineares · **Status:** Ativo |  |
-| 5 | Falta de engajamento dos integrantes | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Rotação de papéis críticos e lições por responsável · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Pareamento em artefatos-chave para manter engajamento · **Status:** Controlado |  |
-| 6 | Mudanças de requisitos do cliente | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Registro de hipóteses e confirmação rápida · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Validação antecipada de mudanças que afetem múltiplos artefatos · **Status:** Ativo |  |
-| 7 | Dificuldade de acesso às APIs do SharePoint |  | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Sessões de entendimento com equipe do Metrô e documentação Microsoft · **Status:** Novo | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Cache de testes offline · **Status:** Ativo | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Planejamento de janelas específicas para testes de integração · **Status:** Ativo |  |
-| 8 | Incompatibilidade entre requisitos de segurança |  | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Workshop com equipe de compliance e segurança da informação · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Checklist atualizado e apoio do compliance · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Revisão de artefatos de segurança em cadeia antes da entrega final · **Status:** Ativo |  |
-| 9 | Complexidade dos fluxos do Power Automate |  | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Mapeamento detalhado e sessões com usuários-chave · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação lado a lado (AS-IS x TO-BE) e playback com usuários · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Alinhamento dos fluxos com a sequência de artefatos planejada · **Status:** Ativo |  |
-| 10 | Limitações técnicas do ambiente Microsoft |  | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** POCs antecipados e consulta com especialistas Microsoft · **Status:** Novo | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Testes em ambientes espelho · **Status:** Controlado | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Reuso dos ambientes de teste configurados nas sprints anteriores · **Status:** Controlado |  |
-| 11 | Dependência de disponibilidade da equipe do Metrô |  | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Agendamento antecipado · **Status:** Novo | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Plano alternativo · **Status:** Ativo | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Antecipação de reuniões para artefatos críticos em cadeia · **Status:** Ativo |  |
-| 12 | Integração com sistemas legados não documentados |  | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Documentação progressiva · **Status:** Novo | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** - Automação de coleta de logs · **Status:** Ativo | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Consolidação dos registros de integração nos artefatos da sprint |  |
-
+| ID  | Risco                                             | Sprint 1                                                                                                                               | Sprint 2                                                                                                                                                                        | Sprint 3                                                                                                                                                                        | Sprint 4                                                                                                                                                                           | Sprint 5                                                                                                                                                                               |
+| --- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Atraso na entrega de tarefas                      | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Revisão semanal do cronograma e dailys         | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão semanal do cronograma e dailys · **Status:** Mitigado                             | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Replanejamento diário focado em dependências críticas · **Status:** Ativo                 | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Fatiamento de artefatos e controle de cadeia linear · **Status:** Em monitoramento           | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Moderado · **Estratégia:** Distribuição equalitária de tasks e foco em habilidades · **Status:** Mitigado/Encerrado     |
+| 2   | Falha na comunicação entre membros                | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Reuniões regulares e uso de canais oficiais · **Status:** Controlado                 | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Quadros digitais e checkpoints assíncronos · **Status:** Controlado                  | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Dailys usadas para esclarecer descrições pouco explicativas · **Status:** Controlado    | **Probabilidade:** Baixa · **Impacto:** Baixo · **Severidade:** Baixo · **Estratégia:** Compreensão aprofundada do projeto e alinhamento por habilidade · **Status:** Encerrado        |
+| 3   | Problemas técnicos com ferramentas                | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico                    | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Treinamento e suporte técnico · **Status:** Ativo                                         | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Ambiente replicado em containers e playbooks rápidos · **Status:** Ativo                  | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Reuso do ambiente e automação de rotinas críticas · **Status:** Ativo                        | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Estabilização do ambiente e entrega final · **Status:** Encerrado                           |
+| 4   | Escopo mal definido                               | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Revisão do escopo com o cliente                  | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Revisão do escopo com o cliente · **Status:** Mitigado                               | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Moderado · **Estratégia:** Refinamento conjunto PO + Professores antes de cada artefato · **Status:** Controlado | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Refinamento de descrições e checklists de DOR para artefatos lineares · **Status:** Ativo    | **Probabilidade:** Baixa · **Impacto:** Baixo · **Severidade:** Baixo · **Estratégia:** Compreensão aprofundada do projeto e alinhamento final com professores · **Status:** Encerrado |
+| 5   | Falta de engajamento dos integrantes              | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento       | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Feedbacks constantes e acompanhamento · **Status:** Controlado                       | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Rotação de papéis críticos e lições por responsável · **Status:** Controlado         | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Pareamento em artefatos-chave para manter engajamento · **Status:** Controlado          | **Probabilidade:** Baixa · **Impacto:** Baixo · **Severidade:** Baixo · **Estratégia:** Distribuição equalitária e alinhamento por habilidade · **Status:** Encerrado                  |
+| 6   | Mudanças de requisitos do cliente                 | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua    | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação de mudanças e validação contínua · **Status:** Ativo                         | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Registro de hipóteses e confirmação rápida · **Status:** Ativo                            | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Validação antecipada de mudanças que afetem múltiplos artefatos · **Status:** Ativo          | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Congelamento de escopo para entrega final · **Status:** Encerrado                           |
+| 7   | Dificuldade de acesso às APIs do SharePoint       |                                                                                                                                        | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Sessões de entendimento com equipe do Metrô e documentação Microsoft · **Status:** Novo | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Cache de testes offline · **Status:** Ativo                                             | **Probabilidade:** Alta · **Impacto:** Alto · **Severidade:** Crítico · **Estratégia:** Planejamento de janelas específicas para testes de integração · **Status:** Ativo          | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Testes de integração finalizados e artefatos entregues · **Status:** Encerrado              |
+| 8   | Incompatibilidade entre requisitos de segurança   |                                                                                                                                        | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Workshop com equipe de compliance e segurança da informação · **Status:** Novo      | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Checklist atualizado e apoio do compliance · **Status:** Ativo                      | **Probabilidade:** Média · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Revisão de artefatos de segurança em cadeia antes da entrega final · **Status:** Ativo | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Validação final de compliance e entrega do projeto · **Status:** Encerrado                  |
+| 9   | Complexidade dos fluxos do Power Automate         |                                                                                                                                        | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Mapeamento detalhado e sessões com usuários-chave · **Status:** Novo                 | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Documentação lado a lado (AS-IS x TO-BE) e playback com usuários · **Status:** Ativo      | **Probabilidade:** Média · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Alinhamento dos fluxos com a sequência de artefatos planejada · **Status:** Ativo            | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Fluxos de automação finalizados e documentados · **Status:** Encerrado                      |
+| 10  | Limitações técnicas do ambiente Microsoft         |                                                                                                                                        | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** POCs antecipados e consulta com especialistas Microsoft · **Status:** Novo                | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Testes em ambientes espelho · **Status:** Controlado                                      | **Probabilidade:** Baixa · **Impacto:** Alto · **Severidade:** Alto · **Estratégia:** Reuso dos ambientes de teste configurados nas sprints anteriores · **Status:** Controlado    | **Probabilidade:** Baixa · **Impacto:** Baixo · **Severidade:** Baixo · **Estratégia:** Estabilização do ambiente e entrega final · **Status:** Encerrado                              |
+| 11  | Dependência de disponibilidade da equipe do Metrô |                                                                                                                                        | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Agendamento antecipado · **Status:** Novo                                            | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Plano alternativo · **Status:** Ativo                                                | **Probabilidade:** Média · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Antecipação de reuniões para artefatos críticos em cadeia · **Status:** Ativo           | **Probabilidade:** Baixa · **Impacto:** Baixo · **Severidade:** Baixo · **Estratégia:** Validações finais concluídas e projeto entregue · **Status:** Encerrado                        |
+| 12  | Integração com sistemas legados não documentados  |                                                                                                                                        | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Documentação progressiva · **Status:** Novo                                          | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Automação de coleta de logs · **Status:** Ativo                                      | **Probabilidade:** Alta · **Impacto:** Crítico · **Severidade:** Crítico · **Estratégia:** Consolidação dos registros de integração nos artefatos da sprint                        | **Probabilidade:** Baixa · **Impacto:** Médio · **Severidade:** Moderado · **Estratégia:** Integração finalizada e documentada · **Status:** Encerrado                                 |
 
 ---
 
 # 4. Análise Post Mortem
-_conteúdo_
+
+&emsp;Esta seção documenta os principais sucessos, desafios e aprendizados do grupo **Estação Paraíso**, desenvolvido para o Metrô de São Paulo ao longo de 5 sprints, focando na integração de agentes de IA ao sistema de gestão de projetos com garantia de rastreabilidade, segurança e escalabilidade.
 
 ## 4.1 Sucessos do Projeto
-_conteúdo_
+
+### Entregas Técnicas
+
+- **Middleware FastAPI unificado** consolidando 8 endpoints principais (redução de 68% em relação aos 25+ endpoints fragmentados iniciais)
+- **Arquitetura consolidada** com processamento assíncrono, reduzindo tempo de execução de testes de 15 minutos para 4.88 segundos (-99.5%)
+- **Implementação completa dos 3 RNFs críticos**: Rastreabilidade (100% de ações auditáveis), Segurança (100% de bloqueio de acessos indevidos), Escalabilidade (middleware unificado com simulação de integrações)
+- **Sistema de Audit Trail** com hash SHA-256 e correlação automática de eventos (75% automática, meta 95%+)
+- **42 testes automatizados** organizados por RNF (12 para Escalabilidade, 30 para Segurança e Rastreabilidade) com 100% de aprovação
+- **Simulação de integrações externas** (SharePoint, Miro, Copilot, Sentinel) através de APIs mockadas integradas no middleware
+- **Redução de 74% em linhas de código** através da consolidação arquitetural (de 2.600 linhas distribuídas para 673 linhas no arquivo principal)
+- **Cobertura de código** estabelecida em 32% (baseline), com meta de 50%+ para evolução futura
+- **Performance otimizada**: latência p95 reduzida de ~450ms para 69ms (-84.7%), throughput aumentado de ~5 req/s para 16 req/s (+220%)
+
+### Processo e Gestão
+
+- **Redução de 50% no tempo de revisão de PRs**: de 48h (Sprint 1) para 24h (Sprint 2) e 12h (Sprint 3)
+- **100% das ações críticas das retrospectivas implementadas** antes das reviews finais
+- **Melhoria na distribuição de tarefas**: Sprint 5 alcançou distribuição equalitária e alinhamento por habilidade, eliminando sobrecarga de membros específicos
+- **Documentação completa** no Projeto.md com mais de 11.000 linhas, incluindo diagramas C4, simulações e evidências técnicas
+- **Gestão de riscos efetiva**: 12 riscos identificados e monitorados, com mitigação bem-sucedida dos riscos críticos (R7, R8, R12)
+- **Consolidação arquitetural bem-sucedida**: transição de Sprint 3 (fragmentada) para Sprint 4 (unificada) com ganhos mensuráveis em manutenibilidade e performance
+
+### Resultados de Negócio
+
+- **Rastreabilidade**: aumento de 30% para 100% de ações auditáveis, com tempo de recuperação reduzido de 5-10 dias para <2 segundos (-99.9997%)
+- **Segurança**: bloqueio de acessos indevidos aumentou de ~60% para 100% (+40 pontos percentuais), com detecção automática de incidentes em <0.15s
+- **Performance**: latência reduzida em 84.7%, throughput aumentado em 220%, capacidade concorrente aumentada em 400%
+- **Escalabilidade**: capacidade projetada aumentada de 100 req/dia para 100k req/dia (1000x)
+- **Conformidade**: 100% de atendimento aos RNFs críticos (3/3 RNFs implementados e validados)
+- **Eficiência operacional**: redução média de 99% no tempo de tarefas operacionais através de automação
 
 ## 4.2 Oportunidades de Melhoria
-_conteúdo_
+
+### Gestão de Tarefas e Dependências
+
+**Problema recorrente em Sprints 3 e 4**: alta linearidade entre artefatos gerando dependências sequenciais e dificuldade na distribuição de tarefas.
+
+**Impacto**: Risco de sobrecarga em membros responsáveis por etapas "gatilho" da cadeia de artefatos, menor flexibilidade para trocas de responsável no meio da sprint.
+
+**Melhoria futura**: Fatiar artefatos grandes em subtarefas mais independentes, planejar caminhos alternativos de trabalho (histórias em paralelo) para evitar ociosidade quando uma task estiver bloqueada.
+
+### Clareza de Escopo e Descrições
+
+**Problema em Sprint 4**: descrições iniciais pouco detalhadas dos artefatos gerando dúvidas sobre escopo e critérios de aceite.
+
+**Impacto**: Retrabalho em esclarecimentos e ajustes de escopo, necessidade de refinamento adicional durante a sprint.
+
+**Melhoria futura**: Checklist de refinamento obrigatório (DOR) para cada artefato antes de entrar em "Em andamento", criação de subtarefas vinculadas no Trello para artefatos maiores com responsáveis e dependências explícitas.
+
+### Revisão de Pull Requests
+
+**Problema persistente**: Apesar da melhoria significativa (48h → 12h), ainda houve acúmulo de PRs em algumas sprints.
+
+**Tempo médio de merge**: 12h (meta: <8h para revisões críticas)
+
+**Melhoria futura**: Matriz de revisores especialistas por área técnica, checklist de revisão padronizado, SLA de <8h para revisões críticas e <24h para revisões normais.
+
+### Cobertura de Testes
+
+**Backend**: 32% de cobertura estabelecida (baseline) | **Meta**: 50%+ para evolução futura
+
+**Consequência**: Algumas áreas críticas podem não estar totalmente cobertas por testes automatizados.
+
+**Melhoria futura**: Coverage mínimo de 50% backend como critério de merge, implementar mutation testing para validar qualidade real dos testes, adicionar performance benchmarking para rastrear regressões.
+
+### Monitoramento e Observabilidade
+
+**Ausência de ferramentas de monitoring** em produção para métricas de uptime e disponibilidade.
+
+**Risco**: SLA de disponibilidade não mensurável em ambiente de produção real.
+
+**Melhoria futura**: Implementar stack de observabilidade (ELK, Datadog ou Azure Monitor) com dashboards técnicos, alertas automáticos e métricas de uptime.
+
+### Alinhamento com Stakeholders
+
+**Problema em Sprint 5**: necessidade de validações finais e esclarecimentos de escopo em momentos críticos da sprint.
+
+**Impacto**: Gargalos de validação que poderiam ter sido evitados com alinhamento antecipado.
+
+**Melhoria futura**: Definir canal e frequência específicos para alinhamento com stakeholders externos (professores/clientes), sessões de alinhamento estruturadas antes do início de sprints críticas.
 
 ## 4.3 Lições Aprendidas
 
+### Lições Técnicas
+
+**1. Consolidação Arquitetural com Design Patterns**
+
+A transição de Sprint 3 (fragmentada com 3 código bases) para Sprint 4 (unificada com 1 código base) demonstrou que consolidação arquitetural com design patterns corretos resulta em:
+
+- **74% redução em linhas de código** → Manutenibilidade
+- **99.5% redução em tempo de execução** (15 min → 4.88s) → Feedback rápido
+- **100% padronização de testes** → Qualidade previsível
+- **0% erros de configuração manual** → Confiabilidade
+
+**Aplicação futura**: Investir tempo em design arquitetural desde Sprint 1, usar Strategy Pattern para roteamento dinâmico, consolidar código duplicado proativamente.
+
+**2. Testes Automatizados São Investimento Crítico**
+
+42 testes automatizados detectaram problemas antes da integração e validaram 100% dos cenários críticos. A padronização via pytest permitiu execução em 4.88 segundos vs. 15 minutos de processo manual.
+
+**Aprendizado**: Cada hora em testes economiza 3-5 horas de debugging e validação manual.
+
+**Aplicação futura**: Coverage mínimo de 50% como critério de merge, implementar testes automatizados desde Sprint 1, não apenas nas sprints finais.
+
+**3. Roteamento Dinâmico Reduz Complexidade**
+
+A substituição de 25+ endpoints específicos por 8 endpoints genéricos com path parameters (`/validate/{validation_type}`) reduziu complexidade em 68% sem comprometer clareza semântica.
+
+**Aprendizado**: Endpoints genéricos com parâmetros são mais escaláveis e manuteníveis que endpoints específicos.
+
+**Aplicação futura**: Usar padrões RESTful maduros desde o início, evitar proliferação de endpoints específicos.
+
+**4. Processamento Assíncrono É Essencial para Escalabilidade**
+
+FastAPI assíncrono implementado permitiu throughput de 16 req/s (vs. 5 req/s síncrono) e capacidade concorrente de 50+ requisições simultâneas.
+
+**Aprendizado**: Processamento assíncrono não é apenas otimização, é requisito para escalabilidade.
+
+**Aplicação futura**: Considerar processamento assíncrono desde o design inicial, não como otimização posterior.
+
+**5. Simulação de Integrações Facilita Desenvolvimento**
+
+APIs mockadas para SharePoint, Miro, Copilot e Sentinel permitiram desenvolvimento e testes sem dependência de sistemas externos.
+
+**Aprendizado**: Mocks bem estruturados aceleram desenvolvimento e garantem testes isolados.
+
+**Aplicação futura**: Criar mocks desde Sprint 1, não apenas quando necessário para testes.
+
+### Lições Organizacionais
+
+**6. Retrospectivas Com Acompanhamento Têm Alta Efetividade**
+
+100% das ações críticas das retrospectivas foram implementadas antes das reviews finais quando havia responsável definido e tracking.
+
+**Aprendizado**: Ações sem responsável têm <30% efetividade, ações com owner e tracking têm 85%+ efetividade.
+
+**Aplicação futura**: Limitar a 3 ações prioritárias por retro, atribuir owner com prazo definido, fazer tracking semanal.
+
+**7. Distribuição Equalitária de Tarefas Reduz Sobrecarga**
+
+Sprint 5 alcançou distribuição equalitária e alinhamento por habilidade, eliminando sobrecarga que ocorreu em Sprint 4.
+
+**Aprendizado**: Distribuição desigual gera burnout e reduz qualidade das entregas.
+
+**Aplicação futura**: Monitorar carga de trabalho semanalmente, redistribuir tarefas quando necessário, usar pareamento para balancear conhecimento.
+
+**8. Revisões Rápidas Aceleram Desenvolvimento**
+
+Redução de tempo de revisão de 48h para 12h acelerou feedback e permitiu ajustes incrementais mais rápidos.
+
+**Aprendizado**: Revisões lentas são gargalos que bloqueiam desenvolvimento paralelo.
+
+**Aplicação futura**: SLA de <12h para revisões críticas, <24h para revisões normais, matriz de revisores por área técnica.
+
+**9. Checkpoints de Meio de Sprint Previnem Surpresas**
+
+Checkpoints implementados em Sprint 3 e 4 permitiram identificação precoce de problemas e ajustes antes da reta final.
+
+**Aprendizado**: Checkpoints estruturados reduzem retrabalho e melhoram qualidade das entregas.
+
+**Aplicação futura**: Checkpoints obrigatórios na metade de cada sprint com checklist de completude (documentação + código + testes).
+
+**10. Clareza de Escopo Antecipa Problemas**
+
+Sprint 4 sofreu com descrições pouco detalhadas, gerando retrabalho. Sprint 5 melhorou com checklist de refinamento obrigatório.
+
+**Aprendizado**: Investir tempo em refinamento de escopo economiza tempo durante execução.
+
+**Aplicação futura**: Checklist de DOR obrigatório antes de iniciar artefatos, validação de escopo com PO/professores antes do início da sprint.
+
+### Lições Comportamentais
+
+**11. Comunicação Assíncrona Reduz Necessidade de Reuniões**
+
+Uso efetivo de documentação e atualizações no Trello permitiu reduzir reuniões sem perder alinhamento.
+
+**Aprendizado**: Documentação clara reduz necessidade de reuniões síncronas.
+
+**Aplicação futura**: Priorizar documentação assíncrona, usar reuniões apenas para discussões complexas que requerem interação e rituais do método scrum.
+
+**12. Transparência em Desafios Acelera Resolução**
+
+Membros que compartilharam bloqueios abertamente receberam ajuda mais rapidamente.
+
+**Aprendizado**: Cultura de "pedir ajuda é fraqueza" prejudica produtividade.
+
+**Aplicação futura**: Implementar "bloqueio do dia" nas dailys, criar canal dedicado para dúvidas técnicas.
+
+**13. Alinhamento por Habilidade Otimiza Qualidade**
+
+Sprint 5 demonstrou que alocar tarefas baseadas em habilidades específicas resulta em maior qualidade e menor tempo de execução.
+
+**Aprendizado**: Forçar membros a trabalhar em áreas desconhecidas pode reduzir qualidade e velocidade.
+
+**Aplicação futura**: Mapear habilidades da equipe no início do projeto, alocar tarefas considerando expertise, usar pareamento para transferir conhecimento.
+
+**14. Gestão de Tempo em Sprints Finais É Crítica**
+
+Sprint 5 teve agenda apertada na reta final, exigindo esforço concentrado.
+
+**Aprendizado**: Sprints finais requerem maior folga no planejamento para integração e documentação final.
+
+**Aplicação futura**: Planejar 20-30% mais tempo para sprints finais, considerar complexidade de integração e documentação no planejamento.
+
+**15. Dailys Focadas**
+
+Sprint 5 perdeu qualidade nas dailys, não tendo um acompanhamento qualificado nas tasks.
+
+**Aprendizado**: Dailys devem focar em "o que me impede de avançar", e "o que fiz".
+
+**Aplicação futura**: Retomar foco da daily como ferramenta de identificação de impedimentos, manter reuniões curtas e objetivas (<15 min).
+
+---
