@@ -124,11 +124,44 @@ _(Mostre o processo de escolha dos RNFs mais críticos e o porquê dessa prioriz
 ---
 
 ## 4. Simulação do Sistema Atual
-_(Apresente evidências do comportamento do sistema antes da evolução.)_
 
-- **Cenários simulados:** _(Descreva os experimentos realizados e os resultados observados.)_  
-- **Evidências:** _(Inclua gráficos de desempenho, diagramas de arquitetura antiga, logs ou resultados de simulação.)_  
-- **Pitch:** _(Resuma o que a equipe aprendeu com essa simulação e quais vulnerabilidades foram identificadas.)_
+Nesta seção são apresentadas as evidências de como o sistema atual de gestão de projetos do Metrô-SP se comporta frente aos principais **Requisitos Não Funcionais (RNFs)** selecionados — em especial **escalabilidade** e **rastreabilidade** — com base na modelagem do Seção 3 e nas simulações detalhadas no Seção 7 do `Projeto.md`.
+
+- **Cenários simulados:**  
+  - **Fluxo de negócio AS-IS (processo manual e fragmentado)**  
+    O ponto de partida da simulação é o fluxo de negócio atual descrito na Seção 2.1.3.1, em que a gestão do portfólio depende de múltiplas ferramentas (Miro, SharePoint, Power Automate, Power BI) e de forte intervenção manual para transporte de informações e consolidação de relatórios. Esse fluxo foi utilizado como base conceitual para modelar o comportamento do sistema sob carga e para identificar os elementos críticos (acessos a projetos e relatórios, armazenamento único, logs limitados etc.).  
+  - **RNF – Escalabilidade (Rede de Filas / JMT – Simulação AS-IS)**  
+    A arquitetura atual foi modelada como uma **rede de filas com um único serviço de processamento sequencial** e uma fila limitada de requisições, representando a dependência de um ponto central (SharePoint/serviço de back-end) sem paralelismo. Foram simulados cenários de carga crescente (100%, 200% e 300% da carga base). Os resultados mostram que, entre **100% e 200% da carga**, os componentes de **Acesso a Projeto** e **Acesso a Relatório** atingem **100% de utilização**, caracterizando-os como gargalos críticos. No cenário de **300% da carga**, o **tempo de fila** cresce para a ordem de **12 milhões de segundos (≈138 dias)**, evidenciando que a taxa de chegada supera permanentemente a capacidade de processamento — situação incompatível com qualquer operação real.  
+  - **RNF – Rastreabilidade (Cenários AS-IS de perda de trilha)**  
+    Para o RNF de rastreabilidade, foram simulados cenários do sistema atual (Seção 7.3.1), como:  
+    - **Cenário 10 – Encerramento manual de projeto (AS-IS)**: o fechamento de projetos depende de ações inteiramente manuais (inativação de elementos, remoção de acessos, arquivamento), o que aumenta o risco de registros órfãos e acessos residuais.  
+    - **Cenário 11 – Alterações sem controle de cronograma (AS-IS)** e **Cenário 14 – Registro de mudança manual (AS-IS)**: alterações em cronograma e registros de mudança são feitos sem um mecanismo central de controle, o que leva a estados de **Orphan** e **Compromised** no modelo, representando perda definitiva da trilha de auditoria.  
+    Em todos os cenários, o modelo evidencia que uma parcela significativa das ações não é registrada ou correlacionada adequadamente, reforçando a fragilidade do sistema atual em termos de compliance e auditoria.
+
+- **Evidências:**  
+  - **Diagrama do Fluxo de Negócio AS-IS**  
+    O fluxo de negócio atual que fundamenta as simulações está documentado na Figura 2.1.3.1.1, que ilustra a jornada completa desde o planejamento (Miro, documentos Office) até o armazenamento e consolidação de relatórios no SharePoint/Power BI, destacando os diversos pontos de intervenção manual e a ausência de uma camada arquitetural central de controle.  
+
+    <div align="center">
+      <sub>Figura 4.1 – Diagrama do Fluxo de Negócio AS-IS (adaptado da Figura 2.1.3.1.1)</sub><br>
+      <img src="img/section2/as-is.png" width="80%"><br>
+      <sup>Fonte: Material produzido pelos autores (2025).</sup>
+    </div>  
+
+  - **Gráficos de Simulação de Escalabilidade (Sistema Atual)**  
+    As simulações de rede de filas realizadas no JMT para o sistema AS-IS geraram gráficos de **utilização dos recursos**, **tempo de fila** e **número de clientes no sistema**, evidenciando o comportamento de saturação sob aumento de carga. Um dos principais gráficos utilizados como evidência é o de **Number of Customers (Navegacao)**, que mostra o crescimento explosivo do número de requisições em espera à medida que a carga se aproxima e ultrapassa o ponto de saturação.  
+
+    <div align="center">
+      <sub>Figura 4.2 – Gráfico de Number of Customers – Sistema Atual (AS-IS)</sub><br>
+      <img src="img/section7/sistemaAtual/number_of_customers.png" width="80%"><br>
+      <sup>Fonte: Material produzido pelos autores (2025).</sup>
+    </div>  
+
+  - **Tabelas e modelos dos RNFs do sistema atual**  
+    A Tabela de RNFs do sistema atual (Seção 3.1) e as estruturas estáticas de simulação (Seção 3.2) servem como evidência complementar de que o ambiente baseado em Miro/SharePoint **não implementa adequadamente escalabilidade, disponibilidade, segurança, rastreabilidade e tolerância a falhas**, reforçando a leitura dos resultados empíricos da simulação.
+
+
+  A simulação do sistema atual demonstra, de forma quantitativa e qualitativa, que a arquitetura AS-IS **não é capaz de escalar** para cargas mais altas e **não oferece rastreabilidade confiável** para suportar um ambiente crítico como o do Metrô-SP. Sob aumento moderado de carga, o sistema entra rapidamente em saturação, com tempos de fila impraticáveis e gargalos concentrados em poucos serviços; do ponto de vista de rastreabilidade, processos manuais de encerramento, alteração de cronograma e registro de mudanças levam com frequência a registros órfãos e estados comprometidos, inviabilizando auditoria robusta. Esses resultados consolidam o diagnóstico de que a manutenção do modelo atual representa um risco direto para **desempenho, confiabilidade e compliance**, justificando a necessidade urgente de uma nova arquitetura com mecanismos estruturados de escalabilidade, automação e controle de trilha de auditoria.
 
 ---
 
