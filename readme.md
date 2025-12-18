@@ -45,6 +45,8 @@
 
 <a href="/documentos/index.md">Link para a documentação geral</a> do projeto.
 
+<a href="https://docs.google.com/spreadsheets/d/1qJytz8rNy661xY0vHVXXRF5HMkovX-CqhXNPD9yFxrg">Link para o Plano de Implementação</a> do projeto.
+
 ## 📁 Estrutura de pastas
 
 |--> documentos<br>
