@@ -23,25 +23,204 @@
 
 
 # Sumário
-incluir Sumário
 
+- [Storytelling de Dados da Arquitetura do Sistema Novo](#storytelling-de-dados-da-arquitetura-do-sistema-novo)
+- [1. Business Drivers](#1-business-drivers)
+  - [1.1 Contexto e Motivação](#11-contexto-e-motivação)
+  - [1.2 Cenário do Sistema Atual](#12-cenário-do-sistema-atual)
+  - [1.3 Desafios de Crescimento e Evolução](#13-desafios-de-crescimento-e-evolução)
+  - [1.4 Volumes Operacionais e Capacidade](#14-volumes-operacionais-e-capacidade)
+- [2. Riscos e Oportunidades como Requisitos Não Funcionais](#2-riscos-e-oportunidades-como-requisitos-não-funcionais)
+  - [2.1 Mapeamento de Riscos e Oportunidades para RNFs](#21-mapeamento-de-riscos-e-oportunidades-para-rnfs)
+  - [2.2 Evidências e Resultados das Estratégias](#22-evidências-e-resultados-das-estratégias)
+- [3. Seleção e Foco dos RNFs](#3-seleção-e-foco-dos-rnfs)
+  - [3.1 RNFs Selecionados](#31-rnfs-selecionados)
+  - [3.2 Critérios de Seleção](#32-critérios-de-seleção)
+  - [3.3 Justificativa e Evidências](#33-justificativa-e-evidências)
+- [4. Simulação do Sistema Atual](#4-simulação-do-sistema-atual)
+- [5. Decisões Arquiteturais e Simulação do Novo Sistema](#5-decisões-arquiteturais-e-simulação-do-novo-sistema)
+- [6. Medições Finais](#6-medições-finais)
+- [7. Conclusão – Avaliação dos Resultados](#7-conclusão--avaliação-dos-resultados)
 
+---
 
 # Storytelling de Dados da Arquitetura do Sistema Novo
 
-Este documento consolida a **evolução arquitetural do sistema**, narrando como o projeto evoluiu ao longo das sprints — das motivações iniciais até os resultados medidos.  
-O foco é evidenciar o **racional de decisões**, os **Requisitos Não Funcionais (RNFs)** controlados e os **impactos observados** com a nova arquitetura.
+Este documento consolida a **evolução arquitetural do sistema de gestão de portfólio do Metrô de São Paulo**, narrando como o projeto evoluiu ao longo das sprints — desde a identificação dos **business drivers** e diagnóstico do sistema atual até a implementação de uma arquitetura escalável, segura e rastreável com integração de **agentes de Inteligência Artificial**.
 
-> _As evidências podem incluir imagens, vídeos, gráficos, simulações, slides ou outros artefatos multimídia, sempre considerando a audiência técnica e executiva (Inteli e parceiro externo)._  
+O foco é evidenciar o **racional de decisões arquiteturais**, os **Requisitos Não Funcionais (RNFs)** priorizados e controlados, e os **impactos mensuráveis** observados com a nova arquitetura.
+
+### Evolução do Projeto por Sprints
+
+**Sprint 1 - Diagnóstico e Fundamentos**
+- Análise do sistema atual (Miro, SharePoint, Power Automate, Power BI)
+- Identificação dos business drivers e desafios operacionais
+- Mapeamento inicial de riscos e oportunidades
+- Definição do escopo arquitetural e objetivos do projeto
+
+**Sprint 2 - Simulação e Seleção de RNFs**
+- Simulação do sistema atual com JMT (Java Modelling Tools)
+- Identificação de gargalos: sincronização Miro/SharePoint com 97% de utilização
+- Seleção dos 3 RNFs críticos: Rastreabilidade, Segurança e Escalabilidade
+- Especificação técnica dos requisitos não funcionais
+
+**Sprint 3 - Implementação e Validação**
+- Desenvolvimento do Middleware de Validação (FastAPI)
+- Implementação de táticas arquiteturais para cada RNF
+- Simulação do sistema novo com Locust
+- Testes automatizados de compliance, escalabilidade e segurança
+
+**Sprint 4 - Medição e Consolidação**
+- Medições estruturais e comportamentais do sistema novo
+- Validação de métricas de desempenho, segurança e rastreabilidade
+- Análise de tradeoffs arquiteturais
+- Consolidação da documentação técnica e resultados
+
+**Sprint 5 - Finalização e Documentação**
+- Realização de ajustes necessários na documentação e na arquitetura
+- Realização de novos testes da arquitetura
+- Finalização do plano de implementação e do orçamento
+- Consolidação da documentação e dos resultados
 
 ---
 
 ## 1. Business Drivers
-_(Apresente o contexto e as motivações de negócio que originaram o projeto e direcionaram a evolução do sistema.)_
 
-- **Cenário do sistema atual:** _(Descreva brevemente o ponto de partida e os desafios enfrentados.)_  
-- **Evidências:** _(Inclua prints, diagramas ou dados que ilustrem os desafios de crescimento, escalabilidade ou segurança.)_  
-- **Pitch:** _(Resuma como os business drivers justificaram a necessidade de evolução arquitetural.)_
+### 1.1 Contexto e Motivação
+
+&emsp;O **Metrô de São Paulo** é uma das principais empresas públicas de transporte urbano do país, responsável pela operação e expansão da rede metroviária que transporta milhões de passageiros diariamente. Dentro da companhia, o **PMO Corporativo** desempenha papel estratégico na gestão do portfólio de projetos, garantindo que as iniciativas estejam alinhadas às metas organizacionais e aos planos de governo.
+
+&emsp;O sistema de gestão de projetos atual é apoiado por diversas ferramentas do ecossistema Microsoft — como **Miro, SharePoint, Power Automate e Power BI** — utilizadas para o registro, acompanhamento e validação das informações dos projetos. Apesar de funcional, o sistema apresenta **desafios críticos**:
+
+- **Alta dependência de tarefas manuais**: Transferência manual de dados entre Miro e SharePoint
+- **Falhas ocasionais de sincronização**: Problemas de integração entre Power Automate, Power BI e SharePoint
+- **Baixa rastreabilidade das ações**: Ausência de logs integrados e centralizados de auditoria
+- **Riscos de inconsistência de dados**: Divergências entre fontes devido ao preenchimento manual
+- **Limitações de escalabilidade**: Gargalo identificado na sincronização Miro/SharePoint (97% de utilização)
+
+&emsp;Diante desse cenário, surge a necessidade de **modernizar a arquitetura tecnológica** do ambiente de gestão de portfólio, tornando-a **mais inteligente, segura e escalável**. A **adoção de agentes de IA** representa uma oportunidade concreta para automatizar atividades repetitivas, oferecer suporte inteligente às equipes e fortalecer a governança digital do Metrô-SP.
+
+### 1.2 Cenário do Sistema Atual
+
+#### 1.2.1 Visão Geral e Fluxo de Trabalho
+
+&emsp;O principal objetivo é transformar a gestão de projetos do Metrô, que atualmente depende de ferramentas semi-estruturadas (Miro para brainstorming) e repositórios passivos (SharePoint para validação/armazenamento), em um ecossistema inteligente e proativo.
+
+**Fluxo de Negócio Atual (AS-IS):**
+
+1. **Planejamento Inicial** (Líder/Equipe do Projeto)
+   - Elaboração do Termo de Abertura do Projeto (TAP), Mapa de Benefícios, Entregas e Cronograma
+   - Utilização de Miro para brainstorming e documentos MS Office (Word/Excel)
+
+2. **Transferência Manual de Dados**
+   - O Líder/Equipe **transporta manualmente** as informações do Miro para as **Listas do SharePoint**
+   - Processo suscetível a inconsistências e perda de dados
+
+3. **Reporte Mensal de Status**
+   - Atualização mensal do status do projeto, percentual de avanço e riscos no SharePoint
+   - Processo manual sem validação automática
+
+4. **Geração de Relatórios**
+   - O PMO consolida informações do Power BI e documentos de escritório
+   - Criação de **Relatório Mensal** e **Balanço Semestral** usando MS Word, Excel e PowerPoint
+
+**Pontos Fortes:**
+- Flexibilidade e agilidade visual do Miro na fase inicial
+- Centralização e governança documental no SharePoint
+- Integração com ferramentas do ecossistema Microsoft
+
+**Oportunidades de Melhoria:**
+- **Maior ineficiência**: Transição manual dos dados entre Miro e SharePoint
+- Perda de rastreabilidade durante a transferência de informações
+- Consumo significativo de tempo da equipe (overhead)
+- Risco elevado de inconsistências entre planejamento inicial e registro final
+
+#### 1.2.2 Evidências Técnicas do Sistema Atual
+
+<div align="center">
+<sub>Figura 1.2.2.1 - Diagrama do Fluxo de Negócio AS-IS</sub><br>
+<img src="img/section2/as-is.png" width="100%"><br>
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+</div>
+
+**Simulação do Sistema Atual (Sprint 2 - JMT):**
+
+| **Componente**               | **Utilização** | **Latência Média** | **Status**        |
+|------------------------------|----------------|--------------------|-------------------|
+| Miro (Planejamento)          | 45%            | 10s                | Estável           |
+| Sincronização Miro/SharePoint| **97%**        | **45s (em fila)**  | **Gargalo crítico**|
+| SharePoint (Armazenamento)   | 60%            | 8s                 | Operacional       |
+| Power Automate (Automação)   | 50%            | 15s                | Operacional       |
+| Power BI (Relatórios)        | 40%            | 12s                | Estável           |
+
+**Conclusão da Simulação:**
+- **Gargalo principal**: Componente de sincronização Miro/SharePoint com **97% de utilização**
+- **Latência crítica**: 45 segundos em filas durante picos de carga
+- **Processo manual**: Validação e transferência de dados entre ferramentas
+
+### 1.3 Desafios de Crescimento e Evolução
+
+&emsp;A proposta de evolução do sistema de gestão de portfólio do Metrô de São Paulo tem como foco estabelecer uma **arquitetura escalável e segura**, capaz de **integrar agentes de Inteligência Artificial** para apoiar a automação e o gerenciamento inteligente dos projetos corporativos.
+
+#### 1.3.1 Estratégias de Crescimento
+
+**1. Escalabilidade e Desempenho**
+- Reestruturação da arquitetura para suportar até **100 usuários simultâneos** e **300 projetos ativos**
+- Capacidade elástica para escalar horizontalmente de acordo com a carga de requisições
+- Implementação de balanceamento de carga e monitoramento dinâmico
+- Tempo médio de resposta abaixo de **1 segundo** mesmo em picos de 5.000 requisições
+
+**2. Disponibilidade e Recuperação de Falhas**
+- Modelo de arquitetura distribuída e tolerante a falhas
+- Failover automático entre instâncias críticas
+- Políticas de backup contínuo e replicação ativa
+- Tempo médio de recuperação (MTTR) reduzido para menos de **5 segundos**
+- Disponibilidade mínima de **99,5%**
+
+**3. Segurança e Governança de Dados**
+- Camadas de defesa contra injeções de comandos e acessos indevidos
+- Detecção e bloqueio automático de tentativas maliciosas
+- Rastreabilidade completa das tentativas de acesso
+- Integração de logs e auditorias a sistemas de alerta
+
+**4. Rastreabilidade e Auditoria de Interações**
+- Sistema centralizado de logs registrando **100% das ações**
+- Verificação por hash (SHA-256) para garantir integridade
+- Recuperação de registros em menos de **2 segundos**
+- Conformidade com LGPD e políticas de compliance
+
+**5. Evolução e Integração Inteligente**
+- Preparação para futuras integrações com IA generativa
+- Automação cognitiva e relatórios preditivos
+- Priorização de controle e auditabilidade das informações
+- Compatibilidade com Microsoft Power Platform, SharePoint e Copilot
+
+### 1.4 Volumes Operacionais e Capacidade
+
+&emsp;O sistema de gestão de portfólio do Metrô de São Paulo opera com os seguintes volumes:
+
+| **Métrica**                       | **Valor**         | **Observações**                                    |
+|-----------------------------------|-------------------|----------------------------------------------------||
+| **Usuários Cadastrados**          | 150 usuários      | Analistas, gerentes e membros das equipes          |
+| **Usuários Simultâneos (Normal)** | 30-50 usuários    | Períodos de operação padrão                        |
+| **Usuários Simultâneos (Pico)**   | 75 usuários       | Consolidação de relatórios e fechamentos           |
+| **Capacidade Recomendada**        | 100 usuários      | Margem de segurança e escalabilidade               |
+| **Documentos por Projeto**        | 10.000 documentos | Relatórios, cronogramas, registros de risco e atas |
+| **Transações Mensais**            | 500-1.000         | Operações de leitura, atualização e automação      |
+| **Taxa de Requisições (Normal)**  | 1-2 RPS           | Períodos normais de operação                       |
+| **Taxa de Requisições (Pico)**    | 2,5 RPS           | Cenários de alta demanda                           |
+
+**Pontos de Vulnerabilidade:**
+- Dependência de processos manuais
+- Falhas ocasionais de sincronização entre SharePoint e Power BI
+- Limitações de rastreabilidade de ações entre usuários
+- Impacto na confiabilidade dos dados e necessidade de tolerância a falhas
+
+### Resumo
+
+&emsp;Os **business drivers** do Metrô de São Paulo, **eficiência operacional, governança de projetos e modernização tecnológica**, justificam a necessidade de evolução arquitetural. O sistema atual, apesar de funcional, apresenta **gargalos críticos de sincronização (97% de utilização), dependência de processos manuais e baixa rastreabilidade**, limitando a escalabilidade e a confiabilidade dos dados.
+
+&emsp;A arquitetura proposta, com **integração de agentes de IA, middleware unificado e processamento assíncrono**, visa resolver esses desafios, garantindo **disponibilidade de 99,5%, rastreabilidade completa (100% de logs auditáveis) e segurança robusta** com verificação de integridade SHA-256. A evolução representa um salto qualitativo na gestão de portfólio, alinhada às metas estratégicas da companhia.
 
 ---
 
@@ -115,11 +294,128 @@ _(Apresente o contexto e as motivações de negócio que originaram o projeto e 
 ---
 
 ## 3. Seleção e Foco dos RNFs
-_(Mostre o processo de escolha dos RNFs mais críticos e o porquê dessa priorização.)_
 
-- **RNFs selecionados:** _(Descreva os requisitos críticos abordados.)_  
-- **Critérios de seleção:** _(Explique as motivações para o foco em determinados RNFs — desempenho, tolerância a falhas, privacidade, etc.)_  
-- **Evidências e pitch:** _(Apresente gráficos, métricas iniciais e decisões de foco.)_
+### 3.1 RNFs Selecionados
+
+&emsp;Com base no diagnóstico do sistema atual e nos business drivers identificados, foram selecionados **três Requisitos Não Funcionais (RNFs) críticos** para a evolução da arquitetura do sistema de gestão de portfólio do Metrô-SP:
+
+| **RNF** | **Nome** | **Justificativa de Priorização** |
+|:-------:|:---------|:--------------------------------|
+| **RNF-01** | **Escalabilidade** | Resolver o gargalo crítico de sincronização Miro/SharePoint (97% de utilização) e suportar crescimento de 150 para 300 projetos ativos |
+| **RNF-02** | **Segurança** | Mitigar riscos de acesso indevido a informações sensíveis (R4) e garantir conformidade com LGPD e políticas de compliance |
+| **RNF-03** | **Rastreabilidade** | Eliminar a baixa rastreabilidade de ações (R5) e garantir auditoria completa de todas as operações (100% de cobertura) |
+
+### 3.2 Critérios de Seleção
+
+&emsp;A seleção dos RNFs seguiu uma metodologia baseada em **análise de riscos, impacto no negócio e viabilidade técnica**, considerando os seguintes critérios:
+
+#### 3.2.1 Análise de Impacto e Probabilidade
+
+**Critério 1: Probabilidade × Impacto do Risco**
+
+| **Risco** | **Nome** | **Probabilidade** | **Impacto** | **Prioridade** | **RNF Associado** |
+|:---------:|:---------|:-----------------:|:-----------:|:--------------:|:------------------|
+| **R1** | Inconsistência de Dados | 70% | Alto | **Crítica** | Rastreabilidade |
+| **R2** | Dependência de Processos Manuais | 80% | Moderado | **Alta** | Escalabilidade |
+| **R3** | Falha de Integração entre Ferramentas | 60% | Alto | **Alta** | Escalabilidade |
+| **R4** | Acesso Indevido a Informações | 40% | Muito Alto | **Crítica** | Segurança |
+| **R5** | Baixa Rastreabilidade das Ações | 50% | Moderado | **Alta** | Rastreabilidade |
+| **R6** | Dependência de Licenciamento Microsoft | 30% | Alto | Média | (Fora do escopo) |
+
+**Critério 2: Alinhamento com Business Drivers**
+
+- **Escalabilidade**: Suportar crescimento de projetos (150 → 300) e usuários simultâneos (50 → 100)
+- **Segurança**: Conformidade com LGPD e proteção de dados sensíveis de projetos estratégicos
+- **Rastreabilidade**: Governança e transparência para auditorias e tomada de decisão
+
+**Critério 3: Evidências da Simulação (Sprint 2)**
+
+- **Gargalo de 97% de utilização** no componente de sincronização → **Escalabilidade**
+- **Latência de 45 segundos em filas** durante picos → **Escalabilidade**
+- **Ausência de logs centralizados** e auditoria → **Rastreabilidade**
+- **Falhas de validação de acesso** em ferramentas distintas → **Segurança**
+
+#### 3.2.2 Matriz de Priorização de RNFs
+
+<div align="center">
+<sub>Figura 3.2.2.1 - Matriz de Priorização de RNFs</sub><br>
+
+| **RNF** | **Impacto no Negócio** | **Complexidade Técnica** | **Viabilidade (Sprints)** | **Prioridade Final** |
+|:-------:|:----------------------:|:------------------------:|:-------------------------:|:--------------------:|
+| Escalabilidade | Crítico | Moderada | Alta | **1º** |
+| Segurança | Crítico | Alta |  Moderada | **2º** |
+| Rastreabilidade | Alto | Moderada |  Muito Alta | **3º** |
+
+<sup>Fonte: Material produzido pelos autores (2025)</sup>
+</div>
+
+### 3.3 Justificativa e Evidências
+
+#### 3.3.1 RNF-01: Escalabilidade
+
+**Por que foi selecionado?**
+- **Evidência crítica**: Simulação JMT (Sprint 2) identificou gargalo de **97% de utilização** no componente de sincronização Miro/SharePoint
+- **Impacto no negócio**: Latência de **45 segundos** durante picos compromete a produtividade e experiência do usuário
+- **Projeção de crescimento**: Sistema precisa suportar **100 usuários simultâneos** e **300 projetos ativos** (dobro da capacidade atual)
+
+**Táticas implementadas:**
+- Enfileiramento de requisições (Queue-Based Load Leveling)
+- Processamento assíncrono com FastAPI (Async/Await Pattern)
+- Retry automático com backoff exponencial
+
+**Resultados esperados:**
+- Throughput de **100 requisições/segundo**
+- Latência p95 < **800ms** para operações críticas
+- Redução de **150%** no tempo de resposta comparado ao sistema atual
+
+#### 3.3.2 RNF-02: Segurança
+
+**Por que foi selecionado?**
+- **Evidência crítica**: Risco R4 (Acesso Indevido) com **Impacto Muito Alto** e probabilidade de 40%
+- **Conformidade regulatória**: Necessidade de atender LGPD e políticas de segurança da informação do Metrô-SP
+- **Dados sensíveis**: Sistema gerencia informações estratégicas de projetos de infraestrutura pública
+
+**Táticas implementadas:**
+- Controle de acesso baseado em projetos (Multi-Tenancy)
+- Validação de integridade com checksum SHA-256
+- Guardrails de IA para prevenção de prompt injection
+
+**Resultados esperados:**
+- **100% de bloqueio** de acessos não autorizados
+- Detecção de **100%** de inconsistências de dados
+- Registro automático de **todos os incidentes** de segurança
+
+#### 3.3.3 RNF-03: Rastreabilidade
+
+**Por que foi selecionado?**
+- **Evidência crítica**: Risco R5 (Baixa Rastreabilidade) com probabilidade de 50% e impacto moderado
+- **Cobertura atual**: Apenas **30-40%** das ações são auditadas no sistema AS-IS
+- **Conformidade**: Necessário para auditorias, análises forenses e conformidade com LGPD
+
+**Táticas implementadas:**
+- Rastreamento distribuído com Correlation ID
+- Auditoria completa (Event Sourcing + Logs estruturados)
+- Detecção de anomalias com análise estatística
+
+**Resultados esperados:**
+- **100% de cobertura** de logs para todas as operações
+- Recuperação de registros em < **2 segundos**
+- Correlação automática de **75%** dos eventos relacionados
+
+### 3.4 RNFs Não Selecionados (Justificativa)
+
+| **RNF Candidato** | **Por que não foi priorizado?** |
+|:------------------|:-------------------------------|
+| **Disponibilidade** | Sistema atual já possui disponibilidade aceitável (95%+) via infraestrutura Microsoft Azure; não é gargalo crítico |
+| **Performance** | Coberto indiretamente pela **Escalabilidade**; métricas de latência e throughput já contempladas |
+| **Usabilidade** | Não é prioridade técnica; interface atual (SharePoint/Miro) já consolidada e aceita pelos usuários |
+| **Manutenibilidade** | Importante, mas não crítico; arquitetura modular já garante manutenibilidade básica |
+
+### Resumo
+
+&emsp;A seleção dos **três RNFs críticos** — **Escalabilidade, Segurança e Rastreabilidade** — foi guiada por **evidências técnicas concretas** (simulação JMT com gargalo de 97%), **análise de riscos quantificada** (matriz de probabilidade × impacto) e **alinhamento com business drivers** (crescimento operacional, conformidade regulatória e governança de dados).
+
+&emsp;Cada RNF foi escolhido para resolver um problema específico e mensurável do sistema atual, com **táticas arquiteturais comprovadas** e **metas quantitativas claras**. A priorização balanceou **impacto no negócio** (crítico para operação), **complexidade técnica** (viável em 4 sprints) e **viabilidade de implementação** (recursos e cronograma disponíveis).
 
 ---
 
