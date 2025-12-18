@@ -11870,7 +11870,95 @@ _(Introduzir Seção)_
 _(Organizar as simulações feitas (antigo e novo).)_
 
 ## 16.2 Documentação Arquitetural do Atual e do Novo
-_(Conferir consistência das documentações existentes e atualizar e fazer um resumo breve com base nisso)_
+
+Esta seção consolida a documentação arquitetural do sistema atual (AS-IS) e da arquitetura proposta (TO-BE), garantindo consistência com as especificações técnicas detalhadas nas seções anteriores do documento e no documento de arquitetura final (`arquitetura_final.md`).
+
+### Arquitetura Atual (AS-IS)
+
+O sistema atual de gestão de portfólio do Metrô-SP baseia-se em uma arquitetura distribuída entre ferramentas do ecossistema Microsoft e o Miro, caracterizada por processos predominantemente manuais e dependência de serviços externos.
+
+**Componentes Principais:**
+- **Miro**: Ferramenta colaborativa para brainstorming e criação de Mapas de Benefícios
+- **SharePoint**: Armazenamento estruturado de dados de projetos em listas
+- **Power Automate**: Automações básicas de fluxo de trabalho
+- **Power BI**: Geração de relatórios e dashboards analíticos
+- **Documentos Office**: Word, Excel e PowerPoint para artefatos de projeto
+
+**Características Arquiteturais:**
+- **Processo Manual**: Transferência manual de dados entre Miro e SharePoint
+- **Integração Limitada**: Sincronização dependente de conectores do Power Automate
+- **RNFs Deficientes**: Ausência de implementação adequada de escalabilidade, segurança e rastreabilidade
+- **Dependência Externa**: Controle limitado sobre infraestrutura e SLA das ferramentas
+- **Capacidade**: Suporte a 30-50 usuários simultâneos em operação normal, até 75 em picos
+
+**Limitações Identificadas:**
+- Gargalo crítico no componente de sincronização Miro/SharePoint (97% de utilização)
+- Latência média de 45 segundos em filas durante picos de carga
+- Ausência de logs centralizados e trilhas de auditoria integradas
+- Controle de acesso limitado, sem granularidade por projeto
+- Falta de mecanismos de validação automática de integridade de dados
+
+### Arquitetura Proposta (TO-BE)
+
+A nova arquitetura foi projetada para resolver as limitações do sistema atual, incorporando agentes de IA, mecanismos robustos de segurança, rastreabilidade completa e escalabilidade horizontal.
+
+**Componentes Principais:**
+- **API Unificada**: Camada de integração que consolida acesso a Miro, SharePoint, Microsoft 365, Copilot e Sentinel
+- **Middleware de Validação**: Camada intermediária que implementa validações, enfileiramento e controle de acesso
+- **Agentes de IA**: Processamento inteligente para automação de tarefas, análise de qualidade e geração de conteúdo
+- **Sistema de Filas**: Enfileiramento FIFO com priorização baseada em níveis de acesso (Admin > Manager > Analyst > Viewer)
+- **Camada de Auditoria**: Logs estruturados em JSON com rastreamento distribuído (request_id, correlation_id, trace_id)
+
+**Características Arquiteturais:**
+- **Processamento Assíncrono**: Framework FastAPI com suporte a HTTP/2 e WebSockets para concorrência nativa
+- **Escalabilidade Horizontal**: Suporte a 100+ usuários simultâneos, com capacidade de auto-scaling
+- **Segurança em Camadas**: RBAC granular, validação de checksum SHA-256, guardrails de IA e isolamento multi-tenant
+- **Rastreabilidade Completa**: Event sourcing com logs estruturados, correlação de eventos e detecção de anomalias
+- **Resiliência**: Retry automático com backoff exponencial, circuit breaker e fallback para cache local
+
+**Táticas Arquiteturais Implementadas:**
+
+| RNF | Tática | Implementação | Benefício |
+|-----|--------|---------------|-----------|
+| **RNF-01 (Escalabilidade)** | Queue-Based Load Leveling | Sistema de filas FIFO com capacidade de 10.000 requisições | Redução de 150% no tempo de resposta |
+| | Processamento Assíncrono | FastAPI/Uvicorn com event loop Python | Throughput de 98,7 req/s, latência p95 < 800ms |
+| | Retry com Backoff | 3 tentativas com intervalo exponencial (1s, 2s, 4s) | Taxa de sucesso de 93% sob condições adversas |
+| **RNF-02 (Segurança)** | Controle de Acesso Baseado em Projetos | Multi-tenancy com isolamento por projeto_id + user_id | Prevenção de acesso não autorizado |
+| | Validação de Integridade | Checksum SHA-256 para payloads críticos | Detecção de manipulação de dados |
+| | Guardrails de IA | Detecção de prompts maliciosos e validação semântica | Prevenção de prompt injection e jailbreak |
+| **RNF-03 (Rastreabilidade)** | Rastreamento Distribuído | Correlation ID Pattern com propagação em headers HTTP | Rastreamento fim-a-fim de operações complexas |
+| | Auditoria Completa | Event Sourcing com logs estruturados em JSON | Conformidade com LGPD e análise forense |
+| | Detecção de Anomalias | Análise estatística com alertas para desvios > 3σ | Detecção precoce de ataques e degradação |
+
+**Métricas de Performance Validadas:**
+- **Throughput**: 98,7 requisições/segundo (teste com 100 usuários concorrentes)
+- **Latência**: Média de 542ms, p95 de 783ms
+- **Taxa de Erro**: 0,3% em condições normais
+- **Disponibilidade**: 99,5% com failover automático < 5s
+- **Recuperação de Logs**: < 2 segundos para consultas de auditoria
+
+### Consistência e Alinhamento Documental
+
+A documentação arquitetural apresentada está alinhada e consistente com:
+
+1. **Seção 2.1.3** (Fluxos AS-IS e TO-BE): Descreve os processos de negócio que fundamentam as decisões arquiteturais
+2. **Seção 4** (Arquitetura do Sistema Novo): Especifica os requisitos não funcionais priorizados (RNF-01, RNF-02, RNF-03)
+3. **Seção 6.3** (Táticas Arquiteturais): Detalha as implementações técnicas adotadas
+4. **Seção 11** (Ajustes na Implementação): Documenta a arquitetura unificada de simulação
+5. **Documento `arquitetura_final.md`**: Apresenta o storytelling técnico com evidências de implementação e métricas validadas
+
+**Principais Transformações Arquiteturais:**
+
+| Aspecto | Sistema Atual (AS-IS) | Sistema Novo (TO-BE) |
+|---------|----------------------|---------------------|
+| **Integração** | Manual e dependente de conectores | Automatizada via API unificada e middleware |
+| **Processamento** | Sequencial e síncrono | Assíncrono com enfileiramento inteligente |
+| **Segurança** | Controle limitado de acesso | RBAC granular + validação de integridade + guardrails |
+| **Rastreabilidade** | Logs dispersos e limitados | Event sourcing completo com correlação distribuída |
+| **Escalabilidade** | Limitada por ferramentas externas | Horizontal com auto-scaling e balanceamento |
+| **Resiliência** | Dependência de SLAs externos | Retry automático, circuit breaker e fallback |
+
+A arquitetura proposta representa uma evolução arquitetural significativa, transformando um sistema baseado em processos manuais e ferramentas desconectadas em uma plataforma integrada, inteligente e resiliente, capaz de suportar o crescimento futuro do portfólio de projetos do Metrô-SP com garantias de segurança, rastreabilidade e escalabilidade.
 
 ## 16.3 Benefícios Entregues
 
