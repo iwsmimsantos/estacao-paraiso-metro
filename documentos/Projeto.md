@@ -12094,7 +12094,7 @@ A arquitetura proposta representa uma evolução arquitetural significativa, tra
 
 # 17. Considerações Finais do Projeto
 
-_(Introduzir Seção)_
+&nbsp; As considerações finais deste projeto sintetizam os principais resultados alcançados, as métricas de desempenho observadas e os aprendizados obtidos ao longo do desenvolvimento da solução para o Metrô de São Paulo. A partir da análise integrada de eficiência, qualidade, engajamento da equipe e impacto arquitetural, é possível avaliar em que medida os objetivos iniciais foram atendidos e quais caminhos se abrem para a evolução futura da plataforma. As subseções a seguir apresentam, de forma estruturada, a leitura crítica das métricas, a análise _post mortem_, o alinhamento com a Agenda 2030 e as oportunidades de aperfeiçoamento contínuo da arquitetura proposta.
 
 ## 17.1 Análise de Métricas
 
