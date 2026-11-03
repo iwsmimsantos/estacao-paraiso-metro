@@ -1,3 +1,14 @@
+## Minha participação (Iasmim Santos)
+
+Projeto em grupo de 10 semanas no Inteli, com o Metrô de São Paulo (out/2025 a dez/2025). Aqui o histórico do grupo está completo: meus 32 commits aparecem na aba de commits.
+
+- Integrei os testes automatizados ao dashboard e adicionei trace_id aos logs para rastrear cada requisição.
+- Escrevi os cenários de teste de rastreabilidade e documentei os testes automatizados dos requisitos não funcionais.
+
+**Tecnologias:** testes automatizados, observabilidade e documentação de arquitetura
+
+---
+
 <Table>
   <tr>
     <td><a href= "https://www.metro.sp.gov.br/"><img src="documentos/img/logo-metrosp.png" alt="Metrô de São Paulo" border="0"></td>
